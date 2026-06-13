@@ -1,9 +1,14 @@
 module.exports = function (eleventyConfig) {
-  // Passthrough: make data files available as static assets for fetch()
-  eleventyConfig.addPassthroughCopy({ 'src/_data': 'data' });
+  // 11ty doesn't need to copy data files — the build step writes them after 11ty runs.
+  // changelog.json is written by convert-changelog.js to src/_data/ and then
+  // copied here (it's small and not transformed by the validator).
+  eleventyConfig.addPassthroughCopy({ 'src/_data/changelog.json': 'data/changelog.json' });
 
   // Passthrough: copy JS lib (virtual-timeline is external, not bundled)
   eleventyConfig.addPassthroughCopy({ 'src/js/lib': 'js' });
+
+  // Passthrough: copy media assets
+  eleventyConfig.addPassthroughCopy({ 'src/assets': 'assets' });
 
   // CSS shortcode: inline CSS files in production
   eleventyConfig.addShortcode('inlineCSS', function (files) {
@@ -26,12 +31,6 @@ module.exports = function (eleventyConfig) {
       result += `<link rel="stylesheet" href="./css/${file}">\n`;
     }
     return result;
-  });
-
-  // Inline world data filter: serialize object to window.__WORLD_DATA__
-  eleventyConfig.addFilter('worldDataScript', function (data) {
-    if (!data) return '';
-    return '<script>window.__WORLD_DATA__ = ' + JSON.stringify(data) + ';</script>';
   });
 
   return {
