@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const MD_PATH = path.join(__dirname, '更新日志.md');
+const MD_PATH = path.join(__dirname, 'docs', '更新日志.md');
 const JSON_PATH = path.join(__dirname, 'src', '_data', 'changelog.json');
 
 const md = fs.readFileSync(MD_PATH, 'utf-8');
