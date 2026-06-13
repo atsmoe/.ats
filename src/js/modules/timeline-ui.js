@@ -2,75 +2,87 @@
    timeline-ui.js — Branch tabs, event rendering, era nav
    ═══════════════════════════════════════════════════════════ */
 
-import { timelineData } from './data-loader.js';
 import { dateSortVal, eraLabel } from './data-loader.js';
 
-export let currentBranch = 'mainline';
-export let currentSubBranch = null;
+let _data = null;
+let currentBranch = 'mainline';
+let currentSubBranch = null;
+
+export function setData(data) {
+  _data = data;
+  currentBranch = _data?.branches?.find(b => b.isDefault)?.id || 'mainline';
+  currentSubBranch = null;
+}
+
+export function getCurrentBranch() { return currentBranch; }
+export function getCurrentSubBranch() { return currentSubBranch; }
 
 const tlContainer = document.getElementById('tl-container');
 const eraNav = document.getElementById('era-nav');
 const backToTopBtn = document.getElementById('back-to-top');
 
-/* ── Get branch events ── */
-export function getBranchEvents(branchId) {
-  if (!timelineData) return [];
-
-  // Mainline: eras from the default branch (or root-level fallback)
-  if (branchId === 'mainline') {
-    const branches = timelineData.subEntities[0].timeline.branches;
-    const mainBranch = branches.find(b => b.id === 'mainline');
-    // Use branch-level eras if populated, otherwise fall back to root-level eras
-    const eras = (mainBranch && mainBranch.eras && mainBranch.eras.length > 0)
-      ? mainBranch.eras
-      : timelineData.eras || [];
-    if (!eras.length) return [];
-    return eras.map(era => ({
-      type: 'era',
-      eraTitle: era.title,
-      events: era.events || [],
-    }));
-  }
-
-  // IF sub-branches
-  const branches = timelineData.subEntities[0].timeline.branches;
-  let branchDef = branches.find(b => b.id === branchId);
-  if (!branchDef) {
-    const integrated = branches.find(b => b.id === 'if-integrated');
-    if (integrated && integrated.subBranches) {
-      branchDef = integrated.subBranches.find(sb => sb.id === branchId);
+function findBranch(branchId) {
+  if (!_data) return null;
+  for (const branch of _data.branches) {
+    if (branch.id === branchId) return branch;
+    if (branch.subBranches) {
+      const sub = branch.subBranches.find(sb => sb.id === branchId);
+      if (sub) return sub;
     }
   }
-  if (!branchDef) return [];
+  return null;
+}
+
+function getEraGroups(branch) {
+  if (!branch || !branch.eras || branch.eras.length === 0) return [];
+  return branch.eras.map(era => ({
+    type: 'era',
+    eraTitle: era.title,
+    events: era.events || [],
+  }));
+}
+
+export function getBranchEvents(branchId) {
+  if (!_data) return [];
+
+  const branch = findBranch(branchId);
+  if (!branch) return [];
+
+  if (branchId === 'mainline') {
+    return getEraGroups(branch);
+  }
 
   const groups = [];
 
-  // Branch notice
-  if (branchDef.description) {
+  if (branch.description) {
     groups.push({
       type: 'notice',
       data: {
         type: 'branch-notice',
-        title: branchDef.name,
-        description: branchDef.description,
+        title: branch.name,
+        description: branch.description,
         isBranchNotice: true,
       },
     });
   }
 
-  // IF endings as event cards
-  if (branchDef.endings && branchDef.endings.length > 0) {
+  const eraGroups = getEraGroups(branch);
+  if (eraGroups.length > 0) {
+    groups.push(...eraGroups);
+  }
+
+  if (branch.endings && branch.endings.length > 0) {
     groups.push({
       type: 'if-endings',
-      eraTitle: '结局分支（' + branchDef.endings.length + '个）',
-      events: branchDef.endings.map(e => ({
+      eraTitle: '结局分支（' + branch.endings.length + '个）',
+      events: branch.endings.map(e => ({
         id: branchId + '-ending-' + e.endingNumber,
         dateDisplay: '结局 ' + e.endingNumber,
         title: e.title,
         description: e.description,
         location: e.location,
         characters: e.characters || [],
-        tags: [branchDef.type || 'IF', '结局'],
+        tags: [branch.type || 'IF', '结局'],
         isEnding: true,
         conditions: e.conditions,
       })),
@@ -82,18 +94,17 @@ export function getBranchEvents(branchId) {
 
 /* ── Populate branch tabs ── */
 export function populateBranchTabs() {
-  if (!timelineData) return;
-  const branches = timelineData.subEntities[0].timeline.branches;
+  if (!_data) return;
   const container = document.getElementById('tl-branches');
   container.innerHTML = '';
-  branches.forEach(b => {
+  for (const b of _data.branches) {
     const btn = document.createElement('button');
     btn.className = 'tl-branch-tab' + (b.isDefault ? ' active' : '');
     btn.dataset.branch = b.id;
     btn.textContent = b.name;
     container.appendChild(btn);
-  });
-  currentBranch = branches.find(b => b.isDefault)?.id || 'mainline';
+  }
+  currentBranch = _data.branches.find(b => b.isDefault)?.id || 'mainline';
   currentSubBranch = null;
   updateSubTabs();
 }
@@ -104,29 +115,27 @@ export function updateSubTabs() {
   subContainer.style.display = 'none';
   if (currentBranch !== 'if-integrated') return;
 
-  const branches = timelineData.subEntities[0].timeline.branches;
-  const integrated = branches.find(b => b.id === 'if-integrated');
+  const integrated = _data?.branches?.find(b => b.id === 'if-integrated');
   if (!integrated || !integrated.subBranches) return;
 
   subContainer.style.display = 'flex';
-  integrated.subBranches.forEach(sb => {
+  for (const sb of integrated.subBranches) {
     const btn = document.createElement('button');
     btn.className = 'tl-sub-tab' + (sb.status === 'pending' ? ' pending' : '');
     btn.dataset.branch = sb.id;
     btn.textContent = sb.name;
     if (sb.id === currentSubBranch) btn.classList.add('active');
     subContainer.appendChild(btn);
-  });
+  }
 }
 
 /* ── Update timeline cover ── */
 export function updateTimelineCover(worldId) {
   const cover = document.querySelector('.tl-cover');
   if (!cover) return;
-  const data = timelineData;
-  if (!data || !data.world) return;
+  if (!_data || !_data.world) return;
 
-  const w = data.world;
+  const w = _data.world;
   cover.querySelector('h1').textContent = w.name + (w.nameCN && w.nameCN !== w.name ? ' · ' + w.nameCN : '');
   cover.querySelector('p').textContent = w.description || '';
   cover.querySelector('.calendar-badge').textContent = w.calendarSystem

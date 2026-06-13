@@ -1,16 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
-   star-map.js — Galaxy hover detection, detail overlay, preview
+   star-map.js — Galaxy marker interaction + detail overlay
+   Works with star-map-3d.js (Three.js handles rendering)
    ═══════════════════════════════════════════════════════════ */
 
-import { GALAXIES, galaxyAnim } from './galaxies.js';
-import { BackgroundManager } from './background-manager.js';
+import { GALAXIES } from './galaxies.js';
+import { ANIM } from './anim-tokens.js';
 
-let hoveredGalaxy = null;
 let detailGalaxy = null;
-
-// Expose for ParticleBackground's galaxy drawing
-window.__hoveredGalaxy = null;
-window.__detailGalaxy = null;
 
 // DOM refs
 let galaxyTooltipEl, gtName, gtSub;
@@ -44,7 +40,6 @@ function renderGalaxyPreview(gid) {
   const cx = W / 2, cy = H / 2;
   galaxyCtx.clearRect(0, 0, W, H);
 
-  // Core glow
   for (let i = 3; i >= 0; i--) {
     const r = g.coreRadius * (3 + i * 8);
     const a = [0.35, 0.15, 0.06, 0.02][i];
@@ -60,7 +55,7 @@ function renderGalaxyPreview(gid) {
   galaxyCtx.fill();
 
   const rng = (seed) => { let s = seed; return () => { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; }; };
-  const rand = rng(gid === 'arknights' ? 42 : 137);
+  const rand = rng(gid === 'arknights' ? 42 : gid === 'wh40k' ? 137 : 256);
 
   if (g.armCount > 0) {
     for (let arm = 0; arm < g.armCount; arm++) {
@@ -75,7 +70,7 @@ function renderGalaxyPreview(gid) {
         const r2 = 0.5 + brightness * 2;
         const warmth = rand() < g.warmBias ? 0.4 + rand() * 0.6 : rand() * 0.4;
         const cr = Math.round(140 + warmth * 100);
-        const cg = Math.round(140 + warmth * 40 - (1-warmth)*20);
+        const cg = Math.round(140 + warmth * 40 - (1 - warmth) * 20);
         const cb = Math.round(200 - warmth * 100);
         const alpha = 0.3 + brightness * 0.5;
         galaxyCtx.beginPath();
@@ -95,9 +90,9 @@ function renderGalaxyPreview(gid) {
         const brightness = rand();
         const r2 = 0.5 + brightness * 1.8;
         const warm = rand() < 0.3;
-        const cr = warm ? Math.round(200 + rand()*40) : Math.round(140 + rand()*60);
-        const cg = warm ? Math.round(80 + rand()*40) : Math.round(140 + rand()*40);
-        const cb = warm ? Math.round(40 + rand()*30) : Math.round(180 + rand()*40);
+        const cr = warm ? Math.round(200 + rand() * 40) : Math.round(140 + rand() * 60);
+        const cg = warm ? Math.round(80 + rand() * 40) : Math.round(140 + rand() * 40);
+        const cb = warm ? Math.round(40 + rand() * 30) : Math.round(180 + rand() * 40);
         galaxyCtx.beginPath();
         galaxyCtx.arc(cx + Math.cos(clumpAngle) * clumpR + dx, cy + Math.sin(clumpAngle) * clumpR * 0.55 + dy, r2, 0, Math.PI * 2);
         galaxyCtx.fillStyle = `rgba(${cr},${cg},${cb},${0.2 + brightness * 0.4})`;
@@ -128,7 +123,6 @@ function renderGalaxyPreview(gid) {
 }
 
 export function initStarMap() {
-  // DOM refs
   galaxyTooltipEl = document.getElementById('galaxy-tooltip');
   gtName = document.getElementById('gt-name');
   gtSub = document.getElementById('gt-sub');
@@ -143,19 +137,41 @@ export function initStarMap() {
   galaxyCanvas = document.getElementById('galaxy-canvas');
   galaxyCtx = galaxyCanvas ? galaxyCanvas.getContext('2d') : null;
 
-  // Open galaxies
-  setTimeout(() => {
-    galaxyAnim.arknights.targetScale = 1;
-    galaxyAnim.arknights.targetOpacity = 1;
-    setTimeout(() => {
-      galaxyAnim.wh40k.targetScale = 1;
-      galaxyAnim.wh40k.targetOpacity = 1;
-      setTimeout(() => {
-        galaxyAnim.ff14.targetScale = 1;
-        galaxyAnim.ff14.targetOpacity = 1;
-      }, 400);
-    }, 400);
-  }, 400);
+  // Marker hover/click
+  const markers = document.querySelectorAll('.galaxy-marker');
+  markers.forEach(marker => {
+    const gid = marker.dataset.world;
+    const g = GALAXIES[gid];
+    if (!g) return;
+
+    marker.addEventListener('mouseenter', () => {
+      gtName.textContent = g.name;
+      gtSub.textContent = g.subtitle;
+      const mx = parseInt(marker.style.left);
+      const my = parseInt(marker.style.top);
+      const tipW = 220;
+      const tipH = 100;
+      let tx = mx + 60;
+      let ty = my - 20;
+      if (tx + tipW > window.innerWidth - 12) tx = mx - tipW - 20;
+      if (ty < 12) ty = 12;
+      if (ty + tipH > window.innerHeight - 12) ty = window.innerHeight - tipH - 12;
+      galaxyTooltipEl.style.left = tx + 'px';
+      galaxyTooltipEl.style.top = ty + 'px';
+      galaxyTooltipEl.classList.add('visible');
+      marker.classList.add('hovered');
+    });
+
+    marker.addEventListener('mouseleave', () => {
+      galaxyTooltipEl.classList.remove('visible');
+      marker.classList.remove('hovered');
+    });
+
+    marker.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showGalaxyDetail(gid);
+    });
+  });
 
   // Detail close
   detailOverlay.addEventListener('click', () => { if (detailGalaxy) hideGalaxyDetail(); });
@@ -165,7 +181,6 @@ export function initStarMap() {
       const g = GALAXIES[detailGalaxy];
       const worldId = g.worldId || detailGalaxy;
       hideGalaxyDetail();
-      // Navigate to world page
       setTimeout(() => {
         window.location.href = './' + worldId + '.html';
       }, 300);
@@ -173,47 +188,5 @@ export function initStarMap() {
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && detailGalaxy) hideGalaxyDetail();
-  });
-
-  // Galaxy hover detection
-  document.addEventListener('mousemove', (e) => {
-    if (detailGalaxy) return;
-    const bg = BackgroundManager._active;
-    if (!bg || !bg.W || !bg.H) return;
-    let hit = null;
-    for (const gid of Object.keys(GALAXIES)) {
-      const g = GALAXIES[gid];
-      const a = galaxyAnim[gid];
-      if (a.currentOpacity < 0.3) continue;
-      const gx = g.cx * bg.W + Math.sin(bg.time * 2 * Math.PI / g.floatPeriod + g.floatPhase) * g.floatAmp;
-      const gy = g.cy * bg.H + Math.cos(bg.time * 1.7 * 2 * Math.PI / g.floatPeriod + g.floatPhase) * g.floatAmp;
-      const scale = a.currentScale * (hoveredGalaxy === gid ? g.hoverScale : 1);
-      const dist = Math.sqrt((e.clientX - gx) ** 2 + (e.clientY - gy) ** 2);
-      if (dist < g.hitRadius * scale) { hit = gid; break; }
-    }
-    if (hit !== hoveredGalaxy) {
-      hoveredGalaxy = hit;
-      window.__hoveredGalaxy = hit;
-      document.body.style.cursor = hit ? 'pointer' : '';
-    }
-    if (hit) {
-      const g = GALAXIES[hit];
-      const gx = g.cx * bg.W + Math.sin(bg.time * 2 * Math.PI / g.floatPeriod + g.floatPhase) * g.floatAmp;
-      const gy = g.cy * bg.H + Math.cos(bg.time * 1.7 * 2 * Math.PI / g.floatPeriod + g.floatPhase) * g.floatAmp;
-      gtName.textContent = g.name;
-      gtSub.textContent = g.subtitle;
-      galaxyTooltipEl.style.left = Math.min(gx + 60, bg.W - 240) + 'px';
-      galaxyTooltipEl.style.top = (gy - 20) + 'px';
-      galaxyTooltipEl.classList.add('visible');
-    } else {
-      galaxyTooltipEl.classList.remove('visible');
-    }
-  });
-
-  // Click to open detail
-  document.addEventListener('click', (e) => {
-    if (hoveredGalaxy && !detailGalaxy && !e.target.closest('#galaxy-detail') && !e.target.closest('nav')) {
-      showGalaxyDetail(hoveredGalaxy);
-    }
   });
 }

@@ -15,6 +15,26 @@ cssFiles:
 {% block content %}
 <!-- Star Map View -->
 <div id="star-map">
+  <!-- 3D cluster markers (positioned by star-map-3d.js) -->
+  <div id="galaxy-markers">
+    <div class="galaxy-marker" id="marker-arknights" data-world="arknights">
+      <div class="galaxy-marker-glow" style="--marker-color: #d4923a;"></div>
+      <div class="galaxy-marker-core" style="--marker-color: #d4923a;"></div>
+      <div class="galaxy-marker-label">泰拉大陆</div>
+    </div>
+    <div class="galaxy-marker" id="marker-wh40k" data-world="wh40k">
+      <div class="galaxy-marker-glow" style="--marker-color: #c85050;"></div>
+      <div class="galaxy-marker-core" style="--marker-color: #c85050;"></div>
+      <div class="galaxy-marker-label">神圣泰拉</div>
+    </div>
+    <div class="galaxy-marker" id="marker-ff14" data-world="ff14">
+      <div class="galaxy-marker-glow" style="--marker-color: #b8c4d8;"></div>
+      <div class="galaxy-marker-core" style="--marker-color: #b8c4d8;"></div>
+      <div class="galaxy-marker-label">艾欧泽亚</div>
+    </div>
+  </div>
+
+  <!-- Galaxy hover tooltip -->
   <div class="galaxy-tooltip" id="galaxy-tooltip">
     <div class="gt-name" id="gt-name"></div>
     <div class="gt-sub" id="gt-sub"></div>

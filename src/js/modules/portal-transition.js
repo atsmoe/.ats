@@ -2,16 +2,30 @@
    portal-transition.js — Portal outgoing + incoming animations
    ═══════════════════════════════════════════════════════════ */
 
-import { timelineData } from './data-loader.js';
+import { dateSortVal, eraLabel } from './data-loader.js';
 
-/**
- * Initialize portal arrival: check hash for target event,
- * render full list behind overlay, play reverse animation.
- */
+let _data = null;
+
+export function setData(data) {
+  _data = data;
+}
+
+function getMainlineEraGroups() {
+  if (!_data) return [];
+  const mainBranch = _data.branches?.find(b => b.id === 'mainline' || b.isDefault);
+  if (!mainBranch) return [];
+  const eras = mainBranch.eras;
+  if (!eras || eras.length === 0) return [];
+  return eras.map(era => ({
+    type: 'era',
+    eraTitle: era.title,
+    events: era.events || [],
+  }));
+}
+
 export function initPortalArrival() {
   const hash = window.location.hash;
   if (!hash) {
-    // No target event, just fade out the portal overlay
     dismissPortal();
     return;
   }
@@ -23,14 +37,12 @@ export function initPortalArrival() {
     return;
   }
 
-  // Ensure data is loaded (should be inline by build time)
-  if (!timelineData) {
-    console.warn('portal-arrival: no timelineData loaded');
+  if (!_data) {
+    console.warn('portal-arrival: no data loaded');
     dismissPortal();
     return;
   }
 
-  // Find target event position
   const eraGroups = getMainlineEraGroups();
   let targetIdx = -1;
   let flatEvents = [];
@@ -50,7 +62,6 @@ export function initPortalArrival() {
     return;
   }
 
-  // Temporarily close virtual scrolling: render everything directly
   if (typeof VirtualTimeline !== 'undefined') {
     VirtualTimeline.clear();
   }
@@ -58,7 +69,6 @@ export function initPortalArrival() {
   const container = document.getElementById('tl-container');
   if (container) {
     container.innerHTML = '';
-    // Build a quick full DOM for all events
     let globalIdx = 0;
     for (const group of eraGroups) {
       if (group.type === 'era' || group.eraTitle) {
@@ -75,30 +85,16 @@ export function initPortalArrival() {
     }
   }
 
-  // Scroll to target (behind the overlay)
   const targetEl = document.getElementById(eventId);
   if (targetEl) {
     targetEl.scrollIntoView({ block: 'center' });
   }
 
-  // Wait for layout, then play reverse animation
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       playArrivalAnimation(portalDiv, eventId);
     });
   });
-}
-
-function getMainlineEraGroups() {
-  if (!timelineData) return [];
-  const branches = timelineData.subEntities?.[0]?.timeline?.branches;
-  const mainBranch = branches?.find(b => b.id === 'mainline');
-  if (!mainBranch?.eras) return [];
-  return mainBranch.eras.map(era => ({
-    type: 'era',
-    eraTitle: era.title,
-    events: era.events || [],
-  }));
 }
 
 function buildSimpleEventCard(evt, idx, targetId) {
