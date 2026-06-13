@@ -1,0 +1,297 @@
+# 群星之间 · 编年史 V3 — 架构设计文档
+
+## 一、产品形态
+
+**定义**：可视化虚拟历史查阅工具——在三维星图中漫游，进入不同世界的编年史，在时间线上阅读事件、查看图片、观看视频片段。
+
+**核心体验路径**：
+```
+三维星图（OrbitControls 漫游）
+  → 发现星团 → 悬停查看名称 → 点击查看详情覆盖层
+    → 点击"进入编年史" → 跳转到世界时间线页
+      → 浏览事件时间线 → 点击事件卡片 → 查看图片/视频/描述
+        → 点击跨世界引用 → 传送门过渡 → 到达另一世界
+```
+
+**页面构成**：
+
+| 页面 | 模板 | 背景 | JS 入口 |
+|------|------|------|---------|
+| 星图首页 | `index.njk` | Three.js 3D 银河 | `star-map-3d.js` |
+| 明日方舟 | `arknights.njk` | Canvas 2D 琥珀粒子 | `bundle.js` |
+| 战锤40K | `wh40k.njk` | Canvas 2D 深红粒子 | `bundle.js` |
+| 最终幻想XIV | `ff14.njk` | Canvas 2D 银蓝粒子 | `bundle.js` |
+| 关于 | `about.njk` | Canvas 2D 冷色粒子 | `bundle.js` |
+| 更新日志 | `changelog.njk` | Canvas 2D 冷色粒子 | `bundle.js` |
+
+**架构**：多页静态网站（11ty SSG），页面间 `<a href>` 跳转。
+
+**架构红线**：
+
+| 触发条件 | 当前决策 | 何时重评 |
+|----------|----------|----------|
+| 世界数量 > 10 | 静态多页 | 动态路由 + 模板引擎 |
+| JS 模块 > 30 | 无 TypeScript | 引入 TypeScript |
+| 单页资源 > 300KB | fetch 按需加载 | CDN + 图片优化管线 |
+| 需要 CRUD UI | 无后端 | 引入后端 + 数据库 |
+| 需要 SSR/深度 SEO | 纯静态 HTML | 考虑 Astro |
+| 3D 交互升级 | Three.js 直用 | 评估 R3F |
+| 多人协作 | 单人维护 | ESLint + Prettier + CI |
+
+---
+
+## 二、技术栈
+
+### 核心依赖
+
+| 层 | 技术 | 版本 | 理由 |
+|----|------|------|------|
+| SSG | 11ty (Eleventy) | ^3.0.0 | 轻量 Nunjucks 模板，零运行时框架 |
+| JS 打包 | esbuild | ^0.25.0 | 快、IIFE 输出 |
+| 3D 渲染 | Three.js | **0.136.0**（精确锁定） | 星图首页 3D 银河效果 |
+| UI 组件 | 无 | — | 原生 HTML + CSS 实现 |
+
+### 不引入的技术
+
+| 技术 | 排除理由 |
+|------|----------|
+| React/Vue/Svelte | 运行时框架与零依赖策略矛盾 |
+| Shoelace/任何UI库 | 项目所有 UI 是定制的，引入会产生双样式系统 |
+| Tailwind CSS | 项目已有设计系统，引入会冲突 |
+| CSS-in-JS | SSG + IIFE 环境不友好 |
+| 后端框架 | 当前无后端需求 |
+| TypeScript | 项目体量小。模块 >30 或多人协作时重评 |
+
+### 重新评估条件
+
+| 技术 | 触发条件 |
+|------|----------|
+| TypeScript | JS 模块 >30 或多人协作 |
+| Astro | 需要 SSR 或深度 SEO |
+| 图片CDN | 图片资源 >500 张 |
+| 后端+数据库 | 需要 CRUD 或用户系统 |
+
+---
+
+## 三、数据系统
+
+### Build-time（validate + flatten + index）
+
+```
+src/_data/*.json              ← 源数据（手写，叙事结构不变）
+        ↓ validate-data.js
+dist/data/*.json              ← 扁平化输出（branch.events 单路径）
+dist/data/event-index.json   ← 全局事件索引
+        ↓
+   校验：schema + crossRef + eventId 唯一性
+   失败：exit(1) 阻止构建
+```
+
+**validate-data.js 做的事**：
+1. JSON schema 校验（world/event 必需字段）
+2. crossRef 目标存在性检查
+3. **eventId 全局唯一性检查**（重复 ID 直接 build fail）
+4. 扁平化：`branches.eras.events` → `branch.events`（单路径）
+5. 生成 `event-index.json`：`{eventId: {worldId, branchId, eventIndex}}`
+
+**validate-data.js 不做的事**：
+- 不生成 world-graph.json
+- 不注入 incomingRefs
+- 不做关系建模
+
+### Runtime（data-loader.js + data-access.js）
+
+**data-loader.js**：纯 fetch + in-memory Map 缓存，零 inline，零 fallback。
+
+**data-access.js**：4 个 async 函数，UI 永远不直接访问数据结构。
+
+```javascript
+getWorldMeta(worldId)      // → { id, name, calendarSystem, ... }
+getBranches(worldId)        // → [{ id, name, events, ... }]
+getBranchEvents(worldId, branchId) // → [{ id, title, ... }]
+findEventById(eventId)       // → { id, title, ... } | null  (O(1) via index)
+```
+
+### 架构约束
+
+| 约束 | 规则 |
+|------|------|
+| event-index 唯一真源 | 只由 build-time 生成，runtime 永不修改或扩展 |
+| 缓存策略 | data-access 内部 in-memory Map，首次 fetch 后永久缓存 |
+| 无全局变量 | 通过 `document.body.dataset.world` 传递世界 ID，零 `window.` 全局变量 |
+| 禁止图抽象 | runtime 和 build-time 不做 graph，除非未来 spec 明确引入 |
+
+---
+
+## 四、模块架构
+
+### 依赖方向（严格单向）
+
+```
+┌──────────── UI Layer ────────────┐
+│  main.js, star-map.js           │
+│  timeline-ui.js, ref-panel.js   │
+│  portal-transition.js, nav.js   │
+└────────────┬────────────────────┘
+             │ import / 调用
+┌────────────▼ Engine Layer ──────┐
+│  virtual-timeline.js            │
+│  star-map-3d.js                 │
+│  particle-background.js         │
+│  background-manager.js          │
+└────────────┬────────────────────┘
+             │ import / 调用
+┌────────────▼ Data Layer ────────┐
+│  data-access.js                 │
+│  data-loader.js                 │
+└────────────────────────────────┘
+```
+
+**禁止反向依赖**：
+- Data → Engine → UI（仅此方向）
+- Data 不得 import Engine/UI
+- Engine 不得 import UI
+- Engine 通知 UI 通过回调注册模式，不反向 import
+
+**Engine 状态边界**：
+- Engine is stateless in UI terms
+- Engine only emits events, does not store UI state
+
+### 运行时数据传递
+
+```html
+<!-- base.njk -->
+<body data-page="world" data-world="arknights">
+```
+
+```javascript
+// main.js
+const worldId = document.body.dataset.world;  // 唯一数据入口
+const data = await loadWorldData(worldId);     // fetch 加载
+```
+
+无 `window.__WORLD_DATA__`，无 inline JSON。
+
+---
+
+## 五、3D 星图首页
+
+### Three.js 场景
+
+| 组件 | 桌面 | 移动 |
+|------|------|------|
+| 背景粒子（球体核心） | 50,000 | 10,000 |
+| 背景粒子（外围盘面） | 100,000 | 20,000 |
+| 星团结（每世界） | 5,000 | 2,000 |
+| **总计** | ~165,000 | ~36,000 |
+
+交互：OrbitControls（旋转/缩放，禁用平移）+ 自动慢旋转 + 鼠标视差。
+
+### 星团标记
+
+HTML `.galaxy-marker` 叠在 Three.js Canvas 上方，JS 每帧投影 3D→2D 屏幕坐标。
+
+### 入场动画
+
+T+0ms 场景渐显 → T+400ms 第一个 marker → T+800ms 第二个 → T+1200ms 第三个
+
+---
+
+## 六、设计系统
+
+### 配色
+
+| 元素 | CSS 变量 | 值 |
+|------|----------|-----|
+| 背景底色 | `--bg-deep` | `#080810` |
+| 主色 | `--gold` | `#c9a050` |
+| 暗金 | `--gold-dim` | `#a08030` |
+| 明金 | `--gold-bright` | `#f0d878` |
+| 文字主色 | `--text` | `#e8dcc8` |
+| 文字辅色 | `--text-muted` | `#9a9078` |
+| 卡片背景 | `--card-bg` | `rgba(20, 18, 10, 0.85)` |
+
+### 动画 Token（anim-tokens.js）
+
+```javascript
+ANIM.duration.fast    // 150ms — 微交互
+ANIM.duration.normal  // 300ms — 标准过渡
+ANIM.duration.slow    // 500ms — 重过渡
+ANIM.duration.portal  // 700ms — 传送门
+
+ANIM.easing.out       // cubic-bezier(0.16, 1, 0.3, 1)
+ANIM.easing.in        // cubic-bezier(0.7, 0, 0.6, 1)
+ANIM.easing.bounce    // cubic-bezier(0.34, 1.56, 0.64, 1)
+```
+
+---
+
+## 七、构建管线
+
+```
+npm run build:
+  1. node src/validators/validate-data.js   ← 校验 + 扁平化 + 索引
+  2. node convert-changelog.js
+  3. eleventy                                ← 生成 HTML
+  4. node build.js                           ← esbuild(bundle + star-map-3d) + 复制
+
+npm run dev:
+  1. node src/validators/validate-data.js
+  2. node convert-changelog.js
+  3. eleventy --serve --port 9000
+```
+
+### 构建产物
+
+```
+dist/
+├── index.html
+├── arknights.html
+├── wh40k.html
+├── ff14.html
+├── about.html
+├── changelog.html
+├── data/
+│   ├── arknights.json          (扁平化)
+│   ├── wh40k.json              (扁平化)
+│   ├── ff14.json               (扁平化)
+│   └── event-index.json
+├── assets/
+│   ├── images/...
+│   └── videos/...
+├── css/                         (7 个文件)
+└── js/
+    ├── bundle.js               (~80KB，世界页)
+    ├── star-map-3d.js           (~400KB，首页)
+    └── virtual-timeline.js
+```
+
+---
+
+## 八、移动端策略
+
+| 等级 | 特性 | 桌面 | 平板 | 移动 |
+|------|------|------|------|------|
+| A | 时间线阅读 | ✅ | ✅ | ✅ 右置 |
+| B | 3D 星图 | ✅ 150K | ✅ 80K | ✅ 30K |
+| B | Canvas 2D 背景 | ✅ 500星 | ✅ 400星 | ✅ 300星 |
+| C | 图片/视频 | ✅ | ✅ | ✅ |
+| C | 传送门动画 | ✅ | ✅ | ✅ 简化fade |
+| D | 3D 倾斜卡片 | ✅ | ✅ | ❌ |
+| D | 鼠标光晕 | ✅ | — | — |
+
+---
+
+## 九、媒体资源策略
+
+**存储**：`src/assets/images/` 和 `src/assets/videos/`，11ty passthrough 复制到 `dist/assets/`。
+
+**JSON 扩展**（未来）：
+```json
+{
+  "images": [{ "src": "./assets/images/xxx.jpg", "alt": "...", "type": "medium" }],
+  "video": { "src": "./assets/videos/xxx.mp4", "poster": "./assets/images/xxx-poster.jpg" }
+}
+```
+
+**实现方式**：原生 HTML（`<dialog>` 灯箱、`<video>` 播放器、CSS transform 缩放），不引入 UI 库。
