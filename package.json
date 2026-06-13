@@ -1,15 +1,17 @@
 {
   "name": "between-the-stars-chronicles",
-  "version": "1.0.0",
-  "description": "群星之间 · 编年史 — 交互式多世界编年史网站",
+  "version": "2.0.0",
+  "description": "群星之间 · 编年史 — 可视化虚拟历史查阅工具",
   "private": true,
   "scripts": {
-    "dev": "node convert-changelog.js && eleventy --serve --port 9000",
-    "build": "node convert-changelog.js && eleventy && node build.js",
+    "validate": "node src/validators/validate-data.js",
+    "dev": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && node src/validators/validate-data.js && eleventy --serve --port 9000",
+    "build": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js",
     "changelog": "node convert-changelog.js"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "three": "0.136.0"
   }
 }
