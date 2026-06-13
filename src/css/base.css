@@ -1,0 +1,96 @@
+/* ============================================================
+   CSS Custom Properties
+   ============================================================ */
+:root {
+  --bg-deep: #080810;
+  --gold: #c9a050;
+  --gold-dim: #a08030;
+  --gold-bright: #f0d878;
+  --text: #e8dcc8;
+  --text-muted: #9a9078;
+  --axis: #3a3020;
+  --card-bg: rgba(20, 18, 10, 0.85);
+  --card-border: rgba(201, 160, 80, 0.15);
+  --ark-amber: #d4923a;
+  --ark-blue: #4a5568;
+  --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', 'SimSun', 'NSimSun', 'FangSong', serif;
+  --font-sans: 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Microsoft JhengHei', 'Hiragino Sans GB', sans-serif;
+  --nav-h: 56px;
+  --panel-w: 400px;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: #060a14;
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* Vignette overlay — cool indigo cast */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 5; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(4,6,20,0.65) 80%, rgba(2,4,16,0.9) 100%);
+}
+
+/* ============================================================
+   Particle Canvas
+   ============================================================ */
+#particles {
+  position: fixed; inset: 0; z-index: 0;
+  display: block;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer {
+  position: relative; z-index: 20;
+  padding: 40px 64px;
+  border-top: 1px solid rgba(201,160,80,0.1);
+  background: rgba(8,8,16,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-align: center;
+}
+.footer-brand {
+  font-family: var(--font-serif);
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 4px; color: var(--gold-dim);
+  margin-bottom: 8px;
+}
+.footer-links {
+  display: flex; justify-content: center; gap: 24px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 12px; letter-spacing: 2px;
+  color: var(--text-muted); text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy {
+  font-size: 10px; letter-spacing: 1px;
+  color: rgba(201,160,80,0.2);
+  margin-top: 16px;
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

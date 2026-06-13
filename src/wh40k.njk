@@ -1,0 +1,68 @@
+---
+permalink: ./wh40k.html
+title: 战锤40K
+bodyClass: world-wh40k
+pageType: world
+worldId: wh40k
+cssFiles:
+  - base.css
+  - nav.css
+  - timeline.css
+  - ref-panel.css
+  - worlds.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<!-- Timeline View -->
+<div id="timeline" class="active">
+  <div class="tl-cover">
+    <div class="tl-cover-inner">
+      <h1>战锤40K · 银河编年史</h1>
+      <p>在银河的第41个千年，人类帝国是百万世界之上唯一的庇护。帝皇的金座照耀虚空，记载人类帝国的血火编年与命运分支。</p>
+      <div class="calendar-badge">帝 国 历</div>
+    </div>
+  </div>
+
+  <div class="tl-branches" id="tl-branches">
+    <!-- Populated by JS -->
+  </div>
+  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;">
+    <!-- Populated by JS -->
+  </div>
+
+  <div class="tl-container" id="tl-container">
+    <!-- Events injected by JS -->
+  </div>
+
+</div>
+
+<!-- Overlay & Reference Panel -->
+<div id="overlay"></div>
+<div id="ref-panel">
+  <button class="ref-close" id="ref-close">✕</button>
+  <div class="ref-content">
+    <h2>跨 世 界 引 用</h2>
+    <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
+    <div class="ref-event-date" id="ref-event-date"></div>
+    <div class="ref-event-title" id="ref-event-title"></div>
+    <div class="ref-event-desc" id="ref-event-desc"></div>
+    <div class="ref-related">
+      <h3>关联事件</h3>
+      <a href="#">▸ 引用事件</a>
+    </div>
+    <button class="btn-wormhole" id="btn-wormhole">穿 越 虫 洞</button>
+  </div>
+</div>
+
+<!-- Era sidebar navigation -->
+<nav id="era-nav"></nav>
+
+<!-- Back to top -->
+<button id="back-to-top" title="回到顶部">▲</button>
+{% endblock %}
+
+{% block extraScripts %}
+<script src="./js/virtual-timeline.js"></script>
+{% endblock %}

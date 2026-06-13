@@ -1,0 +1,14 @@
+{
+  "name": "between-the-stars-chronicles",
+  "version": "1.0.0",
+  "description": "群星之间 · 编年史 — 交互式多世界编年史网站",
+  "private": true,
+  "scripts": {
+    "dev": "eleventy --serve --port 9000",
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "esbuild": "^0.25.0"
+  }
+}

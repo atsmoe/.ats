@@ -1,0 +1,135 @@
+/* ============================================================
+   Navigation
+   ============================================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  min-height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 40px;
+  background: #0e0c08;
+  border-bottom: 1px solid rgba(201,160,80,0.15);
+  transform: translateY(-100%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+nav.visible { transform: translateY(0); }
+
+.nav-left {
+  display: flex; align-items: center; gap: 16px;
+}
+
+.nav-brand {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.nav-brand:hover {
+  color: var(--gold-bright);
+  text-shadow: 0 0 12px rgba(201,160,80,0.3);
+}
+.nav-brand.active {
+  text-shadow: 0 0 8px rgba(201,160,80,0.3);
+}
+
+/* ── World dropdown ── */
+.nav-worlds-dropdown {
+  position: relative;
+}
+/* Bridge the gap between trigger and menu (keeps :hover during cursor movement) */
+.nav-worlds-dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  height: 8px;
+  z-index: 1;
+}
+
+.nav-worlds-trigger {
+  color: var(--ark-amber);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 3px;
+  padding: 6px 16px;
+  border: 1px solid rgba(212,146,58,0.3);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.nav-worlds-trigger:hover {
+  border-color: var(--ark-amber);
+  box-shadow: 0 0 12px rgba(212,146,58,0.2);
+  text-shadow: 0 0 8px rgba(212,146,58,0.3);
+  color: var(--gold);
+}
+.nav-worlds-trigger .arrow {
+  font-size: 9px;
+  margin-left: 2px;
+  transition: transform 0.25s ease;
+}
+.nav-worlds-dropdown:hover .nav-worlds-trigger .arrow {
+  transform: rotate(180deg);
+}
+
+.nav-worlds-menu {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  padding-top: 6px;
+  display: flex; flex-direction: column;
+  background: #0e0c08;
+  border: 1px solid rgba(201,160,80,0.2);
+  border-radius: 4px;
+  padding: 6px 0;
+  min-width: 140px;
+  max-height: 60vh;
+  overflow-y: auto;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 110;
+  scrollbar-width: none;
+}
+.nav-worlds-menu::-webkit-scrollbar { display: none; }
+
+.nav-worlds-dropdown:hover .nav-worlds-menu,
+.nav-worlds-dropdown:focus-within .nav-worlds-menu {
+  opacity: 1; pointer-events: auto;
+}
+
+.nav-worlds-item {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 8px 20px;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.nav-worlds-item:hover {
+  color: var(--gold);
+  background: rgba(201,160,80,0.08);
+}
+.nav-worlds-item.active {
+  color: var(--gold);
+  background: rgba(201,160,80,0.12);
+}
+.nav-worlds-item.active::before {
+  content: '● ';
+  font-size: 6px;
+  vertical-align: middle;
+}
+
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 2px;
+  transition: color 0.3s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--gold); }

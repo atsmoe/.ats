@@ -1,0 +1,112 @@
+/* ============================================================
+   Responsive adjustments
+   ============================================================ */
+
+/* Mobile — all cards right-aligned (no left/right alternation) */
+@media (max-width: 768px) {
+  .tl-axis {
+    left: 16px;
+  }
+
+  .tl-event.left,
+  .tl-event.right {
+    margin-left: 36px;
+    width: calc(100vw - 52px);
+    max-width: 440px;
+  }
+
+  .tl-event::after {
+    width: 20px;
+  }
+  .tl-event.left::after,
+  .tl-event.right::after {
+    left: -20px;
+  }
+
+  .axis-node {
+    left: calc(16px - 6px);
+  }
+  .axis-node.diverge {
+    left: calc(16px - 9px);
+  }
+
+  .tl-cover-inner {
+    left: 24px;
+  }
+  .tl-cover h1 {
+    font-size: 24px;
+    letter-spacing: 4px;
+  }
+
+  .tl-branches {
+    padding: 0 12px;
+  }
+  .tl-branch-tab {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  .tl-era-header {
+    margin-left: 20px;
+  }
+
+  nav {
+    padding: 0 16px;
+  }
+  .nav-left { gap: 8px; }
+  .nav-brand {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  .nav-worlds-trigger {
+    font-size: 10px;
+    padding: 4px 10px;
+    letter-spacing: 1px;
+  }
+  .nav-links {
+    gap: 16px;
+  }
+  .nav-links a {
+    font-size: 11px;
+  }
+
+  .detail-content {
+    gap: 8px;
+  }
+  .detail-body {
+    width: 200px;
+    height: 200px;
+  }
+  .detail-title {
+    font-size: 24px;
+    letter-spacing: 6px;
+  }
+
+  #ref-panel {
+    width: 100vw;
+  }
+  #era-nav {
+    display: none;
+  }
+  #back-to-top {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  footer {
+    padding: 24px 16px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tl-event.left {
+    margin-left: calc(27% - 360px - 36px);
+  }
+  .tl-event.right {
+    margin-left: calc(27% + 36px);
+  }
+  .tl-event {
+    width: 360px;
+  }
+}

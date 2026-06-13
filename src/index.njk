@@ -1,0 +1,40 @@
+---
+permalink: ./index.html
+title: 群星之间
+bodyClass: world-index
+pageType: star-map
+cssFiles:
+  - base.css
+  - nav.css
+  - star-map.css
+  - worlds.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<!-- Star Map View -->
+<div id="star-map">
+  <div class="galaxy-tooltip" id="galaxy-tooltip">
+    <div class="gt-name" id="gt-name"></div>
+    <div class="gt-sub" id="gt-sub"></div>
+    <div class="gt-hint">点击查看详情</div>
+  </div>
+</div>
+
+<!-- Galaxy detail overlay -->
+<div id="galaxy-detail">
+  <div class="detail-overlay" id="detail-overlay"></div>
+  <button class="detail-close" id="detail-close">✕</button>
+  <div class="detail-content">
+    <div class="detail-body">
+      <canvas id="galaxy-canvas" width="640" height="640"></canvas>
+    </div>
+    <div class="detail-title" id="detail-title"></div>
+    <div class="detail-sub" id="detail-sub"></div>
+    <p class="detail-desc" id="detail-desc"></p>
+    <div class="detail-calendar" id="detail-calendar"></div>
+    <button class="btn-detail-enter" id="detail-enter-btn">进 入 编 年 史</button>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+/* ============================================================
+   World-specific theme overrides
+   ============================================================ */
+
+/* Arknights — warm amber/gold theme */
+.world-arknights {
+  --theme-color: #d4923a;
+  --theme-rgb: 212, 146, 58;
+  --theme-border: rgba(212, 146, 58, 0.3);
+  --cover-bg:
+    radial-gradient(ellipse at 50% 80%, rgba(212,146,58,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #0d0d1a 0%, #0a0a18 100%);
+}
+
+.world-arknights .tl-cover {
+  background: var(--cover-bg);
+}
+
+/* WH40K — cold crimson/red theme */
+.world-wh40k {
+  --theme-color: #c85050;
+  --theme-rgb: 200, 80, 80;
+  --theme-border: rgba(200, 50, 50, 0.3);
+  --cover-bg:
+    radial-gradient(ellipse at 50% 80%, rgba(168,48,48,0.1) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0810 0%, #0a0e18 100%);
+}
+
+.world-wh40k .nav-worlds-trigger {
+  color: #c85050;
+  border-color: rgba(200, 50, 50, 0.3);
+}
+.world-wh40k .nav-worlds-trigger:hover {
+  border-color: #c85050;
+  box-shadow: 0 0 12px rgba(200, 80, 80, 0.2);
+  text-shadow: 0 0 8px rgba(200, 80, 80, 0.3);
+  color: var(--gold);
+}
+.world-wh40k .nav-worlds-item.active {
+  color: #c85050;
+}
+.world-wh40k .nav-worlds-item.active::before {
+  color: #c85050;
+}
+
+.world-wh40k .tl-cover {
+  background: var(--cover-bg);
+}
+
+.world-wh40k .tl-branch-tab.active {
+  border-bottom-color: #c85050;
+}
+.world-wh40k .tl-branch-tab.active::before {
+  color: #c85050;
+}
+
+.world-wh40k .event-card .event-date {
+  color: #c85050;
+}
+.world-wh40k .event-card .event-date .dot {
+  background: #c85050;
+}
+
+.world-wh40k .axis-node.crystal,
+.world-wh40k .axis-node.diverge {
+  border-color: #c85050;
+}
+
+.world-wh40k .tl-sub-tab.active {
+  color: #c85050;
+  border-bottom-color: #c85050;
+}
+
+.world-wh40k .event-diverge-badge {
+  color: #c85050;
+  border-top-color: rgba(200, 80, 80, 0.2);
+}
+
+.world-wh40k .era-nav-dot.current .dot {
+  background: #c85050;
+  box-shadow: 0 0 12px rgba(200, 80, 80, 0.6);
+}
+
+.world-wh40k .tl-event.if-ending .event-card {
+  border-color: rgba(200, 80, 80, 0.3);
+}
+.world-wh40k .tl-event.if-ending .event-card .event-date {
+  color: #c85050;
+}
+
+.world-wh40k .btn-detail-enter {
+  border-color: rgba(200, 80, 80, 0.4);
+  color: #c85050;
+}

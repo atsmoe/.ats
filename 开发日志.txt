@@ -1,0 +1,224 @@
+2026-6-12 18:19:13
+背景系统重构
+
+  改前是全局硬编码的一团 JS，改后拆成了三层：
+
+  1. BG_PRESETS — 背景预设注册表
+  2. ParticleBackground 类 — Canvas 粒子引擎
+  3. BackgroundManager — 背景管理器
+
+================================================================================
+2026-6-12 
+================================================================================
+
+## 1. 星空背景定型
+
+- 从金铜粒子网络 → DSP（戴森球计划）冷色银河风格
+- 三轮迭代：基础粒子 → 星团+星云+星光衍射 → 全屏铺满+边缘虚化
+- 配色：冷色深空底（#060a14）+ 金铜 UI 暖色对比
+- 关键技术：星团分布（Gaussian falloff）、螺旋臂结构、银心辉光、星云预渲染、边缘 fade
+
+## 2. 背景系统插件化
+
+- 文件：prototype/index.html（主页面）、prototype/virtual-timeline.js（虚拟滚动）
+- 架构：BG_PRESETS 注册表 + ParticleBackground 类 + BackgroundManager 管理器
+- 星图首页 → 'star-map' 预设（DSP 冷色银河）
+- 进入明日方舟 → 'arknights' 预设（琥珀色星云）
+- 已预留 video/image 背景插槽，未来可直接接入
+
+## 3. 数据结构与 JSON
+
+- 数据源：arknights/ 目录下的 TXT 文件
+- 输出：data/arknights.json（102 事件，14 个时代）
+- 7 条世界线：1 条主线 + 6 条 IF 线（集成战略 + 角色异格 + 档案联动）
+- IF 线以 "endings" 数组存储，每条 IF 线包含多个结局（水月 4 结局、傀影 5 结局等）
+- JSON 嵌入 HTML（212KB），支持 file:// 协议离线打开，HTTP 模式下优先 fetch
+
+## 4. 时代组织结构（1.1 版，14 个时代）
+
+  纪元前（6）：前文明 → 神民与先民战争
+  早期历史（4）：乌萨斯崛起 → 第十次乌卡战争
+  近期关键事件（8）：龙门冲突 → 蓝卡坞凶杀案
+  战地秘闻·1095-1097（4）
+  1096年（5）：整合运动爆发
+  1097年（24）：罗德岛全球行动
+  如我所见·1097-1098（4）
+  1098年（12）：维多利亚动荡
+  1099年（11）：全球变局
+  1100年（6）：危机升级
+  未尽篇章·1100-1101（6）
+  1101年（4）：主线15章
+  1102年（7）：终局渐显
+  遥远的未来（1）：终末地
+
+  排序规则：JSON 文件内保持手动顺序，getBranchEvents 不再 sort()，信任 JSON 顺序。
+  前文明时期强制排在纪元前首位。
+
+## 5. 虚拟滚动
+
+- 文件：prototype/virtual-timeline.js
+- 主线（102事件）使用虚拟滚动：仅渲染视口 ±2 缓冲条目，恒定 ~15 个 DOM 节点
+- IF 线（短，<10 事件）使用直接 DOM 渲染（renderEventsDirect），避免虚拟滚动复杂度
+- 高度预估：卡片内容区 384px 宽，26 字符/行，24px 行高，margin 24px
+- 首帧后 rAF 触发 remeasure，用 getBoundingClientRect 校正实际高度
+
+## 6. UI 细节
+
+- 导航栏：「群星之间」品牌 + 明日方舟快捷按钮（琥珀色胶囊）+ 星图 + 关于
+- 左侧时代导航：竖直点列，hover 显示年份，当前高亮，仅主线出现
+- 右下角回到顶部按钮：滚动 400px 后浮现
+- 时代标题：padding-top 80px + z-index 2（防止被事件卡片压住）
+- 标题格式：【纪元前】/【泰拉历 1096年】/【遥远的未来】/【战地秘闻】等
+- eraLabel 函数自动去除标题中的括号注释（如 "（约1077-1095）"）
+
+## 7. 日期解析
+
+- dateSortVal 支持格式：纪元前（负数）、???-纪元前XXXX、约纪元前XXXX、约XXXX、XXXX.XX.XX、~+XXXX
+- dateDisplay 统一生成可读日期标签
+
+## 8. 已知问题与注意
+
+- HTTP 服务器需从项目根目录启动：python -m http.server 9000
+- 文件协议（file://）下嵌入数据自动接管，无需服务器
+- 虚拟滚动仅在主线（branch === 'mainline'）启用，IF 分支走直接渲染
+- 时代标题高度预估 140px，内联 padding-top 80px，两者需同步修改
+
+## 9. 文件结构
+
+  D:\my_website\
+  ├── prototype/
+  │   ├── index.html          # 主页面（212KB，含嵌入 JSON + CSS + JS）
+  │   └── virtual-timeline.js # 虚拟滚动 + 直接渲染 + 导航 + 回到顶部
+  ├── data/
+  │   └── arknights.json      # 完整数据（102 事件 / 7 分支 / 14 时代）
+  ├── arknights/              # 原始 TXT 数据文件
+  │   ├── 时间线整理1.1.txt    # 主世界线（最新版，114KB）
+  │   └── IF线_*.txt          # 6 条 IF 线
+  └── PRD.md                  # 产品需求文档
+
+================================================================================
+2026-6-13 — SPA → 多页静态网站重构
+================================================================================
+
+## 1. 背景与动机
+
+四个动机全部成立：
+- URL 即内容：每个世界有独立可分享的 URL
+- 内容独立维护：不同世界的维护者各自编辑，互不干扰
+- 加载性能：不要一次加载所有世界的数据
+- 未来扩展：后续可能加 5-10 个世界
+
+## 2. 关键决策（16 项）
+
+| # | 决策 | 结论 |
+|---|------|------|
+| 1 | 静态生成器 | 11ty（Eleventy）|
+| 2 | 构建输出目录 | dist/，源文件在 src/ |
+| 3 | JS 模块化 | ES modules 开发 + esbuild --splitting 打包 IIFE |
+| 4 | 数据加载 | 混合：构建时内联 JSON（file:// 兼容），开发时 fetch 热加载 |
+| 5 | CSS | 保持原生 CSS，只拆分不重写 |
+| 6 | 导航高亮 | 11ty 模板渲染时按当前页加 .active 类，零 JS |
+| 7 | 页脚 | 版权 + 世界入口链接 + 关于链接 |
+| 8 | 跨世界引用 | 传送门过渡：出发侧扩散光晕 → 跳转 → 到达侧反向收束 |
+| 9 | 关于页 | 项目介绍 + 使用指南 |
+| 10 | 模板语言 | Nunjucks（.njk），继承模式，UI 片段用 macro 封装 |
+| 11 | CSS 加载 | 开发用 <link> 分文件，生产用 shortcode 拼接内联到 <style> |
+| 12 | JS 打包 | 单一入口 + esbuild --splitting 自动按需分 chunk |
+| 13 | 路径策略 | 全部相对路径（./js/bundle.js），兼容 file:// 和 GitHub Pages |
+| 14 | 数据文件位置 | src/_data/，addPassthroughCopy 暴露为静态文件用于 fetch |
+| 15 | 原始 TXT 文件 | 保持根目录 arknights/ 不动 |
+| 16 | .gitignore | node_modules/、dist/、.eleventy.cache/、.DS_Store、Thumbs.db、.vscode/、.idea/、.env |
+
+## 3. 新项目结构
+
+my_website/
+  src/
+    _data/
+      arknights.json              # 11ty 全局数据（自动加载）
+      wh40k.json
+      site.js                     # 数据聚合（解决 wh40k 不能作为 Nunjucks 变量名的问题）
+    _includes/
+      base.njk                    # 基础布局：<html>, <head>, nav, footer, portal-arrival div
+      nav.njk                     # 导航栏模板（active 类由模板变量控制）
+      footer.njk                  # 页脚模板（版权 + 世界入口 + 关于）
+    index.njk                     # 星图首页（permalink: ./index.html）
+    arknights.njk                 # 明日方舟时间线页（permalink: ./arknights.html）
+    wh40k.njk                     # 战锤40K时间线页（permalink: ./wh40k.html）
+    about.njk                     # 关于页（permalink: ./about.html）
+    css/
+      base.css                    # :root 变量 + reset + 排版 + 暗角 + 页脚 + prefers-reduced-motion
+      nav.css                     # 顶部导航栏
+      star-map.css                # 星图 + 星系详情覆盖层（仅 index 加载）
+      timeline.css                # 时间线 + 事件卡片 + 轴线 + 时代导航 + 回到顶部 + 滚动提示
+      ref-panel.css               # 引用面板 + 虫洞覆盖层 + portal-arrival 覆盖层
+      worlds.css                  # .world-arknights / .world-wh40k 主题变量
+      responsive.css              # 所有 @media 查询
+    js/
+      lib/
+        virtual-timeline.js       # 虚拟滚动引擎（保持全局对象，不打包进 bundle）
+      modules/
+        bg-presets.js             # export BG_PRESETS（纯数据）
+        particle-background.js    # export class ParticleBackground
+        background-manager.js     # export BackgroundManager（init 模式，不再 hardcode 元素 ID）
+        galaxies.js               # export GALAXIES + galaxyAnim
+        worlds.js                 # export WORLDS 注册表
+        star-map.js               # initStarMap()：星系悬停检测、详情覆盖层、预览渲染、"进入编年史"改为链接跳转
+        data-loader.js            # export loadTimelineData（内联优先 + fetch 回退）、findEventById、dateSortVal、eraLabel
+        timeline-ui.js            # export getBranchEvents、populateBranchTabs、renderEvents、时代导航、回到顶部、滚动监听、3D 倾斜、分支标签切换
+        ref-panel.js              # export openRefPanel/closeRefPanel + 虫洞动画 + 跳转到目标世界
+        portal-transition.js      # export initPortalArrival（到达侧反向收束）+ playPortalOutgoing（出发侧扩散）
+        nav.js                    # export initNav（入场动画）
+        main.js                   # DOMContentLoaded 入口，按 data-page 分发初始化
+  dist/                           # 构建输出（11ty + esbuild 产物）
+  .eleventy.js                    # 11ty 配置（CSS shortcode、数据 filter、passthrough copy）
+  build.js                        # npm run build 构建脚本
+  package.json
+  .gitignore
+
+## 4. 模板架构
+
+- 基础布局 base.njk 定义 <html> 骨架、#portal-arrival 内联遮罩（<body> 第一个元素）、导航、页脚、背景 canvas、虫洞 canvas、JS 引用
+- 11ty front matter 声明 permalink、title、bodyClass、pageType、worldId、cssFiles
+- CSS 加载：{% if eleventy.env.runMode === "serve" %} 用 linkCSS shortcode 输出 <link> 标签，否则用 inlineCSS shortcode 内联
+- 数据内联：base.njk 中根据 worldId 条件调用 worldDataScript filter，输出 <script>window.__WORLD_DATA__ = {...};</script>
+- 导航高亮：nav.njk 中通过 {% if worldId === 'arknights' %} 等判断加 .active 类
+
+## 5. JS 模块化细节
+
+- 源码使用 ES modules（import/export）
+- esbuild 打包为 IIFE 格式 dist/js/bundle.js（62KB），virtual-timeline.js 单独复制
+- BackgroundManager 从 hardcode getElementById 改为 init(canvasId, videoId, imageId) 模式
+- ParticleBackground 的星系绘制中，detailGalaxy/hoveredGalaxy 通过 window.__detailGalaxy/__hoveredGalaxy 与 star-map.js 通信
+- main.js 入口根据 body.dataset.page 动态 import 对应模块（star-map / world / about 三条路径）
+- 跨世界引用：.cross-world-link 的全局 click 委托 → playPortalOutgoing → 虫洞动画 → window.location.href 跳转
+- 到达侧：initPortalArrival 检测 location.hash → 临时关闭虚拟滚动 → 全量渲染 → 定位目标 → 反向收束动画 → dismissPortal → 恢复虚拟滚动
+
+## 6. 构建与命令
+
+- npm run dev：启动 11ty 开发服务器（localhost:9000），支持热更新
+- npm run build：11ty 构建 HTML + esbuild 打包 JS + 复制 CSS → dist/
+- file:// 协议：dist/ 下 HTML 直接双击打开（JSON 数据已内联，无需 fetch）
+
+## 7. 传送门过渡（Portal Transition）
+
+出发侧：
+  1. 用户点击 .cross-world-link（e.preventDefault）
+  2. 以点击坐标为圆心，Canvas 涡旋粒子向外螺旋扩散
+  3. 光晕完全不透明时 → window.location.href = targetUrl
+
+到达侧：
+  1. #portal-arrival 内联 div 从 HTML 解析第一刻遮住全屏（#060a14 深空底色）
+  2. 读取 window.__WORLD_DATA__（内联数据，瞬时可用）
+  3. 解析 location.hash 得到目标事件 ID
+  4. 临时关闭虚拟滚动 → 全量渲染所有节点
+  5. scrollTo + requestAnimationFrame 等待目标节点
+  6. 播放反向收束动画（Canvas 粒子 + 光晕收缩到目标位置，~400ms）
+  7. 移除遮罩，恢复虚拟滚动
+
+## 8. 已知注意事项
+
+- wh40k.json 文件名以数字开头，不能作为 Nunjucks 变量名 → site.js 聚合数据，通过 site.worlds.wh40k 访问
+- 11ty 3.1.6 默认输出目录结构（/about/index.html），需通过 permalink front matter 覆盖为平铺文件名
+- 旧根目录文件（原始 index.html、virtual-timeline.js、data/、开发日志.txt、arknights/ TXT）保留不动，确认新站点正常后可自行清理
+- 开发模式 CSS 通过 <link> 加载，生产模式通过 inlineCSS shortcode 内联到 <style>
+- 开发模式数据通过 fetch 加载，生产模式通过 window.__WORLD_DATA__ 内联

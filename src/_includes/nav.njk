@@ -1,0 +1,18 @@
+<nav id="nav">
+  <div class="nav-left">
+    <a href="./index.html" class="nav-brand{% if pageType === 'star-map' %} active{% endif %}">群 星 之 间</a>
+
+    <div class="nav-worlds-dropdown">
+      <button class="nav-worlds-trigger">世界 <span class="arrow">▾</span></button>
+      <div class="nav-worlds-menu">
+        {% for world in site.worldList %}
+        <a href="./{{ world.page }}" class="nav-worlds-item{% if worldId === world.id %} active{% endif %}">{{ world.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-links">
+    <a href="./about.html" class="{% if pageType === 'about' %}active{% endif %}">关于</a>
+  </div>
+</nav>

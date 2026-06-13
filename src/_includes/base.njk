@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} — 群星之间 · 编年史</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
+  <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  {% if eleventy.env.runMode === "serve" %}
+    {% linkCSS cssFiles %}
+  {% else %}
+    {% inlineCSS cssFiles %}
+  {% endif %}
+</head>
+<body class="{{ bodyClass }}" data-page="{{ pageType }}" {% if worldId %}data-world="{{ worldId }}"{% endif %}>
+
+  <!-- CRITICAL: portal arrival overlay — first element in body, not in any block -->
+  <div id="portal-arrival" style="position:fixed;inset:0;z-index:9999;background:#060a14;opacity:1;pointer-events:all;"></div>
+
+  {% include "nav.njk" %}
+
+  {% block content %}{% endblock %}
+
+  {% include "footer.njk" %}
+
+  <!-- Background layers -->
+  <canvas id="bg-canvas" style="position:fixed;inset:0;z-index:0;"></canvas>
+  <video id="bg-video" loop muted playsinline style="display:none;position:fixed;inset:0;z-index:0;object-fit:cover;"></video>
+  <img id="bg-image" alt="" style="display:none;position:fixed;inset:0;z-index:0;object-fit:cover;">
+
+  <!-- Wormhole transition canvas -->
+  <canvas id="wormhole" style="position:fixed;inset:0;z-index:300;pointer-events:none;display:none;"></canvas>
+
+  <!-- Inline world data -->
+  {% if worldId === 'arknights' and site.worlds.arknights %}
+  {{ site.worlds.arknights | worldDataScript | safe }}
+  {% elif worldId === 'wh40k' and site.worlds.wh40k %}
+  {{ site.worlds.wh40k | worldDataScript | safe }}
+  {% endif %}
+
+  <!-- JS: bundle -->
+  <script src="./js/bundle.js"></script>
+
+  {% block extraScripts %}{% endblock %}
+</body>
+</html>

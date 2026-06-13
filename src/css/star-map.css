@@ -1,0 +1,135 @@
+/* ============================================================
+   Star Map View — Canvas-drawn galaxies with hover/detail
+   ============================================================ */
+#star-map {
+  position: relative; z-index: 10;
+  min-height: 100vh;
+  transition: opacity 0.6s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#star-map.hidden {
+  opacity: 0; transform: scale(1.1); pointer-events: none;
+}
+
+/* Galaxy hover tooltip */
+.galaxy-tooltip {
+  position: fixed; z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  background: rgba(10,10,20,0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201,160,80,0.2);
+  border-radius: 6px;
+  padding: 14px 20px;
+  max-width: 220px;
+}
+.galaxy-tooltip.visible {
+  opacity: 1; transform: translateY(0);
+}
+.galaxy-tooltip .gt-name {
+  font-family: var(--font-serif);
+  font-size: 18px; font-weight: 700;
+  letter-spacing: 4px; color: var(--text);
+}
+.galaxy-tooltip .gt-sub {
+  font-size: 11px; letter-spacing: 2px;
+  color: var(--text-muted); margin-top: 4px;
+}
+.galaxy-tooltip .gt-hint {
+  font-size: 10px; letter-spacing: 1px;
+  color: rgba(201,160,80,0.4); margin-top: 8px;
+}
+
+/* Galaxy detail overlay */
+#galaxy-detail {
+  position: fixed; inset: 0; z-index: 80;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+#galaxy-detail.active { opacity: 1; pointer-events: auto; }
+
+.detail-overlay {
+  position: absolute; inset: 0;
+  background: rgba(4,4,12,0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.detail-content {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.detail-body {
+  position: relative;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(20,18,10,0.95), transparent);
+  display: flex; align-items: center; justify-content: center;
+}
+.detail-body canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+}
+
+.detail-title {
+  font-family: var(--font-serif);
+  font-size: 36px; font-weight: 900;
+  letter-spacing: 10px; color: var(--text);
+}
+.detail-sub {
+  font-size: 13px; letter-spacing: 4px;
+  color: var(--text-muted);
+}
+.detail-desc {
+  font-size: 13px; line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 400px;
+}
+.detail-calendar {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 16px;
+  border: 1px solid rgba(201,160,80,0.3);
+  font-size: 11px; letter-spacing: 3px;
+  color: var(--gold-dim);
+}
+
+.btn-detail-enter {
+  margin-top: 12px;
+  padding: 14px 52px;
+  background: transparent;
+  border: 1px solid rgba(201,160,80,0.4);
+  color: var(--gold);
+  font-family: var(--font-serif);
+  font-size: 15px; letter-spacing: 6px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.btn-detail-enter:hover {
+  background: rgba(201,160,80,0.1);
+  border-color: var(--gold);
+  box-shadow: 0 0 30px rgba(201,160,80,0.2);
+  text-shadow: 0 0 20px rgba(201,160,80,0.4);
+}
+
+.detail-close {
+  position: absolute; top: 32px; right: 32px;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(201,160,80,0.3); border-radius: 50%;
+  background: transparent; color: var(--gold-dim);
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+  z-index: 81;
+}
+.detail-close:hover {
+  border-color: var(--gold); color: var(--gold);
+  box-shadow: 0 0 16px rgba(201,160,80,0.2);
+}
