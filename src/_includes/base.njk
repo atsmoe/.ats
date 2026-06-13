@@ -40,6 +40,8 @@
   {{ site.worlds.arknights | worldDataScript | safe }}
   {% elif worldId === 'wh40k' and site.worlds.wh40k %}
   {{ site.worlds.wh40k | worldDataScript | safe }}
+  {% elif worldId === 'ff14' and site.worlds.ff14 %}
+  {{ site.worlds.ff14 | worldDataScript | safe }}
   {% endif %}
 
   <!-- JS: bundle -->

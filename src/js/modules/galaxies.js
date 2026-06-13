@@ -31,6 +31,20 @@ export const GALAXIES = {
     floatAmp: 10, floatPeriod: 28, floatPhase: 2.1,
     hoverScale: 1.18, hitRadius: 65, detailScale: 2.5,
     warpRift: true,
+  },
+  ff14: {
+    id: 'ff14',
+    name: '艾欧泽亚',
+    subtitle: 'Final Fantasy XIV · 第七星历',
+    description: '十四个世界同归一源。从万物的分裂到光暗的终末之战，水晶的意志指引着冒险者穿越星海、横跨折射——在原初世界与碎片世界之间，《最终幻想XIV》的编年史铭刻着每一个灵魂的足迹。',
+    calendar: '伊 修 加 德 历',
+    worldId: 'ff14',
+    cx: 0.50, cy: 0.30,
+    coreRadius: 18, coreColor: [184, 196, 216],
+    armCount: 4, armStars: 320, armSpiral: 2.8, armMaxR: 130, armWidth: 35, warmBias: 0.45,
+    glowSize: 260, glowAlpha: 0.07,
+    floatAmp: 12, floatPeriod: 25, floatPhase: 1.0,
+    hoverScale: 1.18, hitRadius: 75, detailScale: 2.6,
   }
 };
 

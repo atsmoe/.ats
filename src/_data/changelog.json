@@ -1,0 +1,40 @@
+[
+  {
+    "version": "V2.1",
+    "date": "2026-06-13",
+    "color": "#b8c4d8",
+    "subtitle": "新增最终幻想XIV编年史 · 碎片世界分支架构",
+    "items": [
+      "新增<strong>最终幻想XIV</strong>编年史（艾欧泽亚 · 原初世界主线 + 第一世界 / 第十三世界碎片分支）",
+      "星图首页新增第三星系——<strong>艾欧泽亚</strong>（四臂螺旋 · 以太银白主题）",
+      "碎片世界采用方案 E 架构：原初主线 + 碎片分组标签页 + crossRefs 跨世界引用",
+      "新增<strong>更新日志</strong>独立页面",
+      "导航栏与页脚同步更新"
+    ]
+  },
+  {
+    "version": "V2.0",
+    "date": "2026-06-13",
+    "color": "#c85050",
+    "subtitle": "多页重构 · 战锤40K上线",
+    "items": [
+      "SPA → <strong>多页静态网站</strong>重构（11ty + Nunjucks + esbuild）",
+      "新增<strong>战锤40K</strong>编年史（帝国历 · 银河全史）",
+      "星图首页、传送门过渡、虫洞导航上线",
+      "虚拟滚动引擎、背景预设系统上线",
+      "GitHub Pages 自动部署"
+    ]
+  },
+  {
+    "version": "V1.0",
+    "date": "2026-06-12",
+    "color": "#d4923a",
+    "subtitle": "明日方舟编年史上线",
+    "items": [
+      "粒子星空背景（DSP 冷色银河风格）",
+      "<strong>明日方舟</strong>编年史时间线上线（102 事件 / 14 时代 / 7 世界线）",
+      "虚拟滚动、分支标签页、时代导航、事件卡片 3D 倾斜",
+      "背景系统插件化（BG_PRESETS + ParticleBackground + BackgroundManager）"
+    ]
+  }
+]

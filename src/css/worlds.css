@@ -92,3 +92,80 @@
   border-color: rgba(200, 80, 80, 0.4);
   color: #c85050;
 }
+
+/* FFXIV — aether silver/blue theme */
+.world-ff14 {
+  --theme-color: #b8c4d8;
+  --theme-rgb: 184, 196, 216;
+  --theme-border: rgba(184, 196, 216, 0.3);
+  --cover-bg:
+    radial-gradient(ellipse at 50% 80%, rgba(184,196,216,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0c18 0%, #080a14 100%);
+}
+
+.world-ff14 .tl-cover {
+  background: var(--cover-bg);
+}
+
+.world-ff14 .nav-worlds-trigger {
+  color: #b8c4d8;
+  border-color: rgba(184, 196, 216, 0.3);
+}
+.world-ff14 .nav-worlds-trigger:hover {
+  border-color: #b8c4d8;
+  box-shadow: 0 0 12px rgba(184, 196, 216, 0.2);
+  text-shadow: 0 0 8px rgba(184, 196, 216, 0.3);
+  color: var(--gold);
+}
+.world-ff14 .nav-worlds-item.active {
+  color: #b8c4d8;
+}
+.world-ff14 .nav-worlds-item.active::before {
+  color: #b8c4d8;
+}
+
+.world-ff14 .tl-branch-tab.active {
+  border-bottom-color: #b8c4d8;
+}
+.world-ff14 .tl-branch-tab.active::before {
+  color: #b8c4d8;
+}
+
+.world-ff14 .event-card .event-date {
+  color: #b8c4d8;
+}
+.world-ff14 .event-card .event-date .dot {
+  background: #b8c4d8;
+}
+
+.world-ff14 .axis-node.crystal,
+.world-ff14 .axis-node.diverge {
+  border-color: #b8c4d8;
+}
+
+.world-ff14 .tl-sub-tab.active {
+  color: #b8c4d8;
+  border-bottom-color: #b8c4d8;
+}
+
+.world-ff14 .event-diverge-badge {
+  color: #b8c4d8;
+  border-top-color: rgba(184, 196, 216, 0.2);
+}
+
+.world-ff14 .era-nav-dot.current .dot {
+  background: #b8c4d8;
+  box-shadow: 0 0 12px rgba(184, 196, 216, 0.6);
+}
+
+.world-ff14 .tl-event.if-ending .event-card {
+  border-color: rgba(184, 196, 216, 0.3);
+}
+.world-ff14 .tl-event.if-ending .event-card .event-date {
+  color: #b8c4d8;
+}
+
+.world-ff14 .btn-detail-enter {
+  border-color: rgba(184, 196, 216, 0.4);
+  color: #b8c4d8;
+}

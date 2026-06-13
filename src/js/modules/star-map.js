@@ -150,6 +150,10 @@ export function initStarMap() {
     setTimeout(() => {
       galaxyAnim.wh40k.targetScale = 1;
       galaxyAnim.wh40k.targetOpacity = 1;
+      setTimeout(() => {
+        galaxyAnim.ff14.targetScale = 1;
+        galaxyAnim.ff14.targetOpacity = 1;
+      }, 400);
     }, 400);
   }, 400);
 

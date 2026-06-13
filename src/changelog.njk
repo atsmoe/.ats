@@ -1,0 +1,30 @@
+---
+permalink: ./changelog.html
+title: 更新日志
+bodyClass: world-index
+pageType: about
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<div style="position:relative;z-index:20;max-width:640px;margin:120px auto 80px;padding:0 24px;">
+  <h1 style="font-family:var(--font-serif);font-size:28px;letter-spacing:6px;color:var(--gold);text-align:center;margin-bottom:40px;">更 新 日 志</h1>
+
+  {% for entry in changelog %}
+  <article style="margin-bottom:48px;">
+    <h2 style="font-family:var(--font-serif);font-size:18px;letter-spacing:3px;color:{{ entry.color }};margin-bottom:8px;">{{ entry.version }} — {{ entry.date }}</h2>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">{{ entry.subtitle }}</p>
+    <ul style="font-size:14px;line-height:2;color:var(--text-muted);padding-left:20px;">
+      {% for item in entry.items %}
+      <li>{{ item | safe }}</li>
+      {% endfor %}
+    </ul>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

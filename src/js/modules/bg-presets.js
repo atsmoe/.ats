@@ -42,4 +42,17 @@ export const BG_PRESETS = {
     coreGlow: { r: 200, g: 160, b: 80, alpha: 0.03, sizeRatio: 0.4 },
     baseBackground: '#060608',
   },
+  'ff14': {
+    type: 'particles',
+    description: 'FFXIV — ethereal aether blue/silver on deep indigo',
+    stars: 550,
+    nebulaCount: 6,
+    starColorMix: { cool: 0.60, neutral: 0.25, warm: 0.15 },
+    nebulaPalette: [
+      [140, 160, 210], [100, 140, 195], [180, 200, 225],
+      [80, 120, 185], [160, 185, 215], [120, 155, 205],
+    ],
+    coreGlow: { r: 184, g: 196, b: 216, alpha: 0.04, sizeRatio: 0.45 },
+    baseBackground: '#070810',
+  },
 };

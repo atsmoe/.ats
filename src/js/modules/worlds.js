@@ -17,4 +17,11 @@ export const WORLDS = {
     navLinkBorder: 'rgba(200,50,50,0.3)',
     pageName: 'wh40k.html',
   },
+  ff14: {
+    id: 'ff14',
+    bgPreset: 'ff14',
+    navLinkColor: '#b8c4d8',
+    navLinkBorder: 'rgba(184,196,216,0.3)',
+    pageName: 'ff14.html',
+  },
 };

@@ -13,10 +13,12 @@ module.exports = function () {
     worlds: {
       arknights: readJSON('arknights.json'),
       wh40k: readJSON('wh40k.json'),
+      ff14: readJSON('ff14.json'),
     },
     worldList: [
       { id: 'arknights', name: '明日方舟', page: 'arknights.html' },
       { id: 'wh40k', name: '战锤40K', page: 'wh40k.html' },
+      { id: 'ff14', name: '最终幻想XIV', page: 'ff14.html' },
     ],
   };
 };
