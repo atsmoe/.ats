@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }} — 群星之间 · 编年史</title>
+  <title>{{ title }} — 群之间 · 编年史</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
@@ -34,15 +34,6 @@
 
   <!-- Wormhole transition canvas -->
   <canvas id="wormhole" style="position:fixed;inset:0;z-index:300;pointer-events:none;display:none;"></canvas>
-
-  <!-- Inline world data -->
-  {% if worldId === 'arknights' and site.worlds.arknights %}
-  {{ site.worlds.arknights | worldDataScript | safe }}
-  {% elif worldId === 'wh40k' and site.worlds.wh40k %}
-  {{ site.worlds.wh40k | worldDataScript | safe }}
-  {% elif worldId === 'ff14' and site.worlds.ff14 %}
-  {{ site.worlds.ff14 | worldDataScript | safe }}
-  {% endif %}
 
   <!-- JS: bundle -->
   <script src="./js/bundle.js"></script>
