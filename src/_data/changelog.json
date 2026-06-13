@@ -1,5 +1,21 @@
 [
   {
+    "version": "V3.0",
+    "date": "2026-06-13",
+    "color": "#c9a050",
+    "subtitle": "架构 V3 升级 · 数据校验管线 · 3D 星图 · 项目文档化",
+    "items": [
+      "<strong>数据校验管线</strong>：新增 `src/validators/validate-data.js`——JSON schema 校验 + crossRef 存在性检查 + eventId 全局唯一性检查 + 扁平化 + `event-index.json` 生成",
+      "<strong>数据访问层</strong>：新增 `data-loader.js`（fetch + Map 缓存）+ `data-access.js`（4 个 async 函数，UI 永不直接访问数据结构）",
+      "<strong>3D 星图首页</strong>：新增 `star-map-3d.js`——Three.js 银河场景，OrbitControls 漫游，~165K 粒子，HTML marker 投影 3D→2D",
+      "<strong>动画 Token 系统</strong>：新增 `anim-tokens.js`——统一管理 duration/easing 常量",
+      "<strong>项目文档化</strong>：新增 `docs/` 目录（ARCHITECTURE.md / GUIDELINES.md / PRD.md）",
+      "<strong>日志规范</strong>：开发日志和更新日志移入 `docs/`，变更日志转换脚本适配新路径",
+      "<strong>清理</strong>：移除 `materials/` 原始素材目录、`LICENSE` 文件",
+      "<strong>修复</strong>：修复 `.gitignore` 未覆盖日志文件的问题，修复 `convert-changelog.js` 路径引用"
+    ]
+  },
+  {
     "version": "V1.2",
     "date": "2026-06-13",
     "color": "#b8c4d8",
