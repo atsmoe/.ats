@@ -156,6 +156,14 @@ export function renderEvents(branch) {
     }
     VirtualTimeline.container = tlContainer;
     VirtualTimeline.clear();
+
+    // Ensure axis line exists (not cleared by VirtualTimeline._renderRange)
+    if (!tlContainer.querySelector('.tl-axis')) {
+      const axisEl = document.createElement('div');
+      axisEl.className = 'tl-axis';
+      tlContainer.appendChild(axisEl);
+    }
+
     VirtualTimeline.load(eraGroups);
     VirtualTimeline.update();
 
