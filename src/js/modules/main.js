@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     BackgroundManager.init('bg-canvas', 'bg-video', 'bg-image');
 
     const { loadWorldData } = await import('./data-loader.js');
-    const { populateBranchTabs, renderEvents, updateTimelineCover, setData: setTimelineData } = await import('./timeline-ui.js');
+    const { populateBranchTabs, renderEvents, updateTimelineCover, setData: setTimelineData, initEventModal } = await import('./timeline-ui.js');
     const { setData: setPortalData, initPortalArrival } = await import('./portal-transition.js');
 
     const { WORLDS } = await import('./worlds.js');
@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     initPortalArrival();
+    initEventModal();
 
   } else if (pageType === 'about') {
     dismissPortalOverlay();

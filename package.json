@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "validate": "node src/validators/validate-data.js",
-    "dev": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && node src/validators/validate-data.js && eleventy --serve --port 9000",
+    "dev": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && eleventy --serve --port 9000",
     "build": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js",
     "changelog": "node convert-changelog.js"
   },

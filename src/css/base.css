@@ -98,6 +98,20 @@ footer {
   transition: color var(--transition-normal);
 }
 .footer-links a:hover { color: var(--gold); }
+.footer-credit {
+  font-size: 11px; line-height: 1.6;
+  color: rgba(201,160,80,0.25);
+  letter-spacing: 1px;
+  margin-top: 14px;
+  max-width: 520px; text-align: center;
+}
+.footer-credit a {
+  color: rgba(201,160,80,0.4);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.footer-credit a:hover { color: var(--gold-dim); }
+
 .footer-copy {
   font-size: 10px; letter-spacing: 1px;
   color: rgba(201,160,80,0.2);

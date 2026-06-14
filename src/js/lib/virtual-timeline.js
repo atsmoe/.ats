@@ -42,15 +42,12 @@ const VirtualTimeline = {
         // Meta line (location | characters): 14px + 10px gap
         if (evt.location || (evt.characters && evt.characters.length > 0)) h += 24;
 
-        // Description text
-        const desc = evt.description || '';
-        const descLines = Math.ceil(desc.length / CHARS_PER_LINE);
-        h += descLines * LINE_HEIGHT;
+        // Detail content (description/image/sources) only in modal, not on card
 
         // Conditions block
         if (evt.conditions) {
           const condLines = Math.ceil(evt.conditions.length / (CHARS_PER_LINE + 2));
-          h += condLines * 18 + 28; // padding + text
+          h += condLines * 18 + 28;
         }
 
         // Tags row
@@ -158,11 +155,13 @@ const VirtualTimeline = {
     const classes = ['tl-event', side];
     if (evt.isConcurrent) classes.push('concurrent');
     if (evt.isKeyEvent) classes.push('key-event');
+    if (evt.isLargeEvent) classes.push('large-event');
     if (evt.isEnding) classes.push('if-ending');
     classes.push('visible'); // always visible when rendered
 
     const wrapper = document.createElement('div');
     wrapper.className = classes.join(' ');
+    wrapper.id = evt.id || '';
 
     const card = document.createElement('div');
     card.className = 'event-card';
@@ -190,20 +189,6 @@ const VirtualTimeline = {
       }
       metaEl.textContent = parts.join('  |  ');
       card.appendChild(metaEl);
-    }
-
-    // Description (truncated for non-visible cards)
-    const descEl = document.createElement('div');
-    descEl.className = 'event-desc';
-    descEl.textContent = evt.description || '';
-    card.appendChild(descEl);
-
-    // Conditions
-    if (evt.conditions) {
-      const condEl = document.createElement('div');
-      condEl.className = 'event-conditions';
-      condEl.innerHTML = '<span class="cond-icon">◆</span> ' + evt.conditions;
-      card.appendChild(condEl);
     }
 
     // Tags
@@ -462,6 +447,7 @@ function renderEventsDirect(eraGroups, branch) {
       const side = idx % 2 === 0 ? 'left' : 'right';
       const w = document.createElement('div');
       w.className = 'tl-event ' + side + (evt.isEnding ? ' if-ending' : '') + ' visible';
+      w.id = evt.id || '';
       w.style.opacity = '1';
       w.style.transform = 'translateY(0)';
 
@@ -476,7 +462,6 @@ function renderEventsDirect(eraGroups, branch) {
         if (evt.characters && evt.characters.length) parts.push(evt.characters.slice(0, 4).join(' · '));
         html += '<div class="event-meta">' + parts.join('  |  ') + '</div>';
       }
-      html += '<div class="event-desc">' + (evt.description || '') + '</div>';
       if (evt.conditions) {
         html += '<div class="event-conditions"><span class="cond-icon">◆</span> ' + evt.conditions + '</div>';
       }

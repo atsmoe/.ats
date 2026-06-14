@@ -220,20 +220,122 @@
   margin-bottom: 10px;
 }
 
-.event-card .event-desc {
-  font-size: 14px; line-height: 1.7;
-  color: var(--text-muted);
+/* Large event visual distinction */
+.tl-event.large-event .event-card {
+  border-left: 2px solid rgba(212,146,58,0.2);
 }
 
-.event-card .event-img {
+/* ============================================================
+   Event Detail Modal
+   z-index: 90 (overlay tier 80-100 per ARCHITECTURE.md)
+   ============================================================ */
+.event-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: modal-in var(--transition-normal) forwards;
+}
+@keyframes modal-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Mobile fallback for backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+  .event-modal-overlay {
+    background: rgba(6, 10, 20, 0.92);
+  }
+}
+
+.event-modal-card {
+  position: relative;
+  width: min(640px, 90vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 40px 36px 36px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  animation: modal-card-in var(--transition-normal) forwards;
+}
+@keyframes modal-card-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.event-modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.event-modal-close:hover {
+  color: var(--text);
+  border-color: var(--gold-dim);
+}
+
+.event-modal-date {
+  font-size: 12px; color: var(--ark-amber);
+  letter-spacing: 3px; margin-bottom: 8px;
+}
+.event-modal-title {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 700;
+  color: var(--text);
+  letter-spacing: 2px; margin-bottom: 10px;
+}
+.event-modal-meta {
+  font-size: 12px; color: rgba(201,160,80,0.35);
+  margin-bottom: 18px; letter-spacing: 1px;
+}
+.event-modal-desc {
+  font-size: 14px; line-height: 1.85;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+.event-modal-img {
   width: 100%; height: 160px;
-  margin-top: 14px;
-  border-radius: 4px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(135deg, rgba(212,146,58,0.08), rgba(74,85,104,0.08));
   border: 1px solid rgba(201,160,80,0.1);
   display: flex; align-items: center; justify-content: center;
   color: rgba(201,160,80,0.3);
   font-size: 12px; letter-spacing: 2px;
+}
+.event-modal-sources {
+  padding-top: 14px;
+  border-top: 1px solid rgba(201,160,80,0.08);
+}
+.event-modal-sources .event-source-item {
+  font-size: 12px; line-height: 1.8;
+  color: var(--text-muted);
+}
+.event-modal-sources .source-label {
+  color: rgba(201,160,80,0.5);
+}
+.event-modal-source-link {
+  color: var(--ark-amber);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.event-modal-source-link:hover {
+  color: #e8a850;
+  text-decoration: underline;
 }
 
 .event-card .event-ref {

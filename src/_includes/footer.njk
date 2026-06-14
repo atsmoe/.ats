@@ -2,12 +2,14 @@
   <div class="footer-brand">群 星 之 间</div>
   <div class="footer-links">
     <a href="./index.html">星图首页</a>
-    <a href="./arknights.html">明日方舟</a>
-    <a href="./wh40k.html">战锤40K</a>
-    <a href="./ff14.html">最终幻想XIV</a>
     <a href="./changelog.html">更新日志</a>
     <a href="./about.html">关于</a>
   </div>
+  {% if worldId === 'arknights' %}
+  <div class="footer-credit">
+    本世界线事件数据采集自 <a href="https://prts.wiki/" target="_blank" rel="noopener">PRTS Wiki</a>——感谢 PRTS 贡献者多年来的整理与维护，没有他们的细致工作就不会有这份时间线。
+  </div>
+  {% endif %}
   <div class="footer-copy">
     群星之间 · 编年史 &copy; 2026 &mdash; 非官方同人编年史项目，内容版权归原作品所有
   </div>

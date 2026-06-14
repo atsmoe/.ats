@@ -232,6 +232,10 @@ function buildEventCard(evt, idx) {
   el.className = 'tl-event ' + (idx % 2 === 0 ? 'left' : 'right');
   el.id = evt.id || '';
 
+  // Mark large events
+  if (evt.isLargeEvent) el.classList.add('large-event');
+  if (evt.isKeyEvent) el.classList.add('key-event');
+
   let cardHTML = '<div class="event-card">';
 
   // Date
@@ -244,10 +248,10 @@ function buildEventCard(evt, idx) {
     cardHTML += '<div class="event-title">' + evt.title + '</div>';
   }
 
-  // Meta
+  // Meta (characters + location)
   if (evt.location || (evt.characters && evt.characters.length > 0)) {
     cardHTML += '<div class="event-meta">';
-    if (evt.location) cardHTML += evt.location;
+    if (evt.location) cardHTML += '<span class="meta-location">' + evt.location + '</span>';
     if (evt.characters && evt.characters.length > 0) {
       if (evt.location) cardHTML += ' | ';
       cardHTML += evt.characters.join('、');
@@ -255,14 +259,9 @@ function buildEventCard(evt, idx) {
     cardHTML += '</div>';
   }
 
-  // Description
-  if (evt.description) {
-    cardHTML += '<div class="event-desc">' + evt.description + '</div>';
-  }
-
-  // Conditions
+  // Conditions (for IF endings)
   if (evt.conditions) {
-    cardHTML += '<div class="event-conditions"><span class="cond-icon">◆</span>' + evt.conditions + '</div>';
+    cardHTML += '<div class="event-conditions"><span class="cond-icon"></span>' + evt.conditions + '</div>';
   }
 
   // Tags
@@ -281,7 +280,7 @@ function buildEventCard(evt, idx) {
     }
   }
 
-  cardHTML += '</div>';
+  cardHTML += '</div>'; // .event-card
   el.innerHTML = cardHTML;
 
   // Add axis node
@@ -468,28 +467,106 @@ document.getElementById('tl-sub-branches').addEventListener('click', (e) => {
   }, 200);
 });
 
-/* ── 3D Card tilt ── */
-document.addEventListener('mousemove', (e) => {
-  const cards = document.querySelectorAll('.event-card:hover');
-  cards.forEach(card => {
-    const rect = card.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const rx = (e.clientY - cy) / (rect.height / 2) * -8;
-    const ry = (e.clientX - cx) / (rect.width / 2) * 8;
-    card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
-  });
-});
+/* ── Event Detail Modal ── */
+const modal = document.getElementById('event-modal');
 
-document.addEventListener('mouseover', (e) => {
+function onCardClick(e) {
   const card = e.target.closest('.event-card');
-  if (card) card.style.transition = 'transform 0.15s ease-out, box-shadow 0.3s, border-color 0.3s';
-});
-
-document.addEventListener('mouseout', (e) => {
-  const card = e.target.closest('.event-card');
-  if (card) {
-    card.style.transition = 'transform 0.4s ease-out, box-shadow 0.3s, border-color 0.3s';
-    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+  if (!card) return;
+  // Find event data from the card's parent tl-event ID
+  const tlEvent = card.closest('.tl-event');
+  if (!tlEvent || !tlEvent.id) return;
+  // Get event data from VirtualTimeline items or data-access
+  let evt = null;
+  if (typeof VirtualTimeline !== 'undefined' && VirtualTimeline.items) {
+    for (const item of VirtualTimeline.items) {
+      if (item.type === 'event' && item.data.id === tlEvent.id) {
+        evt = item.data;
+        break;
+      }
+    }
   }
-});
+  if (!evt) return;
+  openEventModal(evt);
+}
+
+function onKeyDown(e) {
+  if (e.key === 'Escape') closeEventModal();
+}
+
+function onModalOverlayClick(e) {
+  if (e.target === modal) closeEventModal();
+}
+
+export function initEventModal() {
+  document.addEventListener('click', onCardClick);
+  document.addEventListener('keydown', onKeyDown);
+  if (modal) modal.addEventListener('click', onModalOverlayClick);
+  const closeBtn = modal?.querySelector('.event-modal-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeEventModal);
+}
+
+export function destroyEventModal() {
+  document.removeEventListener('click', onCardClick);
+  document.removeEventListener('keydown', onKeyDown);
+  if (modal) modal.removeEventListener('click', onModalOverlayClick);
+  const closeBtn = modal?.querySelector('.event-modal-close');
+  if (closeBtn) closeBtn.removeEventListener('click', closeEventModal);
+}
+
+function openEventModal(evt) {
+  if (!modal) return;
+  // Fill content
+  modal.querySelector('.event-modal-date').textContent = evt.dateDisplay || '';
+  modal.querySelector('.event-modal-title').textContent = evt.title || '';
+
+  const meta = modal.querySelector('.event-modal-meta');
+  meta.innerHTML = '';
+  if (evt.location) {
+    const loc = document.createElement('span');
+    loc.textContent = evt.location;
+    meta.appendChild(loc);
+  }
+  if (evt.characters && evt.characters.length > 0) {
+    if (evt.location) meta.appendChild(document.createTextNode(' | '));
+    const chars = document.createElement('span');
+    chars.textContent = evt.characters.join('、');
+    meta.appendChild(chars);
+  }
+
+  modal.querySelector('.event-modal-desc').textContent = evt.description || '';
+
+  // Sources
+  const sourcesEl = modal.querySelector('.event-modal-sources');
+  sourcesEl.innerHTML = '';
+  if (evt.prtsSources && evt.prtsSources.length > 0) {
+    evt.prtsSources.forEach(s => {
+      const item = document.createElement('div');
+      item.className = 'event-source-item';
+      if (s.title) {
+        const label = document.createElement('span');
+        label.className = 'source-label';
+        label.textContent = s.title + '：';
+        item.appendChild(label);
+      }
+      const link = document.createElement('a');
+      link.className = 'event-modal-source-link';
+      link.href = s.url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = s.text;
+      item.appendChild(link);
+      sourcesEl.appendChild(item);
+    });
+  }
+
+  // Show
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEventModal() {
+  if (!modal) return;
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}

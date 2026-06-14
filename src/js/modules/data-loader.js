@@ -62,26 +62,36 @@ export async function findEventById(eventId) {
 /** Parse date string to sortable numeric value */
 export function dateSortVal(dateRaw) {
   const d = String(dateRaw || '');
+  // Recursive unknown prefix
   if (d.startsWith('???')) {
     const rest = d.replace('???-', '');
     return dateSortVal(rest);
   }
+  // Far future
   if (d.startsWith('~+')) return 100000 + parseInt(d.replace('~+', ''), 10);
+  // Pre-civilization (no specific year)
+  if (d === '纪元前' || d.startsWith('TT ')) return -99999;
+  // BC / negative years: "-35", "-9000"
+  if (d.startsWith('-')) return parseInt(d, 10) || 0;
+  // "纪元前" with digits: "约纪元前12200"
   if (d.includes('纪元前')) {
     const num = parseInt(d.replace(/[^0-9]/g, ''), 10) || 0;
     if (d.startsWith('约')) return -(num + 10000);
     return -num;
   }
+  // Approximate
   if (d.startsWith('约')) {
     const num = parseInt(d.replace(/[^0-9]/g, ''), 10) || 0;
     return num - 0.1;
   }
+  // Dot-separated: "1096.12.23"
   const dotParts = d.split('.');
   if (dotParts.length >= 2) {
     const year = parseInt(dotParts[0], 10) || 0;
     const month = parseInt(dotParts[1], 10) || 0;
     return year + month / 100;
   }
+  // Plain year: "1096"
   return parseInt(d, 10) || 0;
 }
 

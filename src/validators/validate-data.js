@@ -79,19 +79,6 @@ function collectEvents(worldId, data) {
     }
   }
 
-  if (data.eras && (!subEntities.length || !subEntities[0].timeline || !subEntities[0].timeline.branches || !subEntities[0].timeline.branches[0].eras || subEntities[0].timeline.branches[0].eras.length === 0)) {
-    const mainlineEvents = [];
-    for (const era of data.eras) {
-      for (const evt of (era.events || [])) {
-        mainlineEvents.push(evt);
-        allEventIds.push({ id: evt.id, branchId: 'mainline', worldId });
-      }
-    }
-    if (mainlineEvents.length > 0 && branchEvents.length > 0 && branchEvents[0].events.length === 0) {
-      branchEvents[0].events = mainlineEvents;
-    }
-  }
-
   return { branchEvents, allEventIds };
 }
 
@@ -128,8 +115,8 @@ function validateCrossRefs(globalEventIds) {
   }
 }
 
-function flattenBranchEvents(branch, data) {
-  const eras = (branch.eras && branch.eras.length > 0) ? branch.eras : (data.eras || []);
+function flattenBranchEvents(branch) {
+  const eras = branch.eras || [];
   const events = [];
   for (const era of eras) {
     for (const evt of (era.events || [])) {
@@ -149,7 +136,7 @@ function flattenWorld(data) {
   for (const entity of subEntities) {
     if (!entity.timeline || !entity.timeline.branches) continue;
     for (const branch of entity.timeline.branches) {
-      const { eras, events } = flattenBranchEvents(branch, data);
+      const { eras, events } = flattenBranchEvents(branch);
       const flatBranch = {
         id: branch.id,
         name: branch.name,
