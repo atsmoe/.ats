@@ -1,4 +1,4 @@
-# PRD：群星之间 · 编年史 V2
+# PRD：群星之间 · 编年史 V2.0
 
 ## Problem Statement
 
