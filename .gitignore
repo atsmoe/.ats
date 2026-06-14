@@ -7,4 +7,4 @@ Thumbs.db
 .idea/
 .env
 *.log
-materials/reference/.timeline_progress.json
+docs/.timeline_progress.json

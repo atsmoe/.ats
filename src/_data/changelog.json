@@ -1,5 +1,17 @@
 [
   {
+    "version": "V2.1",
+    "date": "2026-06-15",
+    "color": "#c9a050",
+    "subtitle": "PRTS 年表数据采集 · 文档规范化",
+    "items": [
+      "<strong>PRTS 年表爬取</strong>：新增 `scripts/fetch-timeline.js` 零依赖脚本，通过 MediaWiki API 分节获取泰拉年表完整内容，支持断点续爬、来源链接提取、父章节去重",
+      "<strong>年表数据</strong>：新增 `docs/prts_timeline.json`（875 条事件，837 条带来源链接，覆盖前文明至 1103 年）",
+      "<strong>文档标准化</strong>：`docs/` 目录统一管理所有文档和参考数据",
+      "<strong>修复</strong>：`.gitignore` 完善断点进度文件排除规则"
+    ]
+  },
+  {
     "version": "V2.0",
     "date": "2026-06-13",
     "color": "#c9a050",

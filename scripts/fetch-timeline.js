@@ -5,8 +5,8 @@ const path = require('path');
 // ========== CONFIG ==========
 const PAGE = '泰拉年表';
 const API_BASE = 'https://prts.wiki/api.php';
-const OUTPUT = path.join(__dirname, '..', 'materials', 'reference', 'prts_timeline.json');
-const PROGRESS = path.join(__dirname, '..', 'materials', 'reference', '.timeline_progress.json');
+const OUTPUT = path.join(__dirname, '..', 'docs', 'prts_timeline.json');
+const PROGRESS = path.join(__dirname, '..', 'docs', '.timeline_progress.json');
 const DELAY_MS = 1500;
 const UA = 'PRTS-MCP-Bot/0.1';
 
