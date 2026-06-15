@@ -17,15 +17,18 @@ const CLUSTERS = {
 const isMobile = window.innerWidth < 768;
 const BG_COUNT = isMobile ? 30000 : 150000;
 const CORE_COUNT = isMobile ? 10000 : 50000;
-const DISK_COUNT = isMobile ? 20000 : 100000;
+const DISK_COUNT = isMobile ? 7000 : 33000;
+const RING_PARTICLES = isMobile ? 3000 : 15000; // per ring
+const SHELL_RADIUS = 35;
+const SHELL_THICKNESS = 3;
 const CLUSTER_SCALE = isMobile ? 0.4 : 1;
 
 let scene, camera, renderer, controls;
 let bgPoints, clock;
+let ringPoints = [];
 let startTime = 0;
 let destroyed = false;
 
-const mouseTarget = { x: 0, y: 0 };
 const clusterScreenPos = {};
 
 function gaussRand(mean, stdev) {
@@ -172,13 +175,21 @@ function generateBackground() {
     pushShift();
   }
 
-  // Disk
+  // Disk (reduced to 1/3)
   for (let i = 0; i < DISK_COUNT; i++) {
     const r = 10, R = 40;
     const rand = Math.pow(Math.random(), 1.5);
     const radius = Math.sqrt(R * R * rand + (1 - rand) * r * r);
-    positions.push(...new THREE.Vector3().setFromCylindricalCoords(radius, Math.random() * 2 * Math.PI, (Math.random() - 0.5) * 2).toArray());
-    sizes.push(Math.random() * 1.5 + 0.5);
+    positions.push(...new THREE.Vector3().setFromCylindricalCoords(radius, Math.random() * 2 * Math.PI, (Math.random() - 0.5) * 3).toArray());
+    sizes.push(Math.random() * 1.2 + 0.3);
+    pushShift();
+  }
+
+  // Outer shell sphere (3x core count, at farthest particle reach)
+  for (let i = 0; i < CORE_COUNT * 3; i++) {
+    const r = SHELL_RADIUS + (Math.random() - 0.5) * SHELL_THICKNESS * 2;
+    positions.push(...new THREE.Vector3().randomDirection().multiplyScalar(r).toArray());
+    sizes.push(Math.random() * 0.8 + 0.3);
     pushShift();
   }
 
@@ -188,6 +199,101 @@ function generateBackground() {
   geometry.setAttribute('shift', new THREE.Float32BufferAttribute(shifts, 4));
 
   return geometry;
+}
+
+function generateRings() {
+  const ringDefs = [
+    { r: 12, width: 12.5, ySpread: 5.0, gauss: true },
+    { r: 22, width: 15.0, ySpread: 6.0, gauss: true },
+    { r: 35, width: 17.5, ySpread: 7.0, gauss: false },
+  ];
+
+  // Core sphere color endpoints
+  const coreGold = [227, 155, 0];
+  const edgePurple = [30, 40, 100];
+
+  const result = [];
+  for (const ring of ringDefs) {
+    const tiltX = Math.random() * Math.PI * 2;
+    const tiltZ = Math.random() * Math.PI * 2;
+    const positions = [];
+    const sizes = [];
+    const colors = [];
+    // Interpolation factor from ring radius (maps to core sphere gradient position)
+    const tRing = (ring.r - 10) / 30;
+
+    // Angular density: uneven clumps via multi-sine weighting
+    const densityFn = (a) => {
+      return 0.5 + 0.25 * Math.sin(a * 3 + tiltX) + 0.15 * Math.sin(a * 7 + tiltZ) + 0.1 * Math.sin(a * 13);
+    };
+    const maxDensity = 1.0;
+
+    for (let i = 0; i < RING_PARTICLES; i++) {
+      // Rejection sampling for angular density variation
+      let angle, density;
+      do {
+        angle = Math.random() * Math.PI * 2;
+        density = densityFn(angle);
+      } while (Math.random() * maxDensity > density);
+
+      // Radial distribution: gaussian (center-thick) or uniform
+      let rJitter;
+      if (ring.gauss) {
+        rJitter = ((Math.random() + Math.random() + Math.random()) / 3 - 0.5) * ring.width * 2;
+      } else {
+        rJitter = (Math.random() - 0.5) * ring.width * 2;
+      }
+      const outlier = Math.random() < 0.12;
+      const radius = ring.r + rJitter * (outlier ? (2 + Math.random() * 2) : 1);
+      const x0 = Math.cos(angle) * radius;
+      const z0 = Math.sin(angle) * radius;
+      const y0 = (Math.random() - 0.5) * ring.ySpread * (outlier ? 2 : 1);
+      const cosX = Math.cos(tiltX), sinX = Math.sin(tiltX);
+      const y1 = y0 * cosX - z0 * sinX;
+      const z1 = y0 * sinX + z0 * cosX;
+      const cosZ = Math.cos(tiltZ), sinZ = Math.sin(tiltZ);
+      const x2 = x0 * cosZ - y1 * sinZ;
+      const y2 = x0 * sinZ + y1 * cosZ;
+      positions.push(x2, y2, z1);
+      sizes.push(Math.random() * 1.2 + 0.5);
+
+      // Color from core sphere gradient + per-particle noise
+      const noise = (Math.random() - 0.5) * 0.15;
+      const t = Math.max(0, Math.min(1, tRing + noise));
+      const cr = Math.round(coreGold[0] + (edgePurple[0] - coreGold[0]) * t);
+      const cg = Math.round(coreGold[1] + (edgePurple[1] - coreGold[1]) * t);
+      const cb = Math.round(coreGold[2] + (edgePurple[2] - coreGold[2]) * t);
+      colors.push(cr / 255, cg / 255, cb / 255);
+    }
+
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geom.setAttribute('sizes', new THREE.Float32BufferAttribute(sizes, 1));
+    geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 0.2,
+      vertexColors: true,
+      transparent: true,
+      depthTest: false,
+      blending: THREE.AdditiveBlending,
+      onBeforeCompile: (shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <clipping_planes_fragment>',
+          `#include <clipping_planes_fragment>
+            float d = length(gl_PointCoord.xy - 0.5);
+          `
+        ).replace(
+          'vec4 diffuseColor = vec4( diffuse, opacity );',
+          'vec4 diffuseColor = vec4( diffuse, smoothstep(0.5, 0.05, d) * opacity );'
+        );
+      },
+    });
+
+    const points = new THREE.Points(geom, mat);
+    result.push(points);
+  }
+  return result;
 }
 
 function generateCluster(clusterId) {
@@ -250,8 +356,11 @@ function animate() {
   const t = clock.getElapsedTime() * 0.5;
   const timeVal = t * Math.PI;
 
-  // Auto-rotation
+  // Auto-rotation (bgPoints + rings)
   bgPoints.rotation.y = t * 0.05;
+  for (const rp of ringPoints) {
+    rp.rotation.copy(bgPoints.rotation);
+  }
 
   // Update uniforms
   if (bgPoints.material.userData.uniforms) {
@@ -264,11 +373,6 @@ function animate() {
       cluster.material.userData.uniforms.time.value = timeVal;
     }
   }
-
-  // Camera parallax
-  camera.position.x += (mouseTarget.x * 2 - camera.position.x) * 0.02;
-  camera.position.y += (4 + mouseTarget.y * 1.5 - camera.position.y) * 0.02;
-  camera.lookAt(0, 0, 0);
 
   controls.update();
 
@@ -303,7 +407,7 @@ export function init(canvasId) {
   controls.enablePan = true;
   controls.enableZoom = true;
   controls.minDistance = 8;
-  controls.maxDistance = 50;
+  controls.maxDistance = 39;
   controls.autoRotate = true;
   controls.autoRotateSpeed = 0.3;
   controls.dampingFactor = 0.05;
@@ -320,6 +424,13 @@ export function init(canvasId) {
   bgPoints.rotation.z = 0.2;
   scene.add(bgPoints);
 
+  // Colorful rings
+  ringPoints = generateRings();
+  for (const rp of ringPoints) {
+    rp.rotation.copy(bgPoints.rotation);
+    scene.add(rp);
+  }
+
   // Cluster galaxies
   bgPoints.userData.clusters = {};
   for (const [gid, cluster] of Object.entries(CLUSTERS)) {
@@ -329,12 +440,6 @@ export function init(canvasId) {
     scene.add(points);
     bgPoints.userData.clusters[gid] = points;
   }
-
-  // Mouse parallax
-  window.addEventListener('mousemove', (e) => {
-    mouseTarget.x = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouseTarget.y = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
 
   // Resize
   window.addEventListener('resize', () => {
@@ -372,6 +477,10 @@ export function destroy() {
       cluster.material.dispose();
     }
   }
+  for (const rp of ringPoints) {
+    rp.geometry.dispose();
+    rp.material.dispose();
+  }
+  ringPoints = [];
   window.removeEventListener('resize', () => {});
-  window.removeEventListener('mousemove', () => {});
 }

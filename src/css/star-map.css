@@ -10,6 +10,7 @@ body[data-page="star-map"] footer {
 }
 #star-map {
   position: fixed; inset: 0; z-index: 10;
+  pointer-events: none;
   transition: opacity 0.6s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 #star-map.hidden {
@@ -74,7 +75,7 @@ body[data-page="star-map"] footer {
   box-shadow: 0 0 12px var(--marker-color), 0 0 30px var(--marker-color), 0 0 50px var(--marker-color);
 }
 
-/* Marker label — hidden by default, shown on hover */
+/* Marker label */
 .galaxy-marker-label {
   position: absolute;
   top: 100%;
