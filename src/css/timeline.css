@@ -560,3 +560,111 @@
   box-shadow: 0 0 16px rgba(201,160,80,0.2);
   color: var(--gold);
 }
+
+/* ── Archive toggle button ── */
+.tl-archive-toggle {
+  display: inline-block;
+  padding: 6px 18px;
+  margin: 8px 0 0 16px;
+  background: transparent;
+  border: 1px solid rgba(184,196,216,0.3);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.tl-archive-toggle:hover {
+  border-color: rgba(184,196,216,0.6);
+  color: var(--text);
+}
+.tl-archive-toggle.active {
+  background: rgba(184,196,216,0.12);
+  border-color: rgba(184,196,216,0.6);
+  color: var(--text);
+}
+
+/* ── Archive view ── */
+.archive-view {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 24px 80px;
+}
+.archive-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.archive-tab {
+  padding: 8px 24px;
+  background: transparent;
+  border: 1px solid rgba(184,196,216,0.2);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.archive-tab:hover { color: var(--text); border-color: rgba(184,196,216,0.5); }
+.archive-tab.active {
+  background: rgba(184,196,216,0.1);
+  border-color: rgba(184,196,216,0.6);
+  color: var(--text);
+}
+.archive-desc {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(184,196,216,0.1);
+}
+.archive-section-title {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  padding-left: 12px;
+  border-left: 3px solid rgba(184,196,216,0.4);
+}
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.archive-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(184,196,216,0.1);
+  border-radius: var(--radius-sm);
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.archive-card:hover {
+  border-color: rgba(184,196,216,0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.archive-card-thumb {
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.3);
+}
+.archive-card-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.archive-card-title {
+  padding: 10px 12px 4px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.4;
+  font-weight: 700;
+}
+.archive-card-date {
+  padding: 0 12px 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+}

@@ -184,8 +184,10 @@ export function renderEvents(branch) {
 }
 
 /* ── Direct render for IF branches ── */
+let directRenderedEvents = {}; // id → evt, for modal lookup in direct mode
 function renderEventsDirect(eraGroups) {
   tlContainer.innerHTML = '';
+  directRenderedEvents = {};
 
   // Axis line
   const axisEl = document.createElement('div');
@@ -203,6 +205,7 @@ function renderEventsDirect(eraGroups) {
 
       // Events
       for (const evt of group.events || []) {
+        directRenderedEvents[evt.id] = evt;
         const eventEl = buildEventCard(evt, globalIdx);
         tlContainer.appendChild(eventEl);
         globalIdx++;
@@ -214,6 +217,7 @@ function renderEventsDirect(eraGroups) {
       tlContainer.appendChild(header);
 
       for (const evt of group.events || []) {
+        directRenderedEvents[evt.id] = evt;
         const eventEl = buildEventCard(evt, 0);
         eventEl.classList.add('if-ending');
         tlContainer.appendChild(eventEl);
@@ -432,7 +436,10 @@ document.getElementById('tl-branches').addEventListener('click', (e) => {
   if (!e.target.classList.contains('tl-branch-tab')) return;
   if (e.target.classList.contains('switching')) return;
   const branch = e.target.dataset.branch;
-  if (branch === currentBranch) return;
+  if (branch === currentBranch && document.getElementById('archive-view').style.display === 'none') return;
+
+  // Hide archive view if visible, return to timeline
+  hideArchiveView();
 
   tlContainer.style.opacity = '0';
   tlContainer.style.transition = 'opacity 0.2s ease';
@@ -475,6 +482,131 @@ document.getElementById('tl-sub-branches').addEventListener('click', (e) => {
   }, 200);
 });
 
+/* ── Archive view (anecdotes + lore, non-timeline) ── */
+let archiveMode = null; // null | 'anecdotes' | 'lore'
+let archiveData = null;
+
+export function setArchiveData(data) {
+  archiveData = data?.archives || null;
+}
+
+function showArchiveView() {
+  document.getElementById('tl-container').style.display = 'none';
+  document.getElementById('archive-view').style.display = '';
+  eraNav.classList.remove('active');
+  eraNav.innerHTML = '';
+}
+
+function hideArchiveView() {
+  document.getElementById('tl-container').style.display = '';
+  document.getElementById('archive-view').style.display = 'none';
+  archiveMode = null;
+  document.getElementById('tl-archive-toggle')?.classList.remove('active');
+}
+
+function buildArchiveTabs() {
+  const tabs = document.getElementById('archive-tabs');
+  tabs.innerHTML = '';
+  if (!archiveData) return;
+  for (const key of Object.keys(archiveData)) {
+    const arch = archiveData[key];
+    const btn = document.createElement('button');
+    btn.className = 'archive-tab';
+    btn.dataset.archive = key;
+    btn.textContent = arch.name;
+    tabs.appendChild(btn);
+  }
+}
+
+function renderArchiveContent(key) {
+  const arch = archiveData?.[key];
+  if (!arch) return;
+  const content = document.getElementById('archive-content');
+  content.innerHTML = '';
+
+  if (arch.description) {
+    const desc = document.createElement('p');
+    desc.className = 'archive-desc';
+    desc.textContent = arch.description;
+    content.appendChild(desc);
+  }
+
+  for (const era of (arch.eras || [])) {
+    const sectionTitle = document.createElement('h3');
+    sectionTitle.className = 'archive-section-title';
+    sectionTitle.textContent = era.title;
+    content.appendChild(sectionTitle);
+
+    const grid = document.createElement('div');
+    grid.className = 'archive-grid';
+    for (const evt of (era.events || [])) {
+      const card = document.createElement('div');
+      card.className = 'archive-card';
+      card.dataset.eventId = evt.id;
+      let html = '';
+      if (evt.images && evt.images.length > 0) {
+        html += `<div class="archive-card-thumb"><img src="${evt.images[0].src}" alt="${evt.images[0].alt || evt.title || ''}" loading="lazy"></div>`;
+      }
+      html += `<div class="archive-card-title">${evt.title}</div>`;
+      if (evt.dateDisplay) html += `<div class="archive-card-date">${evt.dateDisplay}</div>`;
+      card.innerHTML = html;
+      grid.appendChild(card);
+    }
+    content.appendChild(grid);
+  }
+}
+
+function onArchiveCardClick(e) {
+  const card = e.target.closest('.archive-card');
+  if (!card) return;
+  const evtId = card.dataset.eventId;
+  if (!evtId || !archiveData) return;
+  // Search all archives for the event
+  for (const key of Object.keys(archiveData)) {
+    for (const era of (archiveData[key].eras || [])) {
+      for (const evt of (era.events || [])) {
+        if (evt.id === evtId) { openEventModal(evt); return; }
+      }
+    }
+  }
+}
+
+// Toggle button: switch between timeline and archive view
+document.getElementById('tl-archive-toggle')?.addEventListener('click', () => {
+  const toggle = document.getElementById('tl-archive-toggle');
+  const archiveView = document.getElementById('archive-view');
+  if (archiveView.style.display !== 'none') {
+    // Currently showing archive → back to timeline
+    hideArchiveView();
+    renderEvents('mainline');
+  } else {
+    // Show archive
+    toggle.classList.add('active');
+    document.querySelectorAll('.tl-branch-tab').forEach(t => t.classList.remove('active'));
+    showArchiveView();
+    buildArchiveTabs();
+    // Auto-select first tab
+    const firstTab = document.querySelector('.archive-tab');
+    if (firstTab) {
+      firstTab.classList.add('active');
+      archiveMode = firstTab.dataset.archive;
+      renderArchiveContent(archiveMode);
+    }
+  }
+});
+
+// Archive tab switching
+document.getElementById('archive-tabs')?.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('archive-tab')) return;
+  document.querySelectorAll('.archive-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  archiveMode = e.target.dataset.archive;
+  renderArchiveContent(archiveMode);
+});
+
+// Archive card click → open modal
+document.getElementById('archive-content')?.addEventListener('click', onArchiveCardClick);
+
 /* ── Event Detail Modal ── */
 const modal = document.getElementById('event-modal');
 
@@ -484,8 +616,8 @@ function onCardClick(e) {
   // Find event data from the card's parent tl-event ID
   const tlEvent = card.closest('.tl-event');
   if (!tlEvent || !tlEvent.id) return;
-  // Get event data from VirtualTimeline items or data-access
   let evt = null;
+  // Check VirtualTimeline (mainline) first
   if (typeof VirtualTimeline !== 'undefined' && VirtualTimeline.items) {
     for (const item of VirtualTimeline.items) {
       if (item.type === 'event' && item.data.id === tlEvent.id) {
@@ -494,6 +626,8 @@ function onCardClick(e) {
       }
     }
   }
+  // Fallback: direct render lookup
+  if (!evt) evt = directRenderedEvents[tlEvent.id];
   if (!evt) return;
   openEventModal(evt);
 }
