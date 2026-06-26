@@ -544,6 +544,30 @@ function openEventModal(evt) {
 
   modal.querySelector('.event-modal-desc').textContent = evt.description || '';
 
+  // Images
+  const imgEl = modal.querySelector('.event-modal-img');
+  imgEl.innerHTML = '';
+  imgEl.style.display = 'none';
+  if (evt.images && evt.images.length > 0) {
+    imgEl.style.display = '';
+    if (evt.images.length === 1) {
+      const img = document.createElement('img');
+      img.src = evt.images[0].src;
+      img.alt = evt.images[0].alt || evt.title || '';
+      img.loading = 'lazy';
+      imgEl.appendChild(img);
+    } else {
+      // Multiple images: scrollable strip
+      for (const imgData of evt.images) {
+        const img = document.createElement('img');
+        img.src = imgData.src;
+        img.alt = imgData.alt || '';
+        img.loading = 'lazy';
+        imgEl.appendChild(img);
+      }
+    }
+  }
+
   // Sources
   const sourcesEl = modal.querySelector('.event-modal-sources');
   sourcesEl.innerHTML = '';

@@ -78,10 +78,45 @@ function splitByHeading(text, level) {
   }
   if (current) sections.push(current);
 
-  return sections.map(s => ({
-    title: s.title,
-    body: cleanText(s.body.join('\n')),
-  })).filter(s => s.body.length > 20); // 过滤掉太短的（如"参考资料"）
+  return sections.map(s => {
+    const rawBody = s.body.join('\n');
+    const imgCount = (rawBody.match(/\[图片[^\]]*\]/g) || []).length;
+    return {
+      title: s.title,
+      body: cleanText(rawBody),
+      imgCount,
+    };
+  }).filter(s => s.body.length > 20); // 过滤掉太短的（如"参考资料"）
+}
+
+// 读取源文件对应的 _图片 文件夹中的图片文件列表（按文件名排序）
+const imgDirCache = {};
+function getImages(relPath) {
+  if (imgDirCache[relPath]) return imgDirCache[relPath];
+  // 源文件路径 → 对应的 _图片 文件夹路径
+  // 例: "第七星历\苍穹之禁城\苍穹之禁城.txt" → "第七星历\苍穹之禁城\苍穹之禁城_图片"
+  const dir = path.dirname(relPath);
+  const baseName = path.basename(relPath, '.txt');
+  const imgDirName = `${baseName}_图片`;
+  const imgDir = path.join(SRC_ROOT, dir, imgDirName);
+  let imgs = [];
+  if (fs.existsSync(imgDir)) {
+    imgs = fs.readdirSync(imgDir)
+      .filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f))
+      .sort()
+      .map(f => `./assets/images/ff14/${f}`);
+  }
+  imgDirCache[relPath] = imgs;
+  return imgs;
+}
+
+// 从图片列表中按索引取 N 张图片，返回 { images, consumed } 
+function takeImages(imgList, startIdx, count) {
+  const images = [];
+  for (let i = 0; i < count && startIdx + i < imgList.length; i++) {
+    images.push({ src: imgList[startIdx + i], alt: '' });
+  }
+  return images;
 }
 
 // ── ID 计数器 ─────────────────────────────────────────────────
@@ -146,19 +181,26 @@ function parseChronicle() {
 function parsePatchStory(relPath, level, dateDisplay, tags) {
   const raw = readTxt(relPath);
   const sections = splitByHeading(raw, level);
+  const imgList = getImages(relPath);
+  let imgIdx = 0;
   const events = [];
 
   for (const s of sections) {
     // 跳过"参考资料""相关阅读""画廊""目录"等非正文
     if (/参考资料|相关阅读|画廊|目录|随身见闻录/.test(s.title)) continue;
 
-    events.push({
+    const images = takeImages(imgList, imgIdx, s.imgCount);
+    imgIdx += s.imgCount;
+
+    const evt = {
       id: nextId(),
       dateDisplay,
       title: s.title,
       description: s.body,
       tags: [...tags],
-    });
+    };
+    if (images.length > 0) evt.images = images;
+    events.push(evt);
   }
 
   return events;
@@ -168,18 +210,25 @@ function parsePatchStory(relPath, level, dateDisplay, tags) {
 function parseEncyclopedia(relPath, level, dateDisplay, tags) {
   const raw = readTxt(relPath);
   const sections = splitByHeading(raw, level);
+  const imgList = getImages(relPath);
+  let imgIdx = 0;
   const events = [];
 
   for (const s of sections) {
     if (/参考资料|相关阅读|画廊|目录|随身见闻录/.test(s.title)) continue;
 
-    events.push({
+    const images = takeImages(imgList, imgIdx, s.imgCount);
+    imgIdx += s.imgCount;
+
+    const evt = {
       id: nextId(),
       dateDisplay,
       title: s.title,
       description: s.body,
       tags: [...tags],
-    });
+    };
+    if (images.length > 0) evt.images = images;
+    events.push(evt);
   }
 
   // 如果没有任何章节标题，用整篇作为 1 个事件
@@ -188,13 +237,16 @@ function parseEncyclopedia(relPath, level, dateDisplay, tags) {
     if (clean.length > 30) {
       // 从文件名取标题
       const fname = path.basename(relPath, '.txt');
-      events.push({
+      const allImgs = imgList.map(src => ({ src, alt: '' }));
+      const evt = {
         id: nextId(),
         dateDisplay,
         title: fname,
         description: clean,
         tags: [...tags],
-      });
+      };
+      if (allImgs.length > 0) evt.images = allImgs;
+      events.push(evt);
     }
   }
 
@@ -278,7 +330,8 @@ function parseAnecdotes() {
     const events = [];
     for (const fname of group.files) {
       try {
-        const raw = readTxt(`光之回忆录（秘话系列）\\${fname}\\${fname}.txt`);
+        const relPath = `光之回忆录（秘话系列）\\${fname}\\${fname}.txt`;
+        const raw = readTxt(relPath);
         // 去掉头部 === 分隔线和标题，去掉尾部 ## 参考资料
         let body = raw;
         const refIdx = body.indexOf('## 参考资料');
@@ -286,13 +339,18 @@ function parseAnecdotes() {
         body = cleanText(body);
         if (body.length < 30) continue;
 
-        events.push({
+        const imgList = getImages(relPath);
+        const allImgs = imgList.map(src => ({ src, alt: '' }));
+
+        const evt = {
           id: nextAnecdoteId(),
           dateDisplay: group.date,
           title: fname,
           description: body,
           tags: [...group.tags],
-        });
+        };
+        if (allImgs.length > 0) evt.images = allImgs;
+        events.push(evt);
       } catch (e) {
         console.warn(`  [warn] 秘话文件未找到: ${fname}`);
       }
@@ -328,20 +386,26 @@ function parseLore() {
 
   for (const name of conceptNames) {
     try {
-      const raw = readTxt(`重生之境\\${name}\\${name}.txt`);
+      const relPath = `重生之境\\${name}\\${name}.txt`;
+      const raw = readTxt(relPath);
       let body = raw;
       const refIdx = body.indexOf('## 参考资料');
       if (refIdx >= 0) body = body.substring(0, refIdx);
       body = cleanText(body);
       if (body.length < 30) continue;
 
-      conceptEra.events.push({
+      const imgList = getImages(relPath);
+      const allImgs = imgList.map(src => ({ src, alt: '' }));
+
+      const evt = {
         id: nextLoreId(),
         dateDisplay: '设定·百科',
         title: name,
         description: body,
         tags: ['设定', '百科'],
-      });
+      };
+      if (allImgs.length > 0) evt.images = allImgs;
+      conceptEra.events.push(evt);
     } catch (e) {
       console.warn(`  [warn] 设定文件未找到: ${name}`);
     }
@@ -357,20 +421,26 @@ function parseLore() {
 
   for (const name of historyFiles) {
     try {
-      const raw = readTxt(`历史背影\\${name}\\${name}.txt`);
+      const relPath = `历史背影\\${name}\\${name}.txt`;
+      const raw = readTxt(relPath);
       let body = raw;
       const refIdx = body.indexOf('## 参考资料');
       if (refIdx >= 0) body = body.substring(0, refIdx);
       body = cleanText(body);
       if (body.length < 30) continue;
 
-      historyEra.events.push({
+      const imgList = getImages(relPath);
+      const allImgs = imgList.map(src => ({ src, alt: '' }));
+
+      const evt = {
         id: nextLoreId(),
         dateDisplay: '历史·背影',
         title: name,
         description: body,
         tags: ['历史背影'],
-      });
+      };
+      if (allImgs.length > 0) evt.images = allImgs;
+      historyEra.events.push(evt);
     } catch (e) {
       console.warn(`  [warn] 历史背影文件未找到: ${name}`);
     }
@@ -664,6 +734,14 @@ function build() {
   for (const era of loreEras) {
     console.log(`    ${era.title}: ${era.events.length}`);
   }
+  console.log('');
+  // 统计带图片的事件数
+  let imgEventCount = 0;
+  let totalImgs = 0;
+  for (const era of eras) for (const e of era.events) { if (e.images) { imgEventCount++; totalImgs += e.images.length; } }
+  for (const era of anecdoteEras) for (const e of era.events) { if (e.images) { imgEventCount++; totalImgs += e.images.length; } }
+  for (const era of loreEras) for (const e of era.events) { if (e.images) { imgEventCount++; totalImgs += e.images.length; } }
+  console.log(`  带图片事件数: ${imgEventCount} / ${totalEvents + anecdoteEventCount + loreEventCount} (共 ${totalImgs} 张图片)`);
   console.log('');
   console.log(`  输出: ${OUT}`);
 }
