@@ -2,8 +2,8 @@
    transform-ff14.js
    ───────────────────────────────────────────────────────────
    读取 FFXIV背景知识/历史/ 下的源 TXT 文件，转换为站点 schema
-   的 ff14.json。主线(mainline) + 碎片世界(shard-1/shard-13)
-   + 秘话合集/设定百科存入 archives 字段（独立档案区域，非世界线分支）。
+   的 ff14.json。Step 1+2：主线(mainline) + 碎片世界(shard-1/shard-13)
+   + 秘话合集(anecdotes) + 设定百科(lore)。
 
    解析器：
    1. 年表解析器 — 第六星历年表，正则提取逐年条目
@@ -697,22 +697,10 @@ function build() {
         name: '原初世界·编年史',
         description: '从星之海的起源到终末之战——原初世界的完整编年。',
         timeline: {
-          branches: [mainline, shards],
+          branches: [mainline, shards, anecdotes, lore],
         },
       },
     ],
-    archives: {
-      anecdotes: {
-        name: '秘话合集',
-        description: '光之回忆录（秘话系列）——角色视角的短篇故事，按版本分组。',
-        eras: anecdoteEras,
-      },
-      lore: {
-        name: '设定百科',
-        description: '世界观概念设定与历史背影——魔法、种族、组织、技术的百科词条。',
-        eras: loreEras,
-      },
-    },
   };
 
   // 写入
@@ -728,8 +716,8 @@ function build() {
   console.log(`  主线事件数: ${totalEvents}`);
   console.log(`  shard-1 结局数: ${shard1Endings.length}`);
   console.log(`  shard-13 结局数: 1`);
-  console.log(`  秘话事件数: ${anecdoteEventCount} (10 个分组, archives)`);
-  console.log(`  设定事件数: ${loreEventCount} (概念设定+历史背影, archives)`);
+  console.log(`  秘话事件数: ${anecdoteEventCount} (10 个分组)`);
+  console.log(`  设定事件数: ${loreEventCount} (概念设定+历史背影)`);
   console.log(`  总计: ${totalEvents + shard1Endings.length + 1 + anecdoteEventCount + loreEventCount} 条`);
   console.log('');
   console.log('  主线各时代事件数:');
