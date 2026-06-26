@@ -549,22 +549,13 @@ function openEventModal(evt) {
   imgEl.innerHTML = '';
   imgEl.style.display = 'none';
   if (evt.images && evt.images.length > 0) {
-    imgEl.style.display = '';
-    if (evt.images.length === 1) {
+    imgEl.style.display = 'block';
+    for (const imgData of evt.images) {
       const img = document.createElement('img');
-      img.src = evt.images[0].src;
-      img.alt = evt.images[0].alt || evt.title || '';
+      img.src = imgData.src;
+      img.alt = imgData.alt || evt.title || '';
       img.loading = 'lazy';
       imgEl.appendChild(img);
-    } else {
-      // Multiple images: scrollable strip
-      for (const imgData of evt.images) {
-        const img = document.createElement('img');
-        img.src = imgData.src;
-        img.alt = imgData.alt || '';
-        img.loading = 'lazy';
-        imgEl.appendChild(img);
-      }
     }
   }
 
