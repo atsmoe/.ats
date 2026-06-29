@@ -100,6 +100,21 @@ function validateEvents(worldId, events) {
         }
       }
     }
+    // Progressive image schema: width/height are optional, but if present must be Number
+    if (evt.images) {
+      for (let i = 0; i < evt.images.length; i++) {
+        const img = evt.images[i];
+        if (!img.src) {
+          warnings.push(`${worldId}/${evt.id}: images[${i}] missing "src"`);
+        }
+        if (img.hasOwnProperty('width') && typeof img.width !== 'number') {
+          warnings.push(`${worldId}/${evt.id}: images[${i}].width should be a Number, got ${typeof img.width}`);
+        }
+        if (img.hasOwnProperty('height') && typeof img.height !== 'number') {
+          warnings.push(`${worldId}/${evt.id}: images[${i}].height should be a Number, got ${typeof img.height}`);
+        }
+      }
+    }
   }
 }
 

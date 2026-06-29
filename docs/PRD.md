@@ -138,10 +138,12 @@ dist/
   1. #portal-arrival（内联 div，#060a14 深空底色）从 HTML 解析第一刻遮住全屏
   2. fetch 加载世界数据（开发服务器提供）
   3. 解析 location.hash 得到目标事件 ID
-  4. 临时关闭虚拟滚动 → 全量渲染所有事件节点到 DOM
-  5. scrollTo + requestAnimationFrame 等待目标节点渲染完成
-  6. 播放反向收束动画（Canvas 粒子 + 光晕收缩到目标位置，~400ms）
-  7. 移除遮罩，恢复虚拟滚动
+  4. 在已加载数据中搜索目标事件，获取其所在分支及分支内序号
+  5. 构建分支时代分组，直接交付 VirtualTimeline.load()（仅构建 ~15 个视口节点）
+  6. 若目标序号 > 20：通过 VirtualTimeline.estimateScrollTopByEventId() 预估偏移并 scrollTo
+  7. VirtualTimeline.update() 触发首帧渲染 + remeasure 高度校正
+  8. 播放反向收束动画（Canvas 粒子 + 光晕收缩到目标位置，~400ms）
+  9. 移除遮罩（VirtualTimeline 已就绪，无需二次加载）
 
 ### 配色方案
 

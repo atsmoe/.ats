@@ -10,19 +10,61 @@ export function setData(data) {
   _data = data;
 }
 
-function getMainlineEraGroups() {
+/**
+ * Search _data.branches for an event and return its location.
+ * @param {string} eventId
+ * @returns {{ branchId: string, branchName: string, eventIndex: number } | null}
+ */
+function findEventLocation(eventId) {
+  if (!_data) return null;
+  for (const branch of (_data.branches || [])) {
+    const candidates = [branch, ...(branch.subBranches || [])];
+    for (const b of candidates) {
+      if (!b.eras) continue;
+      let eventIdx = 0;
+      for (const era of b.eras) {
+        for (const evt of (era.events || [])) {
+          if (evt.id === eventId) {
+            return { branchId: b.id, branchName: b.name, eventIndex: eventIdx };
+          }
+          eventIdx++;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Build era groups for a given branch, matching the structure
+ * expected by VirtualTimeline.load() and timeline-ui.js:getEraGroups().
+ * @param {string} branchId
+ * @returns {Array<{type: string, eraTitle: string, events: Array}>}
+ */
+function buildBranchEraGroups(branchId) {
   if (!_data) return [];
-  const mainBranch = _data.branches?.find(b => b.id === 'mainline' || b.isDefault);
-  if (!mainBranch) return [];
-  const eras = mainBranch.eras;
-  if (!eras || eras.length === 0) return [];
-  return eras.map(era => ({
+  // Find branch (including sub-branches)
+  let branch = null;
+  for (const b of (_data.branches || [])) {
+    if (b.id === branchId) { branch = b; break; }
+    if (b.subBranches) {
+      const sub = b.subBranches.find(sb => sb.id === branchId);
+      if (sub) { branch = sub; break; }
+    }
+  }
+  if (!branch || !branch.eras) return [];
+  return branch.eras.map(era => ({
     type: 'era',
     eraTitle: era.title,
     events: era.events || [],
   }));
 }
 
+/**
+ * Portal arrival handler — replaces the old "disable virtual scroll → full DOM render"
+ * with a direct VirtualTimeline.load() + estimated scroll positioning.
+ * Only renders ~15 viewport-adjacent DOM nodes regardless of event count.
+ */
 export function initPortalArrival() {
   const hash = window.location.hash;
   if (!hash) {
@@ -43,81 +85,56 @@ export function initPortalArrival() {
     return;
   }
 
-  const eraGroups = getMainlineEraGroups();
-  let targetIdx = -1;
-  let flatEvents = [];
-  for (const group of eraGroups) {
-    if (group.events) {
-      for (let i = 0; i < group.events.length; i++) {
-        if (group.events[i].id === eventId) {
-          targetIdx = flatEvents.length;
-        }
-        flatEvents.push(group.events[i]);
-      }
-    }
+  // 1. Locate the target event within branch data
+  const loc = findEventLocation(eventId);
+  if (!loc) {
+    dismissPortal();
+    return;
   }
 
-  if (targetIdx < 0) {
+  // 2. Build era groups and hand off to VirtualTimeline
+  const eraGroups = buildBranchEraGroups(loc.branchId);
+  if (eraGroups.length === 0) {
     dismissPortal();
     return;
   }
 
   if (typeof VirtualTimeline !== 'undefined') {
     VirtualTimeline.clear();
+    VirtualTimeline.container = document.getElementById('tl-container');
+    VirtualTimeline.load(eraGroups);
+    // Rebuild era nav from the newly loaded items
+    if (typeof buildEraNav === 'function') buildEraNav();
   }
 
-  const container = document.getElementById('tl-container');
-  if (container) {
-    container.innerHTML = '';
-    let globalIdx = 0;
-    for (const group of eraGroups) {
-      if (group.type === 'era' || group.eraTitle) {
-        const header = document.createElement('div');
-        header.className = 'tl-era-header visible';
-        header.innerHTML = '<div class="era-line"></div><div class="era-title">' + (group.eraTitle || group.type) + '</div><div class="era-line"></div>';
-        container.appendChild(header);
-        for (const evt of (group.events || [])) {
-          const el = buildSimpleEventCard(evt, globalIdx, eventId);
-          container.appendChild(el);
-          globalIdx++;
-        }
+  // 3. Scroll to target — if close to top, let natural viewport cover it;
+  //    otherwise use estimated offset to jump near the target.
+  if (typeof VirtualTimeline !== 'undefined') {
+    if (loc.eventIndex <= 20) {
+      window.scrollTo(0, 0);
+    } else {
+      const targetTop = VirtualTimeline.estimateScrollTopByEventId(eventId);
+      if (targetTop > 0) {
+        window.scrollTo(0, targetTop - window.innerHeight * 0.3);
       }
+    }
+
+    // 4. Trigger first render + remeasure cycle
+    VirtualTimeline.update();
+    if (typeof updateEraNavHighlight === 'function') updateEraNavHighlight();
+
+    const eraNav = document.getElementById('era-nav');
+    if (eraNav && eraGroups.length > 0) {
+      eraNav.classList.add('active');
     }
   }
 
-  const targetEl = document.getElementById(eventId);
-  if (targetEl) {
-    targetEl.scrollIntoView({ block: 'center' });
-  }
-
+  // 5. Double rAF — wait for layout + paint, then play arrival animation
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       playArrivalAnimation(portalDiv, eventId);
     });
   });
-}
-
-function buildSimpleEventCard(evt, idx, targetId) {
-  const el = document.createElement('div');
-  el.className = 'tl-event ' + (idx % 2 === 0 ? 'left' : 'right') + ' visible';
-  el.id = evt.id || '';
-  const isTarget = evt.id === targetId;
-
-  let cardHTML = '<div class="event-card' + (isTarget ? '" style="border-color:rgba(240,216,120,0.6);box-shadow:0 0 32px rgba(240,216,120,0.15);"' : '"') + '>';
-  if (evt.dateDisplay) cardHTML += '<div class="event-date"><span class="dot"></span>' + evt.dateDisplay + '</div>';
-  if (evt.title) cardHTML += '<div class="event-title">' + evt.title + '</div>';
-  if (evt.location || (evt.characters && evt.characters.length > 0)) {
-    cardHTML += '<div class="event-meta">' + [evt.location, evt.characters?.join('、')].filter(Boolean).join(' | ') + '</div>';
-  }
-  if (evt.description) cardHTML += '<div class="event-desc">' + evt.description + '</div>';
-  cardHTML += '</div>';
-  el.innerHTML = cardHTML;
-
-  const node = document.createElement('div');
-  node.className = 'axis-node' + (isTarget ? ' crystal' : '');
-  el.appendChild(node);
-
-  return el;
 }
 
 function playArrivalAnimation(portalDiv, eventId) {
@@ -144,10 +161,7 @@ function playArrivalAnimation(portalDiv, eventId) {
       whCtx.clearRect(0, 0, W, H);
       wormholeCanvas.classList.remove('active');
       dismissPortal();
-      // Restore virtual scrolling
-      if (typeof VirtualTimeline !== 'undefined' && typeof renderEvents === 'function') {
-        renderEvents('mainline');
-      }
+      // VirtualTimeline already loaded with correct branch — no need to reload
       return;
     }
 

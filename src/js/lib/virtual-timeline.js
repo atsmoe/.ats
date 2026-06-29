@@ -99,6 +99,23 @@ const VirtualTimeline = {
     this.nodePool.clear();
   },
 
+  /**
+   * Estimate the scrollTop needed to bring a specific event into view.
+   * Pure function — reads this.items (set by load()), no side effects.
+   * @param {string} eventId
+   * @returns {number} scroll offset in px, or 0 if not found
+   */
+  estimateScrollTopByEventId(eventId) {
+    if (!this.items || this.items.length === 0) return 0;
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i];
+      if (item.type === 'event' && item.data && item.data.id === eventId) {
+        return item.top;
+      }
+    }
+    return 0;
+  },
+
   /** Get visible range based on scroll position */
   _getVisibleRange() {
     const viewTop = window.scrollY - window.innerHeight * 0.5;

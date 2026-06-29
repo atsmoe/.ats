@@ -2,8 +2,26 @@
    data-loader.js — Unified fetch + cache
    ═══════════════════════════════════════════════════════════ */
 
+/**
+ * @typedef {Object} Era
+ * @property {string} title
+ * @property {import('./data-access.js').Event[]} events
+ */
+
 const worldCache = new Map();
 const indexCache = new Map();
+
+/**
+ * Error thrown when world data or index cannot be loaded after retries.
+ * Carries the worldId so UI can render a contextual error card.
+ */
+export class DataLoadError extends Error {
+  constructor(message, worldId) {
+    super(message);
+    this.name = 'DataLoadError';
+    this.worldId = worldId;
+  }
+}
 
 function checkStatus(resp, label) {
   if (!resp.ok) {
@@ -12,32 +30,90 @@ function checkStatus(resp, label) {
   return resp;
 }
 
+/**
+ * Fetch with 1 automatic retry (1s delay) on network failure.
+ * Keeps Data layer pure — only throws, never touches DOM.
+ * @param {string} url
+ * @param {string} label - human-readable label for error messages
+ * @param {number} [retries=1]
+ * @returns {Promise<Response>}
+ */
+async function fetchWithRetry(url, label, retries = 1) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const resp = await fetch(url);
+      return checkStatus(resp, label);
+    } catch (err) {
+      if (attempt < retries) {
+        console.warn(`[data-loader] Retrying ${label} (attempt ${attempt + 1}/${retries})…`);
+        await new Promise(r => setTimeout(r, 1000));
+      } else {
+        throw new DataLoadError(
+          `[data-loader] Failed to load ${label} after ${retries + 1} attempts: ${err.message}`,
+          label
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Cache-busting query parameter derived from <body data-version>.
+ * Read once at module init — never touches DOM again (Data layer constraint).
+ */
+const _version = (typeof document !== 'undefined'
+  && document.body
+  && document.body.dataset.version) || '';
+const _v = _version ? `?v=${_version}` : '';
+
+/**
+ * Load world data JSON, cached in memory after first fetch.
+ * @param {string} worldId
+ * @returns {Promise<Object>}
+ */
 export async function loadWorldData(worldId) {
   if (worldCache.has(worldId)) return worldCache.get(worldId);
-  const resp = checkStatus(await fetch(`./data/${worldId}.json`), worldId);
+  const resp = await fetchWithRetry(`./data/${worldId}.json${_v}`, worldId);
   const data = await resp.json();
   worldCache.set(worldId, data);
   return data;
 }
 
+/**
+ * Load the global event index (eventId → {worldId, branchId, eventIndex}).
+ * @returns {Promise<Object<string, {worldId: string, branchId: string, eventIndex: number}>>}
+ */
 export async function loadEventIndex() {
   if (indexCache.has('__idx')) return indexCache.get('__idx');
-  const resp = checkStatus(await fetch('./data/event-index.json'), 'event-index');
+  const resp = await fetchWithRetry(`./data/event-index.json${_v}`, 'event-index');
   const idx = await resp.json();
   indexCache.set('__idx', idx);
   return idx;
 }
 
+/**
+ * @param {string} worldId
+ * @returns {Promise<import('./data-access.js').World>}
+ */
 export async function getWorldMeta(worldId) {
   const data = await loadWorldData(worldId);
   return data.world;
 }
 
+/**
+ * @param {string} worldId
+ * @returns {Promise<import('./data-access.js').Branch[]>}
+ */
 export async function getBranches(worldId) {
   const data = await loadWorldData(worldId);
   return data.branches || [];
 }
 
+/**
+ * @param {string} worldId
+ * @param {string} branchId
+ * @returns {Promise<import('./data-access.js').Event[]>}
+ */
 export async function getBranchEvents(worldId, branchId) {
   const data = await loadWorldData(worldId);
   for (const branch of (data.branches || [])) {
@@ -50,6 +126,10 @@ export async function getBranchEvents(worldId, branchId) {
   return [];
 }
 
+/**
+ * @param {string} eventId
+ * @returns {Promise<import('./data-access.js').Event|null>}
+ */
 export async function findEventById(eventId) {
   const index = await loadEventIndex();
   const loc = index[eventId];
@@ -59,7 +139,13 @@ export async function findEventById(eventId) {
   return events[loc.eventIndex] || null;
 }
 
-/** Parse date string to sortable numeric value */
+/**
+ * Parse date string to sortable numeric value.
+ * Handles diverse formats: "1096.12.23", "约纪元前12200", "-35", "???-1096", "~+200".
+ * Pure function — no side effects.
+ * @param {string} dateRaw
+ * @returns {number}
+ */
 export function dateSortVal(dateRaw) {
   const d = String(dateRaw || '');
   // Recursive unknown prefix
@@ -95,7 +181,12 @@ export function dateSortVal(dateRaw) {
   return parseInt(d, 10) || 0;
 }
 
-/** Format era title with brackets */
+/**
+ * Format an era title with 【】 brackets if not already present.
+ * Pure function — no side effects.
+ * @param {string} era
+ * @returns {string}
+ */
 export function eraLabel(era) {
   const raw = era || '';
   if (raw.startsWith('【')) return raw;

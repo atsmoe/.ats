@@ -61,6 +61,97 @@ async function buildCSS() {
   }
 }
 
+/**
+ * Build-time image optimization pipeline.
+ * Scans data JSON for referenced images, generates WebP at 320/640/960,
+ * and post-processes dist data JSON to point src at the 960w WebP.
+ */
+async function buildImages() {
+  const Image = require('@11ty/eleventy-img');
+
+  // Collect unique image paths referenced in source data JSON
+  const dataDir = path.join(__dirname, 'src', '_data');
+  const imageRefs = new Set();
+  for (const file of fs.readdirSync(dataDir).filter(f => f.endsWith('.json'))) {
+    const content = fs.readFileSync(path.join(dataDir, file), 'utf-8');
+    const matches = content.matchAll(/"src"\s*:\s*"\.\/assets\/images\/([^"]+)"/g);
+    for (const m of matches) imageRefs.add(m[1]);
+  }
+
+  if (imageRefs.size === 0) {
+    console.log('[build] No images referenced in data — skipping optimisation.');
+    return;
+  }
+
+  console.log(`[build] Optimising ${imageRefs.size} referenced images…`);
+
+  let count = 0, skipped = 0;
+  let totalRaw = 0, totalWebp = 0;
+  const processed = new Set(); // relPath → true (for post-processing)
+
+  // Process in parallel batches of 8 to keep memory in check
+  const CONCURRENCY = 8;
+  const refs = [...imageRefs];
+  for (let i = 0; i < refs.length; i += CONCURRENCY) {
+    const batch = refs.slice(i, i + CONCURRENCY);
+    await Promise.all(batch.map(async (relPath) => {
+      const srcPath = path.join(__dirname, 'src', 'assets', 'images', relPath);
+      if (!fs.existsSync(srcPath)) { skipped++; return; }
+
+      const originalSize = fs.statSync(srcPath).size;
+      const outputDir = path.join(DIST, 'assets', 'images', path.dirname(relPath));
+      fs.mkdirSync(outputDir, { recursive: true });
+      const name = path.basename(relPath, path.extname(relPath));
+
+      try {
+        const metadata = await Image(srcPath, {
+          widths: [320, 640, 960],
+          formats: ['webp'],
+          outputDir,
+          urlPath: `./assets/images/${path.dirname(relPath)}/`,
+          sharpWebpOptions: { quality: 75 },
+          filenameFormat: (_id, _src, width, format) => `${name}-${width}w.${format}`,
+        });
+
+        const webp960 = metadata.webp?.find(m => m.width === 960);
+        if (webp960) {
+          totalRaw += originalSize;
+          totalWebp += webp960.size;
+          processed.add(relPath);
+        }
+        count++;
+      } catch (err) {
+        console.warn(`  ⚠ Skipping ${relPath}: ${err.message}`);
+        skipped++;
+      }
+    }));
+  }
+
+  const pct = totalRaw > 0 ? ((1 - totalWebp / totalRaw) * 100).toFixed(0) : 0;
+  console.log(`[build] Images: ${count} processed, ${skipped} skipped, ${totalRaw > 0 ? `960w WebP ${pct}% smaller (${(totalRaw/1024/1024).toFixed(1)}MB → ${(totalWebp/1024/1024).toFixed(1)}MB)` : ''}`);
+
+  // Post-process dist data JSON: point src at 960w WebP instead of original
+  if (processed.size > 0) {
+    const distDataDir = path.join(DIST, 'data');
+    for (const file of fs.readdirSync(distDataDir).filter(f => f.endsWith('.json') && f !== 'event-index.json')) {
+      const filePath = path.join(distDataDir, file);
+      let content = fs.readFileSync(filePath, 'utf-8');
+      let changed = false;
+      for (const relPath of processed) {
+        const webpName = path.basename(relPath, path.extname(relPath)) + '-960w.webp';
+        const webpRef = './assets/images/' + path.dirname(relPath).replace(/\\/g, '/') + '/' + webpName;
+        const origRef = './assets/images/' + relPath.replace(/\\/g, '/');
+        if (content.includes(origRef)) {
+          content = content.split(origRef).join(webpRef);
+          changed = true;
+        }
+      }
+      if (changed) fs.writeFileSync(filePath, content);
+    }
+    console.log('[build] Updated dist data JSON → image src now points to 960w WebP.');
+  }
+}
+
 async function main() {
   console.log('========================================');
   console.log('  群星之间 · 编年史 — Build');
@@ -78,7 +169,10 @@ async function main() {
   // Step 2: Copy CSS
   await buildCSS();
 
-  // Step 3: Verify critical output files
+  // Step 3: Optimize images (WebP generation)
+  await buildImages();
+
+  // Step 4: Verify critical output files
   const criticalFiles = [
     'js/bundle.js',
     'js/star-map-3d.js',

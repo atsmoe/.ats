@@ -6,6 +6,39 @@ import { BackgroundManager } from './background-manager.js';
 import { initNav } from './nav.js';
 import { ANIM } from './anim-tokens.js';
 
+/**
+ * Render a themed error card when world data fails to load.
+ * UI layer only — does not touch Data or Engine layers.
+ * @param {string} worldId
+ * @param {Function} onRetry - callback when user clicks "重新连接"
+ */
+function showErrorState(worldId, onRetry) {
+  const container = document.getElementById('tl-container');
+  if (!container) return;
+
+  // Hide normal timeline UI
+  const branchTabs = document.getElementById('branch-tabs');
+  if (branchTabs) branchTabs.style.display = 'none';
+
+  container.innerHTML = '';
+  container.style.display = 'flex';
+  container.style.alignItems = 'center';
+  container.style.justifyContent = 'center';
+  container.style.minHeight = '60vh';
+
+  const card = document.createElement('div');
+  card.className = 'error-card';
+  card.innerHTML = `
+    <div class="error-icon">✦</div>
+    <h3 class="error-title">星图信号中断</h3>
+    <p class="error-desc">无法连接到 ${worldId} 的编年史数据<br>请检查网络连接后重试</p>
+    <button class="error-retry-btn">重新连接</button>
+  `;
+
+  card.querySelector('.error-retry-btn').addEventListener('click', onRetry);
+  container.appendChild(card);
+}
+
 function dismissPortalOverlay() {
   const el = document.getElementById('portal-arrival');
   if (el) {
@@ -61,11 +94,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       updateTimelineCover(worldId);
     } catch (err) {
       console.error('Failed to load world data:', err);
-      const coverH1 = document.querySelector('.tl-cover h1');
-      const coverP = document.querySelector('.tl-cover p');
-      if (coverH1) coverH1.textContent = '数据加载失败';
-      if (coverP) coverP.textContent = '请确保 data/' + worldId + '.json 存在';
       dismissPortalOverlay();
+      showErrorState(worldId, () => {
+        // Retry: reload the page (simplest full reset)
+        window.location.reload();
+      });
     }
 
     initPortalArrival();

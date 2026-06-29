@@ -286,12 +286,29 @@ dist/
 
 **存储**：`src/assets/images/` 和 `src/assets/videos/`，11ty passthrough 复制到 `dist/assets/`。
 
-**JSON 扩展**（未来）：
+**图片优化管线**（V2.42+）：
+- `build.js` 在构建时调用 `buildImages()`，扫描数据 JSON 中引用的图片
+- 对每张图片使用 `@11ty/eleventy-img`（底层 sharp）生成 WebP 格式，宽度 320/640/960
+- 构建后处理 `dist/data/*.json`，自动将 `src` 指向 960w WebP 版本
+- 原尺寸 PNG 仍通过 11ty passthrough 保留作为兜底
+
+**JSON 扩展**：
 ```json
 {
-  "images": [{ "src": "./assets/images/xxx.jpg", "alt": "...", "type": "medium" }],
+  "images": [{
+    "src": "./assets/images/xxx.webp",
+    "alt": "...",
+    "width": 960,
+    "height": 540
+  }],
   "video": { "src": "./assets/videos/xxx.mp4", "poster": "./assets/images/xxx-poster.jpg" }
 }
 ```
+- `width` / `height` 为可选字段，若存在则必须是 Number（渐进式校验，validate-data.js 仅 warn）
+
+**运行时渲染**（timeline-ui.js）：
+- 首张图片 `loading="eager"`，后续 `loading="lazy"`
+- 全部图片 `decoding="async"`，避免阻塞主线程
+- 若数据提供 `width`/`height`，直接设置 `img.width`/`img.height` 消除 CLS
 
 **实现方式**：原生 HTML（`<dialog>` 灯箱、`<video>` 播放器、CSS transform 缩放），不引入 UI 库。

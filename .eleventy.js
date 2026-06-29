@@ -33,6 +33,10 @@ module.exports = function (eleventyConfig) {
     return result;
   });
 
+  // Build version for cache busting — injected into <body data-version>
+  // Uses GITHUB_SHA in CI, falls back to timestamp-based hash
+  eleventyConfig.addGlobalData('buildVersion', process.env.GITHUB_SHA || Date.now().toString(36));
+
   return {
     dir: {
       input: 'src',

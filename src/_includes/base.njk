@@ -16,7 +16,7 @@
     {% inlineCSS cssFiles %}
   {% endif %}
 </head>
-<body class="{{ bodyClass }}" data-page="{{ pageType }}" {% if worldId %}data-world="{{ worldId }}"{% endif %}>
+<body class="{{ bodyClass }}" data-page="{{ pageType }}" {% if worldId %}data-world="{{ worldId }}"{% endif %} data-version="{{ buildVersion }}">
 
   <!-- CRITICAL: portal arrival overlay — first element in body, not in any block -->
   <div id="portal-arrival" style="position:fixed;inset:0;z-index:9999;background:#060a14;opacity:1;pointer-events:all;"></div>

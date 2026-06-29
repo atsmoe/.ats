@@ -1,5 +1,21 @@
 [
   {
+    "version": "V2.5.0",
+    "date": "",
+    "color": "#7eb8a0",
+    "subtitle": "渲染管线重构 · 传送门性能修复 · 图片优化管线 · 容错与缓存",
+    "items": [
+      "<strong>传送门到达侧废除全量渲染</strong>：`portal-transition.js` 重写 `initPortalArrival()`——原逻辑\"关闭虚拟滚动 → 全量 DOM 构建 → 滚动 → 还原虚拟滚动\"在 876 事件下引发 DOM 爆炸和主线程阻塞。现改为直接 `VirtualTimeline.load()` + `estimateScrollTopByEventId()` 预估定位，仅渲染视口 ~15 个节点，动画完成后无需二次加载",
+      "<strong>虚拟滚动引擎扩展</strong>：`VirtualTimeline` 新增 `estimateScrollTopByEventId(eventId)` 纯函数，遍历已加载 item 列表累加高度返回目标偏移；到达侧若目标在首屏 20 个事件内则跳过手动滚动",
+      "<strong>网络异常容错</strong>：`data-loader.js` 新增 `fetchWithRetry()`（首请求失败后等待 1s 重试 1 次）+ `DataLoadError` 自定义错误类；失败后 UI 层渲染\"星图信号中断\"主题错误卡片含重连按钮，替代原先 cover 文字替换和白屏",
+      "<strong>图片优化管线</strong>：接入 `@11ty/eleventy-img`，`build.js` 新增 `buildImages()` 步骤——扫描数据 JSON 中引用的图片 → 生成 320/640/960w WebP → 后处理 `dist/data/*.json` 自动将 `src` 指向 960w WebP。FF14 162 张引用图片 7.6MB → 1.3MB（83% 缩减）",
+      "<strong>渐进式 JSON Schema 扩展</strong>：`validate-data.js` 新增 `images[].width` / `images[].height` 可选字段校验（若存在则必须是 Number，不存在不报错）",
+      "<strong>图片渲染优化</strong>：`timeline-ui.js` 首张图片 `loading=\"eager\"`、余图 `lazy`；全部 `decoding=\"async\"` 异步解码；数据提供 width/height 时直接设置属性消除 CLS",
+      "<strong>Fetch 缓存控制</strong>：`.eleventy.js` 注入 `buildVersion`（CI 用 GITHUB_SHA，本地用时间戳 hash），`base.njk` 写入 `<body data-version>`，`data-loader.js` 模块初始化时读取并追加 `?v=` 到所有 fetch URL，发版后自动打破缓存",
+      "<strong>JSDoc 类型注解</strong>：`data-access.js` 新增 `@typedef`（World / Event / Branch / ImageData / CrossRef），`data-loader.js` 新增 `@typedef Era`，三个核心文件全部 export 函数补齐 `@param`/`@returns`"
+    ]
+  },
+  {
     "version": "V2.41",
     "date": "",
     "color": "#c9a050",

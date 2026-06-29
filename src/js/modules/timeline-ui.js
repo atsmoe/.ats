@@ -653,11 +653,15 @@ function openEventModal(evt) {
   imgEl.style.display = 'none';
   if (evt.images && evt.images.length > 0) {
     imgEl.style.display = 'block';
-    for (const imgData of evt.images) {
+    for (let i = 0; i < evt.images.length; i++) {
+      const imgData = evt.images[i];
       const img = document.createElement('img');
       img.src = imgData.src;
       img.alt = imgData.alt || evt.title || '';
-      img.loading = 'lazy';
+      img.loading = i === 0 ? 'eager' : 'lazy'; // first image eager, rest lazy
+      img.decoding = 'async';                    // don't block main thread on decode
+      if (imgData.width) img.width = imgData.width;
+      if (imgData.height) img.height = imgData.height;
       imgEl.appendChild(img);
     }
   }

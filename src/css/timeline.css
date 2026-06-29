@@ -569,3 +569,53 @@
   box-shadow: 0 0 16px rgba(201,160,80,0.2);
   color: var(--gold);
 }
+
+/* ═══════════════════════════════════════════════════
+   Error state — "星图信号中断" card
+   ═══════════════════════════════════════════════════ */
+.error-card {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 48px 32px;
+  max-width: 420px;
+  border: 1px solid rgba(201,160,80,0.15);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+}
+.error-icon {
+  font-size: 48px;
+  color: var(--gold-dim);
+  margin-bottom: 16px;
+  animation: errorPulse 2s ease-in-out infinite;
+}
+@keyframes errorPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.error-title {
+  font-size: 20px; font-weight: 600;
+  color: var(--gold);
+  margin: 0 0 8px;
+}
+.error-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin: 0 0 24px;
+}
+.error-retry-btn {
+  padding: 10px 32px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  background: rgba(201,160,80,0.08);
+  color: var(--gold);
+  font-size: 14px; font-family: inherit;
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.error-retry-btn:hover {
+  background: rgba(201,160,80,0.18);
+  box-shadow: 0 0 12px rgba(201,160,80,0.12);
+}
