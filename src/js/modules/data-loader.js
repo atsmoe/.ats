@@ -71,10 +71,38 @@ const _v = _version ? `?v=${_version}` : '';
  * @param {string} worldId
  * @returns {Promise<Object>}
  */
+/**
+ * Rebuild flat events array from eras for O(1) eventIndex access.
+ * The JSON only stores eras (events nested) to avoid doubling payload.
+ * @param {Object} branch
+ */
+function rebuildBranchEvents(branch) {
+  const events = [];
+  for (const era of (branch.eras || [])) {
+    for (const evt of (era.events || [])) {
+      events.push(evt);
+    }
+  }
+  // Preserve endings from sub-branches (not in eras)
+  if (branch.subBranches) {
+    for (const sub of branch.subBranches) {
+      rebuildBranchEvents(sub);
+      if (sub.endings) {
+        for (const e of sub.endings) events.push(e);
+      }
+    }
+  }
+  branch.events = events;
+}
+
 export async function loadWorldData(worldId) {
   if (worldCache.has(worldId)) return worldCache.get(worldId);
   const resp = await fetchWithRetry(`./data/${worldId}.json${_v}`, worldId);
   const data = await resp.json();
+  // Rebuild flat events arrays from eras (removed from JSON to save ~50% payload)
+  for (const branch of (data.branches || [])) {
+    rebuildBranchEvents(branch);
+  }
   worldCache.set(worldId, data);
   return data;
 }

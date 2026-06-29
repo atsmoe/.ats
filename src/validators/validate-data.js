@@ -131,14 +131,9 @@ function validateCrossRefs(globalEventIds) {
 }
 
 function flattenBranchEvents(branch) {
-  const eras = branch.eras || [];
-  const events = [];
-  for (const era of eras) {
-    for (const evt of (era.events || [])) {
-      events.push(evt);
-    }
-  }
-  return { eras, events };
+  // Only return eras — the flat events array is rebuilt at runtime
+  // by data-loader.js to avoid doubling the JSON payload.
+  return { eras: branch.eras || [] };
 }
 
 function flattenWorld(data) {
@@ -151,14 +146,13 @@ function flattenWorld(data) {
   for (const entity of subEntities) {
     if (!entity.timeline || !entity.timeline.branches) continue;
     for (const branch of entity.timeline.branches) {
-      const { eras, events } = flattenBranchEvents(branch);
+      const { eras } = flattenBranchEvents(branch);
       const flatBranch = {
         id: branch.id,
         name: branch.name,
         isDefault: branch.isDefault || false,
         type: branch.type,
         eras,
-        events,
       };
 
       if (branch.subBranches) {
@@ -171,7 +165,6 @@ function flattenWorld(data) {
             type: sub.type,
             divergeAtEventId: sub.divergeAtEventId,
             eras: subFlat.eras,
-            events: subFlat.events,
           };
           if (sub.endings) {
             flatSub.endings = sub.endings;
@@ -344,13 +337,13 @@ async function main() {
   for (const worldId of WORLDS) {
     if (allFlatData[worldId]) {
       const outPath = path.join(DIST_DATA, `${worldId}.json`);
-      fs.writeFileSync(outPath, JSON.stringify(allFlatData[worldId], null, 2), 'utf-8');
+      fs.writeFileSync(outPath, JSON.stringify(allFlatData[worldId]), 'utf-8');
       console.log(`[build] Written ${outPath}`);
     }
   }
 
   const indexPath = path.join(DIST_DATA, 'event-index.json');
-  fs.writeFileSync(indexPath, JSON.stringify(eventIndex, null, 2), 'utf-8');
+  fs.writeFileSync(indexPath, JSON.stringify(eventIndex), 'utf-8');
   console.log(`[build] Written ${indexPath} (${Object.keys(eventIndex).length} events indexed)`);
 
   // Report

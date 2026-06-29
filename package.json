@@ -1,6 +1,6 @@
 {
   "name": "between-the-stars-chronicles",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "description": "群星之间 · 编年史 — 可视化虚拟历史查阅工具",
   "private": true,
   "scripts": {
