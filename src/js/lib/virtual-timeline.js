@@ -342,15 +342,9 @@ const VirtualTimeline = {
   },
 };
 
-/* ── Scroll + resize handlers ── */
-window.addEventListener('scroll', () => {
-  if (VirtualTimeline.items.length > 0) {
-    VirtualTimeline.update();
-    updateEraNavHighlight();
-  }
-  updateBackToTop();
-}, { passive: true });
-
+/* ── Resize handler ──
+   Scroll handling is done by timeline-ui.js (RAF-throttled) to avoid
+   duplicate update() / updateEraNavHighlight() calls per frame. */
 window.addEventListener('resize', () => {
   if (VirtualTimeline.items.length > 0) {
     VirtualTimeline.update();
@@ -433,9 +427,11 @@ function updateBackToTop() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Direct DOM renderer (for short IF branches — no virtual scroll)
+   Direct DOM renderer — kept inside VirtualTimeline for future
+   use with very short branches that don't benefit from virtual scroll.
+   Currently invoked by timeline-ui.js renderEvents() for IF branches.
    ═══════════════════════════════════════════════════════════ */
-function renderEventsDirect(eraGroups, branch) {
+VirtualTimeline._renderEventsDirect = function(eraGroups) {
   const container = document.getElementById('tl-container');
   container.innerHTML = '';
   container.style.position = '';
@@ -445,7 +441,6 @@ function renderEventsDirect(eraGroups, branch) {
 
   let idx = 0;
   eraGroups.forEach(group => {
-    // Era header
     const hdr = document.createElement('div');
     hdr.className = 'tl-era-header visible';
     hdr.style.paddingTop = '80px';
@@ -491,36 +486,11 @@ function renderEventsDirect(eraGroups, branch) {
       idx++;
     });
   });
-}
-
-/* ═══════════════════════════════════════════════════════════
-   renderEvents — virtual scroll for mainline, direct for IF
-   ═══════════════════════════════════════════════════════════ */
-window.renderEvents = function(branch) {
-  const eraGroups = getBranchEvents(branch);
-
-  if (branch === 'mainline') {
-    // Virtual scrolling for main timeline (100+ events)
-    VirtualTimeline.container = document.getElementById('tl-container');
-    VirtualTimeline.clear();
-    VirtualTimeline.load(eraGroups);
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => {
-      VirtualTimeline.update();
-      buildEraNav();
-      updateEraNavHighlight();
-      eraNav.classList.add('active');
-    });
-  } else {
-    // Direct rendering for IF branches (short, ~5-10 events)
-    VirtualTimeline.clear();
-    renderEventsDirect(eraGroups, branch);
-    eraNav.innerHTML = '';
-    eraNav.classList.remove('active');
-  }
 };
 
-// Hide nav when returning to star map
+/* ═══════════════════════════════════════════════════════════
+   Star-map nav link — hide era nav when navigating away
+   ═══════════════════════════════════════════════════════════ */
 const navLink = document.querySelector('.nav-links a');
 if (navLink) {
   navLink.addEventListener('click', () => {
