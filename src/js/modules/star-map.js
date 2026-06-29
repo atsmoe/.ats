@@ -139,12 +139,13 @@ export function initStarMap() {
 
   // Marker hover/click
   const markers = document.querySelectorAll('.galaxy-marker');
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   markers.forEach(marker => {
     const gid = marker.dataset.world;
     const g = GALAXIES[gid];
     if (!g) return;
 
-    marker.addEventListener('mouseenter', () => {
+    function positionTooltip() {
       gtName.textContent = g.name;
       gtSub.textContent = g.subtitle;
       const mx = parseInt(marker.style.left);
@@ -158,20 +159,56 @@ export function initStarMap() {
       if (ty + tipH > window.innerHeight - 12) ty = window.innerHeight - tipH - 12;
       galaxyTooltipEl.style.left = tx + 'px';
       galaxyTooltipEl.style.top = ty + 'px';
+    }
+
+    marker.addEventListener('mouseenter', () => {
+      positionTooltip();
       galaxyTooltipEl.classList.add('visible');
       marker.classList.add('hovered');
     });
 
     marker.addEventListener('mouseleave', () => {
-      galaxyTooltipEl.classList.remove('visible');
-      marker.classList.remove('hovered');
+      if (!marker.classList.contains('selected')) {
+        galaxyTooltipEl.classList.remove('visible');
+        marker.classList.remove('hovered');
+      }
     });
 
-    marker.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showGalaxyDetail(gid);
-    });
+    if (isTouchDevice) {
+      marker.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!marker.classList.contains('selected')) {
+          // First tap: show tooltip + highlight
+          document.querySelectorAll('.galaxy-marker.selected').forEach(m => m.classList.remove('selected'));
+          positionTooltip();
+          galaxyTooltipEl.classList.add('visible');
+          marker.classList.add('selected');
+        } else {
+          // Second tap: open detail
+          marker.classList.remove('selected');
+          galaxyTooltipEl.classList.remove('visible');
+          showGalaxyDetail(gid);
+        }
+      });
+    } else {
+      marker.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showGalaxyDetail(gid);
+      });
+    }
   });
+
+  // Tap outside to deselect on touch devices
+  if (isTouchDevice) {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.galaxy-marker')) {
+        document.querySelectorAll('.galaxy-marker.selected').forEach(m => {
+          m.classList.remove('selected');
+        });
+        if (galaxyTooltipEl) galaxyTooltipEl.classList.remove('visible');
+      }
+    });
+  }
 
   // Detail close
   detailOverlay.addEventListener('click', () => { if (detailGalaxy) hideGalaxyDetail(); });

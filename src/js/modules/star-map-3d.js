@@ -15,10 +15,20 @@ const CLUSTERS = {
 };
 
 const isMobile = window.innerWidth < 768;
-const BG_COUNT = isMobile ? 30000 : 150000;
-const CORE_COUNT = isMobile ? 10000 : 50000;
-const DISK_COUNT = isMobile ? 7000 : 33000;
-const RING_PARTICLES = isMobile ? 3000 : 15000; // per ring
+// Performance tier: low = reduce particles & pixel ratio
+const perfTier = (() => {
+  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const lowMem = navigator.deviceMemory && navigator.deviceMemory < 4;
+  const lowCores = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
+  if (lowMem || (mobile && lowCores)) return 'low';
+  if (mobile || isMobile) return 'standard';
+  return 'high';
+})();
+
+const BG_COUNT = perfTier === 'low' ? 15000 : (isMobile ? 30000 : 150000);
+const CORE_COUNT = perfTier === 'low' ? 5000 : (isMobile ? 10000 : 50000);
+const DISK_COUNT = perfTier === 'low' ? 3500 : (isMobile ? 7000 : 33000);
+const RING_PARTICLES = perfTier === 'low' ? 1500 : (isMobile ? 3000 : 15000);
 const SHELL_RADIUS = 35;
 const SHELL_THICKNESS = 3;
 const CLUSTER_SCALE = isMobile ? 0.4 : 1;
@@ -400,15 +410,16 @@ export function init(canvasId) {
 
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const maxPixelRatio = perfTier === 'low' ? 1 : (isMobile ? 1.5 : 2);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.enablePan = true;
+  controls.enablePan = !isMobile;
   controls.enableZoom = true;
-  controls.minDistance = 8;
+  controls.minDistance = isMobile ? 12 : 8;
   controls.maxDistance = 39;
-  controls.autoRotate = true;
+  controls.autoRotate = !isMobile;
   controls.autoRotateSpeed = 0.3;
   controls.dampingFactor = 0.05;
   controls.enableRotate = true;

@@ -2,7 +2,7 @@
   <div class="nav-left">
     <a href="./index.html" class="nav-brand{% if pageType === 'star-map' %} active{% endif %}">群 星 之 间</a>
 
-    <div class="nav-worlds-dropdown">
+    <div class="nav-worlds-dropdown nav-worlds-dropdown--desktop">
       <button class="nav-worlds-trigger">世界 <span class="arrow">▾</span></button>
       <div class="nav-worlds-menu">
         {% for world in site.worldList %}
@@ -16,4 +16,26 @@
     <a href="./changelog.html" class="{% if title === '更新日志' %}active{% endif %}">更新日志</a>
     <a href="./about.html" class="{% if pageType === 'about' %}active{% endif %}">关于</a>
   </div>
+
+  {# Hamburger toggle — visible on mobile only #}
+  <button class="nav-toggle" id="nav-toggle" aria-label="菜单" aria-expanded="false">
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+  </button>
 </nav>
+
+{# Mobile slide-in menu #}
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <div class="nav-mobile-worlds">
+    <span class="nav-mobile-heading">世界</span>
+    {% for world in site.worldList %}
+    <a href="./{{ world.page }}" class="nav-worlds-item{% if worldId === world.id %} active{% endif %}">{{ world.name }}</a>
+    {% endfor %}
+  </div>
+  <div class="nav-mobile-links">
+    <a href="./changelog.html" class="{% if title === '更新日志' %}active{% endif %}">更新日志</a>
+    <a href="./about.html" class="{% if pageType === 'about' %}active{% endif %}">关于</a>
+  </div>
+</div>
+<div class="nav-mobile-backdrop" id="nav-mobile-backdrop"></div>

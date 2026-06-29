@@ -5,6 +5,20 @@
 import { BG_PRESETS } from './bg-presets.js';
 import { GALAXIES, galaxyAnim } from './galaxies.js';
 
+/* ── Performance tier detection ── */
+export function getPerformanceTier() {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isLowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
+  const isLowCores = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
+
+  if (isLowMemory || (isMobile && isLowCores)) return 'low';
+  if (isMobile) return 'standard';
+  return 'high';
+}
+
+const PERF_TIER = getPerformanceTier();
+const PREFERS_REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 /* ── Utility ── */
 function gaussRand(mean, stdev) {
   let u = 0, v = 0;
@@ -109,7 +123,8 @@ export class ParticleBackground {
 
   _rebuildNebulae() {
     this.nebulae.length = 0;
-    const count = this.preset.nebulaCount;
+    let count = this.preset.nebulaCount;
+    if (PERF_TIER === 'low') count = Math.min(count, 3);
     for (let i = 0; i < count; i++) {
       const size = Math.max(this.W, this.H) * (0.8 + Math.random() * 1.2);
       this.nebulae.push({
@@ -138,7 +153,10 @@ export class ParticleBackground {
     const coreX = this.W * 0.48;
     const coreY = this.H * 0.44;
 
-    for (let i = 0; i < this.preset.stars; i++) {
+    const starMultiplier = PERF_TIER === 'low' ? 0.5 : 1;
+    const effectiveStars = Math.round(this.preset.stars * starMultiplier);
+
+    for (let i = 0; i < effectiveStars; i++) {
       let x, y;
       const type = Math.random();
 
@@ -290,7 +308,7 @@ export class ParticleBackground {
       if (s.brightness > 0.50 && ef > 0.15) {
         this._drawStarGlow(s.x, s.y, s.radius * 2, eBrightness, s.colorTemp);
       }
-      if (s.brightness > 0.75 && ef > 0.25) {
+      if (s.brightness > 0.75 && ef > 0.25 && PERF_TIER !== 'low') {
         this._drawDiffractionSpike(s.x, s.y, s.radius * 8 + eBrightness * 18, eBrightness, s.colorTemp);
       }
       ctx.beginPath();
@@ -412,8 +430,20 @@ export class ParticleBackground {
   }
 
   _start() {
-    const loop = () => {
+    if (PREFERS_REDUCED_MOTION) {
+      // Render a single static frame, then stop
       this._frame();
+      return;
+    }
+
+    const frameInterval = PERF_TIER === 'low' ? 33 : 16; // ~30fps vs ~60fps
+    let lastFrame = 0;
+
+    const loop = (timestamp) => {
+      if (timestamp - lastFrame >= frameInterval) {
+        this._frame();
+        lastFrame = timestamp;
+      }
       this.animId = requestAnimationFrame(loop);
     };
     this.animId = requestAnimationFrame(loop);

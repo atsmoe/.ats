@@ -3,7 +3,9 @@
    ═══════════════════════════════════════════════════════════ */
 
 import { BG_PRESETS } from './bg-presets.js';
-import { ParticleBackground } from './particle-background.js';
+import { ParticleBackground, getPerformanceTier } from './particle-background.js';
+
+const PERF_TIER = getPerformanceTier();
 
 export const BackgroundManager = {
   canvas: null,
@@ -29,6 +31,14 @@ export const BackgroundManager = {
     // Hide all
     if (this.videoEl) { this.videoEl.style.display = 'none'; this.videoEl.pause(); }
     if (this.imageEl) this.imageEl.style.display = 'none';
+
+    // For extreme low-end (< 2GB RAM), skip canvas animation entirely
+    if (PERF_TIER === 'low' && navigator.deviceMemory && navigator.deviceMemory < 2) {
+      if (this.canvas) this.canvas.style.display = 'none';
+      document.body.style.background = preset.baseBackground;
+      return;
+    }
+
     if (this.canvas) this.canvas.style.display = 'block';
 
     if (preset.type === 'particles') {

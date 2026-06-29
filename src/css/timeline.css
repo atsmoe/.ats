@@ -60,6 +60,7 @@
   position: sticky; top: var(--nav-h); z-index: 30;
   overflow-x: auto; white-space: nowrap;
   -ms-overflow-style: none; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 .tl-branches::-webkit-scrollbar { display: none; }
 .tl-branch-tab {
@@ -153,10 +154,17 @@
   background: linear-gradient(90deg, transparent, rgba(201,160,80,0.2), transparent);
   opacity: 0; transition: opacity 0.3s;
 }
-.event-card:hover::before { opacity: 1; }
-.event-card:hover {
-  border-color: rgba(201,160,80,0.3);
-  box-shadow: 0 12px 48px rgba(201,160,80,0.08);
+@media (hover: hover) {
+  .event-card:hover::before { opacity: 1; }
+  .event-card:hover {
+    border-color: rgba(201,160,80,0.3);
+    box-shadow: 0 12px 48px rgba(201,160,80,0.08);
+  }
+}
+/* Touch: brief highlight on tap */
+.event-card:active {
+  border-color: rgba(201,160,80,0.25);
+  box-shadow: 0 4px 16px rgba(201,160,80,0.06);
 }
 
 /* Connector line from card to axis */
@@ -453,6 +461,7 @@
   background: #0b0906;
   position: sticky; top: calc(var(--nav-h) + 48px); z-index: 29;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 .tl-sub-branches::-webkit-scrollbar { display: none; }
 

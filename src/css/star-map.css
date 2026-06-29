@@ -51,7 +51,8 @@ body[data-page="star-map"] footer {
 }
 
 .galaxy-marker.hovered .galaxy-marker-glow,
-.galaxy-marker:hover .galaxy-marker-glow {
+.galaxy-marker:hover .galaxy-marker-glow,
+.galaxy-marker.selected .galaxy-marker-glow {
   opacity: 0.3;
   transform: translate(-50%, -50%) scale(1.4);
 }
@@ -70,7 +71,8 @@ body[data-page="star-map"] footer {
 }
 
 .galaxy-marker.hovered .galaxy-marker-core,
-.galaxy-marker:hover .galaxy-marker-core {
+.galaxy-marker:hover .galaxy-marker-core,
+.galaxy-marker.selected .galaxy-marker-core {
   transform: translate(-50%, -50%) scale(1.5);
   box-shadow: 0 0 12px var(--marker-color), 0 0 30px var(--marker-color), 0 0 50px var(--marker-color);
 }
@@ -93,7 +95,8 @@ body[data-page="star-map"] footer {
 }
 
 .galaxy-marker.hovered .galaxy-marker-label,
-.galaxy-marker:hover .galaxy-marker-label {
+.galaxy-marker:hover .galaxy-marker-label,
+.galaxy-marker.selected .galaxy-marker-label {
   opacity: 1;
   color: var(--text);
 }

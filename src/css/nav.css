@@ -133,3 +133,129 @@ nav.visible { transform: translateY(0); }
   transition: color 0.3s;
 }
 .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+/* ============================================================
+   Hamburger Toggle
+   ============================================================ */
+.nav-toggle {
+  display: none; /* hidden on desktop */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 44px; height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(201,160,80,0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 101;
+  transition: border-color 0.3s;
+}
+.nav-toggle:active {
+  border-color: var(--gold);
+  background: rgba(201,160,80,0.06);
+}
+.nav-toggle-bar {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--gold-dim);
+  border-radius: 1px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s ease,
+              background 0.3s;
+  transform-origin: center;
+}
+
+/* Hamburger → X animation */
+.nav-toggle.active .nav-toggle-bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.nav-toggle.active .nav-toggle-bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.nav-toggle.active .nav-toggle-bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ============================================================
+   Mobile Slide-in Menu
+   ============================================================ */
+.nav-mobile-menu {
+  display: none; /* hidden on desktop */
+  position: fixed; top: var(--nav-h); right: 0; bottom: 0;
+  width: min(300px, 80vw);
+  background: rgba(8,8,16,0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(201,160,80,0.15);
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 99;
+  flex-direction: column;
+  padding: 24px 0;
+  overflow-y: auto;
+}
+.nav-mobile-menu.active { transform: translateX(0); }
+
+.nav-mobile-backdrop {
+  display: none; /* hidden on desktop */
+  position: fixed; inset: 0; top: var(--nav-h);
+  background: rgba(0,0,0,0.4);
+  z-index: 98;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.nav-mobile-backdrop.active {
+  opacity: 1; pointer-events: auto;
+}
+
+.nav-mobile-heading {
+  display: block;
+  padding: 8px 24px 12px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(201,160,80,0.4);
+  text-transform: uppercase;
+}
+
+.nav-mobile-links {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(201,160,80,0.1);
+}
+.nav-mobile-links a {
+  display: flex; align-items: center;
+  padding: 14px 24px;
+  min-height: 48px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-mobile-links a:active,
+.nav-mobile-links a.active {
+  color: var(--gold);
+  background: rgba(201,160,80,0.08);
+}
+
+/* Mobile menu world items — larger touch targets */
+.nav-mobile-menu .nav-worlds-item {
+  display: flex; align-items: center;
+  padding: 14px 24px;
+  min-height: 48px;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+/* ============================================================
+   Touch device: suppress hover-based dropdown
+   ============================================================ */
+.touch-device .nav-worlds-dropdown--desktop:hover .nav-worlds-menu,
+.touch-device .nav-worlds-dropdown--desktop:focus-within .nav-worlds-menu {
+  opacity: 0;
+  pointer-events: none;
+}

@@ -119,6 +119,25 @@ footer {
 }
 
 /* ============================================================
+   Safe area (notched phones)
+   ============================================================ */
+@supports (padding: env(safe-area-inset-top)) {
+  :root {
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --safe-left: env(safe-area-inset-left);
+    --safe-right: env(safe-area-inset-right);
+  }
+  nav {
+    padding-left: calc(40px + var(--safe-left));
+    padding-right: calc(40px + var(--safe-right));
+  }
+  .tl-container {
+    padding-bottom: calc(200px + var(--safe-bottom));
+  }
+}
+
+/* ============================================================
    Reduced motion
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {

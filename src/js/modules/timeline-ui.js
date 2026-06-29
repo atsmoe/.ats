@@ -307,8 +307,11 @@ function buildEraNav(eraGroups) {
   eraNav.innerHTML = '';
 
   // Use VirtualTimeline items when available (has accurate top offsets)
-  if (typeof VirtualTimeline !== 'undefined' && VirtualTimeline.items && VirtualTimeline.items.length > 0) {
-    const eraItems = VirtualTimeline.items.filter(item => item.type === 'era-header');
+  const eraItems = (typeof VirtualTimeline !== 'undefined' && VirtualTimeline.items && VirtualTimeline.items.length > 0)
+    ? VirtualTimeline.items.filter(item => item.type === 'era-header')
+    : null;
+
+  if (eraItems) {
     eraItems.forEach(item => {
       const a = document.createElement('a');
       a.className = 'era-nav-dot';
@@ -321,10 +324,12 @@ function buildEraNav(eraGroups) {
       });
       eraNav.appendChild(a);
     });
+    buildMobileEraNav(eraItems);
     return;
   }
 
   // Fallback: build from eraGroups data (direct render / IF branches)
+  const fallbackEras = [];
   for (const group of eraGroups) {
     if (group.type === 'era' && group.eraTitle) {
       const a = document.createElement('a');
@@ -341,8 +346,81 @@ function buildEraNav(eraGroups) {
         }
       });
       eraNav.appendChild(a);
+      fallbackEras.push({ data: eraLabel(group.eraTitle), top: 0, fallback: true, index: fallbackEras.length });
     }
   }
+  if (fallbackEras.length > 0) {
+    buildMobileEraNav(fallbackEras);
+  }
+}
+
+/* ── Mobile era nav: floating button + popup list ── */
+function buildMobileEraNav(eraItems) {
+  // Remove previous mobile elements if any
+  const oldTrigger = eraNav.querySelector('.era-mobile-trigger');
+  const oldList = eraNav.querySelector('.era-mobile-list');
+  if (oldTrigger) oldTrigger.remove();
+  if (oldList) oldList.remove();
+
+  // Remove previous document click listener (avoid accumulation on branch switch)
+  if (eraNav._mobileDocClick) {
+    document.removeEventListener('click', eraNav._mobileDocClick);
+    eraNav._mobileDocClick = null;
+  }
+
+  if (eraItems.length === 0) return;
+
+  // Create trigger button
+  const trigger = document.createElement('button');
+  trigger.className = 'era-mobile-trigger';
+  trigger.textContent = '时代';
+  trigger.setAttribute('aria-label', '跳转时代');
+
+  // Create era list
+  const list = document.createElement('div');
+  list.className = 'era-mobile-list';
+
+  eraItems.forEach((item, idx) => {
+    const a = document.createElement('a');
+    a.className = 'era-mobile-item';
+    a.href = '#';
+    a.textContent = item.data;
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (item.fallback) {
+        const headers = document.querySelectorAll('.tl-era-header');
+        if (headers[item.index]) {
+          headers[item.index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } else {
+        window.scrollTo({ top: item.top + 80, behavior: 'smooth' });
+      }
+      list.classList.remove('active');
+    });
+    list.appendChild(a);
+  });
+
+  // Toggle list on trigger click
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    list.classList.toggle('active');
+  });
+
+  // Close list on outside click (store reference for cleanup)
+  const onDocClick = (e) => {
+    if (!eraNav.contains(e.target)) {
+      list.classList.remove('active');
+    }
+  };
+  document.addEventListener('click', onDocClick);
+  eraNav._mobileDocClick = onDocClick;
+
+  eraNav.appendChild(list);
+  eraNav.appendChild(trigger);
+
+  // Store references for scroll highlight updates
+  eraNav._mobileList = list;
+  eraNav._mobileItems = eraItems;
 }
 
 /* ── Era nav visibility: show only after cover scrolls out of view ── */
@@ -393,8 +471,12 @@ function updateEraNavHighlight() {
   if (dots.length === 0) return;
 
   // Use VirtualTimeline items with accurate top offsets (not DOM headers)
+  let eraItems;
   if (typeof VirtualTimeline !== 'undefined' && VirtualTimeline.items && VirtualTimeline.items.length > 0) {
-    const eraItems = VirtualTimeline.items.filter(item => item.type === 'era-header');
+    eraItems = VirtualTimeline.items.filter(item => item.type === 'era-header');
+  }
+
+  if (eraItems && eraItems.length > 0) {
     const scrollMid = window.scrollY + window.innerHeight * 0.4;
     let currentIdx = 0;
     for (let i = eraItems.length - 1; i >= 0; i--) {
@@ -405,21 +487,42 @@ function updateEraNavHighlight() {
     }
     dots.forEach(d => d.classList.remove('current'));
     if (dots[currentIdx]) dots[currentIdx].classList.add('current');
+
+    // Update mobile era list highlight
+    updateMobileEraHighlight(currentIdx);
     return;
   }
 
   // Fallback: use DOM headers (direct render / IF branches)
   const headers = document.querySelectorAll('.tl-era-header');
   let currentDot = null;
+  let currentIdx = 0;
   for (let i = 0; i < headers.length; i++) {
     const rect = headers[i].getBoundingClientRect();
     if (rect.top < window.innerHeight * 0.5) {
       currentDot = dots[i];
+      currentIdx = i;
     }
   }
   if (!currentDot) currentDot = dots[0];
   dots.forEach(d => d.classList.remove('current'));
   if (currentDot) currentDot.classList.add('current');
+
+  // Update mobile era list highlight
+  updateMobileEraHighlight(currentIdx);
+}
+
+function updateMobileEraHighlight(currentIdx) {
+  const list = eraNav._mobileList;
+  if (!list) return;
+  const items = list.querySelectorAll('.era-mobile-item');
+  items.forEach((item, i) => {
+    if (i === currentIdx) {
+      item.classList.add('current');
+    } else {
+      item.classList.remove('current');
+    }
+  });
 }
 
 /* ── Back to top ── */
