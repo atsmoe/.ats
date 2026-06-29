@@ -1,7 +1,7 @@
 [
   {
     "version": "V2.41",
-    "date": "2026-06-29",
+    "date": "",
     "color": "#c9a050",
     "subtitle": "移动端全面优化 · 触屏适配 · 低端设备性能降级",
     "items": [
@@ -16,7 +16,7 @@
   },
   {
     "version": "V2.4",
-    "date": "2026-06-26",
+    "date": "",
     "color": "#b8c4d8",
     "subtitle": "WH40K 数据扩充 · FF14 编年史重建 · 文档同步",
     "items": [
@@ -30,7 +30,7 @@
   },
   {
     "version": "V2.3",
-    "date": "2026-06-15",
+    "date": "",
     "color": "#6a8fc0",
     "subtitle": "星图交互修复 · 星环重构 · 外层球壳",
     "items": [
@@ -42,7 +42,7 @@
   },
   {
     "version": "V2.2",
-    "date": "2026-06-15",
+    "date": "",
     "color": "#c9a050",
     "subtitle": "PRTS 数据集成 · 主世界线重建 · 事件卡片交互升级",
     "items": [
@@ -56,7 +56,7 @@
   },
   {
     "version": "V2.1",
-    "date": "2026-06-15",
+    "date": "",
     "color": "#c9a050",
     "subtitle": "PRTS 年表数据采集 · 文档规范化",
     "items": [
@@ -68,7 +68,7 @@
   },
   {
     "version": "V2.0",
-    "date": "2026-06-13",
+    "date": "",
     "color": "#c9a050",
     "subtitle": "架构 V2 升级 · 数据校验管线 · 3D 星图 · 项目文档化",
     "items": [
@@ -84,7 +84,7 @@
   },
   {
     "version": "V1.2",
-    "date": "2026-06-13",
+    "date": "",
     "color": "#b8c4d8",
     "subtitle": "新增最终幻想XIV编年史 · 碎片世界分支架构",
     "items": [
@@ -97,7 +97,7 @@
   },
   {
     "version": "V1.1",
-    "date": "2026-06-13",
+    "date": "",
     "color": "#c85050",
     "subtitle": "多页重构 · 战锤40K上线",
     "items": [
@@ -110,7 +110,7 @@
   },
   {
     "version": "V1.0",
-    "date": "2026-06-12",
+    "date": "",
     "color": "#d4923a",
     "subtitle": "明日方舟编年史上线",
     "items": [

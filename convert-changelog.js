@@ -13,12 +13,12 @@ let current = null;
 for (const line of lines) {
   const trimmed = line.trim();
 
-  const headerMatch = trimmed.match(/^##\s+(V[\d.]+)\s*\/\s*([\d-]+)\s*\/\s*(#[0-9a-fA-F]{3,8})\s*$/);
+  const headerMatch = trimmed.match(/^##\s+(V[\d.]+)\s*\/\s*(?:([\d-]+)\s*\/\s*)?(#[0-9a-fA-F]{3,8})\s*$/);
   if (headerMatch) {
     if (current) entries.push(current);
     current = {
       version: headerMatch[1],
-      date: headerMatch[2],
+      date: headerMatch[2] || '',
       color: headerMatch[3],
       subtitle: '',
       items: [],
