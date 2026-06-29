@@ -365,6 +365,12 @@
 }
 
 /* ============================================================
+   Mobile era nav elements — hidden on desktop by default
+   ============================================================ */
+.era-mobile-trigger { display: none; }
+.era-mobile-list { display: none; }
+
+/* ============================================================
    Touch device: minimum 44px tap targets
    ============================================================ */
 @media (hover: none) and (pointer: coarse) {
