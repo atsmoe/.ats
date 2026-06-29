@@ -35,9 +35,8 @@
   <!-- Wormhole transition canvas -->
   <canvas id="wormhole" style="position:fixed;inset:0;z-index:300;pointer-events:none;display:none;"></canvas>
 
-  <!-- JS: bundle -->
-  <script src="./js/bundle.js"></script>
-
+  <!-- JS: virtual-timeline loads first (small, defines VirtualTimeline global needed by bundle) -->
   {% block extraScripts %}{% endblock %}
+  <script defer src="./js/bundle.js"></script>
 </body>
 </html>

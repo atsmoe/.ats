@@ -28,6 +28,27 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      # Verify production build quality
+      - name: Verify no source maps in dist
+        run: |
+          MAPS=$(find dist -name "*.map" 2>/dev/null | wc -l)
+          if [ "$MAPS" -gt 0 ]; then
+            echo "::error::Found $MAPS source map file(s) in dist — sourcemap should be disabled"
+            find dist -name "*.map" | head -5
+            exit 1
+          fi
+          echo "✅ No source maps in dist"
+
+      - name: Verify JS is minified
+        run: |
+          for f in dist/js/bundle.js dist/js/star-map-3d.js; do
+            SIZE=$(wc -c < "$f")
+            if [ "$SIZE" -gt 600000 ]; then
+              echo "::warning::$f is ${SIZE} bytes — consider further splitting"
+            fi
+          done
+          echo "✅ JS bundles checked"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

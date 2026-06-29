@@ -1,5 +1,15 @@
 [
   {
+    "version": "V2.5.1",
+    "date": "",
+    "color": "#d4a060",
+    "subtitle": "滚动性能修复 · 重复处理器清理 · 死代码移除",
+    "items": [
+      "<strong>修复重复滚动处理器</strong>：`virtual-timeline.js` 的 scroll handler 与 `timeline-ui.js` 完全重复且无节流，每帧触发两次 `VirtualTimeline.update()` + `updateEraNavHighlight()`（各遍历全部 876 items）。现移除 virtual-timeline.js 的 scroll 监听器，仅保留 timeline-ui.js 的 RAF 节流版本。resize handler 维持不变。",
+      "<strong>清除 `window.renderEvents` 死代码</strong>：该全局函数内部调用仅在 ES module 中存在的 `getBranchEvents`，导致 `ReferenceError`。V2.5.0 已移除唯一调用点，现完全删除。`renderEventsDirect` 保留为 `VirtualTimeline._renderEventsDirect` 备未来使用。"
+    ]
+  },
+  {
     "version": "V2.5.0",
     "date": "",
     "color": "#7eb8a0",
