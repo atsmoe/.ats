@@ -580,6 +580,7 @@ document.getElementById('tl-sub-branches').addEventListener('click', (e) => {
 
 /* ── Event Detail Modal ── */
 const modal = document.getElementById('event-modal');
+let modalOpen = false;
 
 function onCardClick(e) {
   const card = e.target.closest('.event-card');
@@ -602,27 +603,38 @@ function onCardClick(e) {
 }
 
 function onKeyDown(e) {
-  if (e.key === 'Escape') closeEventModal();
+  if (e.key === 'Escape' && modalOpen) history.back();
 }
 
 function onModalOverlayClick(e) {
-  if (e.target === modal) closeEventModal();
+  if (e.target === modal && modalOpen) history.back();
+}
+
+function onPopState() {
+  if (modalOpen) closeEventModal();
+}
+
+function onCloseButtonClick() {
+  if (modalOpen) history.back();
 }
 
 export function initEventModal() {
   document.addEventListener('click', onCardClick);
   document.addEventListener('keydown', onKeyDown);
+  window.addEventListener('popstate', onPopState);
   if (modal) modal.addEventListener('click', onModalOverlayClick);
   const closeBtn = modal?.querySelector('.event-modal-close');
-  if (closeBtn) closeBtn.addEventListener('click', closeEventModal);
+  if (closeBtn) closeBtn.addEventListener('click', onCloseButtonClick);
 }
 
 export function destroyEventModal() {
   document.removeEventListener('click', onCardClick);
   document.removeEventListener('keydown', onKeyDown);
+  window.removeEventListener('popstate', onPopState);
   if (modal) modal.removeEventListener('click', onModalOverlayClick);
   const closeBtn = modal?.querySelector('.event-modal-close');
-  if (closeBtn) closeBtn.removeEventListener('click', closeEventModal);
+  if (closeBtn) closeBtn.removeEventListener('click', onCloseButtonClick);
+  if (modalOpen) closeEventModal();
 }
 
 function openEventModal(evt) {
@@ -691,12 +703,16 @@ function openEventModal(evt) {
   }
 
   // Show
+  const wasOpen = modalOpen;
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  modalOpen = true;
+  if (!wasOpen) history.pushState({ modalOpen: true }, '');
 }
 
 function closeEventModal() {
-  if (!modal) return;
+  if (!modal || !modalOpen) return;
   modal.style.display = 'none';
   document.body.style.overflow = '';
+  modalOpen = false;
 }

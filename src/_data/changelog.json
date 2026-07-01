@@ -1,5 +1,28 @@
 [
   {
+    "version": "V2.5.3",
+    "date": "",
+    "color": "#c0a860",
+    "subtitle": "数据 JSON 体积优化 — 去冗余 · 紧凑输出",
+    "items": [
+      "<strong>JSON 去冗余</strong>：`validate-data.js` 的 `flattenBranchEvents()` 原先同时输出 `eras`（事件嵌套）和 `events`（完全重复的扁平副本），导致 JSON 体积翻倍。现移除冗余的 `events[]` 数组，仅输出 `eras`。`data-loader.js` 运行时从 `eras` 重建 `events` 供 `findEventById` O(1) 查找。",
+      "<strong>紧凑 JSON 输出</strong>：`JSON.stringify(data, null, 2)` → `JSON.stringify(data)`，去除缩进空白。",
+      "<strong>效果</strong>：ff14.json 2.5MB→1.2MB (-52%)，arknights.json 1.7MB→557KB (-67%)，总数据 JSON 4.6MB→2.0MB (-58%)。"
+    ]
+  },
+  {
+    "version": "V2.5.2",
+    "date": "",
+    "color": "#8ab898",
+    "subtitle": "生产构建优化 — JS压缩 · defer加载 · 源映射清理 · 图片瘦身",
+    "items": [
+      "<strong>esbuild 生产优化</strong>：`minify: true` + `sourcemap: false` + `drop: ['console']`。bundle.js 1.2MB→551KB，star-map-3d.js 1MB→512KB。",
+      "<strong>Script defer</strong>：所有 script 标签加 `defer`，不阻塞 HTML 解析。",
+      "<strong>源映射清理</strong>：构建后自动删除旧 .map 文件，CI 验证无残留。",
+      "<strong>图片瘦身</strong>：已优化为 WebP 的原图自动从 dist 清理。"
+    ]
+  },
+  {
     "version": "V2.5.1",
     "date": "",
     "color": "#d4a060",
