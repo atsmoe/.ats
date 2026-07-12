@@ -89,5 +89,15 @@
 | validate 先于一切 | `npm run build` 第一步是 `validate-data.js`，失败则 exit(1) |
 | 不做 file:// 兼容 | HTML 中不出现 inline JSON，所有数据走 fetch |
 | Three.js 精确版本 | `package.json` 中 `"three": "0.136.0"`，不加 `^` 或 `~` |
-| esbuild 入口 | `main.js` → `bundle.js`（世界页）+ `star-map-3d.js`（首页），两个独立 bundle |
+| esbuild 入口 | `main.js` → `bundle.js`（世界页）+ `star-map-entry.js` → `star-map-3d.js`（首页），两个独立 bundle |
 | 产出检查 | build 后验证 `dist/data/event-index.json` 存在且非空 |
+
+## 十、发布与日志规则
+
+| 规则 | 说明 |
+|------|------|
+| 双日志强制更新 | 每次推送到 GitHub 都必须同时更新 `docs/更新日志.md` 和 `docs/开发日志.md` |
+| 更新日志职责 | 面向访客，说明版本新增内容、修复和可见变化，保持简洁 |
+| 开发日志职责 | 面向维护，记录问题背景、技术方案、验证结果、遗留风险和下一步 |
+| 版本一致 | `package.json` 当前版本必须同时出现在两份日志中 |
+| CI 阻止遗漏 | push 未包含任意一份日志时，GitHub Actions 直接失败并停止部署 |

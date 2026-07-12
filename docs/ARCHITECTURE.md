@@ -234,6 +234,7 @@ npm run build:
   2. node convert-changelog.js
   3. eleventy                                ← 生成 HTML
   4. node build.js                           ← esbuild(bundle + star-map-3d) + 复制
+  5. npm test                                ← 校验页面、数据、媒体引用和体积预算
 
 npm run dev:
   1. node src/validators/validate-data.js
@@ -261,8 +262,8 @@ dist/
 │   └── videos/...
 ├── css/                         (7 个文件)
 └── js/
-    ├── bundle.js               (~80KB，世界页)
-    ├── star-map-3d.js           (~400KB，首页)
+    ├── bundle.js               (~38KB，世界页/普通页，不含 Three.js)
+    ├── star-map-3d.js          (~517KB，首页专用，包含 Three.js)
     └── virtual-timeline.js
 ```
 

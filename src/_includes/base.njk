@@ -35,8 +35,12 @@
   <!-- Wormhole transition canvas -->
   <canvas id="wormhole" style="position:fixed;inset:0;z-index:300;pointer-events:none;display:none;"></canvas>
 
-  <!-- JS: virtual-timeline loads first (small, defines VirtualTimeline global needed by bundle) -->
+  <!-- JS: virtual-timeline loads first (small, defines VirtualTimeline global needed by world bundle) -->
   {% block extraScripts %}{% endblock %}
+  {% if scriptFile %}
+  <script defer src="./js/{{ scriptFile }}"></script>
+  {% else %}
   <script defer src="./js/bundle.js"></script>
+  {% endif %}
 </body>
 </html>

@@ -25,9 +25,9 @@ async function buildJS() {
     logLevel: 'info',
   });
 
-  // Bundle star-map-3d.js → star-map-3d.js (star map page only, includes Three.js)
+  // Bundle star-map-entry.js → star-map-3d.js (star map page only, includes Three.js)
   await esbuild.build({
-    entryPoints: [path.join(SRC_JS, 'star-map-3d.js')],
+    entryPoints: [path.join(SRC_JS, 'star-map-entry.js')],
     bundle: true,
     format: 'iife',
     globalName: 'SM3D',

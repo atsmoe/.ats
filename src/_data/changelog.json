@@ -1,5 +1,28 @@
 [
   {
+    "version": "V2.5.5",
+    "date": "",
+    "color": "#c9a050",
+    "subtitle": "可靠性基线 · 页面脚本拆分",
+    "items": [
+      "<strong>页面入口拆分</strong>：新增首页专用 `star-map-entry.js`，Three.js 不再重复进入世界页 bundle；世界页 JS 从 551.5 KiB 降至 37.4 KiB，首页星图保持独立加载。",
+      "<strong>生产构建测试</strong>：新增零额外依赖的 Node 测试，自动检查公开页面、世界数据、事件索引、关键交互容器、媒体引用和 JS 体积预算。",
+      "<strong>回归基线</strong>：记录三世界与总事件数量下限，避免数据意外丢失后仍然部署；`npm run build` 现在会自动运行完整检查。",
+      "<strong>发布日志守卫</strong>：GitHub Actions 强制每次推送同时更新更新日志和开发日志，遗漏时停止部署。",
+      "<strong>长期路线</strong>：新增可靠性决策地图，明确流畅动画、原创深色工业视觉和单人维护优先原则。"
+    ]
+  },
+  {
+    "version": "V2.5.4",
+    "date": "",
+    "color": "#d4a060",
+    "subtitle": "移动端返回键关闭卡片 · 滚动条暗金皮肤",
+    "items": [
+      "<strong>返回键关闭卡片</strong>：事件模态框集成 History API，打开时推入历史记录，按浏览器返回键关闭卡片而非跳回星图首页。✕ 按钮、遮罩点击、Esc 键统一由 popstate 驱动关闭，历史栈无残留。连续点不同卡片不重复推记录。",
+      "<strong>滚动条暗金皮肤</strong>：事件卡片滚动条改为暗底金条样式（WebKit 伪元素 + Firefox scrollbar-color），与网站暗金主题协调。"
+    ]
+  },
+  {
     "version": "V2.5.3",
     "date": "",
     "color": "#c0a860",

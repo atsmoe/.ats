@@ -55,18 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const pageType = document.body.dataset.page;
 
-  if (pageType === 'star-map') {
-    dismissPortalOverlay();
-
-    // Star map: Three.js 3D galaxy (bundled into bundle.js via esbuild)
-    const { init: initStarMap3D } = await import('./star-map-3d.js');
-    initStarMap3D('bg-canvas');
-
-    const { initStarMap } = await import('./star-map.js');
-    initStarMap();
-    initNav();
-
-  } else if (pageType === 'world') {
+  if (pageType === 'world') {
     const worldId = document.body.dataset.world;
     console.log('%c 加载世界: ' + worldId, 'color:#d4923a;');
 

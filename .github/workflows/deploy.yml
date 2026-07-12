@@ -19,6 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Verify changelog and development log
+        if: github.event_name == 'push'
+        run: node scripts/check-release-notes.js "${{ github.event.before }}" "${{ github.sha }}"
 
       - uses: actions/setup-node@v4
         with:
