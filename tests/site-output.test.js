@@ -129,6 +129,15 @@ test('public pages retain the critical navigation and interaction containers', (
     assert.match(html, /id="event-modal"/, `${page} needs the event modal`);
     assert.match(html, /id="tl-branches"/, `${page} needs branch navigation`);
   }
+
+  const arknights = readDist('arknights.html');
+  assert.match(arknights, /class="tl-cover-grid"/, 'Arknights needs the editorial cover layout');
+  assert.match(arknights, /class="tl-cover-art/, 'Arknights needs original cover artwork');
+  assert.match(arknights, /class="tl-cover-code"/, 'Arknights needs archive metadata');
+
+  for (const page of ['wh40k.html', 'ff14.html']) {
+    assert.doesNotMatch(readDist(page), /class="tl-cover-grid"/, `${page} keeps its existing cover`);
+  }
 });
 
 test('every media file referenced by production data exists', () => {

@@ -7,13 +7,283 @@
   --theme-color: #d4923a;
   --theme-rgb: 212, 146, 58;
   --theme-border: rgba(212, 146, 58, 0.3);
-  --cover-bg:
-    radial-gradient(ellipse at 50% 80%, rgba(212,146,58,0.08) 0%, transparent 60%),
-    linear-gradient(180deg, #0d0d1a 0%, #0a0a18 100%);
+  --ark-cover-ink: #08090d;
+  --ark-cover-panel: #111118;
+  --ark-cover-art-bg: #111116;
+  --ark-cover-branch-bg: #0a0a0d;
+  --ark-cover-sky: #11131a;
+  --ark-cover-shape-back: #24252b;
+  --ark-cover-shape-front: #34353b;
+  --ark-cover-paper-rgb: 232, 220, 200;
+  --ark-cover-white-rgb: 255, 255, 255;
+  --ark-cover-shadow-rgb: 8, 8, 12;
+  --ark-cover-height: 430px;
+  --ark-cover-max-width: 1440px;
+  --ark-cover-copy-min: 320px;
+  --ark-cover-art-min: 480px;
+  --ark-cover-copy-padding: 44px 24px 48px 64px;
+  --ark-cover-copy-padding-mobile: 36px 22px 44px;
+  --ark-cover-copy-padding-compact: 28px 16px 38px;
+  --ark-cover-copy-padding-landscape: 24px 18px;
+  --ark-cover-mobile-copy-height: 300px;
+  --ark-cover-compact-copy-height: 280px;
+  --ark-cover-landscape-copy-height: 250px;
+  --ark-cover-mobile-art-height: 260px;
+  --ark-cover-compact-art-height: 220px;
+  --ark-cover-landscape-art-height: 250px;
+  --ark-cover-gap-xs: 4px;
+  --ark-cover-gap-sm: 10px;
+  --ark-cover-gap-md: 12px;
+  --ark-cover-gap-kicker: 14px;
+  --ark-cover-gap-lg: 18px;
+  --ark-cover-gap-xl: 20px;
+  --ark-cover-gap-2xl: 24px;
+  --ark-cover-gap-3xl: 34px;
+  --ark-cover-caption-padding: 8px 12px;
+  --ark-cover-kicker-padding: 6px 12px;
+  --ark-cover-serial-offset: 18px;
+  --ark-cover-side-offset: 22px;
+  --ark-cover-caption-right: 24px;
+  --ark-cover-caption-mobile-right: 16px;
+  --ark-cover-font-xs: 9px;
+  --ark-cover-font-sm: 10px;
+  --ark-cover-font-body: 13px;
+  --ark-cover-font-body-compact: 12px;
+  --ark-cover-letter-spacing: 2px;
+  --ark-cover-letter-spacing-wide: 3px;
+  --ark-cover-title-spacing: -1px;
+  --ark-cover-rule-thin: 1px;
+  --ark-cover-rule-medium: 2px;
+  --ark-cover-rule-strong: 3px;
+  --ark-cover-signal-size: 8px;
+  --ark-cover-title-max: 580px;
+  --ark-cover-copy-max: 520px;
+  --ark-cover-branch-tab-min: 150px;
+  --ark-cover-grid-size: 126px;
+  --ark-cover-scanline-size: 4px;
+  --ark-cover-shadow-signal: 0 0 18px rgba(var(--theme-rgb), 0.7);
+  --ark-cover-shadow-accent: drop-shadow(0 0 8px rgba(var(--theme-rgb), 0.65));
+  --ark-cover-shadow-tab: inset 0 var(--ark-cover-rule-medium) 0 var(--theme-color);
+  --ark-cover-bg:
+    repeating-linear-gradient(0deg, transparent 0 35px, rgba(var(--ark-cover-paper-rgb), 0.025) 36px),
+    linear-gradient(120deg, var(--ark-cover-ink) 0%, var(--ark-cover-panel) 58%, var(--ark-cover-ink) 100%);
 }
 
 .world-arknights .tl-cover {
-  background: var(--cover-bg);
+  height: var(--ark-cover-height);
+  border-bottom: var(--ark-cover-rule-thin) solid rgba(var(--theme-rgb), 0.22);
+  background: var(--ark-cover-bg);
+}
+
+.world-arknights .tl-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(106deg, transparent 0 42%, rgba(var(--theme-rgb), 0.14) 42.2% 42.45%, transparent 42.7%),
+    linear-gradient(90deg, rgba(var(--ark-cover-white-rgb), 0.025) var(--ark-cover-rule-thin), transparent var(--ark-cover-rule-thin));
+  background-size: auto, var(--ark-cover-grid-size) 100%;
+}
+
+.world-arknights .tl-cover::after {
+  z-index: 20;
+  height: 38%;
+  background: linear-gradient(to top, var(--bg-deep), transparent);
+}
+
+.world-arknights .tl-cover-grid {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(var(--ark-cover-copy-min), 0.82fr) minmax(var(--ark-cover-art-min), 1.35fr);
+  width: min(100%, var(--ark-cover-max-width));
+  height: 100%;
+  margin: 0 auto;
+}
+
+.world-arknights .tl-cover-copy {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: var(--ark-cover-copy-padding);
+}
+
+.world-arknights .tl-cover-code {
+  display: flex;
+  align-items: center;
+  gap: var(--ark-cover-gap-md);
+  margin-bottom: var(--ark-cover-gap-3xl);
+  color: var(--text-muted);
+  font-size: var(--ark-cover-font-sm);
+  letter-spacing: var(--ark-cover-letter-spacing);
+  font-variant-numeric: tabular-nums;
+}
+
+.world-arknights .tl-cover-code span:last-child {
+  margin-left: auto;
+  padding-left: var(--ark-cover-gap-md);
+  border-left: var(--ark-cover-rule-thin) solid rgba(var(--theme-rgb), 0.28);
+}
+
+.world-arknights .tl-cover-signal {
+  width: var(--ark-cover-signal-size);
+  height: var(--ark-cover-signal-size);
+  flex: 0 0 auto;
+  background: var(--theme-color);
+  transform: rotate(45deg);
+  box-shadow: var(--ark-cover-shadow-signal);
+}
+
+.world-arknights .tl-cover-kicker {
+  width: fit-content;
+  margin-bottom: var(--ark-cover-gap-kicker);
+  padding: var(--ark-cover-kicker-padding);
+  border-left: var(--ark-cover-rule-strong) solid var(--theme-color);
+  background: rgba(var(--theme-rgb), 0.08);
+  color: var(--text-muted);
+  font-size: var(--ark-cover-font-sm);
+  letter-spacing: var(--ark-cover-letter-spacing);
+}
+
+.world-arknights .tl-cover h1 {
+  max-width: var(--ark-cover-title-max);
+  font-family: var(--font-sans);
+  font-size: clamp(30px, 3.5vw, 52px);
+  font-weight: 700;
+  letter-spacing: var(--ark-cover-title-spacing);
+  line-height: 1.08;
+}
+
+.world-arknights .tl-cover p {
+  max-width: var(--ark-cover-copy-max);
+  margin-top: var(--ark-cover-gap-lg);
+  font-size: var(--ark-cover-font-body);
+  line-height: 1.8;
+}
+
+.world-arknights .tl-cover-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--ark-cover-gap-lg);
+  margin-top: var(--ark-cover-gap-xl);
+}
+
+.world-arknights .tl-cover .calendar-badge {
+  margin: 0;
+  border: 0;
+  border-left: var(--ark-cover-rule-medium) solid var(--theme-color);
+  border-radius: 0;
+  background: rgba(var(--theme-rgb), 0.1);
+}
+
+.world-arknights .tl-cover-status {
+  color: var(--text-muted);
+  font-size: var(--ark-cover-font-xs);
+  letter-spacing: var(--ark-cover-letter-spacing);
+}
+
+.world-arknights .tl-cover-serial {
+  position: absolute;
+  bottom: var(--ark-cover-serial-offset);
+  left: var(--ark-cover-side-offset);
+  color: rgba(var(--ark-cover-paper-rgb), 0.25);
+  font-size: var(--ark-cover-font-xs);
+  letter-spacing: var(--ark-cover-letter-spacing);
+  writing-mode: vertical-rl;
+}
+
+.world-arknights .tl-cover-art {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  clip-path: polygon(15% 0, 100% 0, 100% 82%, 89% 100%, 0 100%, 7% 58%);
+  border-left: var(--ark-cover-rule-thin) solid rgba(var(--theme-rgb), 0.16);
+  background: var(--ark-cover-art-bg);
+}
+
+.world-arknights .tl-cover-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(var(--ark-cover-white-rgb), 0.025) var(--ark-cover-scanline-size)),
+    linear-gradient(90deg, rgba(var(--ark-cover-shadow-rgb), 0.8), transparent 34%, transparent 72%, rgba(var(--ark-cover-shadow-rgb), 0.35));
+  mix-blend-mode: screen;
+}
+
+.world-arknights .tl-cover-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: saturate(0.35) contrast(1.12);
+  transform: scale(1.015);
+  transition: transform var(--transition-slow);
+}
+
+@media (hover: hover) {
+  .world-arknights .tl-cover-art:hover svg {
+    transform: scale(1.035);
+  }
+}
+
+.world-arknights .cover-sky { fill: var(--ark-cover-sky); }
+.world-arknights .cover-grid-lines { fill: none; stroke: rgba(var(--ark-cover-paper-rgb), 0.07); stroke-width: var(--ark-cover-rule-thin); }
+.world-arknights .cover-cloud { fill: rgba(var(--ark-cover-paper-rgb), 0.065); }
+.world-arknights .cover-cloud--two { fill: rgba(var(--theme-rgb), 0.06); }
+.world-arknights .cover-shape--back { fill: var(--ark-cover-shape-back); }
+.world-arknights .cover-shape--front { fill: var(--ark-cover-shape-front); }
+.world-arknights .cover-structure-lines { fill: none; stroke: rgba(var(--ark-cover-paper-rgb), 0.28); stroke-width: var(--ark-cover-rule-medium); }
+.world-arknights .cover-accent { fill: var(--theme-color); filter: var(--ark-cover-shadow-accent); }
+.world-arknights .cover-orbit { fill: none; stroke: rgba(var(--ark-cover-paper-rgb), 0.16); stroke-width: var(--ark-cover-rule-medium); }
+.world-arknights .cover-orbit--inner { stroke: rgba(var(--theme-rgb), 0.28); }
+
+.world-arknights .tl-cover-art-caption {
+  position: absolute;
+  z-index: 10;
+  top: var(--ark-cover-side-offset);
+  right: var(--ark-cover-caption-right);
+  padding: var(--ark-cover-caption-padding);
+  border-right: var(--ark-cover-rule-strong) solid var(--theme-color);
+  background: rgba(var(--ark-cover-shadow-rgb), 0.72);
+  color: var(--text-muted);
+  text-align: right;
+  font-size: var(--ark-cover-font-xs);
+  letter-spacing: var(--ark-cover-letter-spacing);
+}
+
+.world-arknights .tl-cover-art-caption strong {
+  display: block;
+  margin-top: var(--ark-cover-gap-xs);
+  color: var(--text);
+  font-size: var(--ark-cover-font-body-compact);
+  font-weight: 400;
+  letter-spacing: var(--ark-cover-letter-spacing-wide);
+}
+
+.world-arknights .tl-branches {
+  border-top: var(--ark-cover-rule-thin) solid rgba(var(--theme-rgb), 0.12);
+  background:
+    linear-gradient(90deg, rgba(var(--theme-rgb), 0.06), transparent 34%),
+    var(--ark-cover-branch-bg);
+}
+
+.world-arknights .tl-branch-tab {
+  min-width: var(--ark-cover-branch-tab-min);
+  border-right: var(--ark-cover-rule-thin) solid rgba(var(--theme-rgb), 0.12);
+  font-family: var(--font-sans);
+  font-size: var(--ark-cover-font-body-compact);
+  text-transform: uppercase;
+}
+
+.world-arknights .tl-branch-tab.active {
+  background: rgba(var(--theme-rgb), 0.09);
+  box-shadow: var(--ark-cover-shadow-tab);
 }
 
 /* WH40K — cold crimson/red theme */
@@ -168,4 +438,100 @@
 .world-ff14 .btn-detail-enter {
   border-color: rgba(184, 196, 216, 0.4);
   color: #b8c4d8;
+}
+
+/* Arknights-only editorial cover responsive layout */
+@media (max-width: 768px) {
+  .world-arknights .tl-cover {
+    height: auto;
+    min-height: 0;
+  }
+
+  .world-arknights .tl-cover-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .world-arknights .tl-cover-copy {
+    min-height: var(--ark-cover-mobile-copy-height);
+    padding: var(--ark-cover-copy-padding-mobile);
+  }
+
+  .world-arknights .tl-cover-code {
+    margin-bottom: var(--ark-cover-gap-2xl);
+  }
+
+  .world-arknights .tl-cover-code span:last-child {
+    display: none;
+  }
+
+  .world-arknights .tl-cover h1 {
+    font-size: clamp(27px, 9vw, 38px);
+    letter-spacing: var(--ark-cover-title-spacing);
+  }
+
+  .world-arknights .tl-cover-art {
+    height: var(--ark-cover-mobile-art-height);
+    clip-path: polygon(0 10%, 100% 0, 100% 86%, 90% 100%, 0 100%);
+    border-left: 0;
+    border-top: var(--ark-cover-rule-thin) solid rgba(var(--theme-rgb), 0.18);
+  }
+
+  .world-arknights .tl-cover-serial {
+    display: none;
+  }
+
+  .world-arknights .tl-cover-art-caption {
+    top: var(--ark-cover-gap-2xl);
+    right: var(--ark-cover-caption-mobile-right);
+  }
+}
+
+@media (max-width: 360px) {
+  .world-arknights .tl-cover {
+    height: auto;
+  }
+
+  .world-arknights .tl-cover-copy {
+    min-height: var(--ark-cover-compact-copy-height);
+    padding: var(--ark-cover-copy-padding-compact);
+  }
+
+  .world-arknights .tl-cover-art {
+    height: var(--ark-cover-compact-art-height);
+  }
+
+  .world-arknights .tl-cover p {
+    font-size: var(--ark-cover-font-body-compact);
+  }
+
+  .world-arknights .tl-cover-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--ark-cover-gap-sm);
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .world-arknights .tl-cover {
+    height: auto;
+  }
+
+  .world-arknights .tl-cover-grid {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+
+  .world-arknights .tl-cover-copy {
+    min-height: var(--ark-cover-landscape-copy-height);
+    padding: var(--ark-cover-copy-padding-landscape);
+  }
+
+  .world-arknights .tl-cover-art {
+    height: var(--ark-cover-landscape-art-height);
+    clip-path: polygon(14% 0, 100% 0, 100% 86%, 90% 100%, 0 100%, 6% 58%);
+  }
+
+  .world-arknights .tl-cover p {
+    display: none;
+  }
 }

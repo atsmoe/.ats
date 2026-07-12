@@ -17,13 +17,21 @@ cssFiles:
 {% block content %}
 <!-- Timeline View -->
 <div id="timeline" class="active">
-  <div class="tl-cover">
-    <div class="tl-cover-inner">
-      <h1>明日方舟 · 泰拉大陆</h1>
-      <p>一片源石技艺与天灾肆虐的大地，从矿石病的发现到罗德岛的崛起，记载泰拉大陆的关键事件与命运分支。</p>
-      <div class="calendar-badge">泰 拉 历</div>
-    </div>
-  </div>
+  {% set cover = {
+    code: "CHRONICLE / 01",
+    record: "TERRA · 1096",
+    kicker: "ARCHIVE RECORD / ORIGINIUM",
+    title: "明日方舟 · 泰拉大陆",
+    description: "一片源石技艺与天灾肆虐的大地，从矿石病的发现到罗德岛的崛起，记载泰拉大陆的关键事件与命运分支。",
+    calendar: "泰 拉 历",
+    serial: "ATS-ARK-1096-MAINLINE",
+    art: "arknights",
+    artTitle: "天灾下的泰拉移动城邦",
+    artDescription: "工业移动城市矗立在层叠风暴与源石警示信号之下。",
+    observation: "OBSERVATION 01",
+    artCaption: "天灾接近中"
+  } %}
+  {% include "timeline-cover.njk" %}
 
   <div class="tl-branches" id="tl-branches">
     <!-- Populated by JS -->

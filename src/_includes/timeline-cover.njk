@@ -1,0 +1,66 @@
+<div class="tl-cover">
+  <div class="tl-cover-grid">
+    <div class="tl-cover-copy">
+      <div class="tl-cover-code">
+        <span class="tl-cover-signal"></span>
+        <span>{{ cover.code }}</span>
+        <span>{{ cover.record }}</span>
+      </div>
+      <div class="tl-cover-kicker">{{ cover.kicker }}</div>
+      <h1>{{ cover.title }}</h1>
+      <p>{{ cover.description }}</p>
+      <div class="tl-cover-footer">
+        <span class="calendar-badge">{{ cover.calendar }}</span>
+        <span class="tl-cover-status">ARCHIVE / VERIFIED</span>
+      </div>
+      <span class="tl-cover-serial">{{ cover.serial }}</span>
+    </div>
+
+    <figure class="tl-cover-art tl-cover-art--{{ cover.art }}">
+      <svg viewBox="0 0 760 430" role="img" aria-labelledby="cover-title-{{ worldId }} cover-desc-{{ worldId }}" preserveAspectRatio="xMidYMid slice">
+        <title id="cover-title-{{ worldId }}">{{ cover.artTitle }}</title>
+        <desc id="cover-desc-{{ worldId }}">{{ cover.artDescription }}</desc>
+        <rect class="cover-sky" width="760" height="430" />
+        <g class="cover-grid-lines">
+          <path d="M0 86H760M0 172H760M0 258H760M0 344H760" />
+          <path d="M126 0V430M252 0V430M378 0V430M504 0V430M630 0V430" />
+        </g>
+
+        {% if cover.art === 'arknights' %}
+        <path class="cover-cloud cover-cloud--one" d="M0 55C150 5 245 95 370 42C500-10 612 78 760 18V176C620 125 510 194 395 146C260 92 148 181 0 126Z" />
+        <path class="cover-cloud cover-cloud--two" d="M40 130C185 72 268 174 390 116C525 52 608 165 760 98V205C635 170 520 235 402 184C260 124 165 222 40 174Z" />
+        <path class="cover-shape cover-shape--back" d="M0 333L70 312L94 210H132L148 292L205 276L221 145H271L282 262L335 250L350 184H386L402 266L456 246L476 104H522L538 236L600 220L620 160H656L671 256L760 235V430H0Z" />
+        <path class="cover-shape cover-shape--front" d="M0 373L110 340L140 260H205L226 336L320 316L345 225H425L452 322L555 296L585 205H650L682 312L760 292V430H0Z" />
+        <g class="cover-structure-lines"><path d="M20 383L740 304M92 338L132 224M230 334L256 150M450 318L498 112M560 300L637 165" /><path d="M155 280H205M350 247H426M590 232H650" /></g>
+        <g class="cover-accent"><rect x="118" y="244" width="8" height="8"/><rect x="394" y="260" width="8" height="8"/><rect x="640" y="238" width="8" height="8"/><path d="M520 80L530 98H510Z"/></g>
+
+        {% elif cover.art === 'wh40k' %}
+        <circle class="cover-orbit" cx="520" cy="135" r="94" />
+        <circle class="cover-orbit cover-orbit--inner" cx="520" cy="135" r="54" />
+        <path class="cover-cloud cover-cloud--one" d="M0 80C160 15 282 110 420 58C545 10 660 78 760 42V190C635 145 510 205 390 165C260 120 135 195 0 155Z" />
+        <path class="cover-shape cover-shape--back" d="M0 355L80 330L105 185L130 330L190 308L218 118L248 305L310 285L346 72L382 280L450 255L482 132L514 250L590 225L620 95L650 225L760 195V430H0Z" />
+        <path class="cover-shape cover-shape--front" d="M0 390L105 350L142 276L178 350L265 325L310 220L355 325L455 295L506 205L558 295L650 265L704 186L760 255V430H0Z" />
+        <g class="cover-structure-lines"><path d="M105 350V185M218 325V118M346 326V72M482 294V132M620 273V95"/><path d="M63 365H710M92 338H680M165 310H640"/></g>
+        <g class="cover-accent"><rect x="338" y="84" width="16" height="6"/><rect x="474" y="145" width="16" height="6"/><path d="M520 120L536 148H504Z"/></g>
+
+        {% else %}
+        <circle class="cover-orbit" cx="515" cy="176" r="118" />
+        <circle class="cover-orbit cover-orbit--inner" cx="515" cy="176" r="72" />
+        <path class="cover-cloud cover-cloud--one" d="M0 95C135 28 255 118 382 70C510 20 620 105 760 58V205C630 160 510 228 382 184C255 140 135 220 0 175Z" />
+        <g class="cover-crystals">
+          <path class="cover-shape cover-shape--back" d="M80 430L188 170L278 430Z" />
+          <path class="cover-shape cover-shape--front" d="M218 430L365 72L482 430Z" />
+          <path class="cover-shape cover-shape--back" d="M420 430L540 142L642 430Z" />
+          <path class="cover-shape cover-shape--front" d="M565 430L670 225L760 430Z" />
+        </g>
+        <g class="cover-structure-lines"><path d="M188 170L218 430M365 72L420 430M540 142L565 430M670 225L700 430"/><path d="M95 350L700 238M132 295L650 198"/></g>
+        <g class="cover-accent"><circle cx="365" cy="72" r="8"/><circle cx="540" cy="142" r="6"/><path d="M515 150L528 174H502Z"/></g>
+        {% endif %}
+      </svg>
+      <figcaption class="tl-cover-art-caption">
+        <span>{{ cover.observation }}</span>
+        <strong>{{ cover.artCaption }}</strong>
+      </figcaption>
+    </figure>
+  </div>
+</div>
