@@ -2,8 +2,6 @@
    portal-transition.js — Portal outgoing + incoming animations
    ═══════════════════════════════════════════════════════════ */
 
-import { dateSortVal, eraLabel } from './data-loader.js';
-
 let _data = null;
 
 export function setData(data) {
@@ -15,24 +13,26 @@ export function setData(data) {
  * @param {string} eventId
  * @returns {{ branchId: string, branchName: string, eventIndex: number } | null}
  */
-function findEventLocation(eventId) {
-  if (!_data) return null;
-  for (const branch of (_data.branches || [])) {
-    const candidates = [branch, ...(branch.subBranches || [])];
-    for (const b of candidates) {
-      if (!b.eras) continue;
-      let eventIdx = 0;
-      for (const era of b.eras) {
-        for (const evt of (era.events || [])) {
-          if (evt.id === eventId) {
-            return { branchId: b.id, branchName: b.name, eventIndex: eventIdx };
-          }
-          eventIdx++;
-        }
-      }
-    }
+function findBranch(branches, predicate) {
+  for (const branch of (branches || [])) {
+    if (predicate(branch)) return branch;
+    const nested = findBranch(branch.subBranches, predicate);
+    if (nested) return nested;
   }
   return null;
+}
+
+export function findEventLocation(eventId) {
+  if (!_data) return null;
+  const branch = findBranch(_data.branches, candidate =>
+    (candidate.events || []).some(event => event.id === eventId));
+  if (!branch) return null;
+
+  return {
+    branchId: branch.id,
+    branchName: branch.name,
+    eventIndex: branch.events.findIndex(event => event.id === eventId),
+  };
 }
 
 /**
@@ -41,23 +41,45 @@ function findEventLocation(eventId) {
  * @param {string} branchId
  * @returns {Array<{type: string, eraTitle: string, events: Array}>}
  */
-function buildBranchEraGroups(branchId) {
+export function buildBranchEraGroups(branchId) {
   if (!_data) return [];
-  // Find branch (including sub-branches)
-  let branch = null;
-  for (const b of (_data.branches || [])) {
-    if (b.id === branchId) { branch = b; break; }
-    if (b.subBranches) {
-      const sub = b.subBranches.find(sb => sb.id === branchId);
-      if (sub) { branch = sub; break; }
-    }
+  const branch = findBranch(_data.branches, candidate => candidate.id === branchId);
+  if (!branch) return [];
+
+  const groups = [];
+  if (branch.description) {
+    groups.push({
+      type: 'notice',
+      data: {
+        type: 'branch-notice',
+        title: branch.name,
+        description: branch.description,
+        isBranchNotice: true,
+      },
+    });
   }
-  if (!branch || !branch.eras) return [];
-  return branch.eras.map(era => ({
-    type: 'era',
-    eraTitle: era.title,
-    events: era.events || [],
-  }));
+
+  groups.push(...(branch.eras || []).map(era => ({
+      type: 'era',
+      eraTitle: era.title,
+      events: era.events || [],
+    })));
+
+  if (branch.endings && branch.endings.length > 0) {
+    groups.push({
+      type: 'if-endings',
+      eraTitle: '结局分支（' + branch.endings.length + '个）',
+      events: branch.endings.map(ending => ({
+        ...ending,
+        id: ending.id || branch.id + '-ending-' + ending.endingNumber,
+        dateDisplay: ending.dateDisplay || '结局 ' + ending.endingNumber,
+        tags: ending.tags || [branch.type || 'IF', '结局'],
+        isEnding: true,
+      })),
+    });
+  }
+
+  return groups;
 }
 
 /**

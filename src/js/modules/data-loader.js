@@ -83,13 +83,12 @@ function rebuildBranchEvents(branch) {
       events.push(evt);
     }
   }
-  // Preserve endings from sub-branches (not in eras)
+  for (const ending of (branch.endings || [])) {
+    events.push(ending);
+  }
   if (branch.subBranches) {
     for (const sub of branch.subBranches) {
       rebuildBranchEvents(sub);
-      if (sub.endings) {
-        for (const e of sub.endings) events.push(e);
-      }
     }
   }
   branch.events = events;

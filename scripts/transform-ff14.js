@@ -263,6 +263,7 @@ function parseShard1() {
     if (/参考资料|相关阅读|画廊|目录|随身见闻录/.test(s.title)) continue;
 
     endings.push({
+      id: nextShard1Id(),
       endingNumber: endings.length + 1,
       title: s.title,
       description: s.body,
@@ -280,6 +281,7 @@ function parseShard1() {
         const ec = cleanText(er.split('## 参考资料')[0] || er);
         if (ec.length > 30) {
           endings.push({
+            id: nextShard1Id(),
             endingNumber: endings.length + 1,
             title: path.basename(extra, '.txt'),
             description: ec,
@@ -645,6 +647,7 @@ function build() {
         description: '暗之泛滥吞噬了第十三碎片，使其沦为虚无——一个只有暗影生物游荡的废世界。',
         endings: [
           {
+            id: 'ff14-s13-001',
             endingNumber: 1,
             title: '暗之泛滥',
             description: '第十三世界的暗之灾将一切物质与光吞噬殆尽。生者被转化为虚无的暗影生物，世界本身坍缩为虚空的领域。据传，零号是唯一保留了自我的第十三世界居民。',

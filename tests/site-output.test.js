@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { isReleaseVersion } = require('../scripts/check-release-notes.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
@@ -60,6 +61,12 @@ test('the current project version is documented for visitors and maintainers', (
   assert.match(developmentLog, new RegExp(`^.*${versionLabel}：`, 'm'));
 });
 
+test('only three-part versions are eligible for GitHub deployment', () => {
+  assert.equal(isReleaseVersion('2.5.6'), true);
+  assert.equal(isReleaseVersion('2.5.6.1'), false);
+  assert.equal(isReleaseVersion('2.5.6.12'), false);
+});
+
 test('the star map and world pages load separate JavaScript bundles', () => {
   const index = readDist('index.html');
   assert.match(index, /src="\.\/js\/star-map-3d\.js"/);
@@ -77,12 +84,14 @@ test('world data and the global event index are valid build artifacts', () => {
   const index = JSON.parse(readDist('data/event-index.json'));
   const locations = Object.values(index);
   const minimumEvents = {
-    arknights: 880,
-    wh40k: 110,
-    ff14: 430,
+    arknights: 895,
+    wh40k: 115,
+    ff14: 433,
   };
 
-  assert.ok(locations.length >= 1420, `event index unexpectedly shrank to ${locations.length} events`);
+  assert.ok(locations.length >= 1440, `event index unexpectedly shrank to ${locations.length} events`);
+  assert.ok(index['ff14-s1-001'], 'FF14 first-shard cross-reference target must be indexed');
+  assert.ok(index['ff14-s13-001'], 'FF14 thirteenth-shard cross-reference target must be indexed');
 
   for (const [worldId, minimum] of Object.entries(minimumEvents)) {
     const count = locations.filter(location => location.worldId === worldId).length;
@@ -94,6 +103,17 @@ test('world data and the global event index are valid build artifacts', () => {
     assert.equal(data.world.id, worldId);
     assert.ok(Array.isArray(data.branches) && data.branches.length > 0, `${worldId} needs branches`);
   }
+
+  const arknights = JSON.parse(readDist('data/arknights.json'));
+  const wh40k = JSON.parse(readDist('data/wh40k.json'));
+  assert.ok(
+    arknights.branches.find(branch => branch.id === 'if-other')?.endings?.length > 0,
+    'Arknights top-level IF endings must survive the build',
+  );
+  assert.ok(
+    wh40k.branches.find(branch => branch.id === 'if-heresy')?.endings?.length > 0,
+    'WH40K top-level IF endings must survive the build',
+  );
 });
 
 test('public pages retain the critical navigation and interaction containers', () => {

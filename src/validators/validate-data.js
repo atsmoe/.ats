@@ -37,45 +37,35 @@ function collectEvents(worldId, data) {
   const branchEvents = [];
   const allEventIds = [];
 
-  function walkBranches(branches) {
-    for (const branch of (branches || [])) {
-      const events = [];
+  function collectBranch(branch) {
+    const events = [];
 
-      function walkEras(eras) {
-        for (const era of (eras || [])) {
-          for (const evt of (era.events || [])) {
-            events.push(evt);
-            allEventIds.push({ id: evt.id, branchId: branch.id, worldId });
-          }
-        }
+    for (const era of (branch.eras || [])) {
+      for (const evt of (era.events || [])) {
+        events.push(evt);
+        allEventIds.push({ id: evt.id, branchId: branch.id, worldId });
       }
+    }
 
-      if (branch.eras && branch.eras.length > 0) {
-        walkEras(branch.eras);
-      }
+    for (const ending of (branch.endings || [])) {
+      ending.isEnding = true;
+      ending.id = ending.id || `${branch.id}-ending-${ending.endingNumber}`;
+      events.push(ending);
+      allEventIds.push({ id: ending.id, branchId: branch.id, worldId });
+    }
 
-      if (branch.subBranches) {
-        for (const sub of branch.subBranches) {
-          if (sub.endings) {
-            for (const ending of sub.endings) {
-              ending.isEnding = true;
-              ending.id = ending.id || `${branch.id}-${ending.endingNumber}`;
-              events.push(ending);
-              allEventIds.push({ id: ending.id, branchId: branch.id, worldId });
-            }
-          }
-        }
-      }
+    branch._events = events;
+    branchEvents.push({ branchId: branch.id, branchName: branch.name, events });
 
-      branch._events = events;
-      branchEvents.push({ branchId: branch.id, branchName: branch.name, events });
+    for (const sub of (branch.subBranches || [])) {
+      collectBranch(sub);
     }
   }
 
   const subEntities = data.subEntities || [];
   for (const entity of subEntities) {
     if (entity.timeline && entity.timeline.branches) {
-      walkBranches(entity.timeline.branches);
+      for (const branch of entity.timeline.branches) collectBranch(branch);
     }
   }
 
@@ -173,6 +163,9 @@ function flattenWorld(data) {
         }
         flatBranch.subBranches = flatSubBranches;
       }
+      if (branch.endings) {
+        flatBranch.endings = branch.endings;
+      }
       if (branch.divergesTo) {
         flatBranch.divergesTo = branch.divergesTo;
       }
@@ -188,66 +181,48 @@ function buildEventIndex(allData) {
   const index = {};
   const duplicates = new Map();
 
+  function addEvent(eventId, location) {
+    if (!eventId) return;
+    if (index[eventId]) {
+      if (!duplicates.has(eventId)) duplicates.set(eventId, [index[eventId]]);
+      duplicates.get(eventId).push(location);
+      return;
+    }
+    index[eventId] = location;
+  }
+
+  function indexBranch(worldId, branch) {
+    let eventIndex = 0;
+    for (const era of (branch.eras || [])) {
+      for (const evt of (era.events || [])) {
+        addEvent(evt.id, { worldId, branchId: branch.id, eventIndex });
+        eventIndex++;
+      }
+    }
+
+    for (const ending of (branch.endings || [])) {
+      addEvent(ending.id, { worldId, branchId: branch.id, eventIndex });
+      eventIndex++;
+    }
+
+    for (const sub of (branch.subBranches || [])) {
+      indexBranch(worldId, sub);
+    }
+  }
+
   for (const [worldId, data] of Object.entries(allData)) {
     const subEntities = data.subEntities || [];
     for (const entity of subEntities) {
       if (!entity.timeline || !entity.timeline.branches) continue;
       for (const branch of entity.timeline.branches) {
-        const branches = [branch];
-        if (branch.subBranches) {
-          branches.push(...branch.subBranches);
-        }
-        for (const b of branches) {
-          const eras = b.eras || (data.eras && (!b.eras || b.eras.length === 0) ? data.eras : []);
-          if (!eras) continue;
-          let evIndex = 0;
-          for (const era of eras) {
-            for (const evt of (era.events || [])) {
-              if (evt.id) {
-                if (index[evt.id]) {
-                  if (!duplicates.has(evt.id)) {
-                    duplicates.set(evt.id, [index[evt.id]]);
-                  }
-                  duplicates.get(evt.id).push({ worldId, branchId: b.id, eventIndex: evIndex });
-                }
-                index[evt.id] = { worldId, branchId: b.id, eventIndex: evIndex };
-              }
-              evIndex++;
-            }
-          }
-          if (b.subBranches) {
-            for (const sub of b.subBranches) {
-              if (sub.endings) {
-                for (const ending of sub.endings) {
-                  if (ending.id) {
-                    if (index[ending.id]) {
-                      if (!duplicates.has(ending.id)) {
-                        duplicates.set(ending.id, [index[ending.id]]);
-                      }
-                      duplicates.get(ending.id).push({ worldId, branchId: b.id });
-                    }
-                    index[ending.id] = { worldId, branchId: b.id, eventIndex: evIndex };
-                  }
-                  evIndex++;
-                }
-              }
-            }
-          }
-        }
+        indexBranch(worldId, branch);
       }
     }
   }
 
-  // Report duplicates as warnings (IF branches intentionally share event IDs from diverge points)
+  // Event IDs are global navigation keys. Any duplicate makes deep links ambiguous.
   for (const [eventId, locs] of duplicates) {
-    const worldIds = [...new Set(locs.map(l => l.worldId))];
-    if (worldIds.length > 1) {
-      // Cross-world duplicate — this is a true error
-      errors.push(`Duplicate eventId "${eventId}" across worlds: ${locs.map(l => `${l.worldId}/${l.branchId}`).join(', ')}`);
-    } else {
-      // Same-world duplicate — likely IF branch sharing, warn only
-      warnings.push(`Duplicate eventId "${eventId}" in ${locs[0].worldId}: shared across branches ${locs.map(l => l.branchId).join(', ')}`);
-    }
+    errors.push(`Duplicate eventId "${eventId}": ${locs.map(l => `${l.worldId}/${l.branchId}`).join(', ')}`);
   }
 
   return index;

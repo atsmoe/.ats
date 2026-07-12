@@ -76,7 +76,7 @@ export function getBranchEvents(branchId) {
       type: 'if-endings',
       eraTitle: '结局分支（' + branch.endings.length + '个）',
       events: branch.endings.map(e => ({
-        id: branchId + '-ending-' + e.endingNumber,
+        id: e.id || branchId + '-ending-' + e.endingNumber,
         dateDisplay: '结局 ' + e.endingNumber,
         title: e.title,
         description: e.description,

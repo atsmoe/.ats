@@ -7,7 +7,7 @@
     "validate": "node src/validators/validate-data.js",
     "dev": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && eleventy --serve --port 9000",
     "build": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && npm test",
-    "test": "node --test tests/site-output.test.js",
+    "test": "node --test tests/site-output.test.js tests/data-validation.test.js tests/portal-data.test.js",
     "changelog": "node convert-changelog.js"
   },
   "devDependencies": {
