@@ -67,6 +67,16 @@ test('only three-part versions are eligible for GitHub deployment', () => {
   assert.equal(isReleaseVersion('2.5.6.12'), false);
 });
 
+test('GitHub deployment checks the complete pushed commit range', () => {
+  const workflow = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'deploy.yml'), 'utf8');
+
+  assert.match(
+    workflow,
+    /fetch-depth:\s*0/,
+    'release-note verification needs full history when one push contains multiple commits',
+  );
+});
+
 test('the star map and world pages load separate JavaScript bundles', () => {
   const index = readDist('index.html');
   assert.match(index, /src="\.\/js\/star-map-3d\.js"/);

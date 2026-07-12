@@ -20,7 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          # The release-note guard compares the complete range of a push.
+          # A push may contain more than two commits, so a shallow checkout is insufficient.
+          fetch-depth: 0
 
       - name: Verify changelog and development log
         if: github.event_name == 'push'

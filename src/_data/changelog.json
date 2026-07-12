@@ -1,5 +1,15 @@
 [
   {
+    "version": "V2.5.6",
+    "date": "",
+    "color": "#d4923a",
+    "subtitle": "GitHub Pages 发布修复 · 多提交推送兼容",
+    "items": [
+      "<strong>发布恢复</strong>：修复一次推送包含多个提交时，GitHub Actions 因拉取历史不足而无法校验更新日志的问题。",
+      "<strong>可靠性保护</strong>：部署工作流现在拉取完整提交历史，并新增自动测试防止浅克隆配置再次导致发布中断。"
+    ]
+  },
+  {
     "version": "V2.5.5",
     "date": "",
     "color": "#d4923a",
