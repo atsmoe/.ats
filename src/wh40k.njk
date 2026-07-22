@@ -40,12 +40,12 @@ cssFiles:
 
 <!-- Event Detail Modal -->
 <div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card">
+  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-wh40k" aria-describedby="event-modal-desc-wh40k">
     <button class="event-modal-close" title="关闭">✕</button>
     <div class="event-modal-date"></div>
-    <div class="event-modal-title"></div>
+    <div class="event-modal-title" id="event-modal-title-wh40k"></div>
     <div class="event-modal-meta"></div>
-    <div class="event-modal-desc"></div>
+    <div class="event-modal-desc" id="event-modal-desc-wh40k"></div>
     <div class="event-modal-img"></div>
     <div class="event-modal-sources"></div>
   </div>

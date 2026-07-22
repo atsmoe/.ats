@@ -10,6 +10,7 @@ cssFiles:
   - timeline.css
   - ref-panel.css
   - worlds.css
+  - archive.css
   - responsive.css
 ---
 {% extends "base.njk" %}
@@ -17,21 +18,73 @@ cssFiles:
 {% block content %}
 <!-- Timeline View -->
 <div id="timeline" class="active">
-  {% set cover = {
-    code: "CHRONICLE / 01",
-    record: "TERRA · 1096",
-    kicker: "ARCHIVE RECORD / ORIGINIUM",
-    title: "明日方舟 · 泰拉大陆",
-    description: "一片源石技艺与天灾肆虐的大地，从矿石病的发现到罗德岛的崛起，记载泰拉大陆的关键事件与命运分支。",
-    calendar: "泰 拉 历",
-    serial: "ATS-ARK-1096-MAINLINE",
-    art: "arknights",
-    artTitle: "天灾下的泰拉移动城邦",
-    artDescription: "工业移动城市矗立在层叠风暴与源石警示信号之下。",
-    observation: "OBSERVATION 01",
-    artCaption: "天灾接近中"
-  } %}
-  {% include "timeline-cover.njk" %}
+  <section class="ark-archive" id="ark-archive" data-spoiler-locked="false" aria-labelledby="ark-archive-title">
+    <div class="ark-archive-shell">
+      <div class="ark-archive-telemetry" aria-label="观测连接状态">
+        <span><i></i> SIGNAL LOCKED</span>
+        <span>ATS / WORLD-01 / TERRA</span>
+        <span data-archive-source-version>ARCHIVE CONNECTING</span>
+      </div>
+
+      <header class="ark-archive-header">
+        <div class="ark-archive-heading">
+          <p class="ark-archive-kicker">WORLD ARCHIVE / ORIGINIUM OBSERVATION</p>
+          <h1 id="ark-archive-title"><span>泰拉</span>观测档案</h1>
+          <p class="ark-archive-lead">从一份记录进入世界，沿证据、人物与可能结果继续追踪。时间仍然存在，但不再是唯一入口。</p>
+        </div>
+
+        <aside class="ark-archive-coverage" aria-label="档案覆盖范围">
+          <div class="ark-coverage-label">COVERAGE / 档案边界</div>
+          <dl>
+            <div><dt>维护状态</dt><dd data-archive-status>连接中</dd></div>
+            <div><dt>最近整理</dt><dd data-archive-updated>—</dd></div>
+            <div><dt>当前覆盖</dt><dd data-archive-scope>正在读取档案元数据</dd></div>
+          </dl>
+        </aside>
+      </header>
+
+      <nav class="ark-observation-lenses" aria-label="世界观测镜">
+        <span class="active" aria-current="page"><b>01</b> 档案 <small>DOSSIER</small></span>
+        <span aria-disabled="true"><b>02</b> 关联 <small>CALIBRATING</small></span>
+        <a href="#chronicle-index"><b>03</b> 时域 <small>CHRONICLE</small></a>
+      </nav>
+
+      <div class="ark-dossier" id="ark-dossier" aria-busy="true">
+        <div class="ark-dossier-loading">
+          <span></span>
+          <p>正在解译泰拉档案信号</p>
+        </div>
+        <noscript>
+          <style>.world-arknights .ark-dossier-loading { display: none; }</style>
+          <div class="ark-nojs-fallback" id="ark-nojs-fallback">
+            <strong>档案读取需要 JavaScript</strong>
+            <p>当前仍可阅读档案边界与调查说明；完整记录可前往 <a href="https://prts.wiki/" target="_blank" rel="noopener">PRTS Wiki</a> 查阅。</p>
+          </div>
+        </noscript>
+      </div>
+      <p class="ark-sr-only" id="ark-dossier-status" aria-live="polite"></p>
+    </div>
+
+    <div class="ark-spoiler-gate" id="ark-spoiler-gate" role="dialog" aria-modal="true" aria-labelledby="ark-spoiler-title" aria-describedby="ark-spoiler-description" hidden>
+      <div class="ark-spoiler-card">
+        <span class="ark-spoiler-code">CLEARANCE / FULL RECORD</span>
+        <h2 id="ark-spoiler-title">本世界默认展示完整剧透</h2>
+        <p id="ark-spoiler-description">档案包含主线、活动与集成战略结局。确认后，本设备不会再次显示这条提醒。</p>
+        <div class="ark-spoiler-actions">
+          <button type="button" data-spoiler-accept>进入完整档案</button>
+          <a href="./index.html">返回星图</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ark-chronicle-intro" id="chronicle-index" aria-labelledby="chronicle-index-title">
+    <div>
+      <span>CHRONICLE LENS / 03</span>
+      <h2 id="chronicle-index-title">完整编年索引</h2>
+    </div>
+    <p>需要顺序查阅时，可继续使用现有编年视图。它与上方档案镜读取同一组记录。</p>
+  </section>
 
   <div class="tl-branches" id="tl-branches">
     <!-- Populated by JS -->
@@ -48,12 +101,12 @@ cssFiles:
 
 <!-- Event Detail Modal -->
 <div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card">
+  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-arknights" aria-describedby="event-modal-desc-arknights">
     <button class="event-modal-close" title="关闭">✕</button>
     <div class="event-modal-date"></div>
-    <div class="event-modal-title"></div>
+    <div class="event-modal-title" id="event-modal-title-arknights"></div>
     <div class="event-modal-meta"></div>
-    <div class="event-modal-desc"></div>
+    <div class="event-modal-desc" id="event-modal-desc-arknights"></div>
     <div class="event-modal-img"></div>
     <div class="event-modal-sources"></div>
   </div>

@@ -49,7 +49,7 @@ function dismissPortalOverlay() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('%c 群星之间 · 编年史 %c MULTI-PAGE ',
+  console.log('%c 群星之间 · 世界档案 %c MULTI-PAGE ',
     'color:#c9a050;font-size:20px;font-family:serif;',
     'color:#9a9078;font-size:11px;');
 
@@ -63,7 +63,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     BackgroundManager.init('bg-canvas', 'bg-video', 'bg-image');
 
     const { loadWorldData } = await import('./data-loader.js');
-    const { populateBranchTabs, renderEvents, updateTimelineCover, setData: setTimelineData, initEventModal } = await import('./timeline-ui.js');
+    const { createWorldArchive } = await import('./world-archive.js');
+    const { projectChronicleTimeline } = await import('./timeline-adapter.js');
+    const {
+      populateBranchTabs,
+      renderEvents,
+      updateTimelineCover,
+      setData: setTimelineData,
+      initEventModal,
+      showEventDetails,
+    } = await import('./timeline-ui.js');
     const { setData: setPortalData, initPortalArrival } = await import('./portal-transition.js');
 
     const { WORLDS } = await import('./worlds.js');
@@ -75,14 +84,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     initNav();
 
     try {
-      const data = await loadWorldData(worldId);
-      setTimelineData(data);
-      setPortalData(data);
+      const loadedData = await loadWorldData(worldId);
+      const archive = createWorldArchive(loadedData);
+      const chronicleSnapshot = archive.explore({ lens: 'chronicle' });
+      const timelineData = projectChronicleTimeline(chronicleSnapshot);
+      setTimelineData(timelineData);
+      setPortalData(timelineData);
       populateBranchTabs();
       renderEvents('mainline');
       updateTimelineCover(worldId);
+
+      if (worldId === 'arknights') {
+        const { initArknightsArchive } = await import('./arknights-archive.js');
+        initArknightsArchive({ archive, onOpenRecord: showEventDetails });
+      }
     } catch (err) {
       console.error('Failed to load world data:', err);
+      if (worldId === 'arknights') {
+        try {
+          const { initArknightsArchive } = await import('./arknights-archive.js');
+          initArknightsArchive();
+        } catch (_archiveError) {
+          document.body.classList.remove('ark-spoiler-locked');
+        }
+      }
       dismissPortalOverlay();
       showErrorState(worldId, () => {
         // Retry: reload the page (simplest full reset)

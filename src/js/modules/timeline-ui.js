@@ -33,6 +33,16 @@ function findBranch(branchId) {
   return null;
 }
 
+function findEventRecord(eventId, branches = _data?.branches || []) {
+  for (const branch of branches) {
+    const record = (branch.events || []).find(event => event.id === eventId);
+    if (record) return record;
+    const nested = findEventRecord(eventId, branch.subBranches || []);
+    if (nested) return nested;
+  }
+  return null;
+}
+
 function getEraGroups(branch) {
   if (!branch || !branch.eras || branch.eras.length === 0) return [];
   return branch.eras.map(era => ({
@@ -581,6 +591,7 @@ document.getElementById('tl-sub-branches').addEventListener('click', (e) => {
 /* ── Event Detail Modal ── */
 const modal = document.getElementById('event-modal');
 let modalOpen = false;
+let modalReturnFocus = null;
 
 function onCardClick(e) {
   const card = e.target.closest('.event-card');
@@ -598,12 +609,33 @@ function onCardClick(e) {
       }
     }
   }
+  if (!evt) evt = findEventRecord(tlEvent.id);
   if (!evt) return;
   openEventModal(evt);
 }
 
 function onKeyDown(e) {
-  if (e.key === 'Escape' && modalOpen) history.back();
+  if (!modalOpen || !modal) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    history.back();
+    return;
+  }
+  if (e.key !== 'Tab') return;
+
+  const focusable = [...modal.querySelectorAll(
+    'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+  )].filter(element => !element.hasAttribute('hidden'));
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
 }
 
 function onModalOverlayClick(e) {
@@ -681,6 +713,16 @@ function openEventModal(evt) {
   // Sources
   const sourcesEl = modal.querySelector('.event-modal-sources');
   sourcesEl.innerHTML = '';
+  if (evt.sourceStatus) {
+    const status = document.createElement('div');
+    status.className = 'event-source-item event-source-status';
+    const label = document.createElement('span');
+    label.className = 'source-label';
+    label.textContent = '来源状态：';
+    status.appendChild(label);
+    status.appendChild(document.createTextNode(evt.sourceStatus));
+    sourcesEl.appendChild(status);
+  }
   if (evt.prtsSources && evt.prtsSources.length > 0) {
     evt.prtsSources.forEach(s => {
       const item = document.createElement('div');
@@ -704,10 +746,17 @@ function openEventModal(evt) {
 
   // Show
   const wasOpen = modalOpen;
+  if (!wasOpen) modalReturnFocus = document.activeElement;
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   modalOpen = true;
   if (!wasOpen) history.pushState({ modalOpen: true }, '');
+  requestAnimationFrame(() => modal.querySelector('.event-modal-close')?.focus());
+}
+
+export function showEventDetails(evt) {
+  if (!evt) return;
+  openEventModal(evt);
 }
 
 function closeEventModal() {
@@ -715,4 +764,6 @@ function closeEventModal() {
   modal.style.display = 'none';
   document.body.style.overflow = '';
   modalOpen = false;
+  if (modalReturnFocus?.isConnected) modalReturnFocus.focus();
+  modalReturnFocus = null;
 }

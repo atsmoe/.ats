@@ -49,6 +49,24 @@ test('production build contains every public page and data file', () => {
   for (const relativePath of required) {
     assert.ok(fs.existsSync(path.join(DIST, relativePath)), `missing dist/${relativePath}`);
   }
+
+  assert.ok(
+    !fs.existsSync(path.join(DIST, 'star-map-prototype.html')),
+    'throwaway star-map prototype must never be published',
+  );
+});
+
+test('public page titles retain the complete site name', () => {
+  for (const page of ['index.html', 'arknights.html', 'wh40k.html', 'ff14.html', 'about.html']) {
+    assert.match(readDist(page), /<title>[^<]*群星之间/, `${page} title must include 群星之间`);
+  }
+});
+
+test('the About page describes the archive product rather than a timeline-only site', () => {
+  const about = readDist('about.html');
+  assert.match(about, /虚构世界观测与调查网站/);
+  assert.match(about, /调查档案、关系线索与时域索引/);
+  assert.doesNotMatch(about, /交互式编年史网站/);
 });
 
 test('the current project version is documented for visitors and maintainers', () => {
@@ -126,6 +144,24 @@ test('world data and the global event index are valid build artifacts', () => {
   );
 });
 
+test('Arknights dossier references canonical production records and preserved context metadata', () => {
+  const arknights = JSON.parse(readDist('data/arknights.json'));
+  const eventIndex = JSON.parse(readDist('data/event-index.json'));
+  const dossier = arknights.archive?.dossiers?.find(item => item.id === 'deep-blue-observation');
+  const integrated = arknights.branches.find(branch => branch.id === 'if-integrated');
+  const mizuki = integrated?.subBranches?.find(branch => branch.id === 'if-mizuki');
+
+  assert.ok(dossier, 'deep-blue observation dossier must be published');
+  assert.equal(dossier.contextId, 'if-mizuki');
+  assert.equal(dossier.recordIds.length, 4);
+  for (const recordId of dossier.recordIds) {
+    assert.ok(eventIndex[recordId], `dossier record ${recordId} must use the global event index`);
+    const ending = mizuki?.endings?.find(record => record.id === recordId);
+    assert.equal(ending?.sourceStatus, '二手整理', `${recordId} keeps its provenance exception`);
+  }
+  assert.match(mizuki?.description || '', /深海/);
+});
+
 test('public pages retain the critical navigation and interaction containers', () => {
   const index = readDist('index.html');
   assert.match(index, /id="galaxy-markers"/);
@@ -135,15 +171,21 @@ test('public pages retain the critical navigation and interaction containers', (
 
   for (const page of ['arknights.html', 'wh40k.html', 'ff14.html']) {
     const html = readDist(page);
+    assert.match(html, /<main id="main-content">/, `${page} needs a main content landmark`);
     assert.match(html, /id="tl-container"/, `${page} needs the timeline container`);
     assert.match(html, /id="event-modal"/, `${page} needs the event modal`);
     assert.match(html, /id="tl-branches"/, `${page} needs branch navigation`);
   }
 
   const arknights = readDist('arknights.html');
-  assert.match(arknights, /class="tl-cover-grid"/, 'Arknights needs the editorial cover layout');
-  assert.match(arknights, /class="tl-cover-art/, 'Arknights needs original cover artwork');
-  assert.match(arknights, /class="tl-cover-code"/, 'Arknights needs archive metadata');
+  assert.match(arknights, /id="ark-archive"/, 'Arknights needs the world archive experience');
+  assert.match(arknights, /id="ark-dossier"/, 'Arknights needs the dossier observation surface');
+  assert.match(arknights, /id="ark-spoiler-gate"/, 'Arknights needs a one-time spoiler warning');
+  assert.match(arknights, /id="ark-nojs-fallback"/, 'Arknights needs a no-script reading fallback');
+  assert.match(arknights, /data-spoiler-locked="false"/, 'static markup must not remain spoiler-locked');
+  assert.match(arknights, /id="chronicle-index"/, 'Arknights retains a direct chronicle reading path');
+  assert.doesNotMatch(arknights, /class="tl-cover-grid"/, 'the discarded picture-led cover must not remain');
+  assert.doesNotMatch(arknights, /本世界线|非官方同人编年史项目/, 'visitor copy uses archive terminology');
 
   for (const page of ['wh40k.html', 'ff14.html']) {
     assert.doesNotMatch(readDist(page), /class="tl-cover-grid"/, `${page} keeps its existing cover`);

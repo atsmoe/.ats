@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }} — 群之间 · 编年史</title>
+  <title>{{ title }} — 群星之间 · 世界档案</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
@@ -20,10 +20,13 @@
 
   <!-- CRITICAL: portal arrival overlay — first element in body, not in any block -->
   <div id="portal-arrival" style="position:fixed;inset:0;z-index:9999;background:#060a14;opacity:1;pointer-events:all;"></div>
+  <noscript><style>#portal-arrival { display: none !important; }</style></noscript>
 
   {% include "nav.njk" %}
 
-  {% block content %}{% endblock %}
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
 
   {% include "footer.njk" %}
 

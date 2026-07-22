@@ -21016,10 +21016,12 @@
                 "type": "integrated-strategy",
                 "divergeAtEventId": "evt-003",
                 "description": "斯图提斐拉号事件后，若深海教会仪式未被阻止，水月体内的海嗣血脉将全面觉醒。深蓝之树降临，海嗣席卷泰拉。",
-                "endings": [
-                  {
-                    "endingNumber": 1,
-                    "title": "平凡即是喜乐",
+            "endings": [
+              {
+                "id": "if-mizuki-ending-1",
+                "endingNumber": 1,
+                "title": "平凡即是喜乐",
+                    "sourceStatus": "二手整理",
                     "dateDisplay": "",
                     "location": "盐风城 / 伊比利亚",
                     "characters": [
@@ -21030,10 +21032,12 @@
                     ],
                     "description": "默认结局。阿戈尔提前介入阻止灾难，深海猎人海沫获救并带回罗德岛。水月在此线中保持了「人」的身份，没有成为海嗣。",
                     "conditions": "不满足其他结局条件时，常规通关第五层（击败BOSS「屠谕者」即大群意志）"
-                  },
-                  {
-                    "endingNumber": 2,
-                    "title": "静谧时代",
+              },
+              {
+                "id": "if-mizuki-ending-2",
+                "endingNumber": 2,
+                "title": "静谧时代",
+                    "sourceStatus": "二手整理",
                     "dateDisplay": "",
                     "location": "深海大静谧后的废墟",
                     "characters": [
@@ -21043,10 +21047,12 @@
                     ],
                     "description": "第二次大静谧席卷陆地。斯卡蒂成为海嗣之神「伊莎玛拉」并带领海嗣飞升宇宙。凯尔希守住了人类最后的城市，但水月为保护博士牺牲。人类文明基本终结。",
                     "conditions": "前三层不期而遇「开端」选择「跟随大群」→ 获得藏品「主教的研究」→ 保护骑士至最后一层 → 击败BOSS「最后的骑士」"
-                  },
-                  {
-                    "endingNumber": 3,
-                    "title": "息潮的代价",
+              },
+              {
+                "id": "if-mizuki-ending-3",
+                "endingNumber": 3,
+                "title": "息潮的代价",
+                    "sourceStatus": "二手整理",
                     "dateDisplay": "",
                     "location": "深海核心",
                     "characters": [
@@ -21056,10 +21062,12 @@
                     ],
                     "description": "水月为从根源平息海嗣的同化本能，牺牲自己融入名为「始源的命脉」的大群意识。他以自身意志压制了伊莎玛拉，自身意识溶解于深海。伊莎玛拉被平息，但水月彻底消失。只有博士还记着水月与他的约定。",
                     "conditions": "结局2通关后 → 三层前「开端」选择「决定潜入深海」→ 获得「深蓝之心」→ 解锁隐藏第六层 → 击败BOSS「伊莎玛拉」"
-                  },
-                  {
-                    "endingNumber": 4,
-                    "title": "深蓝之星（Stella Caerulea）",
+              },
+              {
+                "id": "if-mizuki-ending-4",
+                "endingNumber": 4,
+                "title": "深蓝之星（Stella Caerulea）",
+                    "sourceStatus": "二手整理",
                     "dateDisplay": "",
                     "location": "外太空 / 宇宙",
                     "characters": [
@@ -21231,5 +21239,38 @@
         ]
       }
     }
-  ]
+  ],
+  "archive": {
+    "schemaVersion": 1,
+    "sourceVersion": "ARK-2026.07",
+    "coverage": {
+      "status": "观测中",
+      "updatedAt": "2026-07-22",
+      "scope": "主线编年、集成战略与部分 IF 记录",
+      "knownGaps": [
+        "萨卡兹的无终奇语与岁的界园志异仍待整理",
+        "部分集成战略结局尚缺逐条官方来源"
+      ],
+      "sourceNote": "现有内容以公开剧情资料与社区条目整理为基线；缺少具体来源的记录统一标示为二手整理。"
+    },
+    "dossiers": [
+      {
+        "id": "deep-blue-observation",
+        "code": "DOSSIER / IS-03",
+        "title": "深蓝观测记录",
+        "question": "同一场深海危机，为何留下四种互不相容的未来记录",
+        "description": "以水月与深海的关系为观测焦点，对照集成战略中并存的四种结局记录。它们共享同一背景，但不被强行拼成一条世界线。",
+        "contextId": "if-mizuki",
+        "recordIds": [
+          "if-mizuki-ending-1",
+          "if-mizuki-ending-2",
+          "if-mizuki-ending-3",
+          "if-mizuki-ending-4"
+        ],
+        "defaultRecordId": "if-mizuki-ending-1",
+        "relation": "alternate-outcomes",
+        "exception": "二手整理"
+      }
+    ]
+  }
 }

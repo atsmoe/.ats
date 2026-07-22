@@ -178,7 +178,7 @@ async function buildImages() {
 
 async function main() {
   console.log('========================================');
-  console.log('  群星之间 · 编年史 — Build');
+  console.log('  群星之间 · 世界档案 — Build');
   console.log('========================================\n');
 
   // Step 1: Build JS bundles
@@ -192,6 +192,10 @@ async function main() {
 
   // Step 2: Copy CSS
   await buildCSS();
+
+  // Never ship local throwaway prototypes, including stale files from an older build.
+  const prototypeOutput = path.join(DIST, 'star-map-prototype.html');
+  if (fs.existsSync(prototypeOutput)) fs.unlinkSync(prototypeOutput);
 
   // Step 3: Optimize images (WebP generation)
   await buildImages();
@@ -215,4 +219,7 @@ async function main() {
   console.log('========================================');
 }
 
-main().catch(console.error);
+main().catch(error => {
+  console.error('[build] Fatal error:', error);
+  process.exitCode = 1;
+});

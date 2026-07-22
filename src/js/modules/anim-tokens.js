@@ -8,11 +8,15 @@ export const ANIM = {
     normal: 300,
     slow: 500,
     portal: 700,
+    scan: 1100,
+    loading: 1800,
+    ambient: 2400,
   },
 
   easing: {
     out: 'cubic-bezier(0.16, 1, 0.3, 1)',
     in: 'cubic-bezier(0.7, 0, 0.6, 1)',
+    inOut: 'ease-in-out',
     bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
   },
 

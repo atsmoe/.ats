@@ -1,0 +1,737 @@
+/* ============================================================
+   Arknights archive experience — dossier lens
+   ============================================================ */
+
+body.world-arknights.ark-spoiler-locked { overflow: hidden; }
+
+.world-arknights .ark-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.world-arknights .ark-archive {
+  --archive-max: 1440px;
+  --archive-pad-x: clamp(24px, 5vw, 76px);
+  --archive-pad-y: clamp(36px, 6vw, 84px);
+  --archive-gap-xs: 6px;
+  --archive-gap-sm: 10px;
+  --archive-gap-md: 16px;
+  --archive-gap-lg: 24px;
+  --archive-gap-xl: 36px;
+  --archive-gap-2xl: 56px;
+  --archive-rule: rgba(var(--theme-rgb), 0.24);
+  --archive-rule-soft: rgba(var(--theme-rgb), 0.12);
+  --archive-paper: #d8d7d1;
+  --archive-paper-rgb: 216, 215, 209;
+  --archive-muted: #92959b;
+  --archive-ink: #090a0d;
+  --archive-panel: rgba(13, 14, 18, 0.88);
+  --archive-panel-strong: rgba(9, 10, 13, 0.96);
+  --archive-alert: #e9a33c;
+  --archive-body: #c2c3c5;
+  --archive-bg-start: #0b0d12;
+  --archive-bg-middle: #08090d;
+  --archive-bg-end: #111116;
+  --archive-surface-rgb: 5, 6, 9;
+  --archive-site-rgb: 8, 8, 16;
+  --archive-divider: rgba(var(--archive-paper-rgb), 0.055);
+  --archive-surface-soft: rgba(var(--archive-paper-rgb), 0.012);
+  --archive-axis-shadow: 46px 0 rgba(var(--theme-rgb), 0.08), -170px 0 rgba(var(--archive-paper-rgb), 0.035);
+  --archive-signal-shadow: 0 0 18px rgba(var(--theme-rgb), 0.76);
+  --archive-record-shadow: 0 0 14px rgba(var(--theme-rgb), 0.8);
+  --archive-tab-line-top: inset 0 2px var(--theme-color);
+  --archive-tab-line-bottom: inset 0 -2px var(--theme-color);
+  --archive-tab-line-side: inset 2px 0 var(--theme-color);
+  --archive-motion-signal: var(--transition-slow);
+  --archive-motion-loading: var(--transition-slow);
+  --archive-motion-scan: var(--transition-slow);
+  --archive-cut-sm: 22px;
+  --archive-cut-lg: 28px;
+  --archive-header-space: clamp(var(--archive-gap-xl), 7vw, calc(var(--archive-gap-2xl) + var(--archive-gap-xl)));
+  --archive-modal-space: clamp(var(--archive-gap-lg), 5vw, var(--archive-gap-2xl));
+  --archive-chronicle-x: max(var(--archive-gap-2xl), calc((100vw - 1312px) / 2));
+  position: relative;
+  z-index: 10;
+  min-height: min(920px, calc(100vh - var(--nav-h)));
+  margin-top: var(--nav-h);
+  overflow: hidden;
+  color: var(--archive-paper);
+  background:
+    radial-gradient(circle at 82% 18%, rgba(var(--theme-rgb), 0.13), transparent 30%),
+    linear-gradient(118deg, rgba(var(--archive-paper-rgb), 0.025) 0 1px, transparent 1px 22%),
+    linear-gradient(135deg, var(--archive-bg-start) 0%, var(--archive-bg-middle) 46%, var(--archive-bg-end) 100%);
+  border-bottom: 1px solid var(--archive-rule);
+}
+
+.world-arknights .ark-archive::before,
+.world-arknights .ark-archive::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.world-arknights .ark-archive::before {
+  inset: 0;
+  opacity: 0.62;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 47px, rgba(var(--archive-paper-rgb), 0.025) 48px),
+    repeating-linear-gradient(90deg, transparent 0 95px, rgba(var(--archive-paper-rgb), 0.018) 96px);
+}
+
+.world-arknights .ark-archive::after {
+  top: -22%;
+  right: 14%;
+  width: 1px;
+  height: 145%;
+  background: linear-gradient(transparent, rgba(var(--theme-rgb), 0.62), transparent);
+  transform: rotate(18deg);
+  box-shadow: var(--archive-axis-shadow);
+}
+
+.world-arknights .ark-archive-shell {
+  position: relative;
+  z-index: 10;
+  width: min(100%, var(--archive-max));
+  min-height: inherit;
+  margin: 0 auto;
+  padding: var(--archive-pad-y) var(--archive-pad-x);
+  transition: filter var(--transition-slow), opacity var(--transition-slow);
+}
+
+.world-arknights .ark-archive[data-spoiler-locked='true'] .ark-archive-shell {
+  filter: blur(12px) saturate(0.35);
+  opacity: 0.38;
+  pointer-events: none;
+  user-select: none;
+}
+
+.world-arknights .ark-archive-telemetry {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--archive-gap-lg);
+  padding-bottom: var(--archive-gap-md);
+  color: var(--archive-muted);
+  border-bottom: 1px solid var(--archive-rule-soft);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.world-arknights .ark-archive-telemetry span:last-child { text-align: right; }
+
+.world-arknights .ark-archive-telemetry i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: var(--archive-gap-sm);
+  background: var(--theme-color);
+  box-shadow: var(--archive-signal-shadow);
+  animation: archive-signal var(--archive-motion-signal) infinite;
+}
+
+.world-arknights .ark-archive-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.55fr);
+  gap: var(--archive-gap-2xl);
+  align-items: end;
+  padding: var(--archive-header-space) 0 var(--archive-gap-xl);
+}
+
+.world-arknights .ark-archive-kicker,
+.world-arknights .ark-dossier-code,
+.world-arknights .ark-context-label,
+.world-arknights .ark-record-label,
+.world-arknights .ark-coverage-label,
+.world-arknights .ark-spoiler-code,
+.world-arknights .ark-chronicle-intro span {
+  color: var(--theme-color);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.world-arknights .ark-archive-heading h1 {
+  max-width: 850px;
+  margin: var(--archive-gap-sm) 0 var(--archive-gap-md);
+  font-family: var(--font-sans);
+  font-size: clamp(42px, 6.7vw, 96px);
+  font-weight: 800;
+  line-height: 0.93;
+  letter-spacing: -5px;
+}
+
+.world-arknights .ark-archive-heading h1 span {
+  display: block;
+  color: var(--theme-color);
+  font-size: 0.3em;
+  line-height: 1.5;
+  letter-spacing: 8px;
+}
+
+.world-arknights .ark-archive-lead {
+  max-width: 650px;
+  color: var(--archive-muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.world-arknights .ark-archive-coverage {
+  position: relative;
+  padding: var(--archive-gap-lg);
+  background: linear-gradient(135deg, rgba(var(--theme-rgb), 0.08), var(--archive-panel));
+  border: 1px solid var(--archive-rule);
+  clip-path: polygon(0 0, calc(100% - var(--archive-cut-sm)) 0, 100% var(--archive-cut-sm), 100% 100%, 0 100%);
+}
+
+.world-arknights .ark-archive-coverage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36%;
+  height: 2px;
+  background: var(--theme-color);
+}
+
+.world-arknights .ark-archive-coverage dl { margin-top: var(--archive-gap-md); }
+
+.world-arknights .ark-archive-coverage dl > div {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: var(--archive-gap-md);
+  padding: var(--archive-gap-sm) 0;
+  border-top: 1px solid var(--archive-divider);
+}
+
+.world-arknights .ark-archive-coverage dt {
+  color: var(--archive-muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.world-arknights .ark-archive-coverage dd {
+  color: var(--archive-paper);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.world-arknights .ark-observation-lenses {
+  position: static;
+  min-height: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--archive-rule-soft);
+  transform: none;
+}
+
+.world-arknights .ark-observation-lenses > * {
+  display: flex;
+  align-items: baseline;
+  gap: var(--archive-gap-sm);
+  min-height: 52px;
+  padding: var(--archive-gap-md) var(--archive-gap-lg);
+  color: var(--archive-muted);
+  background: var(--archive-surface-soft);
+  border-right: 1px solid var(--archive-rule-soft);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.world-arknights .ark-observation-lenses > *:last-child { border-right: 0; }
+.world-arknights .ark-observation-lenses b { color: rgba(var(--theme-rgb), 0.6); font: inherit; }
+.world-arknights .ark-observation-lenses small { margin-left: auto; font: 9px/1 ui-monospace, monospace; letter-spacing: 1px; }
+.world-arknights .ark-observation-lenses .active {
+  color: var(--archive-paper);
+  background: rgba(var(--theme-rgb), 0.1);
+  box-shadow: var(--archive-tab-line-top);
+}
+.world-arknights .ark-observation-lenses [aria-disabled='true'] { opacity: 0.45; }
+
+.world-arknights .ark-archive button:focus-visible,
+.world-arknights .ark-archive a:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 3px;
+}
+
+.world-arknights .ark-dossier {
+  min-height: 430px;
+  margin-top: var(--archive-gap-lg);
+  border: 1px solid var(--archive-rule-soft);
+  background: rgba(var(--archive-surface-rgb), 0.62);
+}
+
+.world-arknights .ark-dossier-loading {
+  min-height: 430px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--archive-gap-md);
+  color: var(--archive-muted);
+  font: 10px/1.5 ui-monospace, monospace;
+  letter-spacing: 2px;
+}
+
+.world-arknights .ark-dossier-loading span {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--archive-rule);
+  transform: rotate(45deg);
+  animation: archive-loading var(--archive-motion-loading) infinite;
+}
+
+.world-arknights .ark-nojs-fallback {
+  min-height: 300px;
+  display: grid;
+  align-content: center;
+  gap: var(--archive-gap-sm);
+  padding: var(--archive-gap-xl);
+  color: var(--archive-muted);
+}
+
+.world-arknights .ark-nojs-fallback strong { color: var(--archive-paper); }
+.world-arknights .ark-nojs-fallback p { max-width: 560px; line-height: 1.8; }
+.world-arknights .ark-nojs-fallback a { color: var(--theme-color); }
+
+.world-arknights .ark-dossier-layout {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.7fr) minmax(0, 1.3fr);
+  min-height: 430px;
+}
+
+.world-arknights .ark-dossier-brief {
+  position: relative;
+  padding: var(--archive-gap-xl);
+  overflow: hidden;
+  border-right: 1px solid var(--archive-rule-soft);
+  background:
+    linear-gradient(145deg, rgba(var(--theme-rgb), 0.1), transparent 45%),
+    var(--archive-surface-soft);
+}
+
+.world-arknights .ark-dossier-brief::after {
+  content: attr(data-record-count);
+  position: absolute;
+  right: -10px;
+  bottom: -42px;
+  color: rgba(var(--theme-rgb), 0.055);
+  font: 800 170px/1 var(--font-sans);
+}
+
+.world-arknights .ark-dossier-brief h2 {
+  max-width: 480px;
+  margin: var(--archive-gap-sm) 0 var(--archive-gap-lg);
+  font-size: clamp(27px, 3vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+
+.world-arknights .ark-dossier-question {
+  position: relative;
+  z-index: 2;
+  color: var(--archive-paper);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.world-arknights .ark-dossier-description {
+  position: relative;
+  z-index: 2;
+  margin-top: var(--archive-gap-md);
+  color: var(--archive-muted);
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.world-arknights .ark-context {
+  position: relative;
+  z-index: 2;
+  margin-top: var(--archive-gap-xl);
+  padding-top: var(--archive-gap-md);
+  border-top: 1px solid var(--archive-rule-soft);
+}
+
+.world-arknights .ark-context strong {
+  display: block;
+  margin: var(--archive-gap-xs) 0;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.world-arknights .ark-context p {
+  color: var(--archive-muted);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.world-arknights .ark-exception {
+  display: inline-flex;
+  margin-top: var(--archive-gap-md);
+  padding: var(--archive-gap-xs) var(--archive-gap-sm);
+  color: var(--archive-alert);
+  background: rgba(var(--theme-rgb), 0.07);
+  border: 1px solid rgba(var(--theme-rgb), 0.28);
+  font: 9px/1 ui-monospace, monospace;
+  letter-spacing: 2px;
+}
+
+.world-arknights .ark-outcome-console {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+}
+
+.world-arknights .ark-outcome-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid var(--archive-rule-soft);
+}
+
+.world-arknights .ark-outcome-button {
+  position: relative;
+  min-width: 0;
+  min-height: 94px;
+  padding: var(--archive-gap-md);
+  color: var(--archive-muted);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--archive-rule-soft);
+  cursor: pointer;
+  transition: color var(--transition-normal), background var(--transition-normal);
+}
+
+.world-arknights .ark-outcome-button:last-child { border-right: 0; }
+.world-arknights .ark-outcome-button span { display: block; font: 9px/1 ui-monospace, monospace; letter-spacing: 2px; }
+.world-arknights .ark-outcome-button strong {
+  display: block;
+  margin-top: var(--archive-gap-sm);
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.world-arknights .ark-outcome-button[aria-selected='true'] {
+  color: var(--archive-paper);
+  background: rgba(var(--theme-rgb), 0.1);
+  box-shadow: var(--archive-tab-line-bottom);
+}
+
+.world-arknights .ark-outcome-button[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  right: var(--archive-gap-sm);
+  top: var(--archive-gap-sm);
+  width: 6px;
+  height: 6px;
+  background: var(--theme-color);
+  box-shadow: var(--archive-record-shadow);
+}
+
+.world-arknights .ark-outcome-detail {
+  position: relative;
+  min-height: 335px;
+  padding: var(--archive-gap-xl);
+  overflow: hidden;
+  animation: archive-record-in var(--transition-normal) both;
+}
+
+.world-arknights .ark-outcome-detail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -28%;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgba(var(--theme-rgb), 0.09), transparent);
+  transform: skewX(-14deg);
+  animation: archive-scan var(--archive-motion-scan) both;
+  pointer-events: none;
+}
+
+.world-arknights .ark-record-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--archive-gap-lg);
+}
+
+.world-arknights .ark-record-heading h3 {
+  margin-top: var(--archive-gap-xs);
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.2;
+}
+
+.world-arknights .ark-record-index {
+  flex: none;
+  color: rgba(var(--theme-rgb), 0.42);
+  font: 800 clamp(38px, 5vw, 74px)/0.9 var(--font-sans);
+}
+
+.world-arknights .ark-record-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--archive-gap-sm) var(--archive-gap-lg);
+  margin: var(--archive-gap-lg) 0;
+  padding: var(--archive-gap-sm) 0;
+  color: var(--archive-muted);
+  border-top: 1px solid var(--archive-divider);
+  border-bottom: 1px solid var(--archive-divider);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.world-arknights .ark-record-body {
+  max-width: 800px;
+  color: var(--archive-body);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.world-arknights .ark-record-conditions {
+  max-width: 800px;
+  margin-top: var(--archive-gap-lg);
+  padding: var(--archive-gap-md);
+  color: var(--archive-muted);
+  background: rgba(var(--archive-paper-rgb), 0.018);
+  border-left: 2px solid rgba(var(--theme-rgb), 0.52);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.world-arknights .ark-record-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--archive-gap-md);
+  margin-top: var(--archive-gap-lg);
+}
+
+.world-arknights .ark-record-open,
+.world-arknights .ark-spoiler-actions button {
+  min-height: 42px;
+  padding: var(--archive-gap-sm) var(--archive-gap-lg);
+  color: var(--archive-ink);
+  background: var(--theme-color);
+  border: 1px solid var(--theme-color);
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: filter var(--transition-fast), transform var(--transition-fast);
+}
+
+.world-arknights .ark-record-source-note {
+  color: var(--archive-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.world-arknights .ark-dossier-gaps {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--archive-gap-sm);
+  padding: var(--archive-gap-sm) var(--archive-gap-xl);
+  color: var(--archive-muted);
+  background: rgba(var(--theme-rgb), 0.04);
+  border-top: 1px solid var(--archive-rule-soft);
+  font: 9px/1.6 ui-monospace, monospace;
+  letter-spacing: 1px;
+}
+
+.world-arknights .ark-dossier-gaps strong { color: var(--theme-color); font-weight: 400; }
+
+.world-arknights .ark-spoiler-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: var(--archive-gap-lg);
+  background: rgba(var(--archive-surface-rgb), 0.72);
+  backdrop-filter: blur(14px);
+  transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+
+.world-arknights .ark-spoiler-gate[hidden] { display: none; }
+.world-arknights .ark-archive.ark-no-backdrop .ark-spoiler-gate {
+  background: var(--archive-panel-strong);
+  backdrop-filter: none;
+}
+
+.world-arknights .ark-archive[data-spoiler-locked='false'] .ark-spoiler-gate {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.world-arknights .ark-spoiler-card {
+  width: min(100%, 520px);
+  padding: var(--archive-modal-space);
+  background: var(--archive-panel-strong);
+  border: 1px solid var(--archive-rule);
+  box-shadow: var(--shadow-card);
+  clip-path: polygon(0 0, calc(100% - var(--archive-cut-lg)) 0, 100% var(--archive-cut-lg), 100% 100%, var(--archive-cut-lg) 100%, 0 calc(100% - var(--archive-cut-lg)));
+}
+
+.world-arknights .ark-spoiler-card h2 {
+  margin: var(--archive-gap-md) 0;
+  font-size: clamp(24px, 4vw, 36px);
+  line-height: 1.3;
+}
+
+.world-arknights .ark-spoiler-card p {
+  color: var(--archive-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.world-arknights .ark-spoiler-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--archive-gap-md);
+  margin-top: var(--archive-gap-xl);
+}
+
+.world-arknights .ark-spoiler-actions a {
+  color: var(--archive-muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.world-arknights .ark-chronicle-intro {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--archive-gap-xl);
+  padding: calc(var(--archive-gap-2xl) + var(--archive-gap-md)) var(--archive-chronicle-x) var(--archive-gap-xl);
+  background: linear-gradient(180deg, rgba(var(--archive-site-rgb), 0.96), rgba(var(--archive-site-rgb), 0.72));
+}
+
+.world-arknights .ark-chronicle-intro h2 {
+  margin-top: var(--archive-gap-xs);
+  font-size: clamp(28px, 4vw, 46px);
+  letter-spacing: -1px;
+}
+
+.world-arknights .ark-chronicle-intro p {
+  max-width: 520px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: right;
+}
+
+@media (hover: hover) {
+  .world-arknights .ark-observation-lenses a:hover,
+  .world-arknights .ark-outcome-button:hover { color: var(--archive-paper); background: rgba(var(--theme-rgb), 0.065); }
+  .world-arknights .ark-record-open:hover,
+  .world-arknights .ark-spoiler-actions button:hover { filter: brightness(1.14); transform: translateY(-1px); }
+  .world-arknights .ark-spoiler-actions a:hover { color: var(--archive-paper); }
+}
+
+@keyframes archive-signal {
+  0%, 100% { opacity: 0.42; }
+  50% { opacity: 1; }
+}
+
+@keyframes archive-loading {
+  0%, 100% { opacity: 0.25; transform: rotate(45deg) scale(0.82); }
+  50% { opacity: 1; transform: rotate(225deg) scale(1); }
+}
+
+@keyframes archive-record-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes archive-scan {
+  from { left: -28%; }
+  to { left: 118%; }
+}
+
+@media (max-width: 1100px) {
+  .world-arknights .ark-archive-header { grid-template-columns: 1fr; gap: var(--archive-gap-lg); }
+  .world-arknights .ark-archive-coverage { max-width: 720px; }
+  .world-arknights .ark-dossier-layout { grid-template-columns: minmax(250px, 0.78fr) minmax(0, 1.22fr); }
+  .world-arknights .ark-outcome-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .world-arknights .ark-outcome-button:nth-child(2) { border-right: 0; }
+  .world-arknights .ark-outcome-button:nth-child(-n + 2) { border-bottom: 1px solid var(--archive-rule-soft); }
+}
+
+@media (max-width: 768px) {
+  .world-arknights .ark-archive {
+    --archive-pad-x: 16px;
+    --archive-pad-y: 28px;
+    min-height: auto;
+  }
+
+  .world-arknights .ark-archive-telemetry { grid-template-columns: 1fr auto; }
+  .world-arknights .ark-archive-telemetry span:nth-child(2) { display: none; }
+  .world-arknights .ark-archive-header { padding: calc(var(--archive-gap-xl) + var(--archive-gap-sm)) 0 var(--archive-gap-lg); }
+  .world-arknights .ark-archive-heading h1 { font-size: clamp(42px, 15vw, 68px); letter-spacing: -3px; }
+  .world-arknights .ark-archive-lead { font-size: 13px; }
+  .world-arknights .ark-archive-coverage { padding: var(--archive-gap-md); }
+  .world-arknights .ark-archive-coverage dl > div { grid-template-columns: 72px 1fr; }
+
+  .world-arknights .ark-observation-lenses { overflow: visible; grid-template-columns: 1fr; }
+  .world-arknights .ark-observation-lenses > * {
+    min-height: 48px;
+    padding: var(--archive-gap-sm) var(--archive-gap-md);
+    border-right: 0;
+    border-bottom: 1px solid var(--archive-rule-soft);
+  }
+  .world-arknights .ark-observation-lenses > *:last-child { border-bottom: 0; }
+  .world-arknights .ark-observation-lenses .active { box-shadow: var(--archive-tab-line-side); }
+
+  .world-arknights .ark-dossier { min-height: 0; }
+  .world-arknights .ark-dossier-layout { display: block; min-height: 0; }
+  .world-arknights .ark-dossier-brief { padding: var(--archive-gap-lg) var(--archive-gap-md); border-right: 0; border-bottom: 1px solid var(--archive-rule-soft); }
+  .world-arknights .ark-dossier-brief::after { font-size: 110px; }
+  .world-arknights .ark-dossier-brief h2 { font-size: 30px; }
+  .world-arknights .ark-context { margin-top: var(--archive-gap-lg); }
+  .world-arknights .ark-outcome-rail { display: grid; grid-template-columns: 1fr; overflow: visible; }
+  .world-arknights .ark-outcome-button {
+    width: 100%;
+    min-height: 82px;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--archive-rule-soft) !important;
+  }
+  .world-arknights .ark-outcome-button:last-child { border-bottom: 0 !important; }
+  .world-arknights .ark-outcome-detail { min-height: 0; padding: var(--archive-gap-lg) var(--archive-gap-md); }
+  .world-arknights .ark-record-heading { display: block; }
+  .world-arknights .ark-record-index { margin-top: var(--archive-gap-md); font-size: 48px; }
+  .world-arknights .ark-record-actions { align-items: flex-start; flex-direction: column; }
+  .world-arknights .ark-record-open { width: 100%; }
+  .world-arknights .ark-dossier-gaps { padding: var(--archive-gap-sm) var(--archive-gap-md); }
+
+  .world-arknights .ark-spoiler-gate { position: fixed; top: var(--nav-h); padding: var(--archive-gap-md); }
+  .world-arknights .ark-spoiler-card { padding: var(--archive-gap-xl) var(--archive-gap-lg); }
+  .world-arknights .ark-spoiler-actions { align-items: stretch; flex-direction: column; text-align: center; }
+  .world-arknights .ark-spoiler-actions button { width: 100%; min-height: 48px; }
+
+  .world-arknights .ark-chronicle-intro {
+    display: block;
+    padding: var(--archive-gap-2xl) var(--archive-gap-md) var(--archive-gap-lg);
+  }
+  .world-arknights .ark-chronicle-intro p { margin-top: var(--archive-gap-md); text-align: left; }
+}

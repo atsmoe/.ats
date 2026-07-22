@@ -48,6 +48,10 @@ function collectEvents(worldId, data) {
     }
 
     for (const ending of (branch.endings || [])) {
+      if (!ending.id && (ending.endingNumber === undefined || ending.endingNumber === null)) {
+        errors.push(`${worldId}/${branch.id}: ending needs an id or endingNumber`);
+        continue;
+      }
       ending.isEnding = true;
       ending.id = ending.id || `${branch.id}-ending-${ending.endingNumber}`;
       events.push(ending);
@@ -126,6 +130,97 @@ function flattenBranchEvents(branch) {
   return { eras: branch.eras || [] };
 }
 
+function archiveValidationErrors(worldId, data) {
+  const archiveErrors = [];
+  if (!data.archive) return archiveErrors;
+
+  const contextIds = new Set();
+  const recordIds = new Set();
+
+  function visitBranch(branch) {
+    if (!branch.id) {
+      archiveErrors.push(`${worldId}: archive context is missing an id`);
+    } else if (contextIds.has(branch.id)) {
+      archiveErrors.push(`${worldId}: duplicate archive context "${branch.id}"`);
+    } else {
+      contextIds.add(branch.id);
+    }
+
+    for (const era of branch.eras || []) {
+      for (const event of era.events || []) {
+        if (event.id) recordIds.add(event.id);
+      }
+    }
+    for (const ending of branch.endings || []) {
+      if (ending.id) recordIds.add(ending.id);
+      else if (branch.id && ending.endingNumber !== undefined && ending.endingNumber !== null) {
+        recordIds.add(`${branch.id}-ending-${ending.endingNumber}`);
+      }
+    }
+    for (const child of branch.subBranches || []) visitBranch(child);
+  }
+
+  for (const entity of data.subEntities || []) {
+    for (const branch of entity.timeline?.branches || []) visitBranch(branch);
+  }
+
+  const dossierIds = new Set();
+  for (const dossier of data.archive.dossiers || []) {
+    const dossierLabel = dossier.id || '(missing id)';
+    if (!dossier.id) {
+      archiveErrors.push(`${worldId}: archive dossier is missing an id`);
+    } else if (dossierIds.has(dossier.id)) {
+      archiveErrors.push(`${worldId}: duplicate archive dossier "${dossier.id}"`);
+    }
+    dossierIds.add(dossier.id);
+
+    if (dossier.contextId && !contextIds.has(dossier.contextId)) {
+      archiveErrors.push(`${worldId}/${dossierLabel}: unknown context "${dossier.contextId}"`);
+    }
+    if (!Array.isArray(dossier.recordIds) || dossier.recordIds.length === 0) {
+      archiveErrors.push(`${worldId}/${dossierLabel}: recordIds must contain at least one record`);
+      continue;
+    }
+    for (const recordId of dossier.recordIds) {
+      if (!recordIds.has(recordId)) {
+        archiveErrors.push(`${worldId}/${dossierLabel}: unknown record "${recordId}"`);
+      }
+    }
+    if (dossier.defaultRecordId && !dossier.recordIds.includes(dossier.defaultRecordId)) {
+      archiveErrors.push(
+        `${worldId}/${dossierLabel}: defaultRecordId "${dossier.defaultRecordId}" is not in recordIds`,
+      );
+    }
+  }
+
+  return archiveErrors;
+}
+
+function flattenBranch(branch) {
+  const flatBranch = {
+    id: branch.id,
+    name: branch.name,
+    isDefault: branch.isDefault || false,
+    type: branch.type,
+    eras: flattenBranchEvents(branch).eras,
+  };
+
+  for (const key of ['description', 'status', 'parentBranchId', 'divergeAtEventId']) {
+    if (branch[key] !== undefined) flatBranch[key] = branch[key];
+  }
+  if (branch.subBranches) {
+    flatBranch.subBranches = branch.subBranches.map(flattenBranch);
+  }
+  if (branch.endings) {
+    flatBranch.endings = branch.endings;
+  }
+  if (branch.divergesTo) {
+    flatBranch.divergesTo = branch.divergesTo;
+  }
+
+  return flatBranch;
+}
+
 function flattenWorld(data) {
   const flat = {
     world: { ...data.world },
@@ -136,42 +231,12 @@ function flattenWorld(data) {
   for (const entity of subEntities) {
     if (!entity.timeline || !entity.timeline.branches) continue;
     for (const branch of entity.timeline.branches) {
-      const { eras } = flattenBranchEvents(branch);
-      const flatBranch = {
-        id: branch.id,
-        name: branch.name,
-        isDefault: branch.isDefault || false,
-        type: branch.type,
-        eras,
-      };
-
-      if (branch.subBranches) {
-        const flatSubBranches = [];
-        for (const sub of branch.subBranches) {
-          const subFlat = flattenBranchEvents(sub, data);
-          const flatSub = {
-            id: sub.id,
-            name: sub.name,
-            type: sub.type,
-            divergeAtEventId: sub.divergeAtEventId,
-            eras: subFlat.eras,
-          };
-          if (sub.endings) {
-            flatSub.endings = sub.endings;
-          }
-          flatSubBranches.push(flatSub);
-        }
-        flatBranch.subBranches = flatSubBranches;
-      }
-      if (branch.endings) {
-        flatBranch.endings = branch.endings;
-      }
-      if (branch.divergesTo) {
-        flatBranch.divergesTo = branch.divergesTo;
-      }
-
-      flat.branches.push(flatBranch);
+      flat.branches.push(flattenBranch(branch));
     }
+  }
+
+  if (data.archive) {
+    flat.archive = data.archive;
   }
 
   return flat;
@@ -269,6 +334,7 @@ async function main() {
         allFlat.push(...be.events);
       }
       validateEvents(worldId, allFlat);
+      errors.push(...archiveValidationErrors(worldId, data));
 
       allEventRefs._refs[worldId] = allFlat
         .filter(e => e.crossRefs)
@@ -349,7 +415,11 @@ async function main() {
   console.log('');
 }
 
-main().catch(err => {
-  console.error('[validate] Fatal error:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error('[validate] Fatal error:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { archiveValidationErrors };
