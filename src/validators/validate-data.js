@@ -136,6 +136,17 @@ function archiveValidationErrors(worldId, data) {
 
   const contextIds = new Set();
   const recordIds = new Set();
+  const PLACEHOLDER_COPY = /待完工|待补充|稍后补充|\b(?:TODO|TBD)\b/i;
+
+  function hasTraceableSource(sources) {
+    return Array.isArray(sources) && sources.some(source => (
+      source
+      && typeof source.title === 'string'
+      && source.title.trim().length > 0
+      && typeof source.url === 'string'
+      && /^https?:\/\//.test(source.url)
+    ));
+  }
 
   function visitBranch(branch) {
     if (!branch.id) {
@@ -155,6 +166,57 @@ function archiveValidationErrors(worldId, data) {
       if (ending.id) recordIds.add(ending.id);
       else if (branch.id && ending.endingNumber !== undefined && ending.endingNumber !== null) {
         recordIds.add(`${branch.id}-ending-${ending.endingNumber}`);
+      }
+    }
+
+    if (branch.type === 'integrated-strategy') {
+      const label = `${worldId}/${branch.id || '(missing context id)'}`;
+      for (const field of [
+        'order',
+        'description',
+        'sharedPremise',
+        'topologyMode',
+        'lastReviewedAt',
+      ]) {
+        if (branch[field] === undefined || branch[field] === null || branch[field] === '') {
+          archiveErrors.push(`${label}: missing required field "${field}"`);
+        }
+      }
+      if (PLACEHOLDER_COPY.test(`${branch.name || ''} ${branch.description || ''}`)) {
+        archiveErrors.push(`${label}: contains placeholder copy`);
+      }
+      if (!hasTraceableSource(branch.sources)) {
+        archiveErrors.push(`${label}: needs at least one traceable source`);
+      }
+      if (!Array.isArray(branch.endings) || branch.endings.length === 0) {
+        archiveErrors.push(`${label}: needs at least one ending`);
+      }
+      for (const ending of branch.endings || []) {
+        const fallbackId = branch.id && ending.endingNumber !== undefined
+          ? `${branch.id}-ending-${ending.endingNumber}`
+          : '(unknown ending)';
+        if (!ending.id) {
+          archiveErrors.push(
+            `${label}: ending ${ending.endingNumber ?? '?'} needs an explicit stable id`,
+          );
+        }
+        if (PLACEHOLDER_COPY.test(`${ending.title || ''} ${ending.description || ''}`)) {
+          archiveErrors.push(`${label}/${ending.id || fallbackId}: contains placeholder copy`);
+        }
+        if (
+          typeof ending.aftermath !== 'string'
+          || ending.aftermath.trim().length < 12
+          || PLACEHOLDER_COPY.test(ending.aftermath)
+        ) {
+          archiveErrors.push(
+            `${label}/${ending.id || fallbackId}: needs a substantive aftermath`,
+          );
+        }
+        if (!hasTraceableSource(ending.sources)) {
+          archiveErrors.push(
+            `${label}/${ending.id || fallbackId}: needs at least one traceable source`,
+          );
+        }
       }
     }
     for (const child of branch.subBranches || []) visitBranch(child);
@@ -205,7 +267,19 @@ function flattenBranch(branch) {
     eras: flattenBranchEvents(branch).eras,
   };
 
-  for (const key of ['description', 'status', 'parentBranchId', 'divergeAtEventId']) {
+  for (const key of [
+    'description',
+    'synopsis',
+    'order',
+    'status',
+    'parentBranchId',
+    'divergeAtEventId',
+    'sharedPremise',
+    'topologyMode',
+    'entityIds',
+    'sources',
+    'lastReviewedAt',
+  ]) {
     if (branch[key] !== undefined) flatBranch[key] = branch[key];
   }
   if (branch.subBranches) {
@@ -324,6 +398,8 @@ async function main() {
 
       validateWorld(worldId, data);
 
+      errors.push(...archiveValidationErrors(worldId, data));
+
       const { branchEvents, allEventIds } = collectEvents(worldId, data);
       for (const eid of allEventIds) {
         allEventRefs.all.add(eid.id);
@@ -334,7 +410,6 @@ async function main() {
         allFlat.push(...be.events);
       }
       validateEvents(worldId, allFlat);
-      errors.push(...archiveValidationErrors(worldId, data));
 
       allEventRefs._refs[worldId] = allFlat
         .filter(e => e.crossRefs)

@@ -12,6 +12,29 @@ const VirtualTimeline = {
   observer: null,
   scrollTicking: false,
   estimatedTotalHeight: 0,
+  containerDocumentTop: 0,
+
+  // Public pure seam between container-local item positions and document scroll positions.
+  coordinates: Object.freeze({
+    toDocument(localTop, containerDocumentTop) {
+      return containerDocumentTop + localTop;
+    },
+    toLocal(documentTop, containerDocumentTop) {
+      return documentTop - containerDocumentTop;
+    },
+  }),
+
+  setContainerDocumentTop(documentTop) {
+    this.containerDocumentTop = Number.isFinite(documentTop) ? documentTop : 0;
+  },
+
+  documentTopForLocal(localTop, containerDocumentTop = this.containerDocumentTop) {
+    return this.coordinates.toDocument(localTop, containerDocumentTop);
+  },
+
+  localTopForDocument(documentTop, containerDocumentTop = this.containerDocumentTop) {
+    return this.coordinates.toLocal(documentTop, containerDocumentTop);
+  },
 
   /**
    * Estimate height based on content.
@@ -76,14 +99,22 @@ const VirtualTimeline = {
 
     // Calculate total height from all items
     for (const group of items) {
+      if (group.type === 'notice') {
+        const notice = group.data || {};
+        const hN = this._estimateHeight({ type: 'notice', data: notice });
+        this.items.push({ type: 'notice', data: notice, top: total, height: hN });
+        total += hN;
+        continue;
+      }
+
       // era header
       const hH = this._estimateHeight({ type: 'era-header' });
       this.items.push({ type: 'era-header', data: group.eraTitle, top: total, height: hH });
       total += hH;
 
-      for (const evt of group.events) {
+      for (const evt of (group.events || [])) {
         if (evt.isBranchNotice) {
-          const hN = this._estimateHeight({ type: 'notice' });
+          const hN = this._estimateHeight({ type: 'notice', data: evt });
           this.items.push({ type: 'notice', data: evt, top: total, height: hN });
           total += hN;
         } else {
@@ -97,11 +128,12 @@ const VirtualTimeline = {
     this.estimatedTotalHeight = Math.max(total, window.innerHeight);
     this.renderedRange = { start: 0, end: 0 };
     this.nodePool.clear();
+    return this.estimatedTotalHeight;
   },
 
   /**
-   * Estimate the scrollTop needed to bring a specific event into view.
-   * Pure function — reads this.items (set by load()), no side effects.
+   * Estimate the document scrollTop needed to bring a specific event into view.
+   * Item positions remain container-local; conversion happens only at this seam.
    * @param {string} eventId
    * @returns {number} scroll offset in px, or 0 if not found
    */
@@ -110,7 +142,7 @@ const VirtualTimeline = {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
       if (item.type === 'event' && item.data && item.data.id === eventId) {
-        return item.top;
+        return this.documentTopForLocal(item.top);
       }
     }
     return 0;
@@ -118,8 +150,9 @@ const VirtualTimeline = {
 
   /** Get visible range based on scroll position */
   _getVisibleRange() {
-    const viewTop = window.scrollY - window.innerHeight * 0.5;
-    const viewBottom = window.scrollY + window.innerHeight * 1.5;
+    const localScrollTop = this.localTopForDocument(window.scrollY);
+    const viewTop = localScrollTop - window.innerHeight * 0.5;
+    const viewBottom = localScrollTop + window.innerHeight * 1.5;
 
     let start = 0, end = this.items.length;
     // Binary search for first visible
@@ -183,6 +216,13 @@ const VirtualTimeline = {
     const card = document.createElement('div');
     card.className = 'event-card';
 
+    const openButton = document.createElement('button');
+    openButton.type = 'button';
+    openButton.className = 'event-card-open';
+    openButton.setAttribute('aria-label', `查看记录：${evt.title || ''}`);
+    openButton.setAttribute('aria-haspopup', 'dialog');
+    card.appendChild(openButton);
+
     // Date
     const dateEl = document.createElement('div');
     dateEl.className = 'event-date';
@@ -223,14 +263,18 @@ const VirtualTimeline = {
 
     // Cross-world refs
     if (evt.crossRefs && evt.crossRefs.length > 0) {
-      const refEl = document.createElement('span');
-      refEl.className = 'event-ref';
-      refEl.textContent = '引用：' + (evt.crossRefs[0].targetWorldName || '跨世界事件');
-      refEl.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (typeof openRefPanel === 'function') openRefPanel(evt.id);
-      });
-      card.appendChild(refEl);
+      const refsEl = document.createElement('div');
+      refsEl.className = 'event-refs';
+      for (const ref of evt.crossRefs) {
+        const refEl = document.createElement('button');
+        refEl.type = 'button';
+        refEl.className = 'event-ref cross-world-link';
+        refEl.dataset.world = ref.worldId || '';
+        refEl.dataset.target = ref.eventId || '';
+        refEl.textContent = ref.label || ref.targetWorldName || '跨世界记录';
+        refsEl.appendChild(refEl);
+      }
+      card.appendChild(refsEl);
     }
 
     // Diverge badge
@@ -384,7 +428,7 @@ function buildEraNav() {
     dot.innerHTML = '<span class="dot"></span><span class="label">' + yearLabel + '</span>';
     dot.addEventListener('click', (e) => {
       e.preventDefault();
-      window.scrollTo({ top: item.top + 100, behavior: 'smooth' });
+      window.scrollTo({ top: VirtualTimeline.documentTopForLocal(item.top) + 100, behavior: 'smooth' });
     });
     eraNav.appendChild(dot);
   });
@@ -394,7 +438,9 @@ function updateEraNavHighlight() {
   const dots = eraNav.querySelectorAll('.era-nav-dot');
   if (!dots.length) return;
 
-  const scrollMid = window.scrollY + window.innerHeight * 0.3;
+  const scrollMid = VirtualTimeline.localTopForDocument(
+    window.scrollY + window.innerHeight * 0.3,
+  );
   let currentIdx = -1;
 
   // Find the last era header above current scroll position
@@ -481,6 +527,12 @@ VirtualTimeline._renderEventsDirect = function(eraGroups) {
         html += '<div class="event-tags">' + evt.tags.slice(0, 4).map(t => '<span class="event-tag">' + t + '</span>').join('') + '</div>';
       }
       card.innerHTML = html;
+      const openButton = document.createElement('button');
+      openButton.type = 'button';
+      openButton.className = 'event-card-open';
+      openButton.setAttribute('aria-label', `查看记录：${evt.title || ''}`);
+      openButton.setAttribute('aria-haspopup', 'dialog');
+      card.prepend(openButton);
       w.appendChild(card);
       container.appendChild(w);
       idx++;

@@ -1,0 +1,57 @@
+---
+permalink: ./wh40k-war-zones.html
+title: 战锤40K · 当前战区
+bodyClass: world-wh40k wh-war-zones-page
+pageType: wh40k-war-zones
+worldId: wh40k
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - wh40k-world.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<article class="wh-catalog wh-war-zones" id="war-zone-index" aria-labelledby="war-zone-title">
+  <header class="wh-catalog-hero wh-war-zone-hero">
+    <a class="wh-backlink" href="./wh40k.html">← GALAXY / 破碎银河入口</a>
+    <p class="wh-eyebrow">NAVIS STRATEGICA / LIVE CONFLICT ARRAY</p>
+    <h1 id="war-zone-title">当前<span>战区</span></h1>
+    <p>不是“热门故事推荐”，而是带版本日期的公开战况索引。选择星图信号或战区卡，URL 会保留当前观察目标。</p>
+    <div class="wh-live-meta"><span><i></i> SIX SIGNALS</span><span>AS OF {{ wh40kCatalog.coverage.asOf }}</span><span>{{ wh40kCatalog.coverage.edition }}</span></div>
+  </header>
+
+  <div class="wh-strategic-layout">
+    <div class="wh-strategic-map" aria-label="银河当前战区示意图">
+      <div class="wh-map-rift" aria-hidden="true"></div>
+      <span class="wh-quadrant wh-quadrant--left">NIHILUS</span><span class="wh-quadrant wh-quadrant--right">SANCTUS</span>
+      {% for zone in wh40kCatalog.warZones %}
+      <button class="wh-zone-point" type="button" data-zone-target="{{ zone.id }}" style="--x:{{ zone.coordinates.x }}%;--y:{{ zone.coordinates.y }}%" aria-label="定位{{ zone.name }}">
+        <i></i><span>{{ zone.code }}</span>
+      </button>
+      {% endfor %}
+      <div class="wh-map-legend"><span>● ACTIVE SIGNAL</span><span>示意坐标 / 非等比例星图</span></div>
+    </div>
+
+    <div class="wh-zone-list">
+      {% for zone in wh40kCatalog.warZones %}
+      <article class="wh-zone-card" id="{{ zone.id }}" data-zone-id="{{ zone.id }}">
+        <button type="button" class="wh-zone-trigger" data-zone-target="{{ zone.id }}" aria-expanded="false">
+          <span>{{ zone.code }}</span><i>{{ zone.status }}</i>
+          <strong>{{ zone.name }}</strong><small>{{ zone.sector }}</small>
+          <p>{{ zone.summary }}</p>
+          <b>THREAT / {{ zone.threat }}</b>
+        </button>
+        <div class="wh-zone-source" hidden>
+          {% for source in zone.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">官方战区记录 / {{ source.title }} ↗</a>{% endfor %}
+          {% for record in zone.records %}<a href="./wh40k-chronicle.html#{{ record.id }}">转到规范事件 / {{ record.title }} →</a>{% endfor %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</article>
+<noscript><style>.world-wh40k .wh-zone-source[hidden]{display:block!important}</style></noscript>
+{% endblock %}

@@ -24,7 +24,13 @@ export function projectChronicleTimeline(snapshot) {
       const records = section.recordIds.map(recordId => snapshot.recordsById[recordId]);
       events.push(...records);
       if (section.kind === 'era') {
-        eras.push({ title: section.title, events: records });
+        eras.push({
+          id: section.sourceId || section.id,
+          title: section.title,
+          order: section.order,
+          chronologyRank: section.chronologyRank,
+          events: records,
+        });
       } else if (section.kind === 'endings') {
         endings.push(...records);
       }
@@ -48,6 +54,7 @@ export function projectChronicleTimeline(snapshot) {
 
   return {
     world: snapshot.world,
+    coverage: snapshot.coverage,
     branches: snapshot.rootContextIds.map(projectContext),
   };
 }

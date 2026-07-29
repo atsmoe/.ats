@@ -1,142 +1,120 @@
 ---
 permalink: ./arknights.html
-title: 明日方舟
-bodyClass: world-arknights
-pageType: world
+title: 明日方舟 · 泰拉观测入口
+bodyClass: world-arknights ark-world-home
+pageType: arknights-home
 worldId: arknights
 cssFiles:
   - base.css
   - nav.css
-  - timeline.css
-  - ref-panel.css
   - worlds.css
-  - archive.css
+  - arknights-world.css
   - responsive.css
 ---
 {% extends "base.njk" %}
 
 {% block content %}
-<!-- Timeline View -->
-<div id="timeline" class="active">
-  <section class="ark-archive" id="ark-archive" data-spoiler-locked="false" aria-labelledby="ark-archive-title">
-    <div class="ark-archive-shell">
-      <div class="ark-archive-telemetry" aria-label="观测连接状态">
-        <span><i></i> SIGNAL LOCKED</span>
-        <span>ATS / WORLD-01 / TERRA</span>
-        <span data-archive-source-version>ARCHIVE CONNECTING</span>
-      </div>
-
-      <header class="ark-archive-header">
-        <div class="ark-archive-heading">
-          <p class="ark-archive-kicker">WORLD ARCHIVE / ORIGINIUM OBSERVATION</p>
-          <h1 id="ark-archive-title"><span>泰拉</span>观测档案</h1>
-          <p class="ark-archive-lead">从一份记录进入世界，沿证据、人物与可能结果继续追踪。时间仍然存在，但不再是唯一入口。</p>
-        </div>
-
-        <aside class="ark-archive-coverage" aria-label="档案覆盖范围">
-          <div class="ark-coverage-label">COVERAGE / 档案边界</div>
-          <dl>
-            <div><dt>维护状态</dt><dd data-archive-status>连接中</dd></div>
-            <div><dt>最近整理</dt><dd data-archive-updated>—</dd></div>
-            <div><dt>当前覆盖</dt><dd data-archive-scope>正在读取档案元数据</dd></div>
-          </dl>
-        </aside>
-      </header>
-
-      <nav class="ark-observation-lenses" aria-label="世界观测镜">
-        <span class="active" aria-current="page"><b>01</b> 档案 <small>DOSSIER</small></span>
-        <span aria-disabled="true"><b>02</b> 关联 <small>CALIBRATING</small></span>
-        <a href="#chronicle-index"><b>03</b> 时域 <small>CHRONICLE</small></a>
-      </nav>
-
-      <div class="ark-dossier" id="ark-dossier" aria-busy="true">
-        <div class="ark-dossier-loading">
-          <span></span>
-          <p>正在解译泰拉档案信号</p>
-        </div>
-        <noscript>
-          <style>.world-arknights .ark-dossier-loading { display: none; }</style>
-          <div class="ark-nojs-fallback" id="ark-nojs-fallback">
-            <strong>档案读取需要 JavaScript</strong>
-            <p>当前仍可阅读档案边界与调查说明；完整记录可前往 <a href="https://prts.wiki/" target="_blank" rel="noopener">PRTS Wiki</a> 查阅。</p>
-          </div>
-        </noscript>
-      </div>
-      <p class="ark-sr-only" id="ark-dossier-status" aria-live="polite"></p>
+<article class="terra-world" id="terra-world" aria-labelledby="terra-world-title">
+  <header class="terra-hero">
+    <div class="terra-hero-grid" aria-hidden="true">
+      <svg viewBox="0 0 960 560" role="img">
+        <defs>
+          <linearGradient id="terra-route" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f0b44d" stop-opacity=".12"/>
+            <stop offset=".5" stop-color="#f0b44d" stop-opacity=".82"/>
+            <stop offset="1" stop-color="#79b8c8" stop-opacity=".16"/>
+          </linearGradient>
+        </defs>
+        <g class="terra-grid-lines">
+          <path d="M40 92H920M40 180H920M40 268H920M40 356H920M40 444H920"/>
+          <path d="M128 40V520M304 40V520M480 40V520M656 40V520M832 40V520"/>
+        </g>
+        <g class="terra-routes">
+          <path d="M86 394C202 280 258 424 372 282S584 164 662 236 812 314 900 128"/>
+          <path d="M138 118C254 212 326 146 420 218S594 410 742 358 828 272 904 312"/>
+          <path d="M224 496C260 370 418 408 484 318S610 86 766 98"/>
+        </g>
+        <g class="terra-nodes">
+          <circle cx="86" cy="394" r="5"/><circle cx="372" cy="282" r="8"/>
+          <circle cx="662" cy="236" r="5"/><circle cx="900" cy="128" r="9"/>
+          <circle cx="138" cy="118" r="6"/><circle cx="420" cy="218" r="5"/>
+          <circle cx="742" cy="358" r="8"/><circle cx="904" cy="312" r="4"/>
+          <circle cx="224" cy="496" r="5"/><circle cx="484" cy="318" r="7"/>
+          <circle cx="766" cy="98" r="6"/>
+        </g>
+      </svg>
     </div>
 
-    <div class="ark-spoiler-gate" id="ark-spoiler-gate" role="dialog" aria-modal="true" aria-labelledby="ark-spoiler-title" aria-describedby="ark-spoiler-description" hidden>
-      <div class="ark-spoiler-card">
-        <span class="ark-spoiler-code">CLEARANCE / FULL RECORD</span>
-        <h2 id="ark-spoiler-title">本世界默认展示完整剧透</h2>
-        <p id="ark-spoiler-description">档案包含主线、活动与集成战略结局。确认后，本设备不会再次显示这条提醒。</p>
-        <div class="ark-spoiler-actions">
-          <button type="button" data-spoiler-accept>进入完整档案</button>
-          <a href="./index.html">返回星图</a>
-        </div>
-      </div>
+    <div class="terra-status" aria-label="泰拉观测状态">
+      <span><i></i> SIGNAL ACQUIRED</span>
+      <span>ATS / WORLD-01</span>
+      <span>ARK-2026.07</span>
     </div>
+
+    <div class="terra-hero-copy">
+      <p class="terra-kicker">TERRA / ORIGINIUM OBSERVATION</p>
+      <h1 id="terra-world-title"><span>明日方舟</span>泰拉</h1>
+      <p>一片被天灾、源石与文明选择反复改写的大地。这里不是某个角色或活动的封面，而是进入全部泰拉档案的总入口。</p>
+    </div>
+
+    <a class="terra-latest" href="./arknights-is-blackflow.html">
+      <span>最新观测 / IS-07</span>
+      <strong>沉沦者的黑流树海</strong>
+      <small>首发记录持续核验中 · 进入树海 →</small>
+    </a>
+  </header>
+
+  <nav class="terra-entry-grid" aria-label="泰拉探索方向">
+    <a class="terra-entry terra-entry--chronicle" href="./arknights-chronicle.html">
+      <span>01 / CHRONICLE</span>
+      <strong>主世界线</strong>
+      <p>沿泰拉历顺序查阅文明、国家与罗德岛相关事件。</p>
+      <i>进入编年索引</i>
+    </a>
+    <a class="terra-entry terra-entry--is" href="./arknights-integrated-strategies.html">
+      <span>02 / INTEGRATED STRATEGIES</span>
+      <strong>集成战略世界线</strong>
+      <p>七个独立主题、二十八份当前结局记录与各自的叙事结构。</p>
+      <i>浏览七个主题</i>
+    </a>
+    <a class="terra-entry terra-entry--atlas" href="#terra-atlas">
+      <span>03 / ATLAS</span>
+      <strong>泰拉图谱</strong>
+      <p>从地域、组织、人物与概念理解事件发生的坐标。</p>
+      <i>查看图谱概览</i>
+    </a>
+    <a class="terra-entry terra-entry--observation" href="#observations">
+      <span>04 / OBSERVATIONS</span>
+      <strong>专题观测</strong>
+      <p>围绕一个问题串联不同事件与互不相容的记录。</p>
+      <i>查看当前专题</i>
+    </a>
+  </nav>
+
+  <section class="terra-secondary" id="terra-atlas" aria-labelledby="terra-atlas-title">
+    <div class="terra-section-heading">
+      <span>ATLAS / 03</span>
+      <h2 id="terra-atlas-title">泰拉图谱</h2>
+    </div>
+    <div class="terra-atlas-grid">
+      <article><span>REGIONS</span><h3>地域与国家</h3><p>维多利亚、卡西米尔、萨米、炎国、伊比利亚与更多事件坐标。</p></article>
+      <article><span>ORGANIZATIONS</span><h3>组织与阵营</h3><p>罗德岛、各国机构、科研团体与非国家力量的行动关系。</p></article>
+      <article><span>CONCEPTS</span><h3>核心概念</h3><p>源石、天灾、海嗣、坍缩与泰拉文明必须面对的长期命题。</p></article>
+    </div>
+    <p class="terra-note">图谱实体网络将在后续独立建设；当前概览明确内容边界，不提供无目标的假链接。</p>
   </section>
 
-  <section class="ark-chronicle-intro" id="chronicle-index" aria-labelledby="chronicle-index-title">
-    <div>
-      <span>CHRONICLE LENS / 03</span>
-      <h2 id="chronicle-index-title">完整编年索引</h2>
+  <section class="terra-secondary terra-observations" id="observations" aria-labelledby="observations-title">
+    <div class="terra-section-heading">
+      <span>OBSERVATIONS / 04</span>
+      <h2 id="observations-title">专题观测</h2>
     </div>
-    <p>需要顺序查阅时，可继续使用现有编年视图。它与上方档案镜读取同一组记录。</p>
+    <a class="terra-observation-card" href="./arknights-is-mizuki.html">
+      <span>DOSSIER / IS-03</span>
+      <strong>深蓝观测记录</strong>
+      <p>同一场深海危机，为何留下四种互不相容的未来记录？</p>
+      <i>在“水月与深蓝之树”中继续追踪 →</i>
+    </a>
   </section>
-
-  <div class="tl-branches" id="tl-branches">
-    <!-- Populated by JS -->
-  </div>
-  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;">
-    <!-- Populated by JS when integrated strategy is selected -->
-  </div>
-
-  <div class="tl-container" id="tl-container">
-    <!-- Events injected by JS -->
-  </div>
-
-</div>
-
-<!-- Event Detail Modal -->
-<div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-arknights" aria-describedby="event-modal-desc-arknights">
-    <button class="event-modal-close" title="关闭">✕</button>
-    <div class="event-modal-date"></div>
-    <div class="event-modal-title" id="event-modal-title-arknights"></div>
-    <div class="event-modal-meta"></div>
-    <div class="event-modal-desc" id="event-modal-desc-arknights"></div>
-    <div class="event-modal-img"></div>
-    <div class="event-modal-sources"></div>
-  </div>
-</div>
-
-<!-- Overlay & Reference Panel -->
-<div id="overlay"></div>
-<div id="ref-panel">
-  <button class="ref-close" id="ref-close">✕</button>
-  <div class="ref-content">
-    <h2>跨 世 界 引 用</h2>
-    <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
-    <div class="ref-event-date" id="ref-event-date"></div>
-    <div class="ref-event-title" id="ref-event-title"></div>
-    <div class="ref-event-desc" id="ref-event-desc"></div>
-    <div class="ref-related">
-      <h3>关联事件</h3>
-      <a href="#">▸ 引用事件</a>
-    </div>
-    <button class="btn-wormhole" id="btn-wormhole">穿 越 虫 洞</button>
-  </div>
-</div>
-
-<!-- Era sidebar navigation -->
-<nav id="era-nav"></nav>
-
-<!-- Back to top -->
-<button id="back-to-top" title="回到顶部">▲</button>
-{% endblock %}
-
-{% block extraScripts %}
-<script defer src="./js/virtual-timeline.js"></script>
+</article>
 {% endblock %}

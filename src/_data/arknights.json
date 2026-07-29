@@ -20900,16 +20900,39 @@
             "isDefault": false,
             "parentBranchId": "mainline",
             "type": "integrated-strategy-group",
-            "description": "四大集成战略主题的IF世界线合集。",
+            "description": "七个集成战略主题的剧情档案集合。各主题共享产品序列，但不被拼接成同一条正史时间线。",
             "subBranches": [
               {
                 "id": "if-ceobe",
+                "order": 1,
                 "name": "刻俄柏的灰蕈迷境",
                 "type": "integrated-strategy",
-                "divergeAtEventId": "evt-051",
+                "status": "archived",
                 "description": "刻俄柏吃下「灰蕈」（致幻蘑菇）后进入的幻梦旅程。灰蕈迷境不仅是一场迷幻梦，更是触及泰拉源石秘密、大地方舟底层的「精神视界」。",
+                "synopsis": "一场不断改变解释方式的荒野幻梦：醒来、迷失，或在大地深处留下无法抹去的痕迹。",
+                "sharedPremise": "刻俄柏误食奇异蕈类后陷入昏睡；罗德岛同伴守在现实一侧，而她在意识深处继续一场无法确认真假的冒险。",
+                "topologyMode": "layered",
+                "entityIds": [
+                  "ceobe",
+                  "rhodes-island",
+                  "fungimist"
+                ],
+                "lastReviewedAt": "2026-07-23",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 刻俄柏的灰蕈迷境",
+                    "url": "https://prts.wiki/w/%E5%88%BB%E4%BF%84%E6%9F%8F%E7%9A%84%E7%81%B0%E8%95%88%E8%BF%B7%E5%A2%83"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 集成战略模式介绍",
+                    "url": "https://ak.hypergryph.com/news/2020087413.html"
+                  }
+                ],
                 "endings": [
                   {
+                    "id": "if-ceobe-ending-1",
                     "endingNumber": 1,
                     "title": "迷尘幻梦",
                     "location": "幻梦境",
@@ -20918,9 +20941,18 @@
                       "浮士德(幻影)"
                     ],
                     "description": "默认结局。刻俄柏经历一场光怪陆离的冒险后被罗德岛伙伴唤醒，一切仿佛只是一场奇异而不真实的梦。",
-                    "conditions": "任意难度通关第五层，关底BOSS固定为法术浮士德"
+                    "conditions": "任意难度通关第五层，关底BOSS固定为法术浮士德",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 灰蕈迷境结局记录",
+                        "url": "https://prts.wiki/w/%E5%88%BB%E4%BF%84%E6%9F%8F%E7%9A%84%E7%81%B0%E8%95%88%E8%BF%B7%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "刻俄柏被罗德岛唤醒并回到现实；迷境中的见闻保留为无法完全证实的梦境记录。"
                   },
                   {
+                    "id": "if-ceobe-ending-2",
                     "endingNumber": 2,
                     "title": "茫然行者",
                     "location": "幻梦境",
@@ -20929,9 +20961,18 @@
                       "寒灾(幻影/霜星镜像)"
                     ],
                     "description": "刻俄柏在幻境中迷失，看到的「寒灾」成为她心中无法跨越的冰霜。这是一种不完全的迷失——没有彻底死亡但也无法回归清醒。",
-                    "conditions": "完成「不存在的童话」系列事件 → 获得「染血的传单」→ 击败BOSS「寒灾」"
+                    "conditions": "完成「不存在的童话」系列事件 → 获得「染血的传单」→ 击败BOSS「寒灾」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 灰蕈迷境结局记录",
+                        "url": "https://prts.wiki/w/%E5%88%BB%E4%BF%84%E6%9F%8F%E7%9A%84%E7%81%B0%E8%95%88%E8%BF%B7%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "记录停在刻俄柏未能清醒返回的状态，罗德岛能否重新与她建立联系没有被这一结局交代。"
                   },
                   {
+                    "id": "if-ceobe-ending-3",
                     "endingNumber": 3,
                     "title": "归于荒野",
                     "location": "幻梦境第六层 / 源石深处",
@@ -20939,18 +20980,50 @@
                       "刻俄柏"
                     ],
                     "description": "最隐秘的结局。刻俄柏触碰到了「这片大地真相的残片」——源石可能具有自我意识。这令她体内的源石迅速反应，在幻境中杀死了她。她的灵魂化作泥土，永远地活在了这片大地上。",
-                    "conditions": "结局二通关后 → 获得「沉重的铁皮箱」「漆黑的钥匙」「手枪」等 → 进入隐藏第六层 → 击败BOSS「墓碑」"
+                    "conditions": "结局二通关后 → 获得「沉重的铁皮箱」「漆黑的钥匙」「手枪」等 → 进入隐藏第六层 → 击败BOSS「墓碑」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 灰蕈迷境结局记录",
+                        "url": "https://prts.wiki/w/%E5%88%BB%E4%BF%84%E6%9F%8F%E7%9A%84%E7%81%B0%E8%95%88%E8%BF%B7%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "刻俄柏不再以原有个体状态回归；关于源石意识的暗示被留下，但不能据此并入主线事实。"
                   }
                 ]
               },
               {
                 "id": "if-phantom",
+                "order": 2,
                 "name": "傀影与猩红孤钻",
                 "type": "integrated-strategy",
-                "divergeAtEventId": "evt-144",
+                "status": "complete",
                 "description": "罗德岛接到傀影的猫「克莉丝汀小姐」的来信，开始追查失踪的傀影。猩红剧团的幕后操纵者是名为「酒神」的古老神祇，象征享乐与欲望。",
+                "synopsis": "幕布每揭开一层，寻找傀影的行动就更接近操纵演出的剧团、喉舌与剧作家。",
+                "sharedPremise": "罗德岛循克莉丝汀小姐留下的线索寻找失踪的傀影，并进入由剧目、观众与幕后书写共同维持的古堡空间。",
+                "topologyMode": "branching",
+                "entityIds": [
+                  "phantom",
+                  "miss-christine",
+                  "crimson-troupe",
+                  "playwright"
+                ],
+                "lastReviewedAt": "2026-07-23",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 傀影与猩红孤钻",
+                    "url": "https://prts.wiki/w/%E5%82%80%E5%BD%B1%E4%B8%8E%E7%8C%A9%E7%BA%A2%E5%AD%A4%E9%92%BB"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 傀影与猩红孤钻专题",
+                    "url": "https://ak.hypergryph.com/is/crimsonsolitaire"
+                  }
+                ],
                 "endings": [
                   {
+                    "id": "if-phantom-ending-1",
                     "endingNumber": 1,
                     "title": "舞会终场",
                     "location": "维多利亚猩红古堡",
@@ -20959,9 +21032,18 @@
                       "傀影"
                     ],
                     "description": "暮落孤身解决了黑化的傀影，将其从剧团诅咒中解救出来。罗德岛在剧团残余力量的控制下艰难迎战。",
-                    "conditions": "未达成其他结局条件下，正常击败第五层BOSS「卢西恩·猩红血钻」"
+                    "conditions": "未达成其他结局条件下，正常击败第五层BOSS「卢西恩·猩红血钻」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 猩红孤钻结局记录",
+                        "url": "https://prts.wiki/w/%E5%82%80%E5%BD%B1%E4%B8%8E%E7%8C%A9%E7%BA%A2%E5%AD%A4%E9%92%BB"
+                      }
+                    ],
+                    "aftermath": "傀影暂时脱离剧团诅咒，罗德岛仍需面对猩红剧团残余；威胁并未随终场一起消失。"
                   },
                   {
+                    "id": "if-phantom-ending-2",
                     "endingNumber": 2,
                     "title": "滑稽喜剧",
                     "location": "维多利亚猩红古堡",
@@ -20971,9 +21053,18 @@
                       "傀影"
                     ],
                     "description": "以克莉丝汀小姐（傀影的猫）的视角展开。她围观暮落解决BOSS「伤心的大锁」，但视角角落出现了神秘的「不速之客」，暗示另一双注视着剧团终局的眼睛。",
-                    "conditions": "不期而遇「解脱？」中「太可怜了，仔细观赏」→「捡起玩偶」→ 获得「残破的玩偶」→ 击败BOSS「伤心的大锁」"
+                    "conditions": "不期而遇「解脱？」中「太可怜了，仔细观赏」→「捡起玩偶」→ 获得「残破的玩偶」→ 击败BOSS「伤心的大锁」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 猩红孤钻结局记录",
+                        "url": "https://prts.wiki/w/%E5%82%80%E5%BD%B1%E4%B8%8E%E7%8C%A9%E7%BA%A2%E5%AD%A4%E9%92%BB"
+                      }
+                    ],
+                    "aftermath": "大锁被解决，但“不速之客”的身份和目的没有揭晓，观测范围之外仍存在新的注视者。"
                   },
                   {
+                    "id": "if-phantom-ending-3",
                     "endingNumber": 3,
                     "title": "盛大揭幕",
                     "location": "维多利亚猩红古堡",
@@ -20983,9 +21074,18 @@
                       "剧团喉舌"
                     ],
                     "description": "傀影击败了「剧团喉舌」，但自身被酒神控制，黑化成为「卢西恩·血钻」。暮落打开大门见到黑化的傀影和整个剧团的残局。",
-                    "conditions": "「赴宴」获「替罪领巾」→ 第三层获「替补演员」→ 「追随者集会」获「恍悟」→ 解锁隐藏第六层 → 击败BOSS「剧团喉舌」"
+                    "conditions": "「赴宴」获「替罪领巾」→ 第三层获「替补演员」→ 「追随者集会」获「恍悟」→ 解锁隐藏第六层 → 击败BOSS「剧团喉舌」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 猩红孤钻结局记录",
+                        "url": "https://prts.wiki/w/%E5%82%80%E5%BD%B1%E4%B8%8E%E7%8C%A9%E7%BA%A2%E5%AD%A4%E9%92%BB"
+                      }
+                    ],
+                    "aftermath": "剧团喉舌倒下却未终止控制，傀影成为新的“血钻”，暮落面对的是被重新启动的舞台。"
                   },
                   {
+                    "id": "if-phantom-ending-4",
                     "endingNumber": 4,
                     "title": "沉默之章",
                     "location": "古堡深处地牢 / 剧作家房间",
@@ -20995,33 +21095,52 @@
                       "暮落"
                     ],
                     "description": "埋首创作的无名青年「剧作家」一直在猩红剧团地底疯狂书写众人的故事与悲剧的终局。博士击败剧作家后得到「初幕」，意味着故事脚本被从剧作家手中夺回。",
-                    "conditions": "内容拓展后 → 完成「别打扰他们」「复仇剧」等事件 → 找到收藏品「初幕」→ 隐藏第六层击败BOSS「剧作家」"
-                  },
-                  {
-                    "endingNumber": 5,
-                    "title": "再启新篇",
-                    "location": "剧作家书房",
-                    "characters": [
-                      "剧作家",
-                      "酒神"
+                    "conditions": "内容拓展后 → 完成「别打扰他们」「复仇剧」等事件 → 找到收藏品「初幕」→ 隐藏第六层击败BOSS「剧作家」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 猩红孤钻结局记录",
+                        "url": "https://prts.wiki/w/%E5%82%80%E5%BD%B1%E4%B8%8E%E7%8C%A9%E7%BA%A2%E5%AD%A4%E9%92%BB"
+                      }
                     ],
-                    "description": "剧作家目睹众人闯入后，将拙劣的手稿掷入火中，取出新的纸张重新开始。「这里有值得他在意的人物，他看似没有敌意。」酒神似乎也通过剧作家在影响故事走向。",
-                    "conditions": "前置事件特定走向 → 隐藏层再次进入剧作家房间 → 触发新对话"
+                    "aftermath": "剧作家的书写被中断，“初幕”离开其掌控；谁将续写以及剧团是否真正终结仍保持开放。"
                   }
                 ]
               },
               {
                 "id": "if-mizuki",
+                "order": 3,
                 "name": "水月与深蓝之树",
                 "type": "integrated-strategy",
-                "divergeAtEventId": "evt-003",
+                "status": "complete",
                 "description": "斯图提斐拉号事件后，若深海教会仪式未被阻止，水月体内的海嗣血脉将全面觉醒。深蓝之树降临，海嗣席卷泰拉。",
-            "endings": [
-              {
-                "id": "if-mizuki-ending-1",
-                "endingNumber": 1,
-                "title": "平凡即是喜乐",
-                    "sourceStatus": "二手整理",
+                "synopsis": "人、海嗣与水月之间的关系，在四份互不兼容的观测记录中走向不同终点。",
+                "sharedPremise": "探索从海洋与陆地边界的异常开始。灯火、排异反应和不断改变的认知，使每次深入都可能导向另一种未来。",
+                "topologyMode": "parallel",
+                "entityIds": [
+                  "mizuki",
+                  "seaborn",
+                  "ishar-mla",
+                  "caerula-arbor"
+                ],
+                "lastReviewedAt": "2026-07-23",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 水月与深蓝之树",
+                    "url": "https://prts.wiki/w/%E6%B0%B4%E6%9C%88%E4%B8%8E%E6%B7%B1%E8%93%9D%E4%B9%8B%E6%A0%91"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 水月与深蓝之树专题",
+                    "url": "https://ak.hypergryph.com/is/caerulaarbor/"
+                  }
+                ],
+                "endings": [
+                  {
+                    "id": "if-mizuki-ending-1",
+                    "endingNumber": 1,
+                    "title": "平凡即是喜乐",
                     "dateDisplay": "",
                     "location": "盐风城 / 伊比利亚",
                     "characters": [
@@ -21031,13 +21150,20 @@
                       "凯尔希"
                     ],
                     "description": "默认结局。阿戈尔提前介入阻止灾难，深海猎人海沫获救并带回罗德岛。水月在此线中保持了「人」的身份，没有成为海嗣。",
-                    "conditions": "不满足其他结局条件时，常规通关第五层（击败BOSS「屠谕者」即大群意志）"
-              },
-              {
-                "id": "if-mizuki-ending-2",
-                "endingNumber": 2,
-                "title": "静谧时代",
-                    "sourceStatus": "二手整理",
+                    "conditions": "不满足其他结局条件时，常规通关第五层（击败BOSS「屠谕者」即大群意志）",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 深蓝之树结局记录",
+                        "url": "https://prts.wiki/w/%E6%B0%B4%E6%9C%88%E4%B8%8E%E6%B7%B1%E8%93%9D%E4%B9%8B%E6%A0%91"
+                      }
+                    ],
+                    "aftermath": "海沫获救并进入罗德岛的后续观察，水月保有人类身份；深海威胁被延后而非永久消除。"
+                  },
+                  {
+                    "id": "if-mizuki-ending-2",
+                    "endingNumber": 2,
+                    "title": "静谧时代",
                     "dateDisplay": "",
                     "location": "深海大静谧后的废墟",
                     "characters": [
@@ -21046,13 +21172,20 @@
                       "凯尔希"
                     ],
                     "description": "第二次大静谧席卷陆地。斯卡蒂成为海嗣之神「伊莎玛拉」并带领海嗣飞升宇宙。凯尔希守住了人类最后的城市，但水月为保护博士牺牲。人类文明基本终结。",
-                    "conditions": "前三层不期而遇「开端」选择「跟随大群」→ 获得藏品「主教的研究」→ 保护骑士至最后一层 → 击败BOSS「最后的骑士」"
-              },
-              {
-                "id": "if-mizuki-ending-3",
-                "endingNumber": 3,
-                "title": "息潮的代价",
-                    "sourceStatus": "二手整理",
+                    "conditions": "前三层不期而遇「开端」选择「跟随大群」→ 获得藏品「主教的研究」→ 保护骑士至最后一层 → 击败BOSS「最后的骑士」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 深蓝之树结局记录",
+                        "url": "https://prts.wiki/w/%E6%B0%B4%E6%9C%88%E4%B8%8E%E6%B7%B1%E8%93%9D%E4%B9%8B%E6%A0%91"
+                      }
+                    ],
+                    "aftermath": "泰拉人类文明只剩最后据点的抵抗，水月死亡，海嗣离开行星后危机转化为宇宙尺度。"
+                  },
+                  {
+                    "id": "if-mizuki-ending-3",
+                    "endingNumber": 3,
+                    "title": "息潮的代价",
                     "dateDisplay": "",
                     "location": "深海核心",
                     "characters": [
@@ -21061,13 +21194,20 @@
                       "博士"
                     ],
                     "description": "水月为从根源平息海嗣的同化本能，牺牲自己融入名为「始源的命脉」的大群意识。他以自身意志压制了伊莎玛拉，自身意识溶解于深海。伊莎玛拉被平息，但水月彻底消失。只有博士还记着水月与他的约定。",
-                    "conditions": "结局2通关后 → 三层前「开端」选择「决定潜入深海」→ 获得「深蓝之心」→ 解锁隐藏第六层 → 击败BOSS「伊莎玛拉」"
-              },
-              {
-                "id": "if-mizuki-ending-4",
-                "endingNumber": 4,
-                "title": "深蓝之星（Stella Caerulea）",
-                    "sourceStatus": "二手整理",
+                    "conditions": "结局2通关后 → 三层前「开端」选择「决定潜入深海」→ 获得「深蓝之心」→ 解锁隐藏第六层 → 击败BOSS「伊莎玛拉」",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 深蓝之树结局记录",
+                        "url": "https://prts.wiki/w/%E6%B0%B4%E6%9C%88%E4%B8%8E%E6%B7%B1%E8%93%9D%E4%B9%8B%E6%A0%91"
+                      }
+                    ],
+                    "aftermath": "伊莎玛拉被压制，泰拉暂时免于同化；代价是水月个体意识消失，只由博士保存其记忆。"
+                  },
+                  {
+                    "id": "if-mizuki-ending-4",
+                    "endingNumber": 4,
+                    "title": "如星空般深蓝",
                     "dateDisplay": "",
                     "location": "外太空 / 宇宙",
                     "characters": [
@@ -21076,18 +21216,50 @@
                       "斯卡蒂"
                     ],
                     "description": "水月与「深蓝之树」融合，成为新生的海嗣之神「伊祖米克」。他带领海嗣族群进化并飞升宇宙，泰拉危机在另一种层面被化解。无论哪种解读，伊祖米克最终回到了博士身边。",
-                    "conditions": "解锁隐藏条件后，触发最深层的融合路线"
+                    "conditions": "解锁隐藏条件后，触发最深层的融合路线",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 深蓝之树结局记录",
+                        "url": "https://prts.wiki/w/%E6%B0%B4%E6%9C%88%E4%B8%8E%E6%B7%B1%E8%93%9D%E4%B9%8B%E6%A0%91"
+                      }
+                    ],
+                    "aftermath": "伊祖米克带领海嗣离开泰拉，地表威胁因此缓解；水月以新的存在形式回到博士身边。"
                   }
                 ]
               },
               {
                 "id": "if-sami",
+                "order": 4,
                 "name": "探索者的银凇止境",
                 "type": "integrated-strategy",
-                "divergeAtEventId": "evt-041",
+                "status": "complete",
                 "description": "哥伦比亚科考队探索萨米因非冰原。萨米存在自身的意志，接近于一种自然法则。邪魔（坍缩体）从北方持续入侵，冰原深处矗立着传说中的「星门」。",
+                "synopsis": "地图越完整，现实越不稳定；远征在山脉、冬夜、深渊与时间尽头留下四份报告。",
+                "sharedPremise": "探索者携带测绘与抗干扰手段进入因非冰原，试图在坍缩影响彻底抹去方向之前抵达远征目标。",
+                "topologyMode": "expedition",
+                "entityIds": [
+                  "sami",
+                  "magallan",
+                  "collapse",
+                  "star-gate"
+                ],
+                "lastReviewedAt": "2026-07-23",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 探索者的银凇止境",
+                    "url": "https://prts.wiki/w/%E6%8E%A2%E7%B4%A2%E8%80%85%E7%9A%84%E9%93%B6%E5%87%87%E6%AD%A2%E5%A2%83"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 银凇止境专题",
+                    "url": "https://ak.hypergryph.com/is/samiexpedition"
+                  }
+                ],
                 "endings": [
                   {
+                    "id": "if-sami-ending-1",
                     "endingNumber": 1,
                     "title": "越过群山",
                     "location": "萨米因非冰原深处",
@@ -21098,141 +21270,391 @@
                       "哥伦比亚科考队"
                     ],
                     "description": "标准结局。科考队最终抵达冰原尽头的「星门」。萨米的意志得到尊重，人类取得了对邪魔作战的关键知识，但深层威胁未完全解除。",
-                    "conditions": "无特殊条件通关第五层"
+                    "conditions": "无特殊条件通关第五层",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 银凇止境结局记录",
+                        "url": "https://prts.wiki/w/%E6%8E%A2%E7%B4%A2%E8%80%85%E7%9A%84%E9%93%B6%E5%87%87%E6%AD%A2%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "远征带回对邪魔与星门的关键认识，但冰原后的威胁仍在，探索从抵达终点转入长期防线。"
                   },
                   {
+                    "id": "if-sami-ending-2",
                     "endingNumber": 2,
-                    "title": "坠渊已久",
-                    "location": "萨米 / 邪魔污染领域",
+                    "title": "直至冬夜降临",
+                    "location": "萨米冬夜",
                     "characters": [
                       "博士",
                       "玛利图斯",
                       "邪魔"
                     ],
-                    "description": "泰拉人在对抗邪魔的过程中未能抵御侵蚀，主动或被动接受了邪魔之力，导致心智扭曲或力量失控，成为了邪魔入侵的通道或污染源。",
-                    "conditions": "获得一定「坍缩值」→ 特定不期而遇中选择接触并利用邪魔的力量"
+                    "description": "远征与漫长冬夜正面相遇，行动目标从发现未知转为在失序现实中保存火种。",
+                    "conditions": "完成对应隐藏路线；具体事件链见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 银凇止境结局记录",
+                        "url": "https://prts.wiki/w/%E6%8E%A2%E7%B4%A2%E8%80%85%E7%9A%84%E9%93%B6%E5%87%87%E6%AD%A2%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "远征目标转为保存火种，原定调查没有完整收束；后续面对的是持续冬夜中的生存与传承。"
                   },
                   {
+                    "id": "if-sami-ending-3",
                     "endingNumber": 3,
-                    "title": "与山交谈",
-                    "location": "萨米冰原尽头的星门",
+                    "title": "自深处的一瞥",
+                    "location": "冰原深处",
                     "characters": [
                       "麦哲伦",
                       "博士",
                       "星门"
                     ],
-                    "description": "最悲观的结局。星门被打开，连接的是更为古老和不可名状的存在。邪魔彻底入侵现实世界，整个泰拉大陆陷入认知混乱与坍缩风险。冰原与星门的秘密向无穷的黑暗延伸。",
-                    "conditions": "达成探索条件 → 击败最终BOSS「萨米的意志」"
+                    "description": "观测越过安全边界，探索者短暂看见坍缩影响背后的深层结构。",
+                    "conditions": "完成深处路线；具体前置条件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 银凇止境结局记录",
+                        "url": "https://prts.wiki/w/%E6%8E%A2%E7%B4%A2%E8%80%85%E7%9A%84%E9%93%B6%E5%87%87%E6%AD%A2%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "探索者获得深层结构的一瞥，却没有形成可安全复制的知识；观测本身成为新的风险。"
+                  },
+                  {
+                    "id": "if-sami-ending-4",
+                    "endingNumber": 4,
+                    "title": "终始",
+                    "location": "巨构与时间边界",
+                    "characters": [
+                      "远征队",
+                      "星门"
+                    ],
+                    "description": "远征穿过线性时间能够描述的边界，终点与起点在巨构之后重新相接。",
+                    "conditions": "完成终始路线；具体事件与作战条件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 银凇止境结局记录",
+                        "url": "https://prts.wiki/w/%E6%8E%A2%E7%B4%A2%E8%80%85%E7%9A%84%E9%93%B6%E5%87%87%E6%AD%A2%E5%A2%83"
+                      }
+                    ],
+                    "aftermath": "终点与起点相接，线性编年失去解释力；记录只能作为一次闭环观测保存，不能并入单一路线。"
                   }
                 ]
               },
               {
                 "id": "if-sarkaz-endless",
+                "order": 5,
                 "name": "萨卡兹的无终奇语",
                 "type": "integrated-strategy",
-                "status": "pending",
-                "description": "待完工：萨卡兹集成战略主题IF线。",
+                "status": "complete",
+                "description": "魂灵熔炉中的故事编纂与亡魂沟通，让萨卡兹历史的碎片、愿望与反事实假说同时出现。",
+                "synopsis": "历史不是一条被发现的线，而是一组被亡魂、思绪与书写反复覆写的可能文本。",
+                "sharedPremise": "探索者在魂灵熔炉中收集灵感、遗愿与构想；每一次编纂都能打开新路线，也会加重心智负荷。",
+                "topologyMode": "layered",
+                "entityIds": [
+                  "sarkaz",
+                  "soul-furnace",
+                  "amiya",
+                  "theresa"
+                ],
+                "lastReviewedAt": "2026-07-23",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 萨卡兹的无终奇语",
+                    "url": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E7%9A%84%E6%97%A0%E7%BB%88%E5%A5%87%E8%AF%AD"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 无终奇语专题",
+                    "url": "https://ak.hypergryph.com/is/furnacesidefables"
+                  }
+                ],
                 "endings": [
                   {
+                    "id": "if-sarkaz-endless-ending-1",
                     "endingNumber": 1,
-                    "title": "待完工",
-                    "description": "此IF线内容尚未整理完成。",
-                    "location": "",
-                    "characters": [],
-                    "conditions": "",
-                    "tags": [
-                      "待完工"
-                    ]
+                    "title": "憧憬未来",
+                    "description": "记录从当下出发，将萨卡兹仍能选择的未来视作尚未写完的文本。",
+                    "conditions": "完成常规路线；具体节点与作战条件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 无终奇语结局记录",
+                        "url": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E7%9A%84%E6%97%A0%E7%BB%88%E5%A5%87%E8%AF%AD"
+                      }
+                    ],
+                    "aftermath": "未来仍被保留为选择而非既定结论，这份记录不替代现实主线，只标记一种尚未封闭的可能。"
+                  },
+                  {
+                    "id": "if-sarkaz-endless-ending-2",
+                    "endingNumber": 2,
+                    "title": "双王记",
+                    "description": "一份围绕双王与和解可能性的反事实编纂，不被当作现实历史发布。",
+                    "conditions": "完成双王路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 无终奇语结局记录",
+                        "url": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E7%9A%84%E6%97%A0%E7%BB%88%E5%A5%87%E8%AF%AD"
+                      }
+                    ],
+                    "aftermath": "双王和解成立于反事实编纂内部；现实政治关系没有因此被改写，记录价值在于暴露另一种选择。"
+                  },
+                  {
+                    "id": "if-sarkaz-endless-ending-3",
+                    "endingNumber": 3,
+                    "title": "天使之城",
+                    "description": "萨卡兹与萨科塔关系被重新书写，城市成为另一种共同体的实验场。",
+                    "conditions": "完成天使之城路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 无终奇语结局记录",
+                        "url": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E7%9A%84%E6%97%A0%E7%BB%88%E5%A5%87%E8%AF%AD"
+                      }
+                    ],
+                    "aftermath": "共同体实验改变了萨卡兹与萨科塔的关系，但其稳定性与能否外溢到现实历史并无定论。"
+                  },
+                  {
+                    "id": "if-sarkaz-endless-ending-4",
+                    "endingNumber": 4,
+                    "title": "遁入阇那",
+                    "description": "记录把出路投向阿纳萨理想国，现实与心智构造的边界随之变得不再稳定。",
+                    "conditions": "完成阇那路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 无终奇语结局记录",
+                        "url": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E7%9A%84%E6%97%A0%E7%BB%88%E5%A5%87%E8%AF%AD"
+                      }
+                    ],
+                    "aftermath": "出路被转移到理想国与心智空间，人物是否真正脱离现实困境仍是该记录留下的核心悬问。"
+                  },
+                  {
+                    "id": "if-sarkaz-endless-ending-5",
+                    "endingNumber": 5,
+                    "title": "无瑕之日",
+                    "description": "阿米娅对救赎与未来的追问在一份理想化记录中获得回应。",
+                    "conditions": "完成无瑕之日路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 无终奇语结局记录",
+                        "url": "https://prts.wiki/w/%E8%90%A8%E5%8D%A1%E5%85%B9%E7%9A%84%E6%97%A0%E7%BB%88%E5%A5%87%E8%AF%AD"
+                      }
+                    ],
+                    "aftermath": "理想化救赎给出回应，却不宣称抹去现实代价；它作为阿米娅可能面对的未来单独保存。"
                   }
                 ]
               },
               {
                 "id": "if-sui-realm",
+                "order": 6,
                 "name": "岁的界园志异",
                 "type": "integrated-strategy",
-                "status": "pending",
-                "description": "待完工：岁兽集成战略主题IF线。",
+                "status": "complete",
+                "description": "百灶城附近的界园与岁兽残识构成表里两层空间，镇抚行动也因此成为一场关于边界与新生的异闻。",
+                "synopsis": "从履行镇抚职责到进入棋局、穿过障壁，五份记录在界园与残识之间折叠。",
+                "sharedPremise": "探索者进入界园处理岁兽异动，并在烛火有限的条件下往返于现实表层与残识空间。",
+                "topologyMode": "dual-layer",
+                "entityIds": [
+                  "sui",
+                  "jiegarden",
+                  "baizao",
+                  "sui-remnant"
+                ],
+                "lastReviewedAt": "2026-07-23",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 岁的界园志异",
+                    "url": "https://prts.wiki/w/%E5%B2%81%E7%9A%84%E7%95%8C%E5%9B%AD%E5%BF%97%E5%BC%82"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 界园志异专题",
+                    "url": "https://ak.hypergryph.com/is/gardenofgrotesqueries"
+                  }
+                ],
                 "endings": [
                   {
+                    "id": "if-sui-realm-ending-1",
                     "endingNumber": 1,
-                    "title": "待完工",
-                    "description": "此IF线内容尚未整理完成。",
-                    "location": "",
-                    "characters": [],
-                    "conditions": "",
-                    "tags": [
-                      "待完工"
-                    ]
+                    "title": "依律镇抚",
+                    "description": "行动依既定职责收束，界园的异常得到暂时而有边界的处理。",
+                    "conditions": "完成常规路线；具体节点与作战条件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 界园志异结局记录",
+                        "url": "https://prts.wiki/w/%E5%B2%81%E7%9A%84%E7%95%8C%E5%9B%AD%E5%BF%97%E5%BC%82"
+                      }
+                    ],
+                    "aftermath": "异常被控制在暂时边界内，界园并未被彻底解释；后续责任仍是监测边界是否再次松动。"
+                  },
+                  {
+                    "id": "if-sui-realm-ending-2",
+                    "endingNumber": 2,
+                    "title": "长卷留痕",
+                    "description": "界园经历被写入长卷，记述本身成为连接现实与异闻空间的痕迹。",
+                    "conditions": "完成长卷路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 界园志异结局记录",
+                        "url": "https://prts.wiki/w/%E5%B2%81%E7%9A%84%E7%95%8C%E5%9B%AD%E5%BF%97%E5%BC%82"
+                      }
+                    ],
+                    "aftermath": "长卷保存了经历，也让记述成为现实与界园之间的新接口；档案本身可能继续影响后来观察。"
+                  },
+                  {
+                    "id": "if-sui-realm-ending-3",
+                    "endingNumber": 3,
+                    "title": "黑白入玄",
+                    "description": "探索进入望的棋局，黑白落子把人物与边界重新安排进另一套规则。",
+                    "conditions": "完成棋局路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 界园志异结局记录",
+                        "url": "https://prts.wiki/w/%E5%B2%81%E7%9A%84%E7%95%8C%E5%9B%AD%E5%BF%97%E5%BC%82"
+                      }
+                    ],
+                    "aftermath": "人物被纳入新的棋局规则，原有因果关系不再可靠；记录停在棋局仍可继续落子的状态。"
+                  },
+                  {
+                    "id": "if-sui-realm-ending-4",
+                    "endingNumber": 4,
+                    "title": "无中生有",
+                    "description": "现实与残识之间的障壁被进一步打开，原本不应存在的路径由此成形。",
+                    "conditions": "完成无中生有路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 界园志异结局记录",
+                        "url": "https://prts.wiki/w/%E5%B2%81%E7%9A%84%E7%95%8C%E5%9B%AD%E5%BF%97%E5%BC%82"
+                      }
+                    ],
+                    "aftermath": "新路径被制造出来，现实与残识的隔离进一步减弱；它同时带来通路和更难控制的风险。"
+                  },
+                  {
+                    "id": "if-sui-realm-ending-5",
+                    "endingNumber": 5,
+                    "title": "落子无悔",
+                    "description": "围绕岁兽新生的选择落下最后一子，行动者接受由此产生的全部后果。",
+                    "conditions": "完成落子无悔路线；具体前置事件见来源页。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 界园志异结局记录",
+                        "url": "https://prts.wiki/w/%E5%B2%81%E7%9A%84%E7%95%8C%E5%9B%AD%E5%BF%97%E5%BC%82"
+                      }
+                    ],
+                    "aftermath": "选择已经不可撤回，岁兽新生的后果由行动者承担；其长期影响超出当前首轮资料范围。"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "id": "if-other",
-            "name": "其他",
-            "isDefault": false,
-            "parentBranchId": "mainline",
-            "type": "supplementary-if",
-            "description": "包含干员异格、斗争血脉、命途迭代、档案文本、模组故事及联动活动的IF分支与平行世界可能性汇总。",
-            "endings": [
-              {
-                "endingNumber": 1,
-                "title": "浊心斯卡蒂 · 腐化之心",
-                "location": "伊比利亚某废墟",
-                "characters": [
-                  "浊心斯卡蒂（伊莎玛拉）",
-                  "博士"
-                ],
-                "description": "「覆潮之下」的绝望分支。斯卡蒂放弃人类身份认同，海嗣之神「伊莎玛拉」在她体内苏醒。人类抵抗彻底失败，全世界被海嗣覆盖。她在罗德岛废墟上歌唱，召集更多海嗣同化一切。",
-                "conditions": "斯卡蒂未能扛住海嗣的精神冲击"
               },
               {
-                "endingNumber": 2,
-                "title": "凯尔希 · 斗争血脉（末日反抗）",
-                "location": "未来战场 / 泰拉终局",
-                "characters": [
-                  "凯尔希",
-                  "普瑞赛斯",
-                  "Mon3tr"
+                "id": "if-blackflow",
+                "order": 7,
+                "name": "沉沦者的黑流树海",
+                "type": "integrated-strategy",
+                "status": "updating",
+                "description": "哥伦比亚探索队进入黑流树海，调查一片同时被秘密、探险者、阴谋与异化生命占据的无人区。",
+                "synopsis": "平面地图、行动力与不断超载的零件箱，把每次探索变成一场会递归改写自身规则的实验。",
+                "sharedPremise": "探索者必须在行动力耗尽前穿过黑流树海；零件、追猎与居民思想实化的理想域会持续改变路径。",
+                "topologyMode": "recursive",
+                "entityIds": [
+                  "blackflow",
+                  "columbian-expedition",
+                  "parts",
+                  "ideal-domain"
                 ],
-                "description": "推测为「浊心斯卡蒂IF线」的延续。源石已将大地同化，凯尔希面对终局，可能为最后反抗军领袖，解放了一部分自身限制。",
-                "conditions": "人类完全失败的末日背景下触发"
-              },
-              {
-                "endingNumber": 3,
-                "title": "安洁莉娜 · 第二最终防卫阵线",
-                "location": "第二最终防卫阵线（虚构未来）",
-                "characters": [
-                  "安洁莉娜上尉"
+                "lastReviewedAt": "2026-07-29",
+                "sources": [
+                  {
+                    "kind": "prts",
+                    "title": "PRTS · 沉沦者的黑流树海",
+                    "url": "https://prts.wiki/w/%E6%B2%89%E6%B2%A6%E8%80%85%E7%9A%84%E9%BB%91%E6%B5%81%E6%A0%91%E6%B5%B7"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "明日方舟 · 黑流树海专题",
+                    "url": "https://ak.hypergryph.com/is/blackflowofdrowningseekers"
+                  },
+                  {
+                    "kind": "official",
+                    "title": "2026-07-17 集成战略开启公告",
+                    "url": "https://ak.hypergryph.com/news/0795"
+                  }
                 ],
-                "description": "安洁莉娜已从青涩信使成长为沉稳的「上尉」，守卫着人类最后的防线，指向某条遥远的绝望未来时间线。",
-                "conditions": "未知末日事件触发"
-              },
-              {
-                "endingNumber": 4,
-                "title": "浊心斯卡蒂 · 升华（飞升宇宙）",
-                "location": "宇宙 / 外太空",
-                "characters": [
-                  "浊心斯卡蒂",
-                  "伊莎玛拉",
-                  "海嗣大群"
-                ],
-                "description": "浊心斯卡蒂成为海嗣之神后，海嗣完成全面进化，带领族群飞向宇宙探索。泰拉大陆被彻底「净化」，深海猎人全灭。",
-                "conditions": "浊心斯卡蒂IF线的终极演进"
-              },
-              {
-                "endingNumber": 5,
-                "title": "博士未归罗德岛（萨卡兹战术指挥官）",
-                "location": "乌萨斯 / 切尔诺伯格",
-                "characters": [
-                  "博士",
-                  "阿米娅",
-                  "凯尔希",
-                  "特雷西斯"
-                ],
-                "description": "档案文本IF：如果博士没有被罗德岛从切尔诺伯格救回，而是落入萨卡兹阵营手中——他将成为对抗罗德岛的萨卡兹战术指挥官，甚至可能不得不亲手对抗阿米娅与凯尔希。",
-                "conditions": "W的档案及部分设计师访谈中暗示的IF设定"
+                "endings": [
+                  {
+                    "id": "if-blackflow-ending-1",
+                    "endingNumber": 1,
+                    "code": "REBOOT()",
+                    "title": "强制重启",
+                    "location": "黑流树海",
+                    "characters": [
+                      "哥伦比亚探索队"
+                    ],
+                    "description": "首发观测之一。系统以重启回应失控探索，但被清除的状态并不等于问题已经消失。",
+                    "conditions": "在任意难度且未持有“怦然信标”时，完成第Ⅴ层“永无安宁”或其追猎版本“痛苦将息”。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 黑流树海当前结局记录",
+                        "url": "https://prts.wiki/w/%E6%B2%89%E6%B2%A6%E8%80%85%E7%9A%84%E9%BB%91%E6%B5%81%E6%A0%91%E6%B5%B7"
+                      }
+                    ],
+                    "aftermath": "系统恢复运行但异常根因仍在，后续探索必须把“重启成功”与“问题解决”明确区分。"
+                  },
+                  {
+                    "id": "if-blackflow-ending-2",
+                    "endingNumber": 2,
+                    "code": "RESHAPE()",
+                    "title": "维度重构",
+                    "location": "黑流树海",
+                    "characters": [
+                      "哥伦比亚探索队"
+                    ],
+                    "description": "首发观测之一。探索对象不再只改变路线，而开始重构观察者能够理解的维度。",
+                    "conditions": "先完成“强制重启”并取得沙盘α或沙盘β；在第Ⅴ层进入“窥视箱中”、选择保护证据并完成“混沌源阶理论”，结算时不得持有“怦然信标”。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 黑流树海当前结局记录",
+                        "url": "https://prts.wiki/w/%E6%B2%89%E6%B2%A6%E8%80%85%E7%9A%84%E9%BB%91%E6%B5%81%E6%A0%91%E6%B5%B7"
+                      }
+                    ],
+                    "aftermath": "观察维度被重构，旧地图和分类法不再完全适用；后续记录需要在新的坐标体系中重新建立。"
+                  },
+                  {
+                    "id": "if-blackflow-ending-3",
+                    "endingNumber": 3,
+                    "code": "RECONCILE()",
+                    "title": "纠缠，调和",
+                    "location": "黑流树海",
+                    "characters": [
+                      "哥伦比亚探索队",
+                      "树海居民"
+                    ],
+                    "description": "首发观测之一。互相冲突的生命、文明与实验结果被迫进入纠缠，并尝试形成新的平衡。",
+                    "conditions": "先完成“强制重启”，经“先行一步”取得“怦然信标”；通过第Ⅴ层进入第Ⅵ层，并在任意难度完成“畸症”。",
+                    "sources": [
+                      {
+                        "kind": "prts",
+                        "title": "PRTS · 黑流树海当前结局记录",
+                        "url": "https://prts.wiki/w/%E6%B2%89%E6%B2%A6%E8%80%85%E7%9A%84%E9%BB%91%E6%B5%81%E6%A0%91%E6%B5%B7"
+                      }
+                    ],
+                    "aftermath": "冲突对象形成暂时平衡，但调和不是终局；后续风险来自纠缠关系再次失稳或被外力改写。"
+                  }
+                ]
               }
             ]
           }
@@ -21245,13 +21667,13 @@
     "sourceVersion": "ARK-2026.07",
     "coverage": {
       "status": "观测中",
-      "updatedAt": "2026-07-22",
-      "scope": "主线编年、集成战略与部分 IF 记录",
+      "updatedAt": "2026-07-23",
+      "scope": "主线编年、七个集成战略主题与部分 IF 记录",
       "knownGaps": [
-        "萨卡兹的无终奇语与岁的界园志异仍待整理",
-        "部分集成战略结局尚缺逐条官方来源"
+        "沉沦者的黑流树海仍在持续更新，当前记录为首发状态",
+        "部分早期主题的详细解锁条件仍需继续逐条核验"
       ],
-      "sourceNote": "现有内容以公开剧情资料与社区条目整理为基线；缺少具体来源的记录统一标示为二手整理。"
+      "sourceNote": "集成战略正式记录均附官方或 PRTS 入口；摘要为本站重新表述，最新主题按核验日期持续更新。"
     },
     "dossiers": [
       {
@@ -21268,8 +21690,7 @@
           "if-mizuki-ending-4"
         ],
         "defaultRecordId": "if-mizuki-ending-1",
-        "relation": "alternate-outcomes",
-        "exception": "二手整理"
+        "relation": "alternate-outcomes"
       }
     ]
   }

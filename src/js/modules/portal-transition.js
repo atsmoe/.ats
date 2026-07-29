@@ -87,7 +87,7 @@ export function buildBranchEraGroups(branchId) {
  * with a direct VirtualTimeline.load() + estimated scroll positioning.
  * Only renders ~15 viewport-adjacent DOM nodes regardless of event count.
  */
-export function initPortalArrival() {
+export function initPortalArrival({ onSelectBranch, onTimelineLoaded } = {}) {
   const hash = window.location.hash;
   if (!hash) {
     dismissPortal();
@@ -113,6 +113,7 @@ export function initPortalArrival() {
     dismissPortal();
     return;
   }
+  if (typeof onSelectBranch === 'function') onSelectBranch(loc.branchId);
 
   // 2. Build era groups and hand off to VirtualTimeline
   const eraGroups = buildBranchEraGroups(loc.branchId);
@@ -124,26 +125,24 @@ export function initPortalArrival() {
   if (typeof VirtualTimeline !== 'undefined') {
     VirtualTimeline.clear();
     VirtualTimeline.container = document.getElementById('tl-container');
+    const containerDocumentTop = VirtualTimeline.container
+      ? VirtualTimeline.container.getBoundingClientRect().top + window.scrollY
+      : 0;
+    VirtualTimeline.setContainerDocumentTop(containerDocumentTop);
     VirtualTimeline.load(eraGroups);
-    // Rebuild era nav from the newly loaded items
-    if (typeof buildEraNav === 'function') buildEraNav();
   }
 
-  // 3. Scroll to target — if close to top, let natural viewport cover it;
-  //    otherwise use estimated offset to jump near the target.
+  // 3. Position every target from its virtual item offset. Even early branch
+  // records can sit several viewports below a branch notice and era header.
   if (typeof VirtualTimeline !== 'undefined') {
-    if (loc.eventIndex <= 20) {
-      window.scrollTo(0, 0);
-    } else {
-      const targetTop = VirtualTimeline.estimateScrollTopByEventId(eventId);
-      if (targetTop > 0) {
-        window.scrollTo(0, targetTop - window.innerHeight * 0.3);
-      }
+    const targetTop = VirtualTimeline.estimateScrollTopByEventId(eventId);
+    if (targetTop > 0) {
+      window.scrollTo(0, Math.max(0, targetTop - window.innerHeight * 0.3));
     }
 
     // 4. Trigger first render + remeasure cycle
     VirtualTimeline.update();
-    if (typeof updateEraNavHighlight === 'function') updateEraNavHighlight();
+    if (typeof onTimelineLoaded === 'function') onTimelineLoaded(eraGroups);
 
     const eraNav = document.getElementById('era-nav');
     if (eraNav && eraGroups.length > 0) {

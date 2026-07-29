@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import { dateSortVal, eraLabel } from './data-loader.js';
+import { normalizeEventSources } from './event-sources.js';
 
 let _data = null;
 let currentBranch = 'mainline';
@@ -21,16 +22,31 @@ const tlContainer = document.getElementById('tl-container');
 const eraNav = document.getElementById('era-nav');
 const backToTopBtn = document.getElementById('back-to-top');
 
-function findBranch(branchId) {
-  if (!_data) return null;
-  for (const branch of _data.branches) {
-    if (branch.id === branchId) return branch;
-    if (branch.subBranches) {
-      const sub = branch.subBranches.find(sb => sb.id === branchId);
-      if (sub) return sub;
-    }
+function syncVirtualTimelineOrigin() {
+  if (typeof VirtualTimeline === 'undefined' || !tlContainer) return;
+  const documentTop = tlContainer.getBoundingClientRect().top + window.scrollY;
+  VirtualTimeline.setContainerDocumentTop(documentTop);
+}
+
+function clearTimelineFocus() {
+  if (!location.hash) return;
+  const url = new URL(location.href);
+  url.hash = '';
+  history.replaceState(history.state, '', `${url.pathname}${url.search}`);
+}
+
+function findBranchPath(branchId, branches = _data?.branches || []) {
+  for (const branch of branches) {
+    if (branch.id === branchId) return [branch];
+    const nested = findBranchPath(branchId, branch.subBranches || []);
+    if (nested) return [branch, ...nested];
   }
   return null;
+}
+
+function findBranch(branchId) {
+  const path = findBranchPath(branchId);
+  return path ? path[path.length - 1] : null;
 }
 
 function findEventRecord(eventId, branches = _data?.branches || []) {
@@ -110,8 +126,10 @@ export function populateBranchTabs() {
   for (const b of _data.branches) {
     const btn = document.createElement('button');
     btn.className = 'tl-branch-tab' + (b.isDefault ? ' active' : '');
+    btn.type = 'button';
     btn.dataset.branch = b.id;
     btn.textContent = b.name;
+    btn.setAttribute('aria-pressed', String(Boolean(b.isDefault)));
     container.appendChild(btn);
   }
   currentBranch = _data.branches.find(b => b.isDefault)?.id || 'mainline';
@@ -123,20 +141,47 @@ export function updateSubTabs() {
   const subContainer = document.getElementById('tl-sub-branches');
   subContainer.innerHTML = '';
   subContainer.style.display = 'none';
-  if (currentBranch !== 'if-integrated') return;
 
-  const integrated = _data?.branches?.find(b => b.id === 'if-integrated');
-  if (!integrated || !integrated.subBranches) return;
+  const rootBranch = _data?.branches?.find(branch => branch.id === currentBranch);
+  if (!rootBranch?.subBranches?.length) return;
 
   subContainer.style.display = 'flex';
-  for (const sb of integrated.subBranches) {
+  for (const sb of rootBranch.subBranches) {
     const btn = document.createElement('button');
     btn.className = 'tl-sub-tab' + (sb.status === 'pending' ? ' pending' : '');
+    btn.type = 'button';
     btn.dataset.branch = sb.id;
     btn.textContent = sb.name;
-    if (sb.id === currentSubBranch) btn.classList.add('active');
+    const active = sb.id === currentSubBranch;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
     subContainer.appendChild(btn);
   }
+}
+
+/**
+ * Synchronize the visible root/sub-branch controls with a canonical record
+ * reached by hash. Rendering remains the caller's responsibility.
+ */
+export function syncBranchPath(branchId) {
+  const path = findBranchPath(branchId);
+  if (!path) return false;
+
+  currentBranch = path[0].id;
+  currentSubBranch = path.length > 1 ? path[1].id : null;
+
+  document.querySelectorAll('.tl-branch-tab').forEach(button => {
+    const active = button.dataset.branch === currentBranch;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  updateSubTabs();
+  document.querySelectorAll('.tl-sub-tab').forEach(button => {
+    const active = button.dataset.branch === currentSubBranch;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  return true;
 }
 
 /* ── Update timeline cover ── */
@@ -165,6 +210,7 @@ export function renderEvents(branch) {
       return;
     }
     VirtualTimeline.container = tlContainer;
+    syncVirtualTimelineOrigin();
     VirtualTimeline.clear();
 
     // Ensure axis line exists (not cleared by VirtualTimeline._renderRange)
@@ -174,7 +220,11 @@ export function renderEvents(branch) {
       tlContainer.appendChild(axisEl);
     }
 
-    VirtualTimeline.load(eraGroups);
+    const reservedHeight = VirtualTimeline.load(eraGroups);
+    // Reserve the full scroll range before positioning a deep link. Keeping
+    // this DOM write in the UI prevents the browser from clamping an early
+    // scrollTo() while VirtualTimeline still has an empty container.
+    tlContainer.style.height = `${reservedHeight}px`;
     VirtualTimeline.update();
 
     // Build era nav (visible only after cover scrolls out of view)
@@ -294,12 +344,19 @@ function buildEventCard(evt, idx) {
   // Cross-world refs
   if (evt.crossRefs && evt.crossRefs.length > 0) {
     for (const ref of evt.crossRefs) {
-      cardHTML += '<div class="event-ref cross-world-link" data-target="' + (ref.eventId || ref.id || '') + '" data-world="' + (ref.worldId || '') + '">' + (ref.label || '跨世界引用') + '</div>';
+      cardHTML += '<button type="button" class="event-ref cross-world-link" data-target="' + (ref.eventId || ref.id || '') + '" data-world="' + (ref.worldId || '') + '">' + (ref.label || '跨世界引用') + '</button>';
     }
   }
 
   cardHTML += '</div>'; // .event-card
   el.innerHTML = cardHTML;
+  const card = el.querySelector('.event-card');
+  const openButton = document.createElement('button');
+  openButton.type = 'button';
+  openButton.className = 'event-card-open';
+  openButton.setAttribute('aria-label', `查看记录：${evt.title || ''}`);
+  openButton.setAttribute('aria-haspopup', 'dialog');
+  card.prepend(openButton);
 
   // Add axis node
   const node = document.createElement('div');
@@ -330,7 +387,10 @@ function buildEraNav(eraGroups) {
       a.innerHTML = '<span class="dot"></span><span class="label">' + item.data + '</span>';
       a.addEventListener('click', (e) => {
         e.preventDefault();
-        window.scrollTo({ top: item.top + 80, behavior: 'smooth' });
+        window.scrollTo({
+          top: VirtualTimeline.documentTopForLocal(item.top) + 80,
+          behavior: 'smooth',
+        });
       });
       eraNav.appendChild(a);
     });
@@ -403,7 +463,10 @@ function buildMobileEraNav(eraItems) {
           headers[item.index].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       } else {
-        window.scrollTo({ top: item.top + 80, behavior: 'smooth' });
+        window.scrollTo({
+          top: VirtualTimeline.documentTopForLocal(item.top) + 80,
+          behavior: 'smooth',
+        });
       }
       list.classList.remove('active');
     });
@@ -434,11 +497,14 @@ function buildMobileEraNav(eraItems) {
 }
 
 /* ── Era nav visibility: show only after cover scrolls out of view ── */
+let eraNavObserver = null;
+
 function initEraNavObserver() {
   const cover = document.querySelector('.tl-cover');
   if (!cover) return;
 
-  const observer = new IntersectionObserver((entries) => {
+  eraNavObserver?.disconnect();
+  eraNavObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (entry.isIntersecting) {
         eraNav.classList.remove('active');
@@ -448,7 +514,7 @@ function initEraNavObserver() {
     }
   }, { threshold: 0 });
 
-  observer.observe(cover);
+  eraNavObserver.observe(cover);
 }
 
 /* ── Scroll handling for era nav highlight + back-to-top ── */
@@ -487,7 +553,9 @@ function updateEraNavHighlight() {
   }
 
   if (eraItems && eraItems.length > 0) {
-    const scrollMid = window.scrollY + window.innerHeight * 0.4;
+    const scrollMid = VirtualTimeline.localTopForDocument(
+      window.scrollY + window.innerHeight * 0.4,
+    );
     let currentIdx = 0;
     for (let i = eraItems.length - 1; i >= 0; i--) {
       if (eraItems[i].top <= scrollMid) {
@@ -522,6 +590,12 @@ function updateEraNavHighlight() {
   updateMobileEraHighlight(currentIdx);
 }
 
+export function syncEraNavigation(eraGroups) {
+  buildEraNav(eraGroups);
+  initEraNavObserver();
+  updateEraNavHighlight();
+}
+
 function updateMobileEraHighlight(currentIdx) {
   const list = eraNav._mobileList;
   if (!list) return;
@@ -541,30 +615,41 @@ backToTopBtn.addEventListener('click', () => {
 });
 
 /* ── Branch tab switching ── */
+let branchSwitchTimer = null;
+
 document.getElementById('tl-branches').addEventListener('click', (e) => {
   if (!e.target.classList.contains('tl-branch-tab')) return;
-  if (e.target.classList.contains('switching')) return;
   const branch = e.target.dataset.branch;
-  if (branch === currentBranch) return;
+  if (branchSwitchTimer) {
+    clearTimeout(branchSwitchTimer);
+    branchSwitchTimer = null;
+  }
+  if (branch === currentBranch) {
+    tlContainer.style.opacity = '1';
+    return;
+  }
 
+  clearTimelineFocus();
   tlContainer.style.opacity = '0';
   tlContainer.style.transition = 'opacity 0.2s ease';
 
-  setTimeout(() => {
+  branchSwitchTimer = setTimeout(() => {
+    branchSwitchTimer = null;
     document.querySelectorAll('.tl-branch-tab').forEach(t => t.classList.remove('active'));
     e.target.classList.add('active');
-    e.target.classList.remove('switching');
+    document.querySelectorAll('.tl-branch-tab').forEach(t => {
+      t.setAttribute('aria-pressed', String(t === e.target));
+    });
 
     currentBranch = branch;
     currentSubBranch = null;
     updateSubTabs();
 
-    if (branch === 'if-integrated') {
-      const firstSub = document.querySelector('.tl-sub-tab');
-      if (firstSub) {
-        currentSubBranch = firstSub.dataset.branch;
-        firstSub.classList.add('active');
-      }
+    const firstSub = document.querySelector('.tl-sub-tab');
+    if (firstSub) {
+      currentSubBranch = firstSub.dataset.branch;
+      firstSub.classList.add('active');
+      firstSub.setAttribute('aria-pressed', 'true');
     }
 
     renderEvents(currentSubBranch || currentBranch);
@@ -575,13 +660,19 @@ document.getElementById('tl-branches').addEventListener('click', (e) => {
 document.getElementById('tl-sub-branches').addEventListener('click', (e) => {
   if (!e.target.classList.contains('tl-sub-tab')) return;
   const branch = e.target.dataset.branch;
+  if (branchSwitchTimer) clearTimeout(branchSwitchTimer);
 
+  clearTimelineFocus();
   tlContainer.style.opacity = '0';
   tlContainer.style.transition = 'opacity 0.2s ease';
 
-  setTimeout(() => {
+  branchSwitchTimer = setTimeout(() => {
+    branchSwitchTimer = null;
     document.querySelectorAll('.tl-sub-tab').forEach(t => t.classList.remove('active'));
     e.target.classList.add('active');
+    document.querySelectorAll('.tl-sub-tab').forEach(t => {
+      t.setAttribute('aria-pressed', String(t === e.target));
+    });
     currentSubBranch = branch;
     renderEvents(branch);
     tlContainer.style.opacity = '1';
@@ -594,6 +685,7 @@ let modalOpen = false;
 let modalReturnFocus = null;
 
 function onCardClick(e) {
+  if (e.target.closest('.cross-world-link')) return;
   const card = e.target.closest('.event-card');
   if (!card) return;
   // Find event data from the card's parent tl-event ID
@@ -723,26 +815,27 @@ function openEventModal(evt) {
     status.appendChild(document.createTextNode(evt.sourceStatus));
     sourcesEl.appendChild(status);
   }
-  if (evt.prtsSources && evt.prtsSources.length > 0) {
-    evt.prtsSources.forEach(s => {
-      const item = document.createElement('div');
-      item.className = 'event-source-item';
-      if (s.title) {
-        const label = document.createElement('span');
-        label.className = 'source-label';
-        label.textContent = s.title + '：';
-        item.appendChild(label);
-      }
-      const link = document.createElement('a');
-      link.className = 'event-modal-source-link';
-      link.href = s.url;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = s.text;
-      item.appendChild(link);
-      sourcesEl.appendChild(item);
-    });
-  }
+  normalizeEventSources(evt).forEach(source => {
+    const item = document.createElement('div');
+    item.className = 'event-source-item';
+    if (source.label) {
+      const label = document.createElement('span');
+      label.className = 'source-label';
+      label.textContent = source.label + '：';
+      item.appendChild(label);
+    }
+
+    const sourceText = document.createElement(source.url ? 'a' : 'span');
+    sourceText.className = 'event-modal-source-link';
+    sourceText.textContent = source.text;
+    if (source.url) {
+      sourceText.href = source.url;
+      sourceText.target = '_blank';
+      sourceText.rel = 'noopener noreferrer';
+    }
+    item.appendChild(sourceText);
+    sourcesEl.appendChild(item);
+  });
 
   // Show
   const wasOpen = modalOpen;

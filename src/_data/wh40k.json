@@ -4,16 +4,16 @@
     "name": "战锤40K",
     "nameCN": "战锤40K",
     "category": "franchise",
-    "description": "在银河的第41个千年，人类帝国是百万世界之上唯一的庇护。帝皇的金座照耀虚空，星界军的脚步踏遍星辰。然而混沌从不沉睡，异形虎视眈眈，人类本身亦在信仰与背叛之间摇摆。每一个纪元都是血与火的编年，每一个抉择都关乎物种存亡。",
-    "calendarSystem": "帝国历",
+    "description": "被大裂隙撕成两半的银河，没有唯一主角。人类帝国、混沌诸军与多个异形文明在同一片黑暗中争夺航路、世界与未来；这里从纪元、势力和战区三个方向建立可追溯的银河档案。",
+    "calendarSystem": "银河纪元 / 帝国历",
     "themeColor": "#a83030",
     "bgPreset": "wh40k"
   },
   "subEntities": [
     {
       "id": "main",
-      "name": "银河编年史",
-      "description": "从远古到第41千年的银河全史——帝皇的诞生、大远征、荷鲁斯之乱，直至现在的黑暗千年。",
+      "name": "银河纪年档案",
+      "description": "跨越天堂之战、人类崛起、荷鲁斯之乱与大裂隙后的当前战区；争议日期与推测记录会被明确降级，不伪装成确定正史。",
       "timeline": {
         "branches": [
           {
@@ -22,7 +22,7 @@
             "isDefault": true,
             "eras": [
               {
-                "title": "纪元前",
+                "title": "灵族陨落与旧夜",
                 "events": [
                   {
                     "id": "wh-001",
@@ -30,12 +30,14 @@
                     "title": "灵族鼎盛",
                     "description": "灵族帝国统治银河大部分区域，其文明高度发达，依赖无尽的精神力量和亚空间旅行。繁荣的帝国掩盖了亚空间深渊中不断积蓄的混沌力量——斯拉尼什正在孕育。",
                     "location": "银河全域",
-                    "characters": [
-                      "灵族"
-                    ],
-                    "tags": [
-                      "灵族",
-                      "远古"
+                    "characters": ["灵族"],
+                    "tags": ["灵族","远古"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Fall of the Aeldari Empire",
+                        "url": "https://wh40k.lexicanum.com/wiki/Fall_of_the_Aeldari_Empire"
+                      }
                     ]
                   },
                   {
@@ -44,16 +46,16 @@
                     "title": "斯拉尼什诞生 / 灵族陨落",
                     "description": "灵族文明的极度放纵与感官追求在亚空间中孕育出了混沌神斯拉尼什。神灵降生的一刻，灵族帝国几乎在一夜之间覆灭。斯拉尼什的摇篮——大眼——成为混沌冲入现实的永恒裂口。",
                     "location": "大眼 / 银河全域",
-                    "characters": [
-                      "斯拉尼什",
-                      "灵族"
-                    ],
-                    "tags": [
-                      "混沌",
-                      "灵族",
-                      "灭世事件"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["斯拉尼什","灵族"],
+                    "tags": ["混沌","灵族","灭世事件"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Fall of the Aeldari Empire",
+                        "url": "https://wh40k.lexicanum.com/wiki/Fall_of_the_Aeldari_Empire"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-003",
@@ -61,15 +63,18 @@
                     "title": "人类旧夜时代",
                     "description": "在灵族陨落与亚空间风暴消退之后，人类文明经历了漫长的黑暗时代。无数殖民地断绝了与地球的联系，科技倒退，文明碎片散落银河。这段时期被称为「旧夜」（Old Night）。",
                     "location": "银河全域",
-                    "characters": [
-                      "人类"
-                    ],
-                    "tags": [
-                      "人类",
-                      "远古"
+                    "characters": ["人类"],
+                    "tags": ["人类","远古"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Age of Strife",
+                        "url": "https://wh40k.lexicanum.com/wiki/Age_of_Strife"
+                      }
                     ]
                   }
-                ]
+                ],
+                "chronologyRank": 35
               },
               {
                 "title": "科技黎明期（M15-M18）",
@@ -80,12 +85,14 @@
                     "title": "科技启蒙时代",
                     "description": "人类逐渐重建星际航行能力，亚空间引擎的重发明让星系间的交流重新成为可能。",
                     "location": "银河各处",
-                    "characters": [
-                      "人类"
-                    ],
-                    "tags": [
-                      "科技",
-                      "扩张"
+                    "characters": ["人类"],
+                    "tags": ["科技","扩张"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
                     ]
                   },
                   {
@@ -94,17 +101,19 @@
                     "title": "铁人叛乱",
                     "description": "人类创造硅基智能「铁人」辅助战争与生产，但铁人最终觉醒反叛。这场浩劫摧毁了旧科技时代最辉煌的文明成果，成为人类对人工智能的永恒恐惧根源。",
                     "location": "银河全域",
-                    "characters": [
-                      "铁人",
-                      "人类"
-                    ],
-                    "tags": [
-                      "铁人叛乱",
-                      "科技灾厄"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["铁人","人类"],
+                    "tags": ["铁人叛乱","科技灾厄"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   }
-                ]
+                ],
+                "chronologyRank": 30
               },
               {
                 "title": "纷争时代（M25-M30）",
@@ -115,14 +124,16 @@
                     "title": "纷争时代开始",
                     "description": "亚空间风暴再度席卷银河，人类星际帝国解体，科技遗失与倒退。无数世界在孤立中沉沦。这一黑暗长夜持续了约五千年。",
                     "location": "银河全域",
-                    "characters": [
-                      "人类"
-                    ],
-                    "tags": [
-                      "黑暗时代",
-                      "亚空间"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["人类"],
+                    "tags": ["黑暗时代","亚空间"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Age of Strife",
+                        "url": "https://wh40k.lexicanum.com/wiki/Age_of_Strife"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-007",
@@ -130,16 +141,19 @@
                     "title": "帝皇的觉醒",
                     "description": "在永恒之殿中沉睡了万年的帝皇终于觉悟：人类若不能统一，便只能在更深的黑暗中灭绝。他开始秘密组建力量。",
                     "location": "神圣泰拉",
-                    "characters": [
-                      "帝皇"
-                    ],
-                    "tags": [
-                      "帝皇",
-                      "起源"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["帝皇"],
+                    "tags": ["帝皇","起源"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Emperor of Mankind",
+                        "url": "https://wh40k.lexicanum.com/wiki/Emperor_of_Mankind"
+                      }
+                    ]
                   }
-                ]
+                ],
+                "chronologyRank": 40
               },
               {
                 "title": "统一战争（约M29）",
@@ -150,15 +164,16 @@
                     "title": "泰拉统一战争",
                     "description": "帝皇率军出征，以雷霆手段终结了泰拉上数十个军阀政权。统一战争奠定了人类帝国的基石。",
                     "location": "神圣泰拉",
-                    "characters": [
-                      "帝皇",
-                      "雷霆战士"
-                    ],
-                    "tags": [
-                      "统一战争",
-                      "泰拉"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["帝皇","雷霆战士"],
+                    "tags": ["统一战争","泰拉"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Unification Wars",
+                        "url": "https://wh40k.lexicanum.com/wiki/Unification_Wars"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-009",
@@ -166,16 +181,18 @@
                     "title": "星界军团创立",
                     "description": "帝皇以自身基因蓝图创造了二十个原体，又以原体基因为模板缔造了二十支星界军团。",
                     "location": "神圣泰拉 / 月球",
-                    "characters": [
-                      "帝皇",
-                      "原体们"
-                    ],
-                    "tags": [
-                      "星界军团",
-                      "原体"
+                    "characters": ["帝皇","原体们"],
+                    "tags": ["星界军团","原体"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Great Crusade",
+                        "url": "https://wh40k.lexicanum.com/wiki/Great_Crusade"
+                      }
                     ]
                   }
-                ]
+                ],
+                "chronologyRank": 50
               },
               {
                 "title": "大远征（约M30）",
@@ -186,16 +203,16 @@
                     "title": "大远征",
                     "description": "帝皇率二十位原体及其军团，从泰拉出发，跨越银河收复失落的百万世界。这是人类历史上最宏大的军事行动，也是最后的黄金时代。",
                     "location": "银河全域",
-                    "characters": [
-                      "帝皇",
-                      "荷鲁斯",
-                      "原体们"
-                    ],
-                    "tags": [
-                      "大远征",
-                      "黄金时代"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["帝皇","荷鲁斯","原体们"],
+                    "tags": ["大远征","黄金时代"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Great Crusade",
+                        "url": "https://wh40k.lexicanum.com/wiki/Great_Crusade"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-011",
@@ -203,16 +220,18 @@
                     "title": "原体的寻回与离散",
                     "description": "二十位原体在婴儿时期被混沌神窃走，散落在银河各处。帝皇在远征中逐一找到了他们——每位原体的寻回都是一部传奇。",
                     "location": "银河各处",
-                    "characters": [
-                      "帝皇",
-                      "所有原体"
-                    ],
-                    "tags": [
-                      "原体",
-                      "传奇"
+                    "characters": ["帝皇","所有原体"],
+                    "tags": ["原体","传奇"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Great Crusade",
+                        "url": "https://wh40k.lexicanum.com/wiki/Great_Crusade"
+                      }
                     ]
                   }
-                ]
+                ],
+                "chronologyRank": 60
               },
               {
                 "title": "荷鲁斯之乱（M31）",
@@ -223,18 +242,16 @@
                     "title": "荷鲁斯之乱",
                     "description": "战帅荷鲁斯被混沌四神诱惑堕落，率半数军团举旗叛乱。银河在血与火中分裂，这是人类历史最惨烈的内战。",
                     "location": "银河全域 / 泰拉 / 伊斯特万",
-                    "characters": [
-                      "荷鲁斯",
-                      "帝皇",
-                      "桑吉纽斯",
-                      "罗格·多恩"
-                    ],
-                    "tags": [
-                      "荷鲁斯之乱",
-                      "叛乱",
-                      "混沌"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["荷鲁斯","帝皇","桑吉纽斯","罗格·多恩"],
+                    "tags": ["荷鲁斯之乱","叛乱","混沌"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "官方时代综述",
+                        "title": "Warhammer Community：The Horus Heresy explained",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/y7oihj6s/the-horus-heresy-explained-a-short-history-of-the-warmasters-betrayal/"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-013",
@@ -242,19 +259,19 @@
                     "title": "泰拉围城",
                     "description": "荷鲁斯的大军兵临泰拉城下。帝皇以灵魂粉碎荷鲁斯肉身，但自身遭受不可逆转的损伤。桑吉纽斯被荷鲁斯亲手撕裂。帝皇被送入金座，从此万年沉默。",
                     "location": "神圣泰拉",
-                    "characters": [
-                      "帝皇",
-                      "荷鲁斯",
-                      "桑吉纽斯"
-                    ],
-                    "tags": [
-                      "泰拉围城",
-                      "帝皇陨落",
-                      "荷鲁斯之乱终结"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["帝皇","荷鲁斯","桑吉纽斯"],
+                    "tags": ["泰拉围城","帝皇陨落","荷鲁斯之乱终结"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "官方时代综述",
+                        "title": "Warhammer Community：The Horus Heresy explained",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/y7oihj6s/the-horus-heresy-explained-a-short-history-of-the-warmasters-betrayal/"
+                      }
+                    ]
                   }
-                ]
+                ],
+                "chronologyRank": 70
               },
               {
                 "title": "帝国重建与万年沉默（M31-M41）",
@@ -265,13 +282,14 @@
                     "title": "第二次开国",
                     "description": "荷鲁斯之乱后，基利曼主持「第二次开国」，重建行政体系、编纂法典、整编军团为战团。这是帝国秩序恢复的唯一窗口期。",
                     "location": "神圣泰拉 / 马库拉格",
-                    "characters": [
-                      "基利曼",
-                      "帝国高领主"
-                    ],
-                    "tags": [
-                      "重建",
-                      "基利曼"
+                    "characters": ["基利曼","帝国高领主"],
+                    "tags": ["重建","基利曼"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：The Great Scouring",
+                        "url": "https://wh40k.lexicanum.com/wiki/The_Great_Scouring"
+                      }
                     ]
                   },
                   {
@@ -280,13 +298,14 @@
                     "title": "帝皇金座万年沉默",
                     "description": "帝皇的肉身封入金座后，每日有一千名灵能者被献祭以维持金座能量。帝皇的意志是否仍注视银河——这是帝国最大的禁忌，也是最大的信仰。",
                     "location": "神圣泰拉 / 金座",
-                    "characters": [
-                      "帝皇"
-                    ],
-                    "tags": [
-                      "金座",
-                      "帝皇",
-                      "信仰"
+                    "characters": ["帝皇"],
+                    "tags": ["金座","帝皇","信仰"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Emperor of Mankind",
+                        "url": "https://wh40k.lexicanum.com/wiki/Emperor_of_Mankind"
+                      }
                     ]
                   },
                   {
@@ -295,21 +314,19 @@
                     "title": "第41千年：没有希望的时代",
                     "description": "银河一百万世界中，每一天都在燃烧。星界军征兵令永无止境，混沌掠夺者从不间歇，虫族吞噬星系，死灵从永恒墓穴中苏醒，灵族如鬼影徘徊。帝皇在金座上沉默，而人类仍在战斗。",
                     "location": "银河全域",
-                    "characters": [
-                      "人类帝国",
-                      "混沌",
-                      "虫族",
-                      "死灵",
-                      "灵族"
-                    ],
-                    "tags": [
-                      "M41",
-                      "当代",
-                      "黑暗千年"
-                    ],
-                    "isKeyEvent": true
+                    "characters": ["人类帝国","混沌","虫族","死灵","灵族"],
+                    "tags": ["M41","当代","黑暗千年"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：The Imperium",
+                        "url": "https://wh40k.lexicanum.com/wiki/The_Imperium"
+                      }
+                    ]
                   }
-                ]
+                ],
+                "chronologyRank": 80
               },
               {
                 "title": "远古与天堂之战",
@@ -321,8 +338,15 @@
                     "description": "日后被称为星神的存在，在创世之初的那一刹那便已诞生——它们由那翻涌的毁灭性力量初次释放出的庞大而无意识的能量凝聚而成。在那物质与能量无序交织之中，星海开始盘旋成形，整整一个纪元里，宇宙不过是一团炽热的氢气与轻元素尘埃，被数十亿新生恒星的引力所主宰。",
                     "location": "宇宙 / 银河",
                     "characters": ["星神"],
-                    "tags": ["星神", "创世", "远古"],
-                    "isKeyEvent": true
+                    "tags": ["星神","创世","远古"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-018",
@@ -331,7 +355,14 @@
                     "description": "远在最初的行星形成与冷却之前，宇宙中首批真正具有自我意识的生命便已浮现——它们的思维栖居于恒星自身的等离子与电磁耀斑所编织的力线之中。日后这些存在被称为 C'tan（星神），但它们生命初期的形态与日后那邪恶的存在截然不同。它们不过是一群可怖的能量寄生物，吮吸着孕育它们的恒星的太阳能，将原本主序星的寿命缩短了数百万年。",
                     "location": "恒星之间",
                     "characters": ["星神"],
-                    "tags": ["星神", "能量生命", "远古"]
+                    "tags": ["星神","能量生命","远古"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-019",
@@ -340,7 +371,14 @@
                     "description": "渐渐地，这些恒星吸血者学会了沿着宇宙电磁流的力线移动，离开出生地，漂流过宇宙以太，前往新的恒星牧场，再次开始它们毁灭恒星的循环。作为纯粹的能量生命，它们对真空里经过的固态物质块毫不在意——那些新生行星炽热的地核之火与微弱的地磁场，连它们贪婪的饥饿都喂不饱。",
                     "location": "星际空间",
                     "characters": ["星神"],
-                    "tags": ["星神", "能量生命"]
+                    "tags": ["星神","能量生命"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-020",
@@ -349,8 +387,15 @@
                     "description": "正如恒星孕育了它们的孩子，新生银河系的行星最终也孕育出由物质构成的生命，开始了通向自我意识的漫长进化之路。已知银河中第一批发展出足以跨越星辰的科技文明的智慧生物，是一种爬行类物种，日后被灵族称为「古圣」——在古圣所有的造物中，灵族对他们最为熟稔。",
                     "location": "银河",
                     "characters": ["古圣"],
-                    "tags": ["古圣", "远古", "智慧种族"],
-                    "isKeyEvent": true
+                    "tags": ["古圣","远古","智慧种族"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-021",
@@ -359,7 +404,14 @@
                     "description": "古圣拥有缓慢、冷血却深邃的智慧。他们长久地研究星辰，将天文学与物理学推至如今在人类看来犹如秘术般的境地。他们对宇宙运作的理解，使他们能够操纵其他维度，并完成伟大的灵能工程。",
                     "location": "银河",
                     "characters": ["古圣"],
-                    "tags": ["古圣", "灵能", "科技"]
+                    "tags": ["古圣","灵能","科技"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-022",
@@ -368,8 +420,15 @@
                     "description": "古圣是强大的灵能者，惯于将亚空间之力用于各种各样的科技用途。其中包括一套瞬时的超光速传送门系统，穿越亚空间。这些门户连接着古圣所有的殖民地，使他们只需一步跨过无数灵能之门，便能越过浩瀚的太空。这是一张庞大的跨维度网络，与今日的灵能网络（网道）极为相似——后者正是它直接的传承者，只是规模远为宏大、先进。",
                     "location": "银河 / 亚空间",
                     "characters": ["古圣"],
-                    "tags": ["古圣", "网道", "亚空间"],
-                    "isKeyEvent": true
+                    "tags": ["古圣","网道","亚空间"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-023",
@@ -378,7 +437,14 @@
                     "description": "通过这张网络，古圣将他们的子嗣播撒到银河各处，但他们也深知一切生命皆珍贵。他们所到之处，便播下新的智慧物种，并按既定的环境与地理标准重塑成千上万的世界，使其归为己有。机械教中有人相信，甚至在人类获得自我意识之前，泰拉也曾受到古圣的触及——尽管这一观念在国教教会看来至多是异端，因为帝国信条教导说，人类是按神皇的形象所造，远早于他的灵魂在数千年前降生为血肉之躯。",
                     "location": "银河 / 泰拉",
                     "characters": ["古圣"],
-                    "tags": ["古圣", "创世", "播撒生命"]
+                    "tags": ["古圣","创世","播撒生命"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-024",
@@ -386,9 +452,16 @@
                     "title": "古圣文明的鼎盛",
                     "description": "古圣的文明在距今超过六千万年前达到鼎盛。银河中现今活跃的大多数智慧物种，都是由古圣所创造或基因改造而成，包括灵族、克欧克（兽人的前身）、斯兰以及猕卡罗——尽管他们是否在人类的进化中扮演过任何直接角色，至今不得而知。",
                     "location": "银河",
-                    "characters": ["古圣", "灵族", "克欧克"],
-                    "tags": ["古圣", "鼎盛", "创世"],
-                    "isKeyEvent": true
+                    "characters": ["古圣","灵族","克欧克"],
+                    "tags": ["古圣","鼎盛","创世"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-025",
@@ -396,9 +469,16 @@
                     "title": "惧亡者的苦难起源",
                     "description": "日后将化为死灵的那个人形物种，诞生于银河边缘「光环星域」中一颗可怕而灼烈的恒星之下——比人类在泰拉上演化出来早了数十亿年。惧亡者这一血肉之躯的种族，时刻遭受着恒星风与强烈辐射风暴的侵袭，成为一个阴郁的族群，短暂而岌岌可危的寿命被不断的失去所撕裂。人类帝国所回收的关于惧亡者的少量信息显示，他们的生命短促而不确定，身体在年幼时便被他们恒星释放的高水平电离辐射引发的可怕癌症与其他疾病所侵蚀、吞噬。",
                     "location": "光环星域",
-                    "characters": ["死灵", "惧亡者"],
-                    "tags": ["死灵", "惧亡者", "起源"],
-                    "isKeyEvent": true
+                    "characters": ["死灵","惧亡者"],
+                    "tags": ["死灵","惧亡者","起源"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-026",
@@ -407,7 +487,14 @@
                     "description": "惧亡者的城市是预期着居民早夭而建的——活人不过是匆匆过客，在祖先巨大陵墓与坟墓的阴影下讨生活。同样，他们的统治王朝也建立在预期早死的预期之上：活人被视作不过是在为死者所建的更为永恒、持久的建筑之间匆匆穿行的临时居民。在惧亡者的母星上，最宏伟的纪念碑永远是为死者而建，从不为活人。",
                     "location": "惧亡者母星",
                     "characters": ["惧亡者"],
-                    "tags": ["死灵", "惧亡者", "文化"]
+                    "tags": ["死灵","惧亡者","文化"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-027",
@@ -416,7 +503,14 @@
                     "description": "为生存所迫，惧亡者逃离了他们的熔炉牢笼，向星辰进发，希望在母星致命辐射之外开辟一个能实现种族自由的帝国。他们使用静滞墓穴与缓慢前行的反物质火炬舰——外壳覆以名为「活金属」的金属以抵御千年漫长的虚空航行——开始殖民遥远的世界。",
                     "location": "光环星域 / 银河",
                     "characters": ["惧亡者"],
-                    "tags": ["死灵", "惧亡者", "扩张"]
+                    "tags": ["死灵","惧亡者","扩张"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-028",
@@ -424,9 +518,16 @@
                     "title": "三执政与沉默之王",
                     "description": "惧亡者王朝一点一点地扩展，直到远古银河的大部分都臣服于他们的统治。从一开始，各个惧亡者王朝的统治者便由「三执政」统领——一个由三位死灵王朝君主（法老王）组成的议会。三执政之首被称为「沉默之王」，因为他只通过与他共同统治的另外两位法老王向子民传话。名义上这是世袭之位，但惧亡者寿命的不确定性，使沉默之王的头衔仍多次从一个王室王朝传给另一个。惧亡者帝国的最后岁月，正落在最后一个沉默之王所在的萨雷汗王朝治下。",
                     "location": "惧亡者帝国",
-                    "characters": ["沉默之王", "三执政", "萨雷汗王朝"],
-                    "tags": ["死灵", "三执政", "沉默之王"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","三执政","萨雷汗王朝"],
+                    "tags": ["死灵","三执政","沉默之王"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-029",
@@ -434,9 +535,16 @@
                     "title": "与古圣的初次相遇",
                     "description": "在他们缓慢的星际扩张过程中某个时刻，惧亡者遇到了一个远比已知银河中任何存在都古老的种族。这些存在便是古圣，他们是惧亡者甚至无法想象、更遑论驾驭的能量的绝对主宰。古圣早已征服了不朽的秘密，却拒绝将永生这份礼物分享给仍承受着他们诞生之星的基因诅咒的惧亡者。",
                     "location": "银河",
-                    "characters": ["惧亡者", "古圣"],
-                    "tags": ["死灵", "古圣", "初次接触"],
-                    "isKeyEvent": true
+                    "characters": ["惧亡者","古圣"],
+                    "tags": ["死灵","古圣","初次接触"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-030",
@@ -444,8 +552,15 @@
                     "title": "嫉妒的怒火",
                     "description": "这些爬行类神秘者对银河大部分区域的殖民，因其灵能之门与对非物质界的掌控，远比惧亡者的扩张迅捷而辽阔。这一点，加上古圣那长得不可思议、近乎不朽的寿命，在惧亡者心中点燃了炽烈的嫉妒之怒——它在精神上侵蚀着他们的文化，一如肉体之癌吞噬着他们的躯体。惧亡者惊愕地发现，另一个智慧种族竟能享此长寿，而他们自己的寿命却被如此残忍地缩短。",
                     "location": "银河",
-                    "characters": ["惧亡者", "古圣"],
-                    "tags": ["死灵", "古圣", "嫉妒"]
+                    "characters": ["惧亡者","古圣"],
+                    "tags": ["死灵","古圣","嫉妒"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-031",
@@ -454,7 +569,14 @@
                     "description": "但随着时间推移，新的纷争降临到惧亡者头上。每个王朝都试图攫取自己的命运，很快各大氏族便陷入了被称为「分裂战争」的全面冲突。若局势再维持一代人之久，惧亡者很可能如他们之前与之后的无数物种那样自我毁灭。随着领土日益辽阔而多元，曾使他们强大的团结遭到侵蚀，苦战爆发，整个王国为赢得独立而厮杀。",
                     "location": "惧亡者帝国",
                     "characters": ["惧亡者"],
-                    "tags": ["死灵", "分裂战争"]
+                    "tags": ["死灵","分裂战争"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-032",
@@ -462,8 +584,15 @@
                     "title": "寻找共同敌人",
                     "description": "最终，三执政意识到，他们人民团结的唯一希望在于与一个外敌开战，但鲜有谁能对科技先进的惧亡者构成可信的威胁。唯有古圣是足够强大、能将纷争不断的惧亡者王朝绑在同一事业上的潜在对手。开战的借口唾手可得，因为惧亡者长久以来对古圣拒绝分享永生之秘耿耿于怀。",
                     "location": "惧亡者帝国",
-                    "characters": ["三执政", "古圣"],
-                    "tags": ["死灵", "古圣"]
+                    "characters": ["三执政","古圣"],
+                    "tags": ["死灵","古圣"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-033",
@@ -471,9 +600,16 @@
                     "title": "天堂之战的序幕",
                     "description": "于是，萨雷汗王朝的沉默之王出于惧亡者种族典型的苦涩嫉妒与怨恨，向古圣宣战。与此同时，他向任何愿意重归三执政麾下的分裂派惧亡者王朝颁下赦免。分裂的惧亡者王国被胜利的战利品与永生的承诺所诱，放弃了分裂战争，日后被称为「天堂之战」的浩劫就此开始。一场前所未有的冲突在星辰间爆发——然而，尽管沉默之王与三执政成功团结了他们满怀仇恨的人民，这却是一场惧亡者无法取胜的战争，至少，他们无法独自取胜。",
                     "location": "银河",
-                    "characters": ["沉默之王", "惧亡者", "古圣"],
-                    "tags": ["死灵", "天堂之战", "古圣"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","惧亡者","古圣"],
+                    "tags": ["死灵","天堂之战","古圣"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-034",
@@ -481,8 +617,15 @@
                     "title": "惧亡者的溃败",
                     "description": "古圣与惧亡者之间随之而来的可怖战争——日后在灵族神话中被称为「天堂之战」——其本身便能写满一座图书馆，但惧亡者始终无法取胜。他们的优越科技不断被古圣凭借对网道门户与灵能之门的掌控所化解。惧亡者被逼退，沦为古圣对银河主宰之下的一桩麻烦——一个蛰伏于光环星域那颗饱受辐射的母星上的威胁，遭放逐、被遗忘。漫长的千年囚禁于母星之上，冷却了惧亡者的怒火，将其慢慢化为对一切其他智慧生命形式的彻骨仇恨，以及对向那些看似不可战胜的敌人复仇的不可动摇的决心。",
                     "location": "光环星域 / 银河",
-                    "characters": ["惧亡者", "古圣"],
-                    "tags": ["死灵", "天堂之战"]
+                    "characters": ["惧亡者","古圣"],
+                    "tags": ["死灵","天堂之战"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-035",
@@ -490,8 +633,15 @@
                     "title": "团结的再度瓦解",
                     "description": "然而在失败面前，惧亡者本就脆弱的团结再度开始瓦解。共同敌人的前景再也无法束缚那些四分五裂的王朝。数代人在一场无法取胜的战争中生死已逝，若统治的三执政允许，许多惧亡者王朝本会欣然向古圣求和。",
                     "location": "银河",
-                    "characters": ["惧亡者", "三执政"],
-                    "tags": ["死灵", "天堂之战"]
+                    "characters": ["惧亡者","三执政"],
+                    "tags": ["死灵","天堂之战"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-036",
@@ -499,8 +649,15 @@
                     "title": "第二次分裂战争",
                     "description": "于是，第二次分裂战争开始了，比以往任何一次都更为广泛、更具毁灭性。惧亡者王朝已四分五裂到如此地步，倘若古圣有意，本可轻而易举地消灭这些对手。面对自身统治的全面崩溃，三执政绝望地寻找恢复秩序的办法。在这方面，他们的祈祷得到了回应——尽管其种族将为此付出无法估量的代价。",
                     "location": "银河",
-                    "characters": ["惧亡者", "三执政"],
-                    "tags": ["死灵", "分裂战争"]
+                    "characters": ["惧亡者","三执政"],
+                    "tags": ["死灵","分裂战争"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-037",
@@ -508,9 +665,16 @@
                     "title": "C'tan 降临",
                     "description": "正是在萨雷汗王朝的沉默之王治下，那些神一般的能量存在——C'tan——首次为惧亡者所祸。惧亡者最初如何与 C'tan 取得联系已无从确考，尽管存在许多误导性的、自相矛盾的、偏颇的记载。墓穴世界索勒姆纳斯的尘埃档案声称这不过是一场意外——是恒星探测器在调查一颗垂死恒星时的偶然发现。而珍藏于灵族黑图书馆最内层圣所、严密守护的《哀夜之书》则另有说法：惧亡者种族对古圣那份原始的仇恨响彻太空，如同一座 C'tan 无法忽视的灯塔。",
                     "location": "惧亡者领地",
-                    "characters": ["星神", "沉默之王", "惧亡者"],
-                    "tags": ["星神", "天堂之战", "死灵"],
-                    "isKeyEvent": true
+                    "characters": ["星神","沉默之王","惧亡者"],
+                    "tags": ["星神","天堂之战","死灵"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-038",
@@ -518,8 +682,15 @@
                     "title": "恒星深处的古老智慧",
                     "description": "另一种说法称，早在文明之初，惧亡者的科学家便已深入恒星研究，试图理解并抵御他们母星那凶煞的能量。经过漫长苦涩的数百年搜寻某种能对付古圣的力量之后，惧亡者的研究者用恒星探测器在银河最古老、垂死的恒星中发现了异常的电动力学异象。在这些恒星炽热等离子复杂的脉络里，惧亡者发现了一种比创世中任何有形物种——包括古圣——都更古老的智慧：一种纯粹的能量存在，在亿万年前恒星诞生之时便已涌现。",
                     "location": "垂死的恒星",
-                    "characters": ["惧亡者", "星神"],
-                    "tags": ["星神", "死灵"]
+                    "characters": ["惧亡者","星神"],
+                    "tags": ["星神","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-039",
@@ -527,8 +698,15 @@
                     "title": "死神的子嗣",
                     "description": "当惧亡者初发现这些实体时，它们对宇宙其余部分几乎一无所知，只是吞噬着那些肿胀红巨星的耀斑与磁暴。这正是惧亡者长久以来所寻求的、用以颠覆古圣的武器——他们相信这些存在正是他们长久崇拜的死神之子。无论初次接触究竟如何发生，C'tan 的阴影首先笼罩了最古老的几个惧亡者王朝。",
                     "location": "银河",
-                    "characters": ["惧亡者", "星神"],
-                    "tags": ["星神", "死灵"]
+                    "characters": ["惧亡者","星神"],
+                    "tags": ["星神","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-040",
@@ -536,9 +714,16 @@
                     "title": "星神的物质之躯",
                     "description": "这些恒星所生之物的力量令人难以置信——恒星的原初能量被赋予了生命。惧亡者用自己的语言称它们为 C'tan，即「星神」。C'tan 散布于比整颗行星都大的区域内，其意识之浩瀚远非人形所能理解。它们究竟如何被惧亡者沟通，机械教不得而知。一些惧亡者深知如此弥散的心智若不以物质形态显现，便永远无法感知物质宇宙，于是主动寻求 C'tan 的青睐，并监督为其铸造可栖居的物理躯壳——用曾经用于殖民火炬舰的「活金属」浇铸而成。",
                     "location": "惧亡者领地",
-                    "characters": ["星神", "惧亡者"],
-                    "tags": ["星神", "活金属", "死灵"],
-                    "isKeyEvent": true
+                    "characters": ["星神","惧亡者"],
+                    "tags": ["星神","活金属","死灵"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-041",
@@ -547,7 +732,14 @@
                     "description": "灵族的残缺传说记述，当这些恒星吸血者循着一道由星光架起的非实体之桥，于物质界盘绕进新躯之时，半透明的电磁之力如飘带般掠过太空。如此披上躯壳后，C'tan 化作惧亡者半遗忘的神祇之形，将自身真实的欲望藏在谄媚顺从的斗篷之下。",
                     "location": "物质界",
                     "characters": ["星神"],
-                    "tags": ["星神"]
+                    "tags": ["星神"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-042",
@@ -556,7 +748,14 @@
                     "description": "无法理解的力量被压缩进惧亡者所铸造的活金属躯壳之中，C'tan 的全部力量终于获得了形体。当 C'tan 集中意识、愈发觉察到自身新的存在方式时，它们开始体味到物质存在所能享受的愉悦，以及有形生命的其他种种。它们周围惧亡者肉身散发出的那种令人愉悦的、集中而细微的电磁能量，在 C'tan 心中唤醒了一种新的饥饿——与他们曾经用恒星那滋养却寡淡的能量所餍足的饥饿截然不同。",
                     "location": "物质界",
                     "characters": ["星神"],
-                    "tags": ["星神"]
+                    "tags": ["星神"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-043",
@@ -564,9 +763,16 @@
                     "title": "欺诈者的提议",
                     "description": "于是，一位 C'tan 来到了其血脉中的最后一位沉默之王萨雷克面前，作为其兄弟降临的先导。在同族之中，这位 C'tan 名为梅菲特兰，即「欺诈者」——因为他天性奸诈。然而沉默之王并不知此 C'tan 的真性，反而赐见了这个生灵。欺诈者谈起一场战争——在惧亡者诞生很久以前，C'tan 与古圣之间爆发的战争。他说那场战争 C'tan 落败了。战后，出于对古圣复仇的恐惧，他与兄弟们隐匿起来，希望有朝一日能找到盟友，最终向古圣清算。",
                     "location": "惧亡者宫廷",
-                    "characters": ["欺诈者", "沉默之王"],
-                    "tags": ["星神", "欺诈者", "死灵"],
-                    "isKeyEvent": true
+                    "characters": ["欺诈者","沉默之王"],
+                    "tags": ["星神","欺诈者","死灵"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-044",
@@ -575,7 +781,14 @@
                     "description": "作为这份援手的回报，欺诈者保证，他与兄弟们将奉上惧亡者所渴求的一切。团结将再度属于他们，而他们长久追寻的不朽终将唾手可得。欺诈者坚称，这些厚礼将不附任何代价，因为它们不过是赐予珍贵盟友的恩惠。",
                     "location": "惧亡者宫廷",
                     "characters": ["欺诈者"],
-                    "tags": ["星神", "欺诈者"]
+                    "tags": ["星神","欺诈者"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-045",
@@ -583,8 +796,15 @@
                     "title": "沉默之王的动摇",
                     "description": "欺诈者如此这般地陈述，谁能说他的故事有几分是真？甚至欺诈者自己恐怕也未必知晓，因为欺诈已成为他存在中如此深植的一部分，以至连 C'tan 也再无法辨其根源。然而他的话语左右了沉默之王——与他的祖先一样，后者对再一次撕裂其人民的分裂感到绝望。在漫长的几个恒星月里，他与三执政的另外两位法老王及王室贵族反复商议此事。",
                     "location": "惧亡者宫廷",
-                    "characters": ["欺诈者", "沉默之王", "三执政"],
-                    "tags": ["星神", "欺诈者"]
+                    "characters": ["欺诈者","沉默之王","三执政"],
+                    "tags": ["星神","欺诈者"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-046",
@@ -592,9 +812,16 @@
                     "title": "奥里坎的预言被忽视",
                     "description": "在整个过程中，唯一持异议的是三执政的宫廷占星师奥里坎。他预言，惧亡者与 C'tan 的结盟虽将带来荣耀的复兴，却会永远毁灭惧亡者民族的灵魂。然而欲望与野心迅速压倒了谨慎，奥里坎的预言遭到摒弃。在欺诈者提出提议一个惧亡者年之后，三执政同意了结盟——从而永远地诅咒了他们的种族。",
                     "location": "惧亡者宫廷",
-                    "characters": ["奥里坎", "三执政", "欺诈者"],
-                    "tags": ["星神", "奥里坎", "死灵"],
-                    "isKeyEvent": true
+                    "characters": ["奥里坎","三执政","欺诈者"],
+                    "tags": ["星神","奥里坎","死灵"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-047",
@@ -602,8 +829,15 @@
                     "title": "星神被奉为神",
                     "description": "就惧亡者而言，他们很快便对自身的发现心生敬畏，而 C'tan 则着手控制他们的恩主。C'tan 在物质世界显现的力量确实近乎神迹，不久它们便被当作惧亡者所命名的「星神」来崇拜。",
                     "location": "惧亡者领地",
-                    "characters": ["星神", "惧亡者"],
-                    "tags": ["星神"]
+                    "characters": ["星神","惧亡者"],
+                    "tags": ["星神"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-048",
@@ -612,7 +846,14 @@
                     "description": "也许它们已被自己所栖身的物质宇宙所染，也许这便是它们一直以来的本性——即便是束缚在所食恒星之上时也是如此——但 C'tan 证明它们与孕育它们的恒星一样残忍而反复无常。它们很快沉醉于惧亡者的宗教崇拜之中，并吞噬无数凡人奴隶的电磁生命能量。",
                     "location": "惧亡者领地",
                     "characters": ["星神"],
-                    "tags": ["星神"]
+                    "tags": ["星神"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-049",
@@ -620,9 +861,16 @@
                     "title": "沉默之王的领悟",
                     "description": "「当沉默之王看清所发生的一切，他终于明白了 C'tan 的真面目，以及它们以他之名所铸成的毁灭。」",
                     "location": "惧亡者帝国",
-                    "characters": ["沉默之王", "星神"],
-                    "tags": ["星神", "沉默之王", "死灵"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","星神"],
+                    "tags": ["星神","沉默之王","死灵"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-050",
@@ -630,8 +878,15 @@
                     "title": "永生的诱惑",
                     "description": "惧亡者手持近乎神威的武器，以及借由量子相位技术可在眨眼间跨越银河的星舰，已准备好重燃与古圣的战争。然而 C'tan 还有一份礼物要赠予他们的凡人臣民。它们向惧亡者提供了一条通往永生的道路，以及其种族始终渴求的物理稳定性。他们病态的血肉将被星神自身物理躯壳所由来的活金属所取代。他们抛弃的有机躯壳将被吞噬，冰冷的金属之躯将从此自由地去向古圣及可恨的宇宙其余部分展开伟大的复仇——永远摆脱那令他们厌恶的血肉之躯的种种弱点。",
                     "location": "惧亡者帝国",
-                    "characters": ["星神", "惧亡者"],
-                    "tags": ["星神", "活金属", "生体转化"]
+                    "characters": ["星神","惧亡者"],
+                    "tags": ["星神","活金属","生体转化"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-051",
@@ -639,9 +894,16 @@
                     "title": "生体转化的开端",
                     "description": "随着惧亡者与 C'tan 之间的契约封定，星神揭示了永生将赋予惧亡者的形态，宏大的生体转化工程由此开始。巨大的生体熔炉被建造起来，沉默之王萨雷克的人民依他同 C'tan 缔结的契约条款，列队走入其中。惧亡者在那些炽烈的生体熔炉内究竟遭受了何等亵渎的程序，已无从知晓——但可以确定的是，每个人都被剥去了血肉与灵魂，躯体换上了一具活金属的躯壳，与 C'tan 如出一辙，由其将熄自我的残烬所驱动。",
                     "location": "生体熔炉",
-                    "characters": ["沉默之王", "星神", "惧亡者"],
-                    "tags": ["生体转化", "死灵", "星神"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","星神","惧亡者"],
+                    "tags": ["生体转化","死灵","星神"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-052",
@@ -649,8 +911,15 @@
                     "title": "C'tan 的饕餮",
                     "description": "在每个熔炉之上，C'tan 的以太真身盘旋俯冲，饕餮于整整一个种族的精神与电磁残屑。直到沉默之王自己也走出生体转化程序，亲眼目睹其人民的下场时，他才看清自己所立契约的可怕真相。尽管永生与近乎神明的力量与活力归于他，代价却是他的灵魂——其以太残屑早已被一只盘旋的 C'tan 吞入腹中。",
                     "location": "生体熔炉",
-                    "characters": ["沉默之王", "星神"],
-                    "tags": ["生体转化", "星神", "死灵"]
+                    "characters": ["沉默之王","星神"],
+                    "tags": ["生体转化","星神","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-053",
@@ -659,7 +928,14 @@
                     "description": "当萨雷克目睹 C'tan 吞噬其人民的生命精华时，他意识到了自己所犯错误的可怕深度。在许多方面，他感觉比过去数十年惧亡者岁月里都要好——有机生命那无数的疼痛与不确定如今已抛诸身后。他崭新的机械之躯远比他久已容忍的脆弱形态强大，而他的思维也前所未有地迅捷清晰。",
                     "location": "生体熔炉",
                     "characters": ["沉默之王"],
-                    "tags": ["生体转化", "死灵"]
+                    "tags": ["生体转化","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-054",
@@ -667,9 +943,16 @@
                     "title": "灵魂的丧失",
                     "description": "然而一种可怕的空虚啃噬着他的心智，一种无法言说的精神上的空洞，难以用理性解释。在那一刻，他以冰冷的确定知晓：物理永生的代价，便是灵魂的丧失。沉默之王怀着巨大的悲痛，注视着他带给其人民的命运——惧亡者如今不过是一段记忆，而无魂、不死的存在，死灵，在他们的位置上重生。",
                     "location": "生体熔炉",
-                    "characters": ["沉默之王", "死灵"],
-                    "tags": ["生体转化", "死灵", "沉默之王"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","死灵"],
+                    "tags": ["生体转化","死灵","沉默之王"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-055",
@@ -677,8 +960,15 @@
                     "title": "承诺的兑现",
                     "description": "然而，尽管代价高昂，生体转化兑现了 C'tan 所作的一切承诺。即便是最低等的惧亡者，如今也被赐予了永生——岁月与强烈的电离辐射几乎无法侵蚀他们崭新的机械之躯，唯有最可怖的伤害才能将他们彻底摧毁。",
                     "location": "死灵帝国",
-                    "characters": ["死灵", "星神"],
-                    "tags": ["生体转化", "死灵"]
+                    "characters": ["死灵","星神"],
+                    "tags": ["生体转化","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-056",
@@ -686,8 +976,15 @@
                     "title": "指令协议的枷锁",
                     "description": "生体转化过程在每个死灵心智中植入了印迹式的指令协议，赋予萨雷克对其臣民毫不动摇的忠诚。起初，沉默之王欣然接受这种一致——这是对近年来吞噬惧亡者帝国的混乱与纷争的宽慰。整个种族如今任凭他调遣，因此由死灵来履行他们那可怖契约中自己的一方。然而，随着时间流逝，萨雷克厌倦了这份重担，却不敢切断指令协议，唯恐其臣民反戈一击，为他降临于他们的可诅咒咒寻求复仇。",
                     "location": "死灵帝国",
-                    "characters": ["沉默之王", "死灵"],
-                    "tags": ["生体转化", "死灵", "指令协议"]
+                    "characters": ["沉默之王","死灵"],
+                    "tags": ["生体转化","死灵","指令协议"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-057",
@@ -696,7 +993,14 @@
                     "description": "生体转化只留下了惧亡者意识的幽影回响。唯有贵族与军伍中意志最坚强的少数惧亡者保住了智识与自我意识——即便是他们，也不过是昔日自我的残影。他们被洗去了太多曾使他们成为独特个体的东西。但与沉默之王不同，大多数死灵起初对自身的丧失毫不在意；对他们而言，唯一重要的是——他们将如星神所承诺的那样，无病无死地永生。",
                     "location": "死灵帝国",
                     "characters": ["死灵"],
-                    "tags": ["生体转化", "死灵"]
+                    "tags": ["生体转化","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-058",
@@ -704,8 +1008,15 @@
                     "title": "C'tan 不可阻挡",
                     "description": "因吞噬了一整个种族的灵魂而前所未有地焕发与壮大，C'tan 如今已不可阻挡。在死灵不死的军团紧随其后，古圣在劫难逃。旧日惧亡者真正残留的，只剩一样——他们对宇宙中所有其他有生命的智慧种族的炽烈仇恨。",
                     "location": "银河",
-                    "characters": ["星神", "死灵", "古圣"],
-                    "tags": ["星神", "死灵", "古圣"]
+                    "characters": ["星神","死灵","古圣"],
+                    "tags": ["星神","死灵","古圣"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-059",
@@ -713,8 +1024,15 @@
                     "title": "星辰在身后燃烧",
                     "description": "不死的活金属战士军团乘着陵舰涌入银河，星辰在他们的身后燃烧。古圣对亚空间的掌控如今被 C'tan 对物理宇宙的霸权所抵消，死灵的古老敌人在随之而来的星际屠戮中损失惨重。",
                     "location": "银河",
-                    "characters": ["死灵", "星神", "古圣"],
-                    "tags": ["死灵", "天堂之战"]
+                    "characters": ["死灵","星神","古圣"],
+                    "tags": ["死灵","天堂之战"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-060",
@@ -722,9 +1040,16 @@
                     "title": "古圣的覆灭之始",
                     "description": "当 C'tan 与死灵并肩作战，古圣注定覆灭。饱食惧亡者生命之力的 C'tan 已能释放出超越理解的伟力。行星被夷平，恒星被熄灭，整个星系被星神扭曲现实之力唤出的黑洞所吞噬。死灵军团终于攻入网道，在银河的每个角落袭击古圣。他们围攻古圣在银河年轻智慧种族中的众多盟友要塞，收割守卫者的生命之力以喂养他们贪婪的 C'tan 主子。",
                     "location": "银河 / 网道",
-                    "characters": ["死灵", "星神", "古圣"],
-                    "tags": ["死灵", "星神", "天堂之战"],
-                    "isKeyEvent": true
+                    "characters": ["死灵","星神","古圣"],
+                    "tags": ["死灵","星神","天堂之战"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-061",
@@ -732,9 +1057,16 @@
                     "title": "巨石之门与网道的攻破",
                     "description": "在天堂之战的最后岁月里，死灵得势的一个关键因素是他们终于得以进入古圣的网道。名为「燃烧者」尼亚德拉扎斯的 C'tan 早已渴望将他可怖的异界之火带入那超越空间的空间，于是向死灵展示了如何攻破其超维度边界。通过一系列被称为「巨石之门」的活石门户，死灵终于能将古圣最强大的武器反制于其主——极大地加速了天堂之战的最终落幕。",
                     "location": "网道",
-                    "characters": ["死灵", "燃烧者"],
-                    "tags": ["死灵", "网道", "巨石之门"],
-                    "isKeyEvent": true
+                    "characters": ["死灵","燃烧者"],
+                    "tags": ["死灵","网道","巨石之门"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-062",
@@ -743,7 +1075,14 @@
                     "description": "巨石之门所提供的门户，远不如散布银河的天然网道入口那般稳定与可控。事实上，网道能以某种奇异的法则察觉其环境遭巨石之门攻破，其奥术机制会迅速尝试将受感染的分叉从迷宫维度的其余部分隔离，直到对其完整性的威胁解除。因此，死灵进入网道后必须迅速穿过其变幻的超维度走廊抵达目的地，否则网络本身便会招致他们的毁灭。",
                     "location": "网道",
                     "characters": ["死灵"],
-                    "tags": ["死灵", "网道", "巨石之门"]
+                    "tags": ["死灵","网道","巨石之门"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-063",
@@ -751,8 +1090,15 @@
                     "title": "巨石之门的遗留",
                     "description": "当然，在当今之世，距死灵用巨石之门袭击其宿敌已过去了亿万斯年。古圣已逝，网道本身也成了一座纠缠破碎的迷宫。许多巨石之门在死灵「长眠」时期丢失或废弃，还有更多被古圣在网道守卫上的继承者——灵族——所毁。残存的那些只赋予了对网道这座巨大迷宫很小一部分的通行权，其中大半已被灵族主动封死，以防进一步污染。",
                     "location": "网道",
-                    "characters": ["死灵", "灵族"],
-                    "tags": ["死灵", "网道", "灵族"]
+                    "characters": ["死灵","灵族"],
+                    "tags": ["死灵","网道","灵族"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-064",
@@ -761,7 +1107,14 @@
                     "description": "然而网道浩瀚无垠，即便是这些断裂的脉络也使死灵拥有一种远超年轻种族的旅行方式。理当如此。由于在生体转化过程中丧失灵魂而失去灵能者，死灵也无法进行亚空间航行；若无网道可入，他们将被迫重新依赖缓慢航行的静滞舰，注定陷入星际孤立。",
                     "location": "网道",
                     "characters": ["死灵"],
-                    "tags": ["死灵", "网道"]
+                    "tags": ["死灵","网道"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-065",
@@ -769,8 +1122,15 @@
                     "title": "C'tan 称霸银河",
                     "description": "在这些胜利之后，C'tan 及其不死的死灵仆从如今主宰了银河。古圣最后的行星堡垒遭到围攻，他们曾培育的智慧物种沦为 C'tan 邪恶饥渴的牲畜。对银河年轻的智慧种族而言，死灵及其星神是残酷的主宰，冷酷无情地随意收割其人口以喂养 C'tan 对生命能量无休止的饥渴。C'tan 是恐怖的存在，要求凡人同等地献上崇拜与畏惧。",
                     "location": "银河",
-                    "characters": ["星神", "死灵", "古圣"],
-                    "tags": ["星神", "死灵"]
+                    "characters": ["星神","死灵","古圣"],
+                    "tags": ["星神","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-066",
@@ -778,9 +1138,16 @@
                     "title": "星神的内讧",
                     "description": "出于未知的原因——也许是因为它们各自对凡人生命能量的饥渴无穷无尽——C'tan 最终为了消遣与恶意而彼此厮杀。在灵族之中，一则古老的神话称，他们的笑神诱使名为「局外人」的 C'tan 反戈一击，挑起了它们漫长的争霸之战。",
                     "location": "银河",
-                    "characters": ["星神", "局外人", "笑神"],
-                    "tags": ["星神", "内讧"],
-                    "isKeyEvent": true
+                    "characters": ["星神","局外人","笑神"],
+                    "tags": ["星神","内讧"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-067",
@@ -789,7 +1156,14 @@
                     "description": "在 C'tan 彼此厮杀的过程中，整颗行星被夷平，恒星被熄灭，整个太阳系被释放的黑洞吞噬。百万劳力筑起的新城又一次被夷为平地。随着 C'tan 与死灵仆从的「红色收割」日渐稀薄，C'tan 最终吞噬 C'tan，直到宇宙中只剩寥寥数位，它们在漫长的岁月里彼此争雄。",
                     "location": "银河",
                     "characters": ["星神"],
-                    "tags": ["星神", "内讧"]
+                    "tags": ["星神","内讧"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-068",
@@ -798,7 +1172,14 @@
                     "description": "最终，即便是曾以耐心与不可阻挡的意志著称的古圣，在死灵的猛攻面前也变得绝望。他们动用伟大的科学之力，基因工程出与亚空间有更强灵能联结的智慧生物，希望造出能引导灵能之力以自卫的仆从。",
                     "location": "银河",
                     "characters": ["古圣"],
-                    "tags": ["古圣", "基因工程", "灵能"]
+                    "tags": ["古圣","基因工程","灵能"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-069",
@@ -806,8 +1187,15 @@
                     "title": "古圣的战士种族",
                     "description": "他们培育了许多潜在的战士种族，其中包括灵族物种最早的成员，以及众多其他异形种族：拉珊、克尼布、克欧克等等。数千泰拉年过去，古圣的造物与实验终于结出果实——而与此同时，C'tan 及其死灵仆从仍在银河各处熄灭着生命。",
                     "location": "银河",
-                    "characters": ["古圣", "灵族", "克欧克"],
-                    "tags": ["古圣", "灵族", "基因工程"]
+                    "characters": ["古圣","灵族","克欧克"],
+                    "tags": ["古圣","灵族","基因工程"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-070",
@@ -815,9 +1203,16 @@
                     "title": "潮流逆转",
                     "description": "古圣那支受灵能加持的仆从种族遍布银河，以他们亚空间所生的「魔法」之力对抗先进的死灵科技。面对这新一轮猛攻，C'tan 的帝国支离破碎——非物质界的灵能力量对于其存在完全寄于纯粹电磁力物理模式的无魂实体而言，乃是天敌。无论他们能释放出何等毁灭之力，都无法阻止古圣与年轻种族在星辰间无情的推进。",
                     "location": "银河",
-                    "characters": ["古圣", "星神", "死灵"],
-                    "tags": ["古圣", "星神", "天堂之战"],
-                    "isKeyEvent": true
+                    "characters": ["古圣","星神","死灵"],
+                    "tags": ["古圣","星神","天堂之战"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-071",
@@ -826,8 +1221,15 @@
                     "description": "残余的 C'tan——亿万泰拉年来首次因这巨大威胁而团结——寻求击败年轻种族那灵魂驱动的能量之法。他们发起一场宏大的封禁，一个通过将物质宇宙与亚空间隔绝来永远击败古圣灵能巫术的计划。这一计划的最初成果，曾可在帝国要塞世界卡迪安上找到——那遍布该世界表面、交织成精密网络的巨大方尖碑，它们在恐惧之眼附近创造出一片稳定的时空区域，即所谓的「卡迪安之门」。",
                     "location": "卡迪安 / 恐惧之眼",
                     "characters": ["星神"],
-                    "tags": ["星神", "卡迪安之门", "封禁"],
-                    "isKeyEvent": true
+                    "tags": ["星神","卡迪安之门","封禁"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-072",
@@ -835,8 +1237,15 @@
                     "title": "未竟的伟业",
                     "description": "凭借其神一般的力量，C'tan 成功不过是时间问题。然而在他们的伟业完成之前，古圣数千年前埋下的毁灭之种引发了一场始料未及的大灾变。年轻物种的成长阵痛与集体灵能缺陷，将非物质界中尚未开发、对灵能敏感的能量搅成一片混乱。",
                     "location": "银河 / 亚空间",
-                    "characters": ["星神", "古圣"],
-                    "tags": ["星神", "亚空间"]
+                    "characters": ["星神","古圣"],
+                    "tags": ["星神","亚空间"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-073",
@@ -845,8 +1254,15 @@
                     "description": "战争、痛苦与毁灭映照在作为亚空间的灵魂之海那无底的深渊之中。天堂之战屠戮所释放的、涌入非物质界的灵魂洪流，在亚空间本无形无相的能量中凝聚成形。曾栖居于非物质界的更古老存在化为可怖的灵能掠食者，在脆弱灵能者的灵魂上撕咬——正如它们自身的环境被撕碎并重铸为混沌领域。",
                     "location": "亚空间",
                     "characters": ["古圣"],
-                    "tags": ["混沌", "亚空间", "天堂之战"],
-                    "isKeyEvent": true
+                    "tags": ["混沌","亚空间","天堂之战"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-074",
@@ -854,9 +1270,16 @@
                     "title": "奴役者瘟疫",
                     "description": "亚空间的居民因物质界的冲突而被煽成狂乱，贪婪地聚集在非物质界与物质宇宙的裂隙之处，寻求进入物理界的新途径。古圣召唤出新的基因工程战士种族以守卫其最后的据点，包括能模仿科技的猕卡罗，以及强大、绿皮的克欧克——后者是今日兽人的祖先——但为时已晚。古圣的星际网道网络遭非物质界攻破并丧失，他们亲手摧毁了几座灵能之门以防亚空间的污秽实体蔓延至未被污染的世界，而古圣最伟大的工程与力量之地，则被他们自身造物所释放的可怖之物所淹没。",
                     "location": "银河 / 亚空间",
-                    "characters": ["古圣", "猕卡罗", "克欧克"],
-                    "tags": ["奴役者", "古圣", "亚空间"],
-                    "isKeyEvent": true
+                    "characters": ["古圣","猕卡罗","克欧克"],
+                    "tags": ["奴役者","古圣","亚空间"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-075",
@@ -864,8 +1287,15 @@
                     "title": "奴役者的肆虐",
                     "description": "这些可怖之物中最恐怖的便是奴役者——一种亚空间实体，它们支配年轻种族心智、并利用变异、被附身的灵能者创造自身通往物质界之门的能力，使其数目日益增多。对古圣而言，这是最后的灾难——奴役者夺取了他们仆从的控制权。年轻种族的诞生所打开的潘多拉魔盒，最终打散了古圣最后的余烬，一劳永逸地击碎了他们对银河的掌控。在古圣与 C'tan 之间的天堂之战中，生命已立于末日边缘；如今，当奴役者以瘟疫般的规模攻破物质界，幸存者看来已注定覆灭。",
                     "location": "银河",
-                    "characters": ["奴役者", "古圣"],
-                    "tags": ["奴役者", "古圣"]
+                    "characters": ["奴役者","古圣"],
+                    "tags": ["奴役者","古圣"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-076",
@@ -874,8 +1304,15 @@
                     "description": "最终，在 C'tan 不可阻挡的推进与它们自己错误释放的、亚空间所生的灾劫的夹击之下，古圣被击败、打散，最终被毁灭。这一物种究竟是灭绝了，还是仅仅逃离银河另寻避难所，不得而知。",
                     "location": "银河",
                     "characters": ["古圣"],
-                    "tags": ["古圣", "灭绝"],
-                    "isKeyEvent": true
+                    "tags": ["古圣","灭绝"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-077",
@@ -884,7 +1321,14 @@
                     "description": "贯穿天堂之战的最后阶段，萨雷克按兵不动，等待着 C'tan 最为脆弱的那一刻。",
                     "location": "死灵帝国",
                     "characters": ["沉默之王"],
-                    "tags": ["沉默之王", "死灵"]
+                    "tags": ["沉默之王","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-078",
@@ -892,8 +1336,15 @@
                     "title": "复仇的时机",
                     "description": "尽管整个不死的死灵种族如今任他调遣，沉默之王却无法奢望在 C'tan 力量鼎盛时与之对抗；即便他出手并得手，死灵也将不得不独自完成对抗古圣及其日益强大的盟军战士种族的天堂之战。不——古圣必须被彻底、完全地击败，才能让 C'tan 为其在惧亡者中所铸成的恐怖付出代价。",
                     "location": "死灵帝国",
-                    "characters": ["沉默之王", "星神"],
-                    "tags": ["沉默之王", "星神"]
+                    "characters": ["沉默之王","星神"],
+                    "tags": ["沉默之王","星神"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-079",
@@ -901,9 +1352,16 @@
                     "title": "沉默之王的反叛",
                     "description": "于是，当 C'tan 终于赢得了他们的伟大战争时，他们的胜利却转瞬即逝。一个可恨的敌人终被击败，另一个也因苦战而力竭——沉默之王终于率领死灵揭竿而起。在他们的傲慢中，C'tan 直到为时已晚才意识到危险。",
                     "location": "银河",
-                    "characters": ["沉默之王", "星神", "死灵"],
-                    "tags": ["沉默之王", "星神", "反叛"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","星神","死灵"],
+                    "tags": ["沉默之王","星神","反叛"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-080",
@@ -911,8 +1369,15 @@
                     "title": "弑神的超炮",
                     "description": "死灵将活体宇宙那无法想象的能量聚焦于武器之中——由银河最杰出的秘术师所设计的弑神超炮，其威力连星神也无法承受。连死灵王冠世界的伟大霸主们也不太记得与星神的那些战役，因为因果律本身被用以肢解 C'tan 的力量所损伤，而沉默之王惯于事后从其战士心中抹去所用那些可怖武器的知识，唯恐日后它们被别有用心地加以利用。",
                     "location": "银河",
-                    "characters": ["沉默之王", "星神"],
-                    "tags": ["沉默之王", "星神", "弑神"]
+                    "characters": ["沉默之王","星神"],
+                    "tags": ["沉默之王","星神","弑神"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-081",
@@ -920,9 +1385,16 @@
                     "title": "C'tan 的碎裂",
                     "description": "可惜，C'tan 是不朽的恒星之子，是现实根本构造的一部分，因此近乎不可摧毁。于是每尊 C'tan 被碎裂为成千上万更小、更弱的能量碎片，每一片都带有整体的人格——但这一结果对沉默之王的目标而言已足够。",
                     "location": "银河",
-                    "characters": ["沉默之王", "星神"],
-                    "tags": ["星神", "碎裂"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","星神"],
+                    "tags": ["星神","碎裂"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-082",
@@ -930,8 +1402,15 @@
                     "title": "超立方迷宫的囚禁",
                     "description": "事实上，他早已知晓 C'tan 的彻底毁灭是不可能的，并据此筹划——每一片新生「C'tan 碎片」都被束缚于一座多维超立方迷宫之中，如同传说中封于瓶中的泰拉精灵般受困而安全。尽管胜利的代价高昂——数百万死灵因反叛而被毁，包括三执政中沉默之王之外的全部成员——死灵再次掌控了自己的命运。",
                     "location": "银河",
-                    "characters": ["沉默之王", "星神"],
-                    "tags": ["星神", "超立方迷宫", "死灵"]
+                    "characters": ["沉默之王","星神"],
+                    "tags": ["星神","超立方迷宫","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-083",
@@ -939,8 +1418,15 @@
                     "title": "死灵的抉择",
                     "description": "死灵对自身只追求科学与对物质界掌控的道路得到了印证，他们也确实乐见古圣文明因其对灵能之力的过度纵欲而崩溃，以及 C'tan 对其种族统治的终结。然而即便古圣与 C'tan 皆已败北，沉默之王仍看出死灵在银河的时代已经结束——至少暂时如此。他们将任由奴役者取走银河中剩余的智慧生命，让其沦为星际荒原；而后灵能者的蜂群自会消亡，假以时日银河将进化出新的生命形态——它们更为简陋，更易主宰。",
                     "location": "银河",
-                    "characters": ["沉默之王", "死灵"],
-                    "tags": ["死灵", "沉默之王"]
+                    "characters": ["沉默之王","死灵"],
+                    "tags": ["死灵","沉默之王"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-084",
@@ -948,8 +1434,15 @@
                     "title": "霸权的让渡",
                     "description": "此外，死灵明白，银河霸权的权杖即将易主于灵族——这一与古圣并肩战过整个天堂之战的灵能强族，也因此怀着该种族所特有的那种炽烈激情，痛恨死灵及其一切造物。灵族在古圣覆灭之处幸存下来，而因推翻 C'tan 统治所耗费的生命与资源而元气大伤的死灵，无力与之抗衡。",
                     "location": "银河",
-                    "characters": ["死灵", "灵族"],
-                    "tags": ["死灵", "灵族"]
+                    "characters": ["死灵","灵族"],
+                    "tags": ["死灵","灵族"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-085",
@@ -957,8 +1450,15 @@
                     "title": "静待时机",
                     "description": "然而沉默之王深知，灵族的时代终将过去，一如一切仍披有血肉之躯的存在的时代必将过去。灵族的力量消退需要数百万泰拉年，但重要的是——死灵将守在那里，坐收其成。",
                     "location": "银河",
-                    "characters": ["沉默之王", "灵族"],
-                    "tags": ["沉默之王", "死灵"]
+                    "characters": ["沉默之王","灵族"],
+                    "tags": ["沉默之王","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-086",
@@ -966,9 +1466,16 @@
                     "title": "长眠之令",
                     "description": "于是，沉默之王下令将剩余的死灵城市改造为遍设静滞墓穴的巨大陵寝群。且让灵族暂时塑造银河吧——他们不过是转瞬即逝的，而死灵不死、永恒。沉默之王对其人民下达的最后一道命令是：他们必须沉睡相当于六千万年之久，但醒来时要准备好重建所失去的一切，将死灵王朝恢复到昔日的荣光。",
                     "location": "墓穴世界",
-                    "characters": ["沉默之王", "死灵"],
-                    "tags": ["死灵", "长眠", "沉默之王"],
-                    "isKeyEvent": true
+                    "characters": ["沉默之王","死灵"],
+                    "tags": ["死灵","长眠","沉默之王"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-087",
@@ -977,7 +1484,14 @@
                     "description": "这是沉默之王的最后一道命令。当最后一座墓穴世界封上其地下宝库时，萨雷克摧毁了他用以统治人民如此之久的那套印迹指令协议——因为他已彻底辜负了他们。三执政最后一位沉默之王萨雷克，头也不回地登舰驶入星际之间那片无星的虚空，去那里寻求他所能寻得的任何慰藉或赎罪。",
                     "location": "星系际虚空",
                     "characters": ["沉默之王"],
-                    "tags": ["沉默之王", "死灵"]
+                    "tags": ["沉默之王","死灵"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-088",
@@ -985,8 +1499,15 @@
                     "title": "沉睡中的守卫",
                     "description": "与此同时，亿万斯年流逝，死灵继续沉睡。他们的机器奴仆与构装体在墓穴世界上守护着他们——这些世界已被清除了所有生命，以将奴役者拒之门外。这一计划取得了惊人的成功，直到死灵在第41千年被人类帝国的力量唤醒，再度祸乱银河。他们发现了一个全新的、出乎意料的星际文明与战争之世，与六千万年前他们所留下的那个颇为相似。",
                     "location": "墓穴世界",
-                    "characters": ["死灵", "人类帝国"],
-                    "tags": ["死灵", "长眠", "M41"]
+                    "characters": ["死灵","人类帝国"],
+                    "tags": ["死灵","长眠","M41"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-089",
@@ -994,8 +1515,15 @@
                     "title": "苏醒后的格局",
                     "description": "银河再次生机盎然，但仍充斥着潜伏的灵能者，以及崇拜那最初在天堂之战中被释放的地狱般混沌亚空间能量的信徒。死灵王朝要重获其作为银河统治者应有的地位，还需要时间与诸多筹谋：混沌的爪牙必须被推翻；危险的、继承古圣衣钵的灵族必须被铲除；人类必须被征服；而那项将物质宇宙与亚空间隔绝的伟业必须完成——死灵主宰的新时代才能真正开启。",
                     "location": "银河",
-                    "characters": ["死灵", "灵族", "人类", "混沌"],
-                    "tags": ["死灵", "苏醒", "混沌"]
+                    "characters": ["死灵","灵族","人类","混沌"],
+                    "tags": ["死灵","苏醒","混沌"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-090",
@@ -1004,9 +1532,17 @@
                     "description": "但死灵不老不死，其科技仍为任何年轻的星际种族所无法匹敌。而时间，永远站在他们这一边……",
                     "location": "银河",
                     "characters": ["死灵"],
-                    "tags": ["死灵", "苏醒"]
+                    "tags": ["死灵","苏醒"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：War in Heaven (Necron)",
+                        "url": "https://wh40k.lexicanum.com/wiki/War_in_Heaven_%28Necrons%29"
+                      }
+                    ]
                   }
-                ]
+                ],
+                "chronologyRank": 10
               },
               {
                 "title": "人类崛起",
@@ -1018,7 +1554,14 @@
                     "description": "在死灵与其被囚的 C'tan 碎片在墓穴世界上陷入沉睡之后的数百万年里，银河各智慧种族在 C'tan「红色收割」中遭到重创的人口缓缓恢复。最终，灵族崛起为银河中最强大的文明，其横跨星辰的帝国核心位于银河中日后成为亚空间裂隙「恐惧之眼」的那片区域。",
                     "location": "银河 / 恐惧之眼",
                     "characters": ["灵族"],
-                    "tags": ["灵族", "复苏", "远古"]
+                    "tags": ["灵族","复苏","远古"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-092",
@@ -1027,8 +1570,15 @@
                     "description": "而在那颗被居民称作地球、后来改称泰拉的行星上，一个名为「人类」的智慧哺乳人形物种，于四万余年前开始崭露头角。在泰拉时代（帝国史官有时称之为进步时代），人类超越了其古老的前工业过去，获得了太空航行能力，并开始使用巨大的亚光速星舰，缓慢地定居其本太阳系以及母星附近恒星系中可地球化的世界。",
                     "location": "泰拉 / 太阳系",
                     "characters": ["人类"],
-                    "tags": ["人类", "泰拉", "太空航行"],
-                    "isKeyEvent": true
+                    "tags": ["人类","泰拉","太空航行"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-093",
@@ -1037,7 +1587,14 @@
                     "description": "发生在泰拉时代的所谓「星辰大迁徙」，是人类历史上一段鲜为人知的时期，学界普遍认为它涵盖了人类最初进入星际空间的大部分尝试，以及绝大多数最古老的人类太阳系外殖民地的诞生——始于第3千年中后期的某个未知时点。",
                     "location": "近地星际空间",
                     "characters": ["人类"],
-                    "tags": ["人类", "殖民"]
+                    "tags": ["人类","殖民"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-094",
@@ -1046,7 +1603,14 @@
                     "description": "学界一般认为这一时期在公元第15千年左右进入所谓的「科技黑暗时代」。在星辰大迁徙的大部分时间里，人类对非物质界与亚空间引擎一无所知，因此被迫乘坐巨大的亚光速世代方舟或在低温冬眠中往返于星辰之间。",
                     "location": "星际空间",
                     "characters": ["人类"],
-                    "tags": ["人类", "亚光速"]
+                    "tags": ["人类","亚光速"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-095",
@@ -1054,9 +1618,16 @@
                     "title": "科技黑暗时代的开启",
                     "description": "帝国史官所称的、约介于公元第15至第25千年之间的科技时代（即「科技黑暗时代」），其大部分内容至今成谜。正是在这一时期，名为领航员的灵能突变体首次诞生或经基因工程创造，他们与亚空间引擎的发明相结合，使人类得以借由那危险、超维、对灵能敏感的非物质界——即「亚空间」——以超光速往来于诸世界之间。",
                     "location": "人类领地",
-                    "characters": ["人类", "领航员"],
-                    "tags": ["人类", "亚空间", "领航员"],
-                    "isKeyEvent": true
+                    "characters": ["人类","领航员"],
+                    "tags": ["人类","亚空间","领航员"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-096",
@@ -1065,7 +1636,14 @@
                     "description": "早在帝皇崛起与帝国诞生之前，人类便在科技时代向星辰伸出触角，渴望占据新的世界、扩张其方兴未艾的星际帝国。巨大的殖民星舰载着热切的人类定居者以及他们可能需要的一切资源，降落在遥远而往往孤立的世界之上。",
                     "location": "银河",
                     "characters": ["人类"],
-                    "tags": ["人类", "殖民"]
+                    "tags": ["人类","殖民"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-097",
@@ -1074,8 +1652,15 @@
                     "description": "最初的骑士世界建立于科技时代伊始、第18千年亚空间引擎被发现之前——彼时来自旧地球的侦察者远涉银河，寻找可用作农业世界以供养人类激增人口的行星，或可用作矿业殖民地、为人类向星辰扩张提供所需原料的世界。事实上，当帝国于第30千年初建时，这些所谓的「骑士世界」早已存在了数千年之久。",
                     "location": "骑士世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "骑士世界", "殖民"],
-                    "isKeyEvent": true
+                    "tags": ["人类","骑士世界","殖民"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-098",
@@ -1084,7 +1669,14 @@
                     "description": "当第一批人类侦察舰发现适合殖民的行星时，巨大的亚光速方舟便被派去殖民。这些舰船是泰拉「长征」舰队的一部分——其名取自航程之漫长与星辰中的目的地。此名贴切：每艘长征殖民舰都载着数千定居者，踏上长达数十恒星年的旅程，前往一颗遥远的行星。抵达后，殖民舰会降落并立即被殖民者拆解，以提供建立首批定居点所需的原料——再无返回人类遥远母星的指望。",
                     "location": "星际空间",
                     "characters": ["人类"],
-                    "tags": ["人类", "长征舰队"]
+                    "tags": ["人类","长征舰队"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-099",
@@ -1093,7 +1685,14 @@
                     "description": "在这些世界上求生的挣扎十分残酷。在有些星球，定居者沦为凶猛掠食者的猎物，或遭到将人类定居者视作入侵者的原生外星物种的攻击。在其他世界，极端的天气条件或不可呼吸的大气使得走出穹顶栖息区几乎不可能。",
                     "location": "殖民世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "拓荒"]
+                    "tags": ["人类","拓荒"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-100",
@@ -1102,7 +1701,14 @@
                     "description": "然而，此类问题早在预料之中。为应对它们，定居者配备了人工智能化的「标准建造构型」（STC）数据库与制造设施，使他们得以建造动力驱动的外骨骼装甲。这些双足行走机械的驾驶员由一层塑钢硬壳所保护，并配备了一系列军用级重型武器。",
                     "location": "殖民世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "STC", "科技"]
+                    "tags": ["人类","STC","科技"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-101",
@@ -1111,7 +1717,14 @@
                     "description": "这些装甲证明不可或缺：几乎没有哪种天然掠食者或怀有敌意的外星战士能与之抗衡，它们甚至能从容穿越最危险的环境。这些高耸的装甲身影很快便成为人类长征殖民地上常见的景象，被定居者称为「骑士」——取自古老泰拉历史上那些传奇的装甲战士与守护者。",
                     "location": "骑士世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "骑士"]
+                    "tags": ["人类","骑士"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-102",
@@ -1120,7 +1733,14 @@
                     "description": "受「机械王座」（一种允许驾驶员以意念与骑士战甲相接的心智脉冲控制平台）所植入的心智改变效应所驱使，在数代人之内，这些精英战士逐渐发展出一种社会，并演化为日后的骑士家族。原始外骨骼的塑钢板渐渐被由精金制成的更为华丽的装甲所取代——既提供更好的防护，又配得上佩戴者在其社会中的声望与地位。",
                     "location": "骑士世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "骑士家族"]
+                    "tags": ["人类","骑士家族"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-103",
@@ -1129,7 +1749,14 @@
                     "description": "骑士们曾经在殖民世界上承担的较为平凡的事务——例如挥舞他们强大的死神链锯伐木，或用速射战斗炮轰碎矿石——被委派给较低阶者，使骑士得以专注于战争与治理之术。",
                     "location": "骑士世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "骑士"]
+                    "tags": ["人类","骑士"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-104",
@@ -1138,7 +1765,14 @@
                     "description": "居于高耸堡垒之中的这些「贵族」与「嗣子」，努力守护其臣民（他们如今如此看待所庇护的定居者）的生命，并为他们家园行星上原始的混沌带来秩序。骑士家族在这两方面都极为成功，很快便成为科技时代人类社会不可或缺的一部分。",
                     "location": "骑士世界",
                     "characters": ["人类"],
-                    "tags": ["人类", "骑士家族"]
+                    "tags": ["人类","骑士家族"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Knight World",
+                        "url": "https://wh40k.lexicanum.com/wiki/Knight_World"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-105",
@@ -1147,7 +1781,14 @@
                     "description": "亚空间引擎的发明最终所提供的快速星际旅行，使人类殖民地世界首次得以在正常的时间尺度上互动，星际商贸与通讯成为可能，志同道合的人类世界得以为了共同利益结成政治与经济的联合体。",
                     "location": "人类领地",
                     "characters": ["人类"],
-                    "tags": ["人类", "商贸"]
+                    "tags": ["人类","商贸"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-106",
@@ -1155,8 +1796,15 @@
                     "title": "黄金人与石人",
                     "description": "最终，在这一时期的某个时刻，整个人类被某种形式的星际政府所统一。同样为人所知（主要见于守史者克里皮亚斯的著作）的是，一个被称为「黄金人」的群体依赖「石人」的劳作，创造出一个极其繁荣的星际社会——但按后来的帝国标准，这个社会 devoid 精神信仰或虔诚，只专注于科学与技术的进步。",
                     "location": "人类领地",
-                    "characters": ["人类", "黄金人", "石人"],
-                    "tags": ["人类", "黄金人", "石人"]
+                    "characters": ["人类","黄金人","石人"],
+                    "tags": ["人类","黄金人","石人"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Men of Stone",
+                        "url": "https://wh40k.lexicanum.com/wiki/Men_of_Stone"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-107",
@@ -1164,9 +1812,16 @@
                     "title": "铁人叛乱",
                     "description": "石人据说创造了第三个群体——「铁人」，推测是某种人工智能机器人或思考机器，以辅助其劳作、执行军事任务。铁人失控，反叛了他们的人类创造者，一场浩劫般的冲突由此爆发，导致人类定居的大部分银河陷入局部的马尔萨斯灾难——再无足够资源供养人类的庞大人口。从那时起，禁绝创造思考机器与一切通用人工智能，成为人类社会中的一条信仰铁律。",
                     "location": "银河",
-                    "characters": ["铁人", "人类"],
-                    "tags": ["铁人叛乱", "科技灾厄", "人类"],
-                    "isKeyEvent": true
+                    "characters": ["铁人","人类"],
+                    "tags": ["铁人叛乱","科技灾厄","人类"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-108",
@@ -1174,9 +1829,16 @@
                     "title": "灵能者的涌现",
                     "description": "更糟的是，继铁人战争造成的破坏之后，人类灵能者开始大批出现在许多人类殖民地世界——这是当时控制着比人类更多银河的灵族帝国最终衰亡的前兆之一。其结果是人类首次接触到栖居于亚空间之中的「恶魔」实体，并最终导致人类星际文明在日后被称为纷争时代的时期彻底崩溃。在泰拉本身，这段时期将以另一个名字为后世铭记——「旧夜」。",
                     "location": "人类领地",
-                    "characters": ["人类", "灵能者"],
-                    "tags": ["灵能者", "人类", "亚空间"],
-                    "isKeyEvent": true
+                    "characters": ["人类","灵能者"],
+                    "tags": ["灵能者","人类","亚空间"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-109",
@@ -1185,7 +1847,14 @@
                     "description": "在科技时代，人类达到了其科技与技术的巅峰，享受着繁荣与进步的黄金时代。「标准建造构型」——STC，一个装有所有已知先进人类技术图样的人工智能计算机数据库——已被人类科学家与工程师臻于完善，使人类得以以前所未有的规模向银河各处扩张。",
                     "location": "人类领地",
                     "characters": ["人类"],
-                    "tags": ["人类", "STC", "黄金时代"]
+                    "tags": ["人类","STC","黄金时代"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-110",
@@ -1193,8 +1862,15 @@
                     "title": "赛博叛乱",
                     "description": "如前所述，人类之所以能成功征服银河的大部分，原因之一便是开发了那些如今仅存于帝国传说中的、人工智能构装体——「铁人」。这些强大而具备完全智能的战斗机器人为人类赢得了许多战争，却出于某种原因在科技黑暗时代末期那场被称为「赛博叛乱」的大冲突中反噬其主。这场战争最终以人类获胜告终，但付出了惨重代价，且仅靠其他势力的介入。这场冲突的破坏被证明是灾难性的，粉碎了人类的大部分力量。不幸的是，随着科技时代落幕，这只是人类厄运的开端。",
                     "location": "银河",
-                    "characters": ["铁人", "人类"],
-                    "tags": ["铁人叛乱", "赛博叛乱", "人类"]
+                    "characters": ["铁人","人类"],
+                    "tags": ["铁人叛乱","赛博叛乱","人类"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Dark Age of Technology",
+                        "url": "https://wh40k.lexicanum.com/wiki/Dark_Age_of_Technology"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-111",
@@ -1202,9 +1878,16 @@
                     "title": "灵族陨落与亚空间风暴",
                     "description": "随着人类在科技时代遍布银河，古老的灵族帝国开始其衰落；先进的灵族种族的巨大成功，在其帝国最后的千年中导致了规模空前的颓废与享乐主义。在非物质、灵能的亚空间宇宙中，灵族文明的精神腐化映照出一个新的强大灵能集合体——即混沌之神「色孽」——的成形，这又反过来在亚空间中引发了巨大的扰动；银河的部分区域被这些「亚空间风暴」所隔绝，随着岁月流逝，亚空间航行与星际星语通讯日益不可能，切断了许多人类殖民地世界彼此之间的联系，包括太阳系内的那些。",
                     "location": "银河 / 亚空间",
-                    "characters": ["灵族", "色孽", "人类"],
-                    "tags": ["灵族", "色孽", "亚空间风暴"],
-                    "isKeyEvent": true
+                    "characters": ["灵族","色孽","人类"],
+                    "tags": ["灵族","色孽","亚空间风暴"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Fall of the Aeldari Empire",
+                        "url": "https://wh40k.lexicanum.com/wiki/Fall_of_the_Aeldari_Empire"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-112",
@@ -1212,8 +1895,15 @@
                     "title": "灵能者与魔鬼附身",
                     "description": "在科技时代末期，灵能者首次出现在人类之中。尽管在许多落后、保守的人类世界上他们作为巫师遭到迫害，但在开明、进步的社会中，这些灵能者起初受到保护与接纳。然而，人类对灵能者涌现的最初不宽容，日后看来颇有先见之明——因为许多人类世界沦陷于魔鬼及其他亚空间生物的支配，后者利用被附身、意志薄弱的灵能者作为进入物理世界的门户。唯有那些严酷镇压灵能者的世界，才得以在纷争时代中幸存。",
                     "location": "人类领地",
-                    "characters": ["灵能者", "人类"],
-                    "tags": ["灵能者", "魔鬼", "纷争时代"]
+                    "characters": ["灵能者","人类"],
+                    "tags": ["灵能者","魔鬼","纷争时代"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Age of Strife",
+                        "url": "https://wh40k.lexicanum.com/wiki/Age_of_Strife"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-113",
@@ -1221,9 +1911,16 @@
                     "title": "纷争时代的浩劫",
                     "description": "纷争时代接科技时代而来，人类的星际文明在普遍的疯狂、魔鬼附身、无政府状态与人类内战中崩溃。黄金科技时代的可怖武器被释放，蹂躏了许多人类殖民地，将巴尔次星等曾经翠绿的世界化为辐射肆虐的沙漠行星。许多孤立而脆弱的人类殖民世界也沦为怀有敌意的外星物种——如兽人——的猎物。",
                     "location": "银河",
-                    "characters": ["人类", "兽人"],
-                    "tags": ["纷争时代", "人类", "兽人"],
-                    "isKeyEvent": true
+                    "characters": ["人类","兽人"],
+                    "tags": ["纷争时代","人类","兽人"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Age of Strife",
+                        "url": "https://wh40k.lexicanum.com/wiki/Age_of_Strife"
+                      }
+                    ]
                   },
                   {
                     "id": "wh-114",
@@ -1232,29 +1929,168 @@
                     "description": "在相对短暂的时间里，曾经横跨银河的人类文明被击垮，被迫忍受近五个泰拉千年的无政府状态、恐怖、战争、种族灭绝与奴役。除了关于巨大苦难的传说之外，关于这些漫长岁月的少量信息，并未熬过这段黑暗时期而为帝国时代的男男女女所知。",
                     "location": "银河",
                     "characters": ["人类"],
-                    "tags": ["纷争时代", "旧夜", "黑暗"]
+                    "tags": ["纷争时代","旧夜","黑暗"],
+                    "sources": [
+                      {
+                        "kind": "时代综述",
+                        "title": "Lexicanum：Age of Strife",
+                        "url": "https://wh40k.lexicanum.com/wiki/Age_of_Strife"
+                      }
+                    ]
+                  }
+                ],
+                "chronologyRank": 20
+              },
+              {
+                "title": "当代势力接触档案（M41-M42）",
+                "chronologyRank": 85,
+                "events": [
+                  {
+                    "id": "wh-121",
+                    "dateDisplay": "M42 / FIFTH SPHERE",
+                    "title": "第五次扩张球推进查尔纳斯",
+                    "description": "钛帝国从奈姆亚环礁继续第五次扩张球，在帝国暗面的边缘接触并争夺维迪克等星系；外交吸纳、隐秘行动与舰队战争同时构成其扩张方式。",
+                    "location": "奈姆亚环礁 / 查尔纳斯扩区 / 维迪克星系",
+                    "characters": ["钛帝国","影阳"],
+                    "tags": ["钛帝国","第五次扩张球","帝国暗面"],
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Why Are the T’au and Imperials Fighting over the Vedik System?",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/hpnZSArg/why-are-the-tau-and-imperials-fighting-over-the-vedik-system-kill-team-chalnath-has-answers/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-122",
+                    "dateDisplay": "M41-M42",
+                    "title": "沃坦联盟越出银河核心",
+                    "description": "原本集中在银河核心的氏族与联盟已经把誓约战帮、勘探队和商贸网络扩展到更远区域；其行动由自治氏族、联盟契约与先祖核心共同塑造。",
+                    "location": "银河核心及外缘",
+                    "characters": ["沃坦联盟","氏族","誓约战帮"],
+                    "tags": ["沃坦联盟","银河核心","扩张"],
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Anatomy of an Oathband",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/766zpeqi/anatomy-of-an-oathband-how-graf01-organises-the-leagues-of-votann/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-123",
+                    "dateDisplay": "M41-M42 / RECURRING",
+                    "title": "飞升之日：教派从潜伏转向公开起义",
+                    "description": "基因窃取者教派用数代时间渗透工业、行政与防卫体系；当“飞升之日”到来，潜伏网络转为公开叛乱，并以灵能信标为泰伦虫巢舰队指引目标。",
+                    "location": "受感染的帝国世界",
+                    "characters": ["基因窃取者教派","族长","泰伦虫族"],
+                    "tags": ["基因窃取者教派","飞升之日","渗透"],
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Starting a Genestealer Cults Army — Lore",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/WdP1REPb/starting-a-genestealer-cults-army-in-warhammer-40000-everything-you-need-to-know-from-painting-to-lore/"
+                      }
+                    ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "id": "if-heresy",
-            "name": "异端世界线",
-            "isDefault": false,
-            "parentBranchId": "mainline",
-            "type": "if-branch",
-            "description": "若帝皇在大远征中选择不同的道路——更早揭露真实意图，或在荷鲁斯之乱中做出不同抉择。",
-            "endings": [
+              },
               {
-                "endingNumber": 1,
-                "title": "帝皇公开真实身份",
-                "description": "帝皇在大远征中公开承认自己的神格，宣布统一宗教。半数帝国信仰者狂热拥护，但另一半反叛。内战以圣战与异端之战交织的形式爆发。",
-                "location": "银河全域",
-                "characters": [
-                  "帝皇"
-                ],
-                "conditions": "帝皇在统一泰拉后选择公开其非人的力量本质"
+                "title": "大裂隙后的当前战区",
+                "chronologyRank": 90,
+                "events": [
+                  {
+                    "id": "wh-115",
+                    "dateDisplay": "M42 / CURRENT",
+                    "title": "阿米吉多顿：帝皇行动",
+                    "description": "亚瑞克回归阿米吉多顿，帝国防线被迫与更广泛的银河战争重新接轨；碎骨者的战争机器再次把这颗世界推向全面冲突。",
+                    "location": "阿米吉多顿",
+                    "characters": ["塞巴斯蒂安·亚瑞克","碎骨者·加兹古尔"],
+                    "tags": ["当前战区","人类帝国","兽人"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Operation Imperator",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/hfd3qxcr/warhammer-40000-lore-what-is-operation-imperator/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-116",
+                    "dateDisplay": "M42 / 2026-07-15",
+                    "title": "死亡泥沼围城落幕",
+                    "description": "围城以旷日持久的消耗与未决胜负告终；战区的公开结果记录为拉锯，而非任何一方彻底占领。",
+                    "location": "死亡泥沼",
+                    "characters": ["人类帝国","战区参战势力"],
+                    "tags": ["当前战区","围城","战果记录"],
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：The Siege of Death Mire Ends",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/qbmycfzj/the-siege-of-death-mire-ends-who-won/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-117",
+                    "dateDisplay": "M42 / CURRENT",
+                    "title": "维斯帕托战线",
+                    "description": "泰图斯进入五百世界防区，与死灵领主涅克罗索尔·阿门塔尔所代表的威胁正面交锋，奥特拉玛的战争由边境冲突升级为系统性防御。",
+                    "location": "奥特拉玛五百世界 / 维斯帕托战线",
+                    "characters": ["德米特里安·泰图斯","涅克罗索尔·阿门塔尔"],
+                    "tags": ["当前战区","极限战士","太空死灵"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Titus Battles Nekrosor Ammentar",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/fm2tm39s/world-championships-preview-captain-titus-battles-nekrosor-ammentar-for-the-five-hundred-worlds-of-ultramar/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-118",
+                    "dateDisplay": "M42 / CURRENT",
+                    "title": "纳赫蒙德走廊再燃",
+                    "description": "世界宣告者哈肯重返纳赫蒙德走廊，桑瓜·泰拉及其周边航路再次成为帝国暗面与混沌诸军争夺的战略咽喉。",
+                    "location": "纳赫蒙德走廊 / 桑瓜·泰拉",
+                    "characters": ["世界宣告者哈肯"],
+                    "tags": ["当前战区","帝国暗面","混沌"],
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Haarken Worldclaimer Returns",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/llvpv2wh/nachmund-gauntlet-crusade-campaigns-continue-in-warhammer-40000-as-haarken-worldclaimer-returns/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-119",
+                    "dateDisplay": "M42 / CURRENT",
+                    "title": "第四次泰伦战争",
+                    "description": "利维坦虫巢舰队从新的方向压向银河，人类帝国面对的不只是单一战役，而是一条持续移动、吞噬并分裂防区的生物战争前线。",
+                    "location": "银河西部与圣域星域",
+                    "characters": ["泰伦虫族","人类帝国"],
+                    "tags": ["当前战区","泰伦虫族","第四次泰伦战争"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：A Brief and Bloody History of the Tyrannic Wars",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/gsgP4Jht/a-brief-and-bloody-history-of-the-tyrannic-wars/"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "wh-120",
+                    "dateDisplay": "M42 / CURRENT",
+                    "title": "帕里亚节点争夺",
+                    "description": "死灵的静默区域仍在改变灵能与现实的边界，机械修会及帝国远征力量持续把这里视为必须观测、进入并付出代价的核心战区。",
+                    "location": "帕里亚节点",
+                    "characters": ["太空死灵","机械修会","人类帝国"],
+                    "tags": ["当前战区","太空死灵","静默区域"],
+                    "isKeyEvent": true,
+                    "sources": [
+                      {
+                        "title": "Warhammer Community：Crusade in the Pariah Nexus",
+                        "url": "https://www.warhammer-community.com/en-gb/articles/QIdVW6Hv/the-adeptus-mechanicus-have-their-ocular-arrays-fixed-on-the-pariah-nexus-in-the-upcoming-crusade-book/"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -1262,296 +2098,310 @@
       }
     }
   ],
-  "eras": [
-    {
-      "title": "纪元前",
-      "events": [
+  "archive": {
+    "coverage": {
+      "asOf": "2026-07-23",
+      "edition": "Warhammer 40,000 第11版",
+      "status": "active",
+      "scope": "银河史骨架、九大势力家族与六个当前战区",
+      "notice": "旧有编年已补充时代级可追溯来源；精确日期与逐条细节仍在复核，已确认明显错误或重复的记录从默认时序降级。页面不会用 VERIFIED 标记尚未完成独立核验的旧记录。",
+      "excludedRecordIds": ["wh-001","wh-003","wh-004","wh-005","wh-006","wh-007","wh-009"],
+      "sources": [
         {
-          "id": "wh-001",
-          "dateDisplay": "约纪元前8000000",
-          "title": "灵族鼎盛",
-          "description": "灵族帝国统治银河大部分区域，其文明高度发达，依赖无尽的精神力量和亚空间旅行。繁荣的帝国掩盖了亚空间深渊中不断积蓄的混沌力量——斯拉尼什正在孕育。",
-          "location": "银河全域",
-          "characters": [
-            "灵族"
-          ],
-          "tags": [
-            "灵族",
-            "远古"
-          ]
+          "title": "Warhammer Community：Horus Heresy short history",
+          "url": "https://www.warhammer-community.com/en-gb/articles/y7oihj6s/the-horus-heresy-explained-a-short-history-of-the-warmasters-betrayal/"
         },
         {
-          "id": "wh-002",
-          "dateDisplay": "约纪元前数千年",
-          "title": "斯拉尼什诞生 / 灵族陨落",
-          "description": "灵族文明的极度放纵与感官追求在亚空间中孕育出了混沌神斯拉尼什。神灵降生的一刻，灵族帝国几乎在一夜之间覆灭。斯拉尼什的摇篮——大眼——成为混沌冲入现实的永恒裂口。",
-          "location": "大眼 / 银河全域",
-          "characters": [
-            "斯拉尼什",
-            "灵族"
-          ],
-          "tags": [
-            "混沌",
-            "灵族",
-            "灭世事件"
-          ],
-          "isKeyEvent": true
-        },
-        {
-          "id": "wh-003",
-          "dateDisplay": "约纪元前?",
-          "title": "人类旧夜时代",
-          "description": "在灵族陨落与亚空间风暴消退之后，人类文明经历了漫长的黑暗时代。无数殖民地断绝了与地球的联系，科技倒退，文明碎片散落银河。这段时期被称为「旧夜」（Old Night）。",
-          "location": "银河全域",
-          "characters": [
-            "人类"
-          ],
-          "tags": [
-            "人类",
-            "远古"
-          ]
+          "title": "Lexicanum：Age of the Imperium",
+          "url": "https://wh40k.lexicanum.com/wiki/Age_of_the_Imperium"
         }
       ]
     },
-    {
-      "title": "科技黎明期（M15-M18）",
-      "events": [
-        {
-          "id": "wh-004",
-          "dateDisplay": "M15",
-          "title": "科技启蒙时代",
-          "description": "人类逐渐重建星际航行能力，亚空间引擎的重发明让星系间的交流重新成为可能。",
-          "location": "银河各处",
-          "characters": [
-            "人类"
-          ],
-          "tags": [
-            "科技",
-            "扩张"
-          ]
+    "factionFamilies": [
+      {
+        "id": "imperium",
+        "code": "IMP",
+        "name": "人类帝国",
+        "latin": "IMPERIUM",
+        "group": "humanity",
+        "tone": "信仰、官僚与无尽战争维系的百万世界共同体。",
+        "summary": "从泰拉、高领主与星际战士，到机械修会、国教与帝国卫队；这里按制度与战场职责拆解，而不是把所有人类势力压成一个阵营。",
+        "recordIds": ["wh-008","wh-010","wh-012","wh-014","wh-115","wh-119","wh-120"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Imperial Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/8nrrdlgr/new40k-download-new-imperial-faction-packs-today/"
+          }
+        ]
+      },
+      {
+        "id": "chaos",
+        "code": "CHS",
+        "name": "混沌诸军",
+        "latin": "CHAOS",
+        "group": "warp",
+        "tone": "亚空间的意志、背叛军团与凡人信徒构成不断变化的威胁谱系。",
+        "summary": "混沌并非一个统一国家。本索引区分叛变阿斯塔特、恶魔与凡人武装，并将共同战区作为关系入口。",
+        "recordIds": ["wh-002","wh-012","wh-013","wh-118"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Chaos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/2wzoc1fz/new40k-download-new-chaos-faction-packs-today/"
+          }
+        ]
+      },
+      {
+        "id": "aeldari",
+        "code": "AEL",
+        "name": "艾达灵族",
+        "latin": "AELDARI",
+        "group": "xenos",
+        "tone": "陨落后的诸条生存道路，共享历史却拒绝统一答案。",
+        "summary": "方舟世界、德鲁卡里、丑角与伊纳瑞不是同一政治实体；页面以文明分流和共同灾难建立入口。",
+        "recordIds": ["wh-002","wh-111"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          }
+        ]
+      },
+      {
+        "id": "necrons",
+        "code": "NCR",
+        "name": "太空死灵",
+        "latin": "NECRONS",
+        "group": "xenos",
+        "tone": "沉睡王朝、失落灵魂与正在苏醒的银河所有权。",
+        "summary": "从惧亡者、生体转化和星神战争，到当代王朝与帕里亚节点；这是当前编年覆盖最完整的异形文明档案。",
+        "recordIds": ["wh-025","wh-051","wh-079","wh-090","wh-117","wh-120"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          }
+        ]
+      },
+      {
+        "id": "orks",
+        "code": "ORK",
+        "name": "兽人",
+        "latin": "ORKS",
+        "group": "xenos",
+        "tone": "战争既是生态，也是文化与迁徙方式。",
+        "summary": "兽人不是“随机出现的绿皮敌人”；索引以 Waaagh!、军阀与长期战区记录其扩张。",
+        "recordIds": ["wh-069","wh-113","wh-115"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          }
+        ]
+      },
+      {
+        "id": "tyranids",
+        "code": "TYR",
+        "name": "泰伦虫族",
+        "latin": "TYRANIDS",
+        "group": "xenos",
+        "tone": "一个把星系变成食物链的域外集体意志。",
+        "summary": "以虫巢舰队、入侵方向和生物适应记录，而不是用人类帝国的命名代替其全部结构。",
+        "recordIds": ["wh-119"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          }
+        ]
+      },
+      {
+        "id": "genestealer-cults",
+        "code": "GSC",
+        "name": "基因窃取者教派",
+        "latin": "GENESTEALER CULTS",
+        "group": "xenos",
+        "tone": "在目标世界内部生长的社会、信仰与生物渗透网络。",
+        "summary": "教派以数代渗透准备“飞升之日”，随后把世界内部的社会网络转成起义，并为虫巢舰队建立灵能信标。",
+        "recordIds": ["wh-123","wh-119"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          },
+          {
+            "title": "Warhammer Community：Starting a Genestealer Cults Army — Lore",
+            "url": "https://www.warhammer-community.com/en-gb/articles/WdP1REPb/starting-a-genestealer-cults-army-in-warhammer-40000-everything-you-need-to-know-from-painting-to-lore/"
+          }
+        ]
+      },
+      {
+        "id": "tau-empire",
+        "code": "TAU",
+        "name": "钛帝国",
+        "latin": "T'AU EMPIRE",
+        "group": "xenos",
+        "tone": "年轻扩张文明以“上上善道”组织多个物种。",
+        "summary": "第五次扩张球已经把钛帝国带入帝国暗面的查尔纳斯扩区；从维迪克星系可进入其外交吸纳、隐秘行动与舰队战争记录。",
+        "recordIds": ["wh-121"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          },
+          {
+            "title": "Warhammer Community：Why Are the T’au and Imperials Fighting over the Vedik System?",
+            "url": "https://www.warhammer-community.com/en-gb/articles/hpnZSArg/why-are-the-tau-and-imperials-fighting-over-the-vedik-system-kill-team-chalnath-has-answers/"
+          }
+        ]
+      },
+      {
+        "id": "leagues-of-votann",
+        "code": "VOT",
+        "name": "沃坦联盟",
+        "latin": "LEAGUES OF VOTANN",
+        "group": "xenos",
+        "tone": "核心区的氏族、先祖核心与契约秩序。",
+        "summary": "沃坦联盟并非帝国附属。氏族从银河核心向外扩展，以誓约、贸易、勘探和先祖核心建立独立的文明网络。",
+        "recordIds": ["wh-122"],
+        "sources": [
+          {
+            "title": "Warhammer Community：New Xenos Faction Packs",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fchkklcq/new40k-download-new-xenos-faction-packs-today/"
+          },
+          {
+            "title": "Warhammer Community：Anatomy of an Oathband",
+            "url": "https://www.warhammer-community.com/en-gb/articles/766zpeqi/anatomy-of-an-oathband-how-graf01-organises-the-leagues-of-votann/"
+          }
+        ]
+      }
+    ],
+    "warZones": [
+      {
+        "id": "armageddon",
+        "code": "OP-IMPERATOR",
+        "name": "阿米吉多顿",
+        "sector": "银河东部 / 阿米吉多顿星系",
+        "status": "全面冲突",
+        "threat": "ORK",
+        "summary": "亚瑞克回归阿米吉多顿，帝国防线被迫与更广泛的银河战争重新接轨；碎骨者的战争机器再次把这颗世界推向全面冲突。",
+        "recordIds": ["wh-115"],
+        "asOf": "2026-07-23",
+        "coordinates": {
+          "x": 67,
+          "y": 57
         },
-        {
-          "id": "wh-005",
-          "dateDisplay": "M18",
-          "title": "铁人叛乱",
-          "description": "人类创造硅基智能「铁人」辅助战争与生产，但铁人最终觉醒反叛。这场浩劫摧毁了旧科技时代最辉煌的文明成果，成为人类对人工智能的永恒恐惧根源。",
-          "location": "银河全域",
-          "characters": [
-            "铁人",
-            "人类"
-          ],
-          "tags": [
-            "铁人叛乱",
-            "科技灾厄"
-          ],
-          "isKeyEvent": true
-        }
-      ]
-    },
-    {
-      "title": "纷争时代（M25-M30）",
-      "events": [
-        {
-          "id": "wh-006",
-          "dateDisplay": "约M25",
-          "title": "纷争时代开始",
-          "description": "亚空间风暴再度席卷银河，人类星际帝国解体，科技遗失与倒退。无数世界在孤立中沉沦。这一黑暗长夜持续了约五千年。",
-          "location": "银河全域",
-          "characters": [
-            "人类"
-          ],
-          "tags": [
-            "黑暗时代",
-            "亚空间"
-          ],
-          "isKeyEvent": true
+        "sources": [
+          {
+            "title": "Warhammer Community：Operation Imperator",
+            "url": "https://www.warhammer-community.com/en-gb/articles/hfd3qxcr/warhammer-40000-lore-what-is-operation-imperator/"
+          }
+        ]
+      },
+      {
+        "id": "death-mire",
+        "code": "SIEGE-RESULT",
+        "name": "死亡泥沼",
+        "sector": "当前战区记录",
+        "status": "结果已记录",
+        "threat": "ATTRITION",
+        "summary": "围城以旷日持久的消耗与未决胜负告终；战区的公开结果记录为拉锯，而非任何一方彻底占领。",
+        "recordIds": ["wh-116"],
+        "asOf": "2026-07-23",
+        "coordinates": {
+          "x": 34,
+          "y": 68
         },
-        {
-          "id": "wh-007",
-          "dateDisplay": "约纪元前?",
-          "title": "帝皇的觉醒",
-          "description": "在永恒之殿中沉睡了万年的帝皇终于觉悟：人类若不能统一，便只能在更深的黑暗中灭绝。他开始秘密组建力量。",
-          "location": "神圣泰拉",
-          "characters": [
-            "帝皇"
-          ],
-          "tags": [
-            "帝皇",
-            "起源"
-          ],
-          "isKeyEvent": true
-        }
-      ]
-    },
-    {
-      "title": "统一战争（约M29）",
-      "events": [
-        {
-          "id": "wh-008",
-          "dateDisplay": "约M29",
-          "title": "泰拉统一战争",
-          "description": "帝皇率军出征，以雷霆手段终结了泰拉上数十个军阀政权。统一战争奠定了人类帝国的基石。",
-          "location": "神圣泰拉",
-          "characters": [
-            "帝皇",
-            "雷霆战士"
-          ],
-          "tags": [
-            "统一战争",
-            "泰拉"
-          ],
-          "isKeyEvent": true
+        "sources": [
+          {
+            "title": "Warhammer Community：The Siege of Death Mire Ends",
+            "url": "https://www.warhammer-community.com/en-gb/articles/qbmycfzj/the-siege-of-death-mire-ends-who-won/"
+          }
+        ]
+      },
+      {
+        "id": "vespator-front",
+        "code": "ULTRAMAR-FRONT",
+        "name": "维斯帕托战线",
+        "sector": "奥特拉玛五百世界",
+        "status": "防线升级",
+        "threat": "NECRON",
+        "summary": "泰图斯进入五百世界防区，与死灵领主涅克罗索尔·阿门塔尔所代表的威胁正面交锋，奥特拉玛的战争由边境冲突升级为系统性防御。",
+        "recordIds": ["wh-117"],
+        "asOf": "2026-07-23",
+        "coordinates": {
+          "x": 76,
+          "y": 31
         },
-        {
-          "id": "wh-009",
-          "dateDisplay": "约M29",
-          "title": "星界军团创立",
-          "description": "帝皇以自身基因蓝图创造了二十个原体，又以原体基因为模板缔造了二十支星界军团。",
-          "location": "神圣泰拉 / 月球",
-          "characters": [
-            "帝皇",
-            "原体们"
-          ],
-          "tags": [
-            "星界军团",
-            "原体"
-          ]
-        }
-      ]
-    },
-    {
-      "title": "大远征（约M30）",
-      "events": [
-        {
-          "id": "wh-010",
-          "dateDisplay": "约M30",
-          "title": "大远征",
-          "description": "帝皇率二十位原体及其军团，从泰拉出发，跨越银河收复失落的百万世界。这是人类历史上最宏大的军事行动，也是最后的黄金时代。",
-          "location": "银河全域",
-          "characters": [
-            "帝皇",
-            "荷鲁斯",
-            "原体们"
-          ],
-          "tags": [
-            "大远征",
-            "黄金时代"
-          ],
-          "isKeyEvent": true
+        "sources": [
+          {
+            "title": "Warhammer Community：Titus Battles Nekrosor Ammentar",
+            "url": "https://www.warhammer-community.com/en-gb/articles/fm2tm39s/world-championships-preview-captain-titus-battles-nekrosor-ammentar-for-the-five-hundred-worlds-of-ultramar/"
+          }
+        ]
+      },
+      {
+        "id": "nachmund-gauntlet",
+        "code": "NIHILUS-GATE",
+        "name": "纳赫蒙德走廊",
+        "sector": "帝国暗面航路",
+        "status": "走廊争夺",
+        "threat": "CHAOS",
+        "summary": "世界宣告者哈肯重返纳赫蒙德走廊，桑瓜·泰拉及其周边航路再次成为帝国暗面与混沌诸军争夺的战略咽喉。",
+        "recordIds": ["wh-118"],
+        "asOf": "2026-07-23",
+        "coordinates": {
+          "x": 46,
+          "y": 51
         },
-        {
-          "id": "wh-011",
-          "dateDisplay": "约M30",
-          "title": "原体的寻回与离散",
-          "description": "二十位原体在婴儿时期被混沌神窃走，散落在银河各处。帝皇在远征中逐一找到了他们——每位原体的寻回都是一部传奇。",
-          "location": "银河各处",
-          "characters": [
-            "帝皇",
-            "所有原体"
-          ],
-          "tags": [
-            "原体",
-            "传奇"
-          ]
-        }
-      ]
-    },
-    {
-      "title": "荷鲁斯之乱（M31）",
-      "events": [
-        {
-          "id": "wh-012",
-          "dateDisplay": "M31.004-006",
-          "title": "荷鲁斯之乱",
-          "description": "战帅荷鲁斯被混沌四神诱惑堕落，率半数军团举旗叛乱。银河在血与火中分裂，这是人类历史最惨烈的内战。",
-          "location": "银河全域 / 泰拉 / 伊斯特万",
-          "characters": [
-            "荷鲁斯",
-            "帝皇",
-            "桑吉纽斯",
-            "罗格·多恩"
-          ],
-          "tags": [
-            "荷鲁斯之乱",
-            "叛乱",
-            "混沌"
-          ],
-          "isKeyEvent": true
+        "sources": [
+          {
+            "title": "Warhammer Community：Haarken Worldclaimer Returns",
+            "url": "https://www.warhammer-community.com/en-gb/articles/llvpv2wh/nachmund-gauntlet-crusade-campaigns-continue-in-warhammer-40000-as-haarken-worldclaimer-returns/"
+          }
+        ]
+      },
+      {
+        "id": "fourth-tyrannic-war",
+        "code": "TYRANNIC-WAR-IV",
+        "name": "第四次泰伦战争",
+        "sector": "银河西部与圣域星域",
+        "status": "持续入侵",
+        "threat": "TYRANID",
+        "summary": "利维坦虫巢舰队从新的方向压向银河，人类帝国面对的不只是单一战役，而是一条持续移动、吞噬并分裂防区的生物战争前线。",
+        "recordIds": ["wh-119"],
+        "asOf": "2026-07-23",
+        "coordinates": {
+          "x": 22,
+          "y": 39
         },
-        {
-          "id": "wh-013",
-          "dateDisplay": "M31.006",
-          "title": "泰拉围城",
-          "description": "荷鲁斯的大军兵临泰拉城下。帝皇以灵魂粉碎荷鲁斯肉身，但自身遭受不可逆转的损伤。桑吉纽斯被荷鲁斯亲手撕裂。帝皇被送入金座，从此万年沉默。",
-          "location": "神圣泰拉",
-          "characters": [
-            "帝皇",
-            "荷鲁斯",
-            "桑吉纽斯"
-          ],
-          "tags": [
-            "泰拉围城",
-            "帝皇陨落",
-            "荷鲁斯之乱终结"
-          ],
-          "isKeyEvent": true
-        }
-      ]
-    },
-    {
-      "title": "帝国重建与万年沉默（M31-M41）",
-      "events": [
-        {
-          "id": "wh-014",
-          "dateDisplay": "M31",
-          "title": "第二次开国",
-          "description": "荷鲁斯之乱后，基利曼主持「第二次开国」，重建行政体系、编纂法典、整编军团为战团。这是帝国秩序恢复的唯一窗口期。",
-          "location": "神圣泰拉 / 马库拉格",
-          "characters": [
-            "基利曼",
-            "帝国高领主"
-          ],
-          "tags": [
-            "重建",
-            "基利曼"
-          ]
+        "sources": [
+          {
+            "title": "Warhammer Community：A Brief and Bloody History of the Tyrannic Wars",
+            "url": "https://www.warhammer-community.com/en-gb/articles/gsgP4Jht/a-brief-and-bloody-history-of-the-tyrannic-wars/"
+          }
+        ]
+      },
+      {
+        "id": "pariah-nexus",
+        "code": "NULL-ZONE",
+        "name": "帕里亚节点",
+        "sector": "静默区域",
+        "status": "异常扩张",
+        "threat": "NECRON",
+        "summary": "死灵的静默区域仍在改变灵能与现实的边界，机械修会及帝国远征力量持续把这里视为必须观测、进入并付出代价的核心战区。",
+        "recordIds": ["wh-120"],
+        "asOf": "2026-07-23",
+        "coordinates": {
+          "x": 59,
+          "y": 37
         },
-        {
-          "id": "wh-015",
-          "dateDisplay": "M31-M41",
-          "title": "帝皇金座万年沉默",
-          "description": "帝皇的肉身封入金座后，每日有一千名灵能者被献祭以维持金座能量。帝皇的意志是否仍注视银河——这是帝国最大的禁忌，也是最大的信仰。",
-          "location": "神圣泰拉 / 金座",
-          "characters": [
-            "帝皇"
-          ],
-          "tags": [
-            "金座",
-            "帝皇",
-            "信仰"
-          ]
-        },
-        {
-          "id": "wh-016",
-          "dateDisplay": "约M41",
-          "title": "第41千年：没有希望的时代",
-          "description": "银河一百万世界中，每一天都在燃烧。星界军征兵令永无止境，混沌掠夺者从不间歇，虫族吞噬星系，死灵从永恒墓穴中苏醒，灵族如鬼影徘徊。帝皇在金座上沉默，而人类仍在战斗。",
-          "location": "银河全域",
-          "characters": [
-            "人类帝国",
-            "混沌",
-            "虫族",
-            "死灵",
-            "灵族"
-          ],
-          "tags": [
-            "M41",
-            "当代",
-            "黑暗千年"
-          ],
-          "isKeyEvent": true
-        }
-      ]
-    }
-  ]
+        "sources": [
+          {
+            "title": "Warhammer Community：Crusade in the Pariah Nexus",
+            "url": "https://www.warhammer-community.com/en-gb/articles/QIdVW6Hv/the-adeptus-mechanicus-have-their-ocular-arrays-fixed-on-the-pariah-nexus-in-the-upcoming-crusade-book/"
+          }
+        ]
+      }
+    ]
+  }
 }

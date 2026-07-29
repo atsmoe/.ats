@@ -1,0 +1,96 @@
+---
+permalink: ./arknights-chronicle.html
+title: 明日方舟 · 主世界线
+bodyClass: world-arknights ark-chronicle-page
+pageType: world
+worldId: arknights
+viewId: chronicle
+cssFiles:
+  - base.css
+  - nav.css
+  - timeline.css
+  - arknights-world.css
+  - ref-panel.css
+  - worlds.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<div id="timeline" class="active">
+  <header class="tl-cover">
+    <div class="tl-cover-inner">
+      <a href="./arknights.html">泰拉观测入口 / 返回</a>
+      <h1>明日方舟 · 主世界线</h1>
+      <p>从前文明遗留到罗德岛当下，沿统一时域坐标查阅泰拉的规范事件记录。</p>
+      <div class="calendar-badge">泰 拉 历</div>
+    </div>
+  </header>
+
+  <div class="tl-branches" id="tl-branches"></div>
+  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;"></div>
+  <div class="tl-container" id="tl-container"></div>
+</div>
+
+<noscript>
+  <article class="ark-noscript-chronicle" aria-labelledby="ark-noscript-title">
+    <header>
+      <p>STATIC TERRA RECORD / FULL ARCHIVE</p>
+      <h2 id="ark-noscript-title">泰拉主编年静态档案</h2>
+      <span>当前浏览器未启用脚本；以下直接展示 {{ arknightsChronicle.records }} 条主世界线规范记录。</span>
+    </header>
+    {% for era in arknightsChronicle.eras %}
+    <section class="ark-noscript-era">
+      <h3>{{ era.title }}</h3>
+      {% for record in era.events %}
+      <article id="{{ record.id }}" class="ark-noscript-record" data-arknights-record="{{ record.id }}">
+        <time>{{ record.dateDisplay }}</time>
+        <h4>{{ record.title }}</h4>
+        <p data-arknights-description>{{ record.description }}</p>
+        {% if record.sources and record.sources.length %}
+        <footer>
+          {% for source in record.sources %}
+          <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>
+          {% endfor %}
+        </footer>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </section>
+    {% endfor %}
+  </article>
+</noscript>
+
+<div id="event-modal" class="event-modal-overlay" style="display:none;">
+  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-arknights" aria-describedby="event-modal-desc-arknights">
+    <button class="event-modal-close" title="关闭">✕</button>
+    <div class="event-modal-date"></div>
+    <div class="event-modal-title" id="event-modal-title-arknights"></div>
+    <div class="event-modal-meta"></div>
+    <div class="event-modal-desc" id="event-modal-desc-arknights"></div>
+    <div class="event-modal-img"></div>
+    <div class="event-modal-sources"></div>
+  </div>
+</div>
+
+<div id="overlay"></div>
+<div id="ref-panel">
+  <button class="ref-close" id="ref-close">✕</button>
+  <div class="ref-content">
+    <h2>跨 世 界 引 用</h2>
+    <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
+    <div class="ref-event-date" id="ref-event-date"></div>
+    <div class="ref-event-title" id="ref-event-title"></div>
+    <div class="ref-event-desc" id="ref-event-desc"></div>
+    <div class="ref-related"><h3>关联事件</h3></div>
+    <button class="btn-wormhole" id="btn-wormhole">穿 越 虫 洞</button>
+  </div>
+</div>
+
+<nav id="era-nav" aria-label="时代索引"></nav>
+<button id="back-to-top" title="回到顶部">▲</button>
+{% endblock %}
+
+{% block extraScripts %}
+<script defer src="./js/virtual-timeline.js"></script>
+{% endblock %}

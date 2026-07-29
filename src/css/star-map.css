@@ -26,6 +26,8 @@ body[data-page="star-map"] footer {
 /* Individual marker */
 .galaxy-marker {
   position: absolute;
+  width: 44px;
+  height: 44px;
   transform: translate(-50%, -50%);
   pointer-events: auto;
   cursor: pointer;
@@ -52,6 +54,7 @@ body[data-page="star-map"] footer {
 
 .galaxy-marker.hovered .galaxy-marker-glow,
 .galaxy-marker:hover .galaxy-marker-glow,
+.galaxy-marker:focus-visible .galaxy-marker-glow,
 .galaxy-marker.selected .galaxy-marker-glow {
   opacity: 0.3;
   transform: translate(-50%, -50%) scale(1.4);
@@ -72,6 +75,7 @@ body[data-page="star-map"] footer {
 
 .galaxy-marker.hovered .galaxy-marker-core,
 .galaxy-marker:hover .galaxy-marker-core,
+.galaxy-marker:focus-visible .galaxy-marker-core,
 .galaxy-marker.selected .galaxy-marker-core {
   transform: translate(-50%, -50%) scale(1.5);
   box-shadow: 0 0 12px var(--marker-color), 0 0 30px var(--marker-color), 0 0 50px var(--marker-color);
@@ -80,7 +84,7 @@ body[data-page="star-map"] footer {
 /* Marker label */
 .galaxy-marker-label {
   position: absolute;
-  top: 100%;
+  top: 50%;
   left: 50%;
   transform: translateX(-50%);
   margin-top: 8px;
@@ -96,9 +100,15 @@ body[data-page="star-map"] footer {
 
 .galaxy-marker.hovered .galaxy-marker-label,
 .galaxy-marker:hover .galaxy-marker-label,
+.galaxy-marker:focus-visible .galaxy-marker-label,
 .galaxy-marker.selected .galaxy-marker-label {
   opacity: 1;
   color: var(--text);
+}
+
+.galaxy-marker:focus-visible {
+  outline: 1px solid var(--marker-color, var(--gold));
+  outline-offset: 18px;
 }
 
 @keyframes marker-pulse {

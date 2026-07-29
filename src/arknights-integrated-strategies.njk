@@ -1,0 +1,46 @@
+---
+permalink: ./arknights-integrated-strategies.html
+title: 明日方舟 · 集成战略世界线
+bodyClass: world-arknights ark-is-index-page
+pageType: arknights-is-index
+worldId: arknights
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - arknights-world.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<article class="is-index" id="is-index" aria-labelledby="is-index-title">
+  <header class="is-index-hero">
+    <a class="ark-backlink" href="./arknights.html">← TERRA / 泰拉观测入口</a>
+    <div class="is-index-signal" aria-hidden="true">
+      {% for topic in arknightsTopics %}<i style="--n:{{ loop.index }}"></i>{% endfor %}
+    </div>
+    <p class="terra-kicker">INTEGRATED STRATEGIES / ARCHIVE ARRAY</p>
+    <h1 id="is-index-title">集成战略<span>世界线</span></h1>
+    <p>七个主题按发布顺序收录。序号表示产品主题次序，不代表故事发生在同一条正史时间线上。</p>
+    <div class="is-index-meta"><span>07 TOPICS</span><span>28 CURRENT ENDINGS</span><span>REVIEWED 2026-07-23</span></div>
+  </header>
+
+  <div class="is-topic-grid" data-is-index aria-live="polite">
+    {% for topic in arknightsTopics %}
+    <a class="is-index-card" href="./arknights-is-{{ topic.slug }}.html" data-context="{{ topic.id }}">
+      <span class="is-index-number">IS-0{{ topic.order }}</span>
+      <span class="is-index-state">{% if topic.status == 'updating' %}LIVE / 持续核验{% else %}ARCHIVED / 已收录{% endif %}</span>
+      <strong>{{ topic.name }}</strong>
+      <p>{{ topic.synopsis }}</p>
+      <i>建立连接 →</i>
+    </a>
+    {% endfor %}
+  </div>
+
+  <footer class="is-index-note">
+    <strong>READING PROTOCOL</strong>
+    <p>每个专题使用同一套记录、来源和 URL 语义，同时根据主题命题改变视觉、拓扑与局部交互。</p>
+  </footer>
+</article>
+{% endblock %}

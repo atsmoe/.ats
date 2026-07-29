@@ -47,6 +47,13 @@ async function buildJS() {
     path.join(DIST, 'js', 'virtual-timeline.js')
   );
 
+  // Remove bundles from the short-lived four-entry experiment. All non-star-map
+  // pages are dispatched by bundle.js so the documented two-entry boundary holds.
+  for (const staleBundle of ['arknights.js', 'wh40k.js']) {
+    const stalePath = path.join(DIST, 'js', staleBundle);
+    if (fs.existsSync(stalePath)) fs.unlinkSync(stalePath);
+  }
+
   // Clean up stale source maps from previous builds
   const staleMaps = fs.readdirSync(path.join(DIST, 'js')).filter(f => f.endsWith('.map'));
   for (const f of staleMaps) fs.unlinkSync(path.join(DIST, 'js', f));

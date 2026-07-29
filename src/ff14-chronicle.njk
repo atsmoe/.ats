@@ -1,0 +1,77 @@
+---
+permalink: ./ff14-chronicle.html
+title: 最终幻想XIV · 星海编年
+bodyClass: world-ff14 ff-chronicle-page
+pageType: world
+worldId: ff14
+viewId: ff14-chronicle
+cssFiles:
+  - base.css
+  - nav.css
+  - timeline.css
+  - ref-panel.css
+  - worlds.css
+  - ff14-world.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<div id="timeline" class="active ff-chronicle">
+  <header class="tl-cover ff-chronicle-cover">
+    <div class="ff-chronicle-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="tl-cover-inner">
+      <a class="ff-backlink" href="./ff14.html">← ÆTHERIS / 水晶星海入口</a>
+      <p class="ff-eyebrow">THE UNENDING JOURNEY / CANONICAL CHRONICLE</p>
+      <h1>星海编年</h1>
+      <p>从未分割的古代世界到7.5第一部。主线、镜像史、秘话和设定分栏只是阅读方式，事件 ID 与正文仍来自同一份档案。</p>
+      <p class="ff-chronicle-notice">{{ ff14Catalog.coverage.legacyNotice }}</p>
+      <div class="calendar-badge">伊修加德历 / 版本纪年</div>
+    </div>
+  </header>
+
+  <div class="tl-branches" id="tl-branches"></div>
+  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;"></div>
+  <div class="tl-container" id="tl-container"></div>
+</div>
+
+<noscript id="ff14-noscript-records">
+  <article class="ff-noscript-chronicle" aria-labelledby="ff14-noscript-title">
+    <header>
+      <p class="ff-eyebrow">STATIC CRYSTAL RECORD / FULL SPOILERS</p>
+      <h2 id="ff14-noscript-title">星海编年静态档案</h2>
+      <p>当前浏览器未启用脚本；以下直接展示主线、镜像史、秘话与设定索引的全部规范记录。</p>
+    </header>
+    {% for era in ff14Catalog.chronicleSections %}
+    <section class="ff-noscript-era">
+      <h3><small>{{ era.contextName }}</small>{{ era.title }}</h3>
+      {% for record in era.events %}
+      <article id="{{ record.id }}" class="ff-noscript-record" data-ff14-record="{{ record.id }}">
+        <time>{{ record.dateDisplay }}</time>
+        <h4>{{ record.title }}</h4>
+        <p data-ff14-description>{{ record.description }}</p>
+        {% for source in record.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}
+      </article>
+      {% endfor %}
+    </section>
+    {% endfor %}
+  </article>
+</noscript>
+
+<div id="event-modal" class="event-modal-overlay" style="display:none;">
+  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-ff14" aria-describedby="event-modal-desc-ff14">
+    <button class="event-modal-close" title="关闭">✕</button>
+    <div class="event-modal-date"></div>
+    <div class="event-modal-title" id="event-modal-title-ff14"></div>
+    <div class="event-modal-meta"></div>
+    <div class="event-modal-desc" id="event-modal-desc-ff14"></div>
+    <div class="event-modal-img"></div>
+    <div class="event-modal-sources"></div>
+  </div>
+</div>
+
+<nav id="era-nav" aria-label="时代索引"></nav>
+<button id="back-to-top" title="回到顶部">▲</button>
+{% endblock %}
+
+{% block extraScripts %}<script defer src="./js/virtual-timeline.js"></script>{% endblock %}

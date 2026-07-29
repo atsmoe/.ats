@@ -1,0 +1,59 @@
+---
+permalink: ./wh40k-factions.html
+title: 战锤40K · 势力谱系
+bodyClass: world-wh40k wh-factions-page
+pageType: wh40k-factions
+worldId: wh40k
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - wh40k-world.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<article class="wh-catalog" id="faction-index" aria-labelledby="faction-title">
+  <header class="wh-catalog-hero">
+    <a class="wh-backlink" href="./wh40k.html">← GALAXY / 破碎银河入口</a>
+    <p class="wh-eyebrow">ORDO XENOS / BELLIGERENT INDEX</p>
+    <h1 id="faction-title">势力<span>谱系</span></h1>
+    <p>九个稳定家族是导航层，不是把复杂子势力硬说成一个统一国家。点击档案可展开其当前编年连接与来源。</p>
+    <div class="wh-filter-bar" role="group" aria-label="筛选势力">
+      <button class="is-active" type="button" data-faction-filter="all" aria-pressed="true">ALL / 全部</button>
+      <button type="button" data-faction-filter="humanity" aria-pressed="false">HUMANITY</button>
+      <button type="button" data-faction-filter="warp" aria-pressed="false">WARP</button>
+      <button type="button" data-faction-filter="xenos" aria-pressed="false">XENOS</button>
+    </div>
+  </header>
+
+  <div class="wh-faction-grid">
+    {% for faction in wh40kCatalog.factions %}
+    <article class="wh-faction-card" id="{{ faction.id }}" data-faction-id="{{ faction.id }}" data-faction-group="{{ faction.group }}">
+      <button class="wh-faction-trigger" type="button" data-faction-toggle="{{ faction.id }}" aria-expanded="false" aria-controls="{{ faction.id }}-detail">
+        <span class="wh-faction-code">{{ faction.code }}</span>
+        <span class="wh-faction-order">0{{ loop.index }}</span>
+        <strong>{{ faction.name }}</strong>
+        <small>{{ faction.latin }}</small>
+        <p>{{ faction.tone }}</p>
+        <i>OPEN DOSSIER</i>
+      </button>
+      <div class="wh-faction-detail" id="{{ faction.id }}-detail" hidden>
+        <p>{{ faction.summary }}</p>
+        <div><span>CHRONICLE LINKS</span><strong>{{ faction.records | length }}</strong></div>
+        <div class="wh-record-links" aria-label="{{ faction.name }}编年关联">
+          {% for record in faction.records %}
+          <a href="./wh40k-chronicle.html#{{ record.id }}"><span>{{ record.dateDisplay }}</span><strong>{{ record.title }}</strong><i>→</i></a>
+          {% endfor %}
+        </div>
+        {% for source in faction.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">来源 / {{ source.title }} ↗</a>{% endfor %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <footer class="wh-catalog-note"><strong>CATALOG RULE</strong><p>势力卡只保存规范事件 ID，不复制事件正文；当编年修订时，这里会自动指向同一条记录。</p></footer>
+</article>
+<noscript><style>.world-wh40k .wh-faction-detail[hidden]{display:block!important}</style></noscript>
+{% endblock %}

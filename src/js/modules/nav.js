@@ -7,20 +7,28 @@ let isTouchDevice = false;
 
 function openMenu() {
   menuOpen = true;
-  document.getElementById('nav-mobile-menu').classList.add('active');
+  const menu = document.getElementById('nav-mobile-menu');
+  menu.classList.add('active');
+  menu.removeAttribute('inert');
+  menu.setAttribute('aria-hidden', 'false');
   document.getElementById('nav-mobile-backdrop').classList.add('active');
   document.getElementById('nav-toggle').classList.add('active');
   document.getElementById('nav-toggle').setAttribute('aria-expanded', 'true');
   document.body.style.overflow = 'hidden';
 }
 
-function closeMenu() {
+function closeMenu({ restoreFocus = false } = {}) {
   menuOpen = false;
-  document.getElementById('nav-mobile-menu').classList.remove('active');
+  const menu = document.getElementById('nav-mobile-menu');
+  menu.classList.remove('active');
+  menu.setAttribute('inert', '');
+  menu.setAttribute('aria-hidden', 'true');
   document.getElementById('nav-mobile-backdrop').classList.remove('active');
-  document.getElementById('nav-toggle').classList.remove('active');
-  document.getElementById('nav-toggle').setAttribute('aria-expanded', 'false');
+  const toggle = document.getElementById('nav-toggle');
+  toggle.classList.remove('active');
+  toggle.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
+  if (restoreFocus) toggle.focus();
 }
 
 export function initNav() {
@@ -60,7 +68,7 @@ export function initNav() {
   // Close on Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && menuOpen) {
-      closeMenu();
+      closeMenu({ restoreFocus: true });
     }
   });
 

@@ -2,7 +2,8 @@
    ref-panel.js — Cross-world reference panel + wormhole
    ═══════════════════════════════════════════════════════════ */
 
-import { findEventById } from './data-loader.js';
+import { findEventById, loadEventIndex } from './data-loader.js';
+import { worldRecordHref } from './world-routing.js';
 
 const overlay = document.getElementById('overlay');
 const refPanel = document.getElementById('ref-panel');
@@ -14,8 +15,11 @@ let wormholeAnim = null;
 let wormholeProgress = 0;
 let portalTargetUrl = null;
 
-export function openRefPanel(eventId, worldId) {
-  const evt = findEventById(eventId);
+export async function openRefPanel(eventId, worldId) {
+  const [evt, eventIndex] = await Promise.all([
+    findEventById(eventId),
+    loadEventIndex(),
+  ]);
   if (!evt) return;
 
   document.getElementById('ref-world-label').textContent = '—— 跨世界引用 ——';
@@ -25,7 +29,11 @@ export function openRefPanel(eventId, worldId) {
 
   // Set wormhole target
   if (worldId) {
-    portalTargetUrl = './' + worldId + '.html#' + eventId;
+    portalTargetUrl = worldRecordHref({
+      worldId,
+      eventId,
+      branchId: eventIndex[eventId]?.branchId,
+    });
     btnWormhole.style.display = 'block';
   } else {
     portalTargetUrl = null;

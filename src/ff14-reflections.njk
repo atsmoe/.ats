@@ -1,0 +1,87 @@
+---
+permalink: ./ff14-reflections.html
+title: 最终幻想XIV · 镜界棱镜
+bodyClass: world-ff14 ff-reflections-page
+pageType: ff14-reflections
+worldId: ff14
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - ff14-world.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<article class="ff-atlas" id="reflection-atlas" aria-labelledby="reflection-title">
+  <header class="ff-atlas-hero">
+    <a class="ff-backlink" href="./ff14.html">← ÆTHERIS / 水晶星海入口</a>
+    <p class="ff-eyebrow">FOURTEEN WORLDS / REFLECTION PRISM</p>
+    <h1 id="reflection-title">镜界<span>棱镜</span></h1>
+    <p>原初世界与十三镜像是空间—以太结构，不是十四条平行时间线。选择晶面读取已公开记录；暗淡晶面保留未知，不用想象填空。</p>
+    <div class="ff-atlas-legend">
+      <span><i class="is-source"></i>原初世界</span>
+      <span><i class="is-recorded"></i>已有记录</span>
+      <span><i class="is-quiet"></i>未建立独立档案</span>
+    </div>
+  </header>
+
+  <div class="ff-reflection-layout">
+    <div class="ff-prism-map" role="group" aria-label="十四世界星盘">
+      <div class="ff-prism-orbit ff-prism-orbit--outer" aria-hidden="true"></div>
+      <div class="ff-prism-orbit ff-prism-orbit--inner" aria-hidden="true"></div>
+      <div class="ff-prism-axis" aria-hidden="true"></div>
+      {% for reflection in ff14Catalog.reflections %}
+      <button class="ff-reflection-node ff-reflection-node--{{ reflection.tone }}{% if loop.first %} is-active{% endif %}"
+        type="button"
+        data-reflection-id="{{ reflection.id }}"
+        aria-pressed="{% if loop.first %}true{% else %}false{% endif %}"
+        aria-controls="{{ reflection.id }}">
+        <span>{{ reflection.code }}</span>
+        <strong>{{ reflection.name }}</strong>
+        <i></i>
+      </button>
+      {% endfor %}
+      <div class="ff-prism-caption" aria-hidden="true"><span>THE SUNDERING</span><i></i><span>NOT TO SCALE</span></div>
+    </div>
+
+    <div class="ff-reflection-panels" aria-live="polite">
+      {% for reflection in ff14Catalog.reflections %}
+      <section class="ff-reflection-panel ff-reflection-panel--{{ reflection.tone }}"
+        id="{{ reflection.id }}"
+        data-reflection-panel="{{ reflection.id }}"
+        {% if not loop.first %}hidden{% endif %}>
+        <header>
+          <span>{% if reflection.id === 'source' %}SOURCE / ORIGIN{% else %}REFLECTION / {{ reflection.code }}{% endif %}</span>
+          <i>{{ reflection.status }}</i>
+          <h2>{{ reflection.name }}</h2>
+          {% if reflection.latin %}<small>{{ reflection.latin }}</small>{% endif %}
+        </header>
+        <p>{{ reflection.summary }}</p>
+        <div class="ff-reflection-records">
+          {% if reflection.records.length %}
+          <span>CANONICAL RECORDS / {{ reflection.records.length }}</span>
+          {% for record in reflection.records %}
+          <a href="./ff14-chronicle.html#{{ record.id }}"><time>{{ record.dateDisplay }}</time><strong>{{ record.title }}</strong><i>→</i></a>
+          {% endfor %}
+          {% else %}
+          <div class="ff-quiet-record"><i></i><strong>NO PUBLIC INDEX</strong><p>保持暗面，直到资料来源、编号语义和剧透边界可以同时说明。</p></div>
+          {% endif %}
+        </div>
+        <footer>
+          {% for source in reflection.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">来源 / {{ source.title }} ↗</a>{% endfor %}
+        </footer>
+      </section>
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="ff-model-rule">
+    <strong>MODEL BOUNDARY</strong>
+    <p>第八灵灾相关未来属于时间分支；天外文明属于星海航路；Vana’diel 属于联动外部世界。三者都不占用镜像世界编号。</p>
+    <a href="https://na.finalfantasyxiv.com/lodestone/topics/detail/97a2a4790be2d450e2737f8a53e8d0ce19fc122d" target="_blank" rel="noopener noreferrer">页面级设定参考 / Encyclopædia Eorzea III ↗</a>
+  </aside>
+</article>
+<noscript><style>.world-ff14 .ff-prism-map{display:none!important}.world-ff14 .ff-reflection-layout{display:block!important}.world-ff14 .ff-reflection-panel[hidden]{display:block!important}.world-ff14 .ff-reflection-panels{max-height:none!important;overflow:visible!important}</style></noscript>
+{% endblock %}

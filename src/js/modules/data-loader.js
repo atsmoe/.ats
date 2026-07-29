@@ -67,6 +67,18 @@ const _version = (typeof document !== 'undefined'
 const _v = _version ? `?v=${_version}` : '';
 
 /**
+ * Load one generated JSON data file through the shared retry/error boundary.
+ * Callers that need domain-specific hydration can layer it on this transport.
+ * @param {string} fileName
+ * @param {string} [label=fileName]
+ * @returns {Promise<Object>}
+ */
+export async function loadDataFile(fileName, label = fileName) {
+  const resp = await fetchWithRetry(`./data/${fileName}${_v}`, label);
+  return resp.json();
+}
+
+/**
  * Load world data JSON, cached in memory after first fetch.
  * @param {string} worldId
  * @returns {Promise<Object>}
@@ -96,14 +108,27 @@ function rebuildBranchEvents(branch) {
 
 export async function loadWorldData(worldId) {
   if (worldCache.has(worldId)) return worldCache.get(worldId);
-  const resp = await fetchWithRetry(`./data/${worldId}.json${_v}`, worldId);
-  const data = await resp.json();
-  // Rebuild flat events arrays from eras (removed from JSON to save ~50% payload)
-  for (const branch of (data.branches || [])) {
-    rebuildBranchEvents(branch);
+
+  const pending = loadDataFile(`${worldId}.json`, worldId)
+    .then(data => {
+      // Rebuild flat events arrays from eras (removed from JSON to save ~50% payload)
+      for (const branch of (data.branches || [])) {
+        rebuildBranchEvents(branch);
+      }
+      worldCache.set(worldId, data);
+      return data;
+    });
+  worldCache.set(worldId, pending);
+
+  try {
+    return await pending;
+  } catch (error) {
+    // A failed request never became cached world data; keep retries possible.
+    if (worldCache.get(worldId) === pending) {
+      worldCache.delete(worldId);
+    }
+    throw error;
   }
-  worldCache.set(worldId, data);
-  return data;
 }
 
 /**
@@ -143,14 +168,17 @@ export async function getBranches(worldId) {
  */
 export async function getBranchEvents(worldId, branchId) {
   const data = await loadWorldData(worldId);
-  for (const branch of (data.branches || [])) {
-    if (branch.id === branchId) return branch.events || [];
-    if (branch.subBranches) {
-      const sub = branch.subBranches.find(sb => sb.id === branchId);
-      if (sub) return sub.events || [];
+
+  function findBranch(branches) {
+    for (const branch of branches || []) {
+      if (branch.id === branchId) return branch;
+      const nested = findBranch(branch.subBranches);
+      if (nested) return nested;
     }
+    return null;
   }
-  return [];
+
+  return findBranch(data.branches)?.events || [];
 }
 
 /**

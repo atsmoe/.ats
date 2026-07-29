@@ -1,81 +1,133 @@
 ---
 permalink: ./ff14.html
-title: 最终幻想XIV
-bodyClass: world-ff14
-pageType: world
+title: 最终幻想XIV · 水晶星海
+bodyClass: world-ff14 ff-world-home
+pageType: ff14-home
 worldId: ff14
 cssFiles:
   - base.css
   - nav.css
-  - timeline.css
-  - ref-panel.css
   - worlds.css
+  - ff14-world.css
   - responsive.css
 ---
 {% extends "base.njk" %}
 
 {% block content %}
-<!-- Timeline View -->
-<div id="timeline" class="active">
-  <div class="tl-cover">
-    <div class="tl-cover-inner">
-      <h1>最终幻想XIV · 艾欧泽亚</h1>
-      <p>十四个世界同归一源。从万物的分裂到光暗的终末之战，水晶的意志指引着冒险者穿越星海、横跨折射——在原初世界与碎片世界之间，铭刻每一个灵魂的足迹。</p>
-      <div class="calendar-badge">伊 修 加 德 历</div>
+<article class="ff-portal" id="ff14-world" aria-labelledby="ff-world-title">
+  <header class="ff-hero">
+    <div class="ff-aether-sky" aria-hidden="true">
+      <div class="ff-aether-ring ff-aether-ring--outer"></div>
+      <div class="ff-aether-ring ff-aether-ring--inner"></div>
+      <div class="ff-constellation-lines"></div>
+      <svg class="ff-mothercrystal" viewBox="0 0 420 620" role="img">
+        <defs>
+          <linearGradient id="ff-crystal-main" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#f5fbff"/><stop offset=".32" stop-color="#a9dff2"/>
+            <stop offset=".68" stop-color="#7d75d6"/><stop offset="1" stop-color="#3c2b78"/>
+          </linearGradient>
+          <linearGradient id="ff-crystal-side" x1="1" y1="0" x2="0" y2="1">
+            <stop stop-color="#e0c5ff"/><stop offset="1" stop-color="#34598c"/>
+          </linearGradient>
+          <filter id="ff-crystal-glow"><feGaussianBlur stdDeviation="16"/></filter>
+        </defs>
+        <path class="ff-crystal-aura" d="M210 24 362 230 298 520 210 596 119 520 58 230Z"/>
+        <path fill="url(#ff-crystal-main)" d="M210 40 338 238 272 506 210 578 137 496 82 238Z"/>
+        <path fill="url(#ff-crystal-side)" d="m210 40 128 198-128 91-128-91Z"/>
+        <path class="ff-crystal-face" d="m210 40 62 466-62 72-73-82Z"/>
+        <path class="ff-crystal-line" d="m82 238 128 91 128-91M137 496l73-167 62 177M210 40v538"/>
+      </svg>
+      {% for reflection in ff14Catalog.reflections %}
+      <i class="ff-orbit-star ff-orbit-star--{{ loop.index }}"></i>
+      {% endfor %}
+      <span class="ff-aether-label ff-aether-label--one">AETHER CURRENT / STABLE</span>
+      <span class="ff-aether-label ff-aether-label--two">THE SOURCE + XIII REFLECTIONS</span>
     </div>
-  </div>
 
-  <div class="tl-branches" id="tl-branches">
-    <!-- Populated by JS -->
-  </div>
-  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;">
-    <!-- Populated by JS when shard group is selected -->
-  </div>
-
-  <div class="tl-container" id="tl-container">
-    <!-- Events injected by JS -->
-  </div>
-
-</div>
-
-<!-- Event Detail Modal -->
-<div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-ff14" aria-describedby="event-modal-desc-ff14">
-    <button class="event-modal-close" title="关闭">✕</button>
-    <div class="event-modal-date"></div>
-    <div class="event-modal-title" id="event-modal-title-ff14"></div>
-    <div class="event-modal-meta"></div>
-    <div class="event-modal-desc" id="event-modal-desc-ff14"></div>
-    <div class="event-modal-img"></div>
-    <div class="event-modal-sources"></div>
-  </div>
-</div>
-
-<!-- Overlay & Reference Panel -->
-<div id="overlay"></div>
-<div id="ref-panel">
-  <button class="ref-close" id="ref-close">✕</button>
-  <div class="ref-content">
-    <h2>跨 世 界 引 用</h2>
-    <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
-    <div class="ref-event-date" id="ref-event-date"></div>
-    <div class="ref-event-title" id="ref-event-title"></div>
-    <div class="ref-event-desc" id="ref-event-desc"></div>
-    <div class="ref-related">
-      <h3>关联事件</h3>
-      <a href="#">▸ 引用事件</a>
+    <div class="ff-hero-register" aria-label="最终幻想XIV档案状态">
+      <span><i></i> ECHO RESONANCE / ACQUIRED</span>
+      <span>ATS / WORLD-03 / ÆTHERIS</span>
+      <span>PATCH {{ ff14Catalog.coverage.currentPatch }}</span>
     </div>
-    <button class="btn-wormhole" id="btn-wormhole">穿 越 虫 洞</button>
-  </div>
-</div>
 
-<!-- Era sidebar navigation -->
-<nav id="era-nav"></nav>
+    <div class="ff-hero-copy">
+      <p class="ff-eyebrow">FINAL FANTASY XIV / A CRYSTAL CALLS</p>
+      <h1 id="ff-world-title"><span>最终幻想 XIV</span>水晶星海</h1>
+      <p>这里不把十四个世界压成一条年表。听见水晶的回声后，你可以沿历史、镜像或旅途进入；三种读法始终回到同一组规范记录。</p>
+      <div class="ff-hero-actions">
+        <a href="./ff14-journeys.html?journey=dawntrail#dawntrail">继续当前旅途</a>
+        <a href="#ff-archive-boundary">查看收录边界</a>
+      </div>
+    </div>
 
-<!-- Back to top -->
-<button id="back-to-top" title="回到顶部">▲</button>
-{% endblock %}
+    <a class="ff-current-call" href="./ff14-journeys.html?journey=dawntrail#dawntrail">
+      <span>CURRENT CALL / 7.5 PART 1</span>
+      <strong>向天之路</strong>
+      <p>自第九世界归来，围绕“钥匙”的调查仍在继续。</p>
+      <i>回应水晶的呼唤 →</i>
+    </a>
+  </header>
 
-{% block extraScripts %}
-<script defer src="./js/virtual-timeline.js"></script>
+  <nav class="ff-entry-grid" aria-label="最终幻想XIV探索方向">
+    <a class="ff-entry ff-entry--chronicle" href="./ff14-chronicle.html">
+      <span>01 / CRYSTAL CHRONICLE</span>
+      <strong>星海编年</strong>
+      <p>{{ ff14Catalog.stats.records }} 条规范记录，涵盖古代世界、灵灾星历、主线长卷、秘话与设定索引。</p>
+      <i>展开水晶长卷 →</i>
+    </a>
+    <a class="ff-entry ff-entry--reflections" href="./ff14-reflections.html">
+      <span>02 / REFLECTION PRISM</span>
+      <strong>镜界棱镜</strong>
+      <p>原初世界居中，十三镜像环绕。只点亮有可追溯资料的世界，不给未知槽位编造文明。</p>
+      <i>校准十四面棱镜 →</i>
+    </a>
+    <a class="ff-entry ff-entry--journeys" href="./ff14-journeys.html">
+      <span>03 / JOURNEY CONSTELLATION</span>
+      <strong>旅途星座</strong>
+      <p>从旧艾欧泽亚到金曦之遗辉，用八段冒险弧线阅读地点、主题与时代转折。</p>
+      <i>选择下一颗星 →</i>
+    </a>
+  </nav>
+
+  <section class="ff-saga-boundary" aria-labelledby="ff-saga-title">
+    <header>
+      <span>ONE STAR / TWO GREAT MOVEMENTS</span>
+      <h2 id="ff-saga-title">终点不是停笔，而是换一张地图</h2>
+    </header>
+    <div class="ff-saga-grid">
+      <article>
+        <span>1.x — 6.0</span>
+        <h3>旧星长篇</h3>
+        <p>海德林与佐迪亚克的篇章在《晓月之终途》6.0收束。它是一次完整终章，不是以后所有故事的永久标题。</p>
+        <a href="./ff14-journeys.html?journey=endwalker#endwalker">抵达终途 →</a>
+      </article>
+      <div class="ff-saga-crystal" aria-hidden="true"><i></i><i></i><i></i></div>
+      <article>
+        <span>6.1 — 7.x / SITE READING PATH</span>
+        <h3>终章之后</h3>
+        <p>本站把从藏宝图到图拉尔、亚历山德里亚与第九世界的故事编成一条阅读路径；它不是官方公布的新大篇章名称。</p>
+        <a href="./ff14-journeys.html?journey=newfound#newfound">重新启程 →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="ff-archive-boundary" id="ff-archive-boundary" aria-labelledby="ff-boundary-title">
+    <div>
+      <span>ARCHIVE ATTUNEMENT</span>
+      <h2 id="ff-boundary-title">收录边界</h2>
+      <p>{{ ff14Catalog.coverage.notice }}</p>
+    </div>
+    <dl>
+      <div><dt>规范记录</dt><dd>{{ ff14Catalog.stats.records }}</dd></div>
+      <div><dt>主编年</dt><dd>{{ ff14Catalog.stats.mainline }}</dd></div>
+      <div><dt>镜像记录</dt><dd>{{ ff14Catalog.stats.reflections }}</dd></div>
+      <div><dt>核验日期</dt><dd>{{ ff14Catalog.coverage.asOf }}</dd></div>
+    </dl>
+    <p class="ff-boundary-sources">
+      {% for source in ff14Catalog.coverage.sources %}
+      <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>
+      {% endfor %}
+    </p>
+  </section>
+</article>
 {% endblock %}

@@ -49,6 +49,68 @@ test('archive contract rejects a context without a stable ID', () => {
   assert.match(errors.join('\n'), /archive context is missing an id/);
 });
 
+test('published integrated-strategy endings require stable IDs and traceable sources', () => {
+  const { archiveValidationErrors } = require('../src/validators/validate-data.js');
+  const errors = archiveValidationErrors('arknights', {
+    subEntities: [{
+      timeline: {
+        branches: [{
+          id: 'if-integrated',
+          subBranches: [{
+            id: 'if-example',
+            order: 1,
+            name: '示例主题',
+            type: 'integrated-strategy',
+            description: '已发布摘要',
+            sharedPremise: '共同起点',
+            topologyMode: 'parallel',
+            lastReviewedAt: '2026-07-22',
+            sources: [{ title: '页面来源', url: 'https://example.com/topic' }],
+            endings: [{
+              endingNumber: 1,
+              title: '正式结局',
+              description: '结局摘要',
+              sources: [],
+            }],
+          }],
+        }],
+      },
+    }],
+    archive: { dossiers: [] },
+  });
+  const message = errors.join('\n');
+
+  assert.match(message, /if-example.*ending 1 needs an explicit stable id/);
+  assert.match(message, /if-example-ending-1.*at least one traceable source/);
+  assert.match(message, /if-example-ending-1.*needs a substantive aftermath/);
+});
+
+test('published integrated-strategy topics reject placeholder copy and incomplete metadata', () => {
+  const { archiveValidationErrors } = require('../src/validators/validate-data.js');
+  const errors = archiveValidationErrors('arknights', {
+    subEntities: [{
+      timeline: {
+        branches: [{
+          id: 'if-integrated',
+          subBranches: [{
+            id: 'if-placeholder',
+            name: '占位主题',
+            type: 'integrated-strategy',
+            description: '待完工：稍后补充',
+            endings: [],
+          }],
+        }],
+      },
+    }],
+    archive: { dossiers: [] },
+  });
+  const message = errors.join('\n');
+
+  assert.match(message, /if-placeholder.*missing required field "order"/);
+  assert.match(message, /if-placeholder.*contains placeholder copy/);
+  assert.match(message, /if-placeholder.*at least one ending/);
+});
+
 test('source data validates without warnings', () => {
   const result = spawnSync(
     process.execPath,

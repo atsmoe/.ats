@@ -1,0 +1,65 @@
+---
+pagination:
+  data: arknightsTopics
+  size: 1
+  alias: topic
+  addAllPagesToCollections: false
+permalink: "./arknights-is-{{ topic.slug }}.html"
+eleventyComputed:
+  title: "{{ topic.name }} · 集成战略"
+  contextId: "{{ topic.id }}"
+bodyClass: world-arknights ark-is-page
+pageType: arknights-is-topic
+worldId: arknights
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - arknights-world.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<article class="is-topic" id="is-topic" data-context="{{ topic.id }}" aria-labelledby="is-topic-title">
+  <header class="is-topic-masthead">
+    <div class="is-topic-noise" aria-hidden="true"><i></i><i></i><i></i></div>
+    <a class="ark-backlink" href="./arknights-integrated-strategies.html">← IS ARRAY / 七主题索引</a>
+    <div class="is-topic-sequence">IS-0{{ topic.order }} / 07</div>
+    <p class="is-topic-kicker" data-topic-kicker>INTEGRATED STRATEGIES</p>
+    <h1 id="is-topic-title">{{ topic.name }}</h1>
+    <p class="is-topic-synopsis">{{ topic.synopsis }}</p>
+    <div class="is-topic-status"><span data-topic-status>正在读取档案</span><span data-topic-reviewed>REVIEW / —</span></div>
+  </header>
+
+  <div class="is-topic-content" data-topic-content aria-live="polite" aria-busy="false">
+    <div class="is-topic-loading" role="status"><i></i><span>正在建立主题观测接口</span></div>
+    <noscript>
+      <div class="is-topic-noscript">
+        <style>.is-topic-loading{display:none}.is-topic-noscript{display:block}</style>
+        <p class="is-topic-noscript-warning"><strong>完整剧透静态档案：</strong>当前浏览器未启用脚本，无法显示进入确认；以下内容会直接展示全部结局。</p>
+        <section><span>01 / OVERVIEW</span><h2>主题概览</h2><p>{{ topic.description }}</p></section>
+        <section><span>02 / COMMON PREMISE</span><h2>共同起点</h2><p>{{ topic.sharedPremise }}</p></section>
+        <section><span>03 / NARRATIVE TOPOLOGY</span><h2>叙事拓扑</h2><p>本专题使用 {{ topic.topologyMode }} 结构并列已收录结果；无脚本模式不绘制交互连线。</p></section>
+        <section><span>04 / OUTCOME RECORDS</span><h2>结局记录</h2>
+          {% for ending in topic.endings %}<article id="{{ ending.id }}"><h3>{{ ending.title }}</h3><p>{{ ending.description }}</p>{% if ending.conditions %}<p><strong>观测条件：</strong>{{ ending.conditions }}</p>{% endif %}<p><strong>后续：</strong>{{ ending.aftermath }}</p>{% for source in ending.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}</article>{% endfor %}
+        </section>
+        <section><span>05 / RELATED RECORDS</span><h2>关联记录</h2><div>{% for entity in topic.entities %}<a href="{{ entity.url }}" target="_blank" rel="noopener noreferrer">{{ entity.label }} ↗</a>{% endfor %}</div></section>
+        <section><span>06 / SOURCES & REVIEW</span><h2>来源与核验</h2><p>最后核验：{{ topic.lastReviewedAt }}</p>{% for source in topic.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}</section>
+      </div>
+    </noscript>
+  </div>
+
+  <div class="ark-spoiler-gate" id="ark-spoiler-gate" role="dialog" aria-modal="true" aria-labelledby="ark-spoiler-title" aria-describedby="ark-spoiler-description" hidden>
+    <div class="ark-spoiler-card">
+      <span>FULL RECORD / SPOILER</span>
+      <h2 id="ark-spoiler-title">本专题展示完整结局信息</h2>
+      <p id="ark-spoiler-description">继续后将直接显示故事转折、结局标题与条件。本设备确认一次后不再重复提醒。</p>
+      <div>
+        <button type="button" data-spoiler-accept>进入完整档案</button>
+        <a href="./arknights-integrated-strategies.html">返回主题索引</a>
+      </div>
+    </div>
+  </div>
+</article>
+{% endblock %}

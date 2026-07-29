@@ -5,6 +5,7 @@
 import { BackgroundManager } from './background-manager.js';
 import { initNav } from './nav.js';
 import { ANIM } from './anim-tokens.js';
+import { worldRecordHref } from './world-routing.js';
 
 /**
  * Render a themed error card when world data fails to load.
@@ -55,8 +56,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const pageType = document.body.dataset.page;
 
+  if (pageType?.startsWith('arknights-')) {
+    const { initArknightsEntry } = await import('./arknights-entry.js');
+    await initArknightsEntry();
+    return;
+  }
+
+  if (pageType?.startsWith('ff14-')) {
+    const { initFf14Entry } = await import('./ff14-entry.js');
+    await initFf14Entry();
+    return;
+  }
+
+  if (pageType?.startsWith('wh40k-')) {
+    const { initWh40kEntry } = await import('./wh40k-entry.js');
+    await initWh40kEntry();
+    return;
+  }
+
   if (pageType === 'world') {
     const worldId = document.body.dataset.world;
+    const worldView = document.body.dataset.view;
+    const isChronicleView = worldView === 'chronicle'
+      || worldView === 'wh40k-chronicle'
+      || worldView === 'ff14-chronicle';
     console.log('%c 加载世界: ' + worldId, 'color:#d4923a;');
 
     // Init background engine for world pages (Canvas 2D)
@@ -72,6 +95,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       setData: setTimelineData,
       initEventModal,
       showEventDetails,
+      syncBranchPath,
+      syncEraNavigation,
     } = await import('./timeline-ui.js');
     const { setData: setPortalData, initPortalArrival } = await import('./portal-transition.js');
 
@@ -87,14 +112,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       const loadedData = await loadWorldData(worldId);
       const archive = createWorldArchive(loadedData);
       const chronicleSnapshot = archive.explore({ lens: 'chronicle' });
-      const timelineData = projectChronicleTimeline(chronicleSnapshot);
+      let timelineData = projectChronicleTimeline(chronicleSnapshot);
+      if (worldId === 'wh40k' && worldView === 'wh40k-chronicle') {
+        const { prepareWh40kChronicle } = await import('./wh40k-chronicle-adapter.js');
+        timelineData = prepareWh40kChronicle(timelineData, {
+          preserveRecordIds: [location.hash.slice(1)].filter(Boolean),
+        });
+      }
+      if (worldId === 'arknights' && worldView === 'chronicle') {
+        timelineData.branches = timelineData.branches
+          .filter(branch => branch.id === 'mainline');
+      }
       setTimelineData(timelineData);
       setPortalData(timelineData);
       populateBranchTabs();
       renderEvents('mainline');
-      updateTimelineCover(worldId);
+      if (!isChronicleView) updateTimelineCover(worldId);
 
-      if (worldId === 'arknights') {
+      if (worldId === 'arknights' && document.getElementById('ark-archive')) {
         const { initArknightsArchive } = await import('./arknights-archive.js');
         initArknightsArchive({ archive, onOpenRecord: showEventDetails });
       }
@@ -115,7 +150,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    initPortalArrival();
+    initPortalArrival({
+      onSelectBranch: syncBranchPath,
+      onTimelineLoaded: syncEraNavigation,
+    });
     initEventModal();
 
   } else if (pageType === 'about') {
@@ -130,14 +168,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 document.addEventListener('click', (e) => {
   const link = e.target.closest('.cross-world-link');
   if (!link) return;
+  e.preventDefault();
 
   const worldId = link.dataset.world;
   const eventId = link.dataset.target;
   if (!worldId) return;
 
-  const targetUrl = './' + worldId + '.html' + (eventId ? '#' + eventId : '');
-
-  import('./portal-transition.js').then(({ playPortalOutgoing }) => {
+  Promise.all([
+    import('./portal-transition.js'),
+    eventId ? import('./data-loader.js').then(({ loadEventIndex }) => loadEventIndex()) : null,
+  ]).then(([{ playPortalOutgoing }, eventIndex]) => {
+    const branchId = eventId ? eventIndex?.[eventId]?.branchId : null;
+    const targetUrl = eventId
+      ? worldRecordHref({ worldId, eventId, branchId })
+      : `./${worldId}.html`;
     playPortalOutgoing(e, targetUrl);
+  }).catch(error => {
+    console.error('Unable to resolve cross-world record route:', error);
+    window.location.href = eventId
+      ? worldRecordHref({ worldId, eventId })
+      : `./${worldId}.html`;
   });
 });

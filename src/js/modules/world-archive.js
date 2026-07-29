@@ -32,9 +32,12 @@ function compileContexts(branches, parentId, model) {
       }
       model.sections.push({
         id: sectionId,
+        sourceId: era.id || null,
         contextId: branch.id,
         kind: 'era',
         title: era.title || '',
+        order: era.order,
+        chronologyRank: era.chronologyRank,
         recordIds,
       });
       sectionIds.push(sectionId);
@@ -68,8 +71,15 @@ function compileContexts(branches, parentId, model) {
       id: branch.id,
       name: branch.name || branch.id,
       description: branch.description || '',
+      synopsis: branch.synopsis || branch.description || '',
+      order: branch.order,
       status: branch.status,
       type: branch.type,
+      sharedPremise: branch.sharedPremise || '',
+      topologyMode: branch.topologyMode || 'parallel',
+      entityIds: [...(branch.entityIds || [])],
+      sources: [...(branch.sources || [])],
+      lastReviewedAt: branch.lastReviewedAt || null,
       isDefault: Boolean(branch.isDefault),
       parentId: parentId || branch.parentBranchId || null,
       divergeAtEventId: branch.divergeAtEventId,
@@ -92,6 +102,7 @@ export function createWorldArchive(data) {
   };
   model.rootContextIds = compileContexts(data.branches, null, model);
   const contextsById = new Map(model.contexts.map(context => [context.id, context]));
+  const sectionsById = new Map(model.sections.map(section => [section.id, section]));
   const archiveMeta = data.archive || {};
 
   function snapshotBase(lens) {
@@ -107,6 +118,50 @@ export function createWorldArchive(data) {
   return Object.freeze({
     explore(request = {}) {
       const lens = request.lens || 'chronicle';
+      if (lens === 'context') {
+        const context = contextsById.get(request.contextId);
+        if (!context) {
+          throw new Error(`Archive context "${request.contextId || ''}" was not found`);
+        }
+        const sections = context.sectionIds.map(sectionId => sectionsById.get(sectionId));
+        const recordsById = Object.create(null);
+        for (const section of sections) {
+          for (const recordId of section.recordIds) {
+            recordsById[recordId] = model.recordsById[recordId];
+          }
+        }
+        return {
+          ...snapshotBase('context'),
+          context,
+          recordsById,
+          sections,
+          relations: [],
+        };
+      }
+
+      if (lens === 'collection') {
+        const context = contextsById.get(request.contextId);
+        if (!context) {
+          throw new Error(`Archive context "${request.contextId || ''}" was not found`);
+        }
+        const contexts = context.childIds
+          .map(contextId => contextsById.get(contextId))
+          .map(child => ({
+            ...child,
+            recordCount: child.sectionIds.reduce((count, sectionId) => (
+              count + (sectionsById.get(sectionId)?.recordIds.length || 0)
+            ), 0),
+          }))
+          .sort((left, right) => (left.order ?? Number.MAX_SAFE_INTEGER)
+            - (right.order ?? Number.MAX_SAFE_INTEGER));
+        return {
+          ...snapshotBase('collection'),
+          context,
+          contexts,
+          relations: [],
+        };
+      }
+
       if (lens === 'dossier') {
         const dossier = (data.archive?.dossiers || [])
           .find(item => item.id === request.dossierId);

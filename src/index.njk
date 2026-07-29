@@ -16,23 +16,24 @@ cssFiles:
 {% block content %}
 <!-- Star Map View -->
 <div id="star-map">
+  <h1 class="sr-only">群星之间 · 世界档案</h1>
   <!-- 3D cluster markers (positioned by star-map-3d.js) -->
   <div id="galaxy-markers">
-    <div class="galaxy-marker" id="marker-arknights" data-world="arknights">
+    <a class="galaxy-marker" id="marker-arknights" data-world="arknights" href="./arknights.html">
       <div class="galaxy-marker-glow" style="--marker-color: #d4923a;"></div>
       <div class="galaxy-marker-core" style="--marker-color: #d4923a;"></div>
       <div class="galaxy-marker-label">泰拉大陆</div>
-    </div>
-    <div class="galaxy-marker" id="marker-wh40k" data-world="wh40k">
+    </a>
+    <a class="galaxy-marker" id="marker-wh40k" data-world="wh40k" href="./wh40k.html">
       <div class="galaxy-marker-glow" style="--marker-color: #c85050;"></div>
       <div class="galaxy-marker-core" style="--marker-color: #c85050;"></div>
-      <div class="galaxy-marker-label">神圣泰拉</div>
-    </div>
-    <div class="galaxy-marker" id="marker-ff14" data-world="ff14">
+      <div class="galaxy-marker-label">破碎银河</div>
+    </a>
+    <a class="galaxy-marker" id="marker-ff14" data-world="ff14" href="./ff14.html">
       <div class="galaxy-marker-glow" style="--marker-color: #b8c4d8;"></div>
       <div class="galaxy-marker-core" style="--marker-color: #b8c4d8;"></div>
       <div class="galaxy-marker-label">艾欧泽亚</div>
-    </div>
+    </a>
   </div>
 
   <!-- Galaxy hover tooltip -->
@@ -44,9 +45,15 @@ cssFiles:
 </div>
 
 <!-- Galaxy detail overlay -->
-<div id="galaxy-detail">
+<div id="galaxy-detail"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="detail-title"
+  aria-describedby="detail-desc"
+  aria-hidden="true"
+  inert>
   <div class="detail-overlay" id="detail-overlay"></div>
-  <button class="detail-close" id="detail-close">✕</button>
+  <button class="detail-close" id="detail-close" type="button" aria-label="关闭世界详情">✕</button>
   <div class="detail-content">
     <div class="detail-body">
       <canvas id="galaxy-canvas" width="640" height="640"></canvas>
@@ -55,7 +62,7 @@ cssFiles:
     <div class="detail-sub" id="detail-sub"></div>
     <p class="detail-desc" id="detail-desc"></p>
     <div class="detail-calendar" id="detail-calendar"></div>
-    <button class="btn-detail-enter" id="detail-enter-btn">进 入 编 年 史</button>
+    <button class="btn-detail-enter" id="detail-enter-btn" type="button">进 入 编 年 史</button>
   </div>
 </div>
 {% endblock %}

@@ -63,6 +63,15 @@ import { loadWorldData, loadEventIndex } from './data-loader.js';
 
 const ready = {};
 
+function findBranchById(branches, branchId) {
+  for (const branch of branches || []) {
+    if (branch.id === branchId) return branch;
+    const nested = findBranchById(branch.subBranches, branchId);
+    if (nested) return nested;
+  }
+  return null;
+}
+
 /**
  * Ensure world data is loaded (lazy init — caches the promise).
  * @param {string} worldId
@@ -70,7 +79,11 @@ const ready = {};
  */
 async function ensureWorld(worldId) {
   if (!ready[worldId]) {
-    ready[worldId] = loadWorldData(worldId);
+    ready[worldId] = loadWorldData(worldId).catch(error => {
+      // Failed initialization never produced cacheable world data.
+      delete ready[worldId];
+      throw error;
+    });
   }
   return ready[worldId];
 }
@@ -103,7 +116,7 @@ export async function getBranches(worldId) {
  */
 export async function getBranchEvents(worldId, branchId) {
   const data = await ensureWorld(worldId);
-  const branch = data.branches.find(b => b.id === branchId);
+  const branch = findBranchById(data.branches, branchId);
   return branch ? branch.events : [];
 }
 
@@ -118,7 +131,7 @@ export async function findEventById(eventId) {
   const loc = idx[eventId];
   if (!loc) return null;
   const data = await ensureWorld(loc.worldId);
-  const branch = data.branches.find(b => b.id === loc.branchId);
+  const branch = findBranchById(data.branches, loc.branchId);
   if (!branch) return null;
   return branch.events[loc.eventIndex] || null;
 }

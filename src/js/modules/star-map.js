@@ -7,6 +7,9 @@ import { GALAXIES } from './galaxies.js';
 import { ANIM } from './anim-tokens.js';
 
 let detailGalaxy = null;
+let detailTrigger = null;
+let interactionController = null;
+let navigationTimer = null;
 
 // DOM refs
 let galaxyTooltipEl, gtName, gtSub;
@@ -14,23 +17,44 @@ let galaxyDetailEl, detailOverlay, detailCloseBtn;
 let detailTitleEl, detailSubEl, detailDescEl, detailCalendarEl, detailEnterBtn;
 let galaxyCanvas, galaxyCtx;
 
-function showGalaxyDetail(gid) {
+function listen(node, type, handler, options = {}) {
+  node.addEventListener(type, handler, {
+    ...options,
+    signal: interactionController.signal,
+  });
+}
+
+function showGalaxyDetail(gid, trigger = null) {
   const g = GALAXIES[gid];
   if (!g) return;
   detailGalaxy = gid;
+  detailTrigger = trigger || document.activeElement?.closest?.('.galaxy-marker') || null;
   window.__detailGalaxy = gid;
   detailTitleEl.textContent = g.name;
   detailSubEl.textContent = g.subtitle;
   detailDescEl.textContent = g.description;
   detailCalendarEl.textContent = g.calendar;
+  galaxyDetailEl.removeAttribute('inert');
+  galaxyDetailEl.setAttribute('aria-hidden', 'false');
   galaxyDetailEl.classList.add('active');
+  document.body.style.overflow = 'hidden';
   renderGalaxyPreview(gid);
+  const closeButton = detailCloseBtn;
+  requestAnimationFrame(() => closeButton?.focus());
 }
 
-function hideGalaxyDetail() {
+function hideGalaxyDetail({ restoreFocus = true } = {}) {
+  const triggerToRestore = detailTrigger;
   detailGalaxy = null;
   window.__detailGalaxy = null;
   galaxyDetailEl.classList.remove('active');
+  galaxyDetailEl.setAttribute('inert', '');
+  galaxyDetailEl.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  if (restoreFocus && triggerToRestore?.isConnected) {
+    requestAnimationFrame(() => triggerToRestore?.focus());
+  }
+  detailTrigger = null;
 }
 
 function renderGalaxyPreview(gid) {
@@ -122,7 +146,22 @@ function renderGalaxyPreview(gid) {
   galaxyCtx.fill();
 }
 
+export function destroyStarMap() {
+  interactionController?.abort();
+  interactionController = null;
+  if (navigationTimer) {
+    clearTimeout(navigationTimer);
+    navigationTimer = null;
+  }
+  if (detailGalaxy && galaxyDetailEl) {
+    hideGalaxyDetail({ restoreFocus: false });
+  }
+}
+
 export function initStarMap() {
+  destroyStarMap();
+  interactionController = new AbortController();
+
   galaxyTooltipEl = document.getElementById('galaxy-tooltip');
   gtName = document.getElementById('gt-name');
   gtSub = document.getElementById('gt-sub');
@@ -161,21 +200,41 @@ export function initStarMap() {
       galaxyTooltipEl.style.top = ty + 'px';
     }
 
-    marker.addEventListener('mouseenter', () => {
+    listen(marker, 'mouseenter', () => {
       positionTooltip();
       galaxyTooltipEl.classList.add('visible');
       marker.classList.add('hovered');
     });
 
-    marker.addEventListener('mouseleave', () => {
+    listen(marker, 'mouseleave', () => {
       if (!marker.classList.contains('selected')) {
         galaxyTooltipEl.classList.remove('visible');
         marker.classList.remove('hovered');
       }
     });
 
+    listen(marker, 'focus', () => {
+      positionTooltip();
+      galaxyTooltipEl.classList.add('visible');
+      marker.classList.add('hovered');
+    });
+
+    listen(marker, 'blur', () => {
+      if (!marker.classList.contains('selected')) {
+        galaxyTooltipEl.classList.remove('visible');
+        marker.classList.remove('hovered');
+      }
+    });
+
+    listen(marker, 'keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      showGalaxyDetail(gid, marker);
+    });
+
     if (isTouchDevice) {
-      marker.addEventListener('click', (e) => {
+      listen(marker, 'click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
         if (!marker.classList.contains('selected')) {
           // First tap: show tooltip + highlight
@@ -187,20 +246,21 @@ export function initStarMap() {
           // Second tap: open detail
           marker.classList.remove('selected');
           galaxyTooltipEl.classList.remove('visible');
-          showGalaxyDetail(gid);
+          showGalaxyDetail(gid, marker);
         }
       });
     } else {
-      marker.addEventListener('click', (e) => {
+      listen(marker, 'click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        showGalaxyDetail(gid);
+        showGalaxyDetail(gid, marker);
       });
     }
   });
 
   // Tap outside to deselect on touch devices
   if (isTouchDevice) {
-    document.addEventListener('click', (e) => {
+    listen(document, 'click', (e) => {
       if (!e.target.closest('.galaxy-marker')) {
         document.querySelectorAll('.galaxy-marker.selected').forEach(m => {
           m.classList.remove('selected');
@@ -211,19 +271,38 @@ export function initStarMap() {
   }
 
   // Detail close
-  detailOverlay.addEventListener('click', () => { if (detailGalaxy) hideGalaxyDetail(); });
-  detailCloseBtn.addEventListener('click', () => { if (detailGalaxy) hideGalaxyDetail(); });
-  detailEnterBtn.addEventListener('click', () => {
+  listen(detailOverlay, 'click', () => { if (detailGalaxy) hideGalaxyDetail(); });
+  listen(detailCloseBtn, 'click', () => { if (detailGalaxy) hideGalaxyDetail(); });
+  listen(detailEnterBtn, 'click', () => {
     if (detailGalaxy) {
       const g = GALAXIES[detailGalaxy];
       const worldId = g.worldId || detailGalaxy;
-      hideGalaxyDetail();
-      setTimeout(() => {
+      hideGalaxyDetail({ restoreFocus: false });
+      navigationTimer = setTimeout(() => {
+        navigationTimer = null;
         window.location.href = './' + worldId + '.html';
       }, 300);
     }
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && detailGalaxy) hideGalaxyDetail();
+  listen(document, 'keydown', (e) => {
+    if (!detailGalaxy) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      hideGalaxyDetail();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusable = [detailCloseBtn, detailEnterBtn].filter(Boolean);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   });
+  listen(window, 'pagehide', destroyStarMap, { once: true });
 }

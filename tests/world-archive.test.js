@@ -155,6 +155,55 @@ test('timeline adapter projects recursive contexts without copying record conten
   assert.strictEqual(child.events[0], snapshot.recordsById['if-mizuki-ending-1']);
 });
 
+test('archive-to-WH40K chronicle pipeline preserves coverage filters and era chronology', () => {
+  const { createWorldArchive } = loadArchiveModule();
+  const { projectChronicleTimeline } = loadModule('src/js/modules/timeline-adapter.js');
+  const { prepareWh40kChronicle } = loadModule('src/js/modules/wh40k-chronicle-adapter.js');
+  const dropped = { id: 'wh-dropped', title: 'Downgraded record' };
+  const ancient = { id: 'wh-ancient', title: 'Ancient record' };
+  const modern = { id: 'wh-modern', title: 'Modern record' };
+  const data = {
+    world: { id: 'wh40k', name: 'Warhammer 40,000' },
+    branches: [{
+      id: 'mainline',
+      name: 'Mainline',
+      eras: [
+        {
+          id: 'modern',
+          title: 'Modern',
+          chronologyRank: 90,
+          events: [modern],
+        },
+        {
+          id: 'ancient',
+          title: 'Ancient',
+          chronologyRank: 10,
+          events: [dropped, ancient],
+        },
+      ],
+    }],
+    archive: {
+      coverage: {
+        excludedRecordIds: ['wh-dropped'],
+      },
+    },
+  };
+
+  const snapshot = createWorldArchive(data).explore({ lens: 'chronicle' });
+  const projected = projectChronicleTimeline(snapshot);
+  const prepared = prepareWh40kChronicle(projected);
+
+  assert.strictEqual(projected.coverage, snapshot.coverage);
+  assert.deepEqual(
+    prepared.branches[0].eras.map(era => era.id),
+    ['ancient', 'modern'],
+  );
+  assert.deepEqual(
+    prepared.branches[0].events.map(record => record.id),
+    ['wh-ancient', 'wh-modern'],
+  );
+});
+
 test('dossier lens returns one semantic snapshot for coverage, context, focus, and alternatives', () => {
   const { createWorldArchive } = loadArchiveModule();
   const archive = createWorldArchive({
@@ -279,4 +328,55 @@ test('archive compilation requires a stable ID or ending number for every ending
       endings: [{ title: '无法定位的结局' }],
     }],
   }), /Ending in context "if-mizuki" needs an id or endingNumber/);
+});
+
+test('collection lens returns ordered integrated-strategy topics without copying records', () => {
+  const { createWorldArchive } = loadArchiveModule();
+  const ending = { id: 'if-second-ending-1', title: '结局记录' };
+  const archive = createWorldArchive({
+    world: { id: 'arknights', name: '明日方舟' },
+    branches: [{
+      id: 'if-integrated',
+      name: '集成战略世界线',
+      subBranches: [
+        {
+          id: 'if-second',
+          order: 2,
+          name: '第二主题',
+          type: 'integrated-strategy',
+          lastReviewedAt: '2026-07-22',
+          endings: [ending],
+        },
+        {
+          id: 'if-first',
+          order: 1,
+          name: '第一主题',
+          type: 'integrated-strategy',
+          endings: [{ id: 'if-first-ending-1', title: '另一结局' }],
+        },
+      ],
+    }],
+  });
+
+  const collection = archive.explore({ lens: 'collection', contextId: 'if-integrated' });
+  const topic = archive.explore({ lens: 'context', contextId: 'if-second' });
+
+  assert.deepEqual(collection.contexts.map(context => context.id), ['if-first', 'if-second']);
+  assert.equal(collection.contexts[1].recordCount, 1);
+  assert.equal(collection.contexts[1].lastReviewedAt, '2026-07-22');
+  assert.strictEqual(topic.recordsById['if-second-ending-1'], ending);
+  assert.deepEqual(topic.sections.map(section => section.kind), ['endings']);
+});
+
+test('context lens rejects an unknown topic instead of returning an empty page', () => {
+  const { createWorldArchive } = loadArchiveModule();
+  const archive = createWorldArchive({
+    world: { id: 'arknights', name: '明日方舟' },
+    branches: [],
+  });
+
+  assert.throws(
+    () => archive.explore({ lens: 'context', contextId: 'if-missing' }),
+    /Archive context "if-missing" was not found/,
+  );
 });

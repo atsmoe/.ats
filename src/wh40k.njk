@@ -1,81 +1,100 @@
 ---
 permalink: ./wh40k.html
-title: 战锤40K
-bodyClass: world-wh40k
-pageType: world
+title: 战锤40K · 破碎银河观测入口
+bodyClass: world-wh40k wh-world-home
+pageType: wh40k-home
 worldId: wh40k
 cssFiles:
   - base.css
   - nav.css
-  - timeline.css
-  - ref-panel.css
   - worlds.css
+  - wh40k-world.css
   - responsive.css
 ---
 {% extends "base.njk" %}
 
 {% block content %}
-<!-- Timeline View -->
-<div id="timeline" class="active">
-  <div class="tl-cover">
-    <div class="tl-cover-inner">
-      <h1>战锤40K · 银河编年史</h1>
-      <p>在银河的第41个千年，人类帝国是百万世界之上唯一的庇护。帝皇的金座照耀虚空，记载人类帝国的血火编年与命运分支。</p>
-      <div class="calendar-badge">帝 国 历</div>
+<article class="wh-portal" id="wh40k-world" aria-labelledby="wh-world-title">
+  <header class="wh-galaxy-hero">
+    <div class="wh-galaxy-map" aria-hidden="true">
+      <svg viewBox="0 0 1200 760" role="img">
+        <defs>
+          <radialGradient id="wh-core"><stop stop-color="#e0c690" stop-opacity=".85"/><stop offset="1" stop-color="#755b33" stop-opacity="0"/></radialGradient>
+          <linearGradient id="wh-rift" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5e1720"/><stop offset=".48" stop-color="#d3a257"/><stop offset="1" stop-color="#3a1028"/></linearGradient>
+          <filter id="wh-blur"><feGaussianBlur stdDeviation="13"/></filter>
+        </defs>
+        <g class="wh-orbits">
+          <ellipse cx="600" cy="382" rx="490" ry="276"/><ellipse cx="600" cy="382" rx="390" ry="220"/>
+          <ellipse cx="600" cy="382" rx="280" ry="154"/><path d="M130 380H1070M600 92V670"/>
+        </g>
+        <g class="wh-stars">
+          <circle cx="228" cy="274" r="3"/><circle cx="314" cy="487" r="5"/><circle cx="406" cy="194" r="3"/>
+          <circle cx="508" cy="542" r="4"/><circle cx="702" cy="176" r="5"/><circle cx="782" cy="512" r="3"/>
+          <circle cx="914" cy="330" r="5"/><circle cx="1000" cy="466" r="3"/><circle cx="642" cy="408" r="7"/>
+        </g>
+        <path class="wh-rift-glow" d="M414 70C480 154 434 210 526 274S526 410 648 452 690 606 814 700"/>
+        <path class="wh-rift" d="M414 70C480 154 434 210 526 274S526 410 648 452 690 606 814 700"/>
+        <circle class="wh-terra-node" cx="642" cy="408" r="8"/>
+      </svg>
+      <span class="wh-map-label wh-map-label--sanctus">IMPERIUM SANCTUS</span>
+      <span class="wh-map-label wh-map-label--nihilus" id="imperium-nihilus">IMPERIUM NIHILUS</span>
+      <span class="wh-map-label wh-map-label--rift">CICATRIX MALEDICTUM</span>
     </div>
-  </div>
 
-  <div class="tl-branches" id="tl-branches">
-    <!-- Populated by JS -->
-  </div>
-  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;">
-    <!-- Populated by JS -->
-  </div>
-
-  <div class="tl-container" id="tl-container">
-    <!-- Events injected by JS -->
-  </div>
-
-</div>
-
-<!-- Event Detail Modal -->
-<div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-wh40k" aria-describedby="event-modal-desc-wh40k">
-    <button class="event-modal-close" title="关闭">✕</button>
-    <div class="event-modal-date"></div>
-    <div class="event-modal-title" id="event-modal-title-wh40k"></div>
-    <div class="event-modal-meta"></div>
-    <div class="event-modal-desc" id="event-modal-desc-wh40k"></div>
-    <div class="event-modal-img"></div>
-    <div class="event-modal-sources"></div>
-  </div>
-</div>
-
-<!-- Overlay & Reference Panel -->
-<div id="overlay"></div>
-<div id="ref-panel">
-  <button class="ref-close" id="ref-close">✕</button>
-  <div class="ref-content">
-    <h2>跨 世 界 引 用</h2>
-    <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
-    <div class="ref-event-date" id="ref-event-date"></div>
-    <div class="ref-event-title" id="ref-event-title"></div>
-    <div class="ref-event-desc" id="ref-event-desc"></div>
-    <div class="ref-related">
-      <h3>关联事件</h3>
-      <a href="#">▸ 引用事件</a>
+    <div class="wh-command-line" aria-label="银河档案状态">
+      <span><i></i> ASTROPATHIC LINK / DEGRADED</span>
+      <span>ATS // GALAXY-02</span>
+      <span>ARCHIVE {{ wh40k.archive.coverage.asOf }}</span>
     </div>
-    <button class="btn-wormhole" id="btn-wormhole">穿 越 虫 洞</button>
-  </div>
-</div>
 
-<!-- Era sidebar navigation -->
-<nav id="era-nav"></nav>
+    <div class="wh-hero-copy">
+      <p class="wh-eyebrow">WARHAMMER 40,000 / FRACTURED GALAXY</p>
+      <h1 id="wh-world-title"><span>战锤 40,000</span>破碎银河</h1>
+      <p>大裂隙把银河撕成两半，也撕碎了“只有人类帝国”的观察方式。沿纪元、势力或正在燃烧的战区进入；每一条记录都属于同一套规范档案。</p>
+    </div>
 
-<!-- Back to top -->
-<button id="back-to-top" title="回到顶部">▲</button>
-{% endblock %}
+    <a class="wh-priority-signal" href="./wh40k-war-zones.html?zone=armageddon#armageddon">
+      <span>PRIORITY / OP-IMPERATOR</span>
+      <strong>阿米吉多顿再度燃烧</strong>
+      <p>亚瑞克回归。碎骨者的 Waaagh! 已进入全面冲突记录。</p>
+      <i>打开最高优先级战区 →</i>
+    </a>
+  </header>
 
-{% block extraScripts %}
-<script defer src="./js/virtual-timeline.js"></script>
+  <nav class="wh-entry-grid" aria-label="战锤40K探索方向">
+    <a class="wh-entry" href="./wh40k-chronicle.html">
+      <span>01 / CHRONICLE</span><strong>银河纪元</strong>
+      <p>从天堂之战到大裂隙后的当前战区，按复核后的年代顺序进入。</p><i>展开纪年卷轴 →</i>
+    </a>
+    <a class="wh-entry" href="./wh40k-factions.html">
+      <span>02 / FACTION DOSSIERS</span><strong>势力谱系</strong>
+      <p>九个稳定势力家族。共同战场不等于共同阵营，子势力也不再挤成一张名单。</p><i>读取势力档案 →</i>
+    </a>
+    <a class="wh-entry" href="./wh40k-war-zones.html">
+      <span>03 / WAR ZONES</span><strong>当前战区</strong>
+      <p>六个截至 {{ wh40k.archive.coverage.asOf }} 的公开战区信号，直接回指规范事件。</p><i>接入战略星图 →</i>
+    </a>
+  </nav>
+
+  <section class="wh-situation" aria-labelledby="wh-situation-title">
+    <div class="wh-section-heading">
+      <span>GALACTIC DISPOSITION / M42</span>
+      <h2 id="wh-situation-title">不是一条前线，是一片正在断裂的空间</h2>
+    </div>
+    <div class="wh-situation-grid">
+      <article><span>SANCTUS</span><h3>帝国圣域</h3><p>星炬仍可抵达，但航路、战区与行政控制从不等同于安全。</p></article>
+      <article><span>GREAT RIFT</span><h3>大裂隙</h3><p>它既是视觉中轴，也是页面信息架构的断层：同一事件在裂隙两侧可能拥有完全不同的后果。</p></article>
+      <article><span>NIHILUS</span><h3>帝国暗面</h3><p>当星炬不可见，距离不再只是坐标问题，消息时效本身也成为档案可信度的一部分。</p></article>
+    </div>
+  </section>
+
+  <section class="wh-coverage" aria-labelledby="wh-coverage-title">
+    <div>
+      <span>ARCHIVE DISCIPLINE</span>
+      <h2 id="wh-coverage-title">收录边界</h2>
+    </div>
+    <p>{{ wh40k.archive.coverage.notice }}</p>
+    <dl><div><dt>版本</dt><dd>{{ wh40k.archive.coverage.edition }}</dd></div><div><dt>范围</dt><dd>{{ wh40k.archive.coverage.scope }}</dd></div><div><dt>状态</dt><dd>ACTIVE / 持续核验</dd></div></dl>
+  </section>
+</article>
 {% endblock %}

@@ -24,6 +24,25 @@ const path = require('path');
 
 const SRC_ROOT = path.resolve(__dirname, '..', '..', 'FFXIV背景知识', 'FFXIV背景知识', '历史');
 const OUT = path.resolve(__dirname, '..', 'src', '_data', 'ff14.json');
+const MODERN_SCHEMA_GUARD = 1;
+
+function assertLegacyOverwriteAllowed() {
+  if (process.argv.includes('--allow-legacy-overwrite') || !fs.existsSync(OUT)) return;
+
+  let current;
+  try {
+    current = JSON.parse(fs.readFileSync(OUT, 'utf8'));
+  } catch (_error) {
+    return;
+  }
+
+  if (Number(current.archive?.schemaVersion) >= MODERN_SCHEMA_GUARD) {
+    throw new Error(
+      'Refusing to overwrite the modern FFXIV archive with the legacy TXT transformer. '
+      + 'This generator is deprecated; pass --allow-legacy-overwrite only for an intentional migration.',
+    );
+  }
+}
 
 // ── 工具函数 ──────────────────────────────────────────────────
 
@@ -456,6 +475,7 @@ function parseLore() {
 
 // ── 主流程 ────────────────────────────────────────────────────
 function build() {
+  assertLegacyOverwriteAllowed();
   const eras = [];
 
   // === 时代 1: 万古前·古代世界 ===

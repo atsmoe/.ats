@@ -21,7 +21,7 @@ function loadPortalModule() {
   return module.exports;
 }
 
-test('portal arrival can locate and render a branch ending', () => {
+test('portal arrival can locate and render a nested reflection history', () => {
   const portal = loadPortalModule();
   portal.setData({
     branches: [{
@@ -30,9 +30,12 @@ test('portal arrival can locate and render a branch ending', () => {
       subBranches: [{
         id: 'shard-1',
         name: '第一世界',
-        eras: [],
-        events: [{ id: 'ff14-s1-001', title: '英雄之死', isEnding: true }],
-        endings: [{ id: 'ff14-s1-001', endingNumber: 1, title: '英雄之死' }],
+        description: '第一世界的可追溯历史，不是结局分支。',
+        eras: [{
+          title: '光之泛滥',
+          events: [{ id: 'ff14-s1-001', title: '英雄之死' }],
+        }],
+        events: [{ id: 'ff14-s1-001', title: '英雄之死' }],
       }],
     }],
   });
@@ -44,7 +47,9 @@ test('portal arrival can locate and render a branch ending', () => {
   });
 
   const groups = portal.buildBranchEraGroups('shard-1');
-  assert.equal(groups.length, 1);
-  assert.equal(groups[0].type, 'if-endings');
-  assert.equal(groups[0].events[0].id, 'ff14-s1-001');
+  assert.equal(groups.length, 2);
+  assert.equal(groups[0].type, 'notice');
+  assert.equal(groups[0].data.title, '第一世界');
+  assert.equal(groups[1].type, 'era');
+  assert.equal(groups[1].events[0].id, 'ff14-s1-001');
 });

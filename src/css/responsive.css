@@ -23,11 +23,15 @@
     left: -20px;
   }
 
-  .axis-node {
-    left: calc(16px - 6px);
+  .tl-event.left .axis-node,
+  .tl-event.right .axis-node {
+    left: -26px;
+    right: auto;
   }
-  .axis-node.diverge {
-    left: calc(16px - 9px);
+  .tl-event.left .axis-node.diverge,
+  .tl-event.right .axis-node.diverge {
+    left: -29px;
+    right: auto;
   }
 
   .tl-cover-inner {
@@ -353,14 +357,47 @@
 
 /* Tablet */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .tl-event.left {
-    margin-left: calc(27% - 360px - 36px);
+  .tl-axis {
+    left: 32px;
   }
+
+  .tl-event,
+  .tl-event.left,
   .tl-event.right {
-    margin-left: calc(27% + 36px);
+    width: calc(100% - 96px);
+    max-width: 640px;
+    margin-left: 64px;
   }
-  .tl-event {
-    width: 360px;
+
+  .tl-event::after {
+    width: 32px;
+  }
+  .tl-event.left::after,
+  .tl-event.right::after {
+    left: -32px;
+    right: auto;
+  }
+
+  .tl-event.left .axis-node,
+  .tl-event.right .axis-node {
+    left: -38px;
+    right: auto;
+  }
+  .tl-event.left .axis-node.diverge,
+  .tl-event.right .axis-node.diverge {
+    left: -41px;
+    right: auto;
+  }
+
+  .tl-era-header {
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+
+  .diverge-inline {
+    max-width: 640px;
+    margin-left: 64px;
+    margin-right: 32px;
   }
 }
 
