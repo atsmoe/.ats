@@ -6,7 +6,7 @@ export const INTEGRATED_STRATEGY_THEMES = Object.freeze({
     accent: '#e6a54b',
     accentAlt: '#9aba75',
     topologyLabel: '梦境层叠',
-    topologyNote: '三份记录像记忆残片互相覆盖；它们改变对旅途的解释，而不是排列为一条直线。',
+    topologyNote: '三份记录像相互覆盖的记忆残片，各自改变旅途的解释，并列呈现为不同层次。',
     entities: { ceobe: '刻俄柏', 'rhodes-island': '罗德岛', fungimist: '灰蕈迷境' },
   },
   'if-phantom': {
@@ -26,7 +26,7 @@ export const INTEGRATED_STRATEGY_THEMES = Object.freeze({
     accent: '#55d8dc',
     accentAlt: '#779dff',
     topologyLabel: '并行观测',
-    topologyNote: '四份记录共享海洋危机背景，但互不兼容；这里并列展示，不指定其中任何一份为唯一正史。',
+    topologyNote: '四份记录共享海洋危机背景，彼此互不兼容，按并行观测归档。',
     entities: { mizuki: '水月', seaborn: '海嗣', 'ishar-mla': '伊莎玛拉', 'caerula-arbor': '深蓝之树' },
   },
   'if-sami': {
@@ -46,7 +46,7 @@ export const INTEGRATED_STRATEGY_THEMES = Object.freeze({
     accent: '#c990ff',
     accentAlt: '#ee755f',
     topologyLabel: '历史覆写',
-    topologyNote: '五份结果都是魂灵熔炉中的反事实编纂；层叠文本保留冲突，而不是假装它们同时发生。',
+    topologyNote: '五份结果均来自魂灵熔炉的反事实编纂，层叠文本完整保留彼此冲突。',
     entities: { sarkaz: '萨卡兹', 'soul-furnace': '魂灵熔炉', amiya: '阿米娅', theresa: '特蕾西娅' },
   },
   'if-sui-realm': {

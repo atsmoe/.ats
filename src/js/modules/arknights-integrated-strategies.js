@@ -205,7 +205,7 @@ function createRelations(snapshot, theme) {
   section.appendChild(createSectionHeading(
     '05 / RELATED RECORDS',
     '关联记录',
-    '只提供可到达的资料目标；不把纯装饰标签伪装成链接。',
+    '每个条目均可直达对应资料页。',
   ));
   const index = element('div', 'is-entity-index');
   const list = element('div', 'is-entity-list');

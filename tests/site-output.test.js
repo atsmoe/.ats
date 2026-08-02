@@ -68,9 +68,16 @@ test('production build contains every public page and data file', () => {
     assert.ok(fs.existsSync(path.join(DIST, relativePath)), `missing dist/${relativePath}`);
   }
 
+  const prototypePages = fs.readdirSync(DIST)
+    .filter(name => /^star-map(?:-[a-z0-9]+)*-prototype\.html$/.test(name));
+  const prototypeScripts = fs.readdirSync(path.join(DIST, 'js'))
+    .filter(name => /^star-map(?:-[a-z0-9]+)*-prototype\.js$/.test(name));
+
+  assert.deepEqual(prototypePages, [], 'throwaway star-map pages must never be published');
+  assert.deepEqual(prototypeScripts, [], 'throwaway star-map scripts must never be published');
   assert.ok(
-    !fs.existsSync(path.join(DIST, 'star-map-prototype.html')),
-    'throwaway star-map prototype must never be published',
+    !fs.existsSync(path.join(DIST, 'assets', 'prototypes')),
+    'throwaway prototype assets must never be published',
   );
 });
 

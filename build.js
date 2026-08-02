@@ -5,6 +5,39 @@ const path = require('path');
 const DIST = path.join(__dirname, 'dist');
 const SRC_JS = path.join(__dirname, 'src', 'js', 'modules');
 const LIB_JS = path.join(__dirname, 'src', 'js', 'lib');
+const PROTOTYPE_PAGE_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.html$/;
+const PROTOTYPE_SCRIPT_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.js$/;
+
+function removeLocalPrototypeArtifacts() {
+  let removed = 0;
+
+  if (fs.existsSync(DIST)) {
+    for (const entry of fs.readdirSync(DIST, { withFileTypes: true })) {
+      if (!entry.isFile() || !PROTOTYPE_PAGE_PATTERN.test(entry.name)) continue;
+      fs.unlinkSync(path.join(DIST, entry.name));
+      removed += 1;
+    }
+  }
+
+  const jsOutput = path.join(DIST, 'js');
+  if (fs.existsSync(jsOutput)) {
+    for (const entry of fs.readdirSync(jsOutput, { withFileTypes: true })) {
+      if (!entry.isFile() || !PROTOTYPE_SCRIPT_PATTERN.test(entry.name)) continue;
+      fs.unlinkSync(path.join(jsOutput, entry.name));
+      removed += 1;
+    }
+  }
+
+  const prototypeAssets = path.join(DIST, 'assets', 'prototypes');
+  if (fs.existsSync(prototypeAssets)) {
+    fs.rmSync(prototypeAssets, { recursive: true, force: true });
+    removed += 1;
+  }
+
+  if (removed > 0) {
+    console.log(`[build] Removed ${removed} local prototype artifact(s).`);
+  }
+}
 
 async function buildJS() {
   console.log('[esbuild] Bundling JS...');
@@ -200,9 +233,8 @@ async function main() {
   // Step 2: Copy CSS
   await buildCSS();
 
-  // Never ship local throwaway prototypes, including stale files from an older build.
-  const prototypeOutput = path.join(DIST, 'star-map-prototype.html');
-  if (fs.existsSync(prototypeOutput)) fs.unlinkSync(prototypeOutput);
+  // Never ship local throwaway prototypes, including stale files from older builds.
+  removeLocalPrototypeArtifacts();
 
   // Step 3: Optimize images (WebP generation)
   await buildImages();
