@@ -9,7 +9,7 @@ body[data-page="star-map"] footer {
   display: none;
 }
 
-/* Local-only version switch. build.js removes its marked HTML block in production. */
+/* Public switch between the stable star map and the reviewed B4 preview. */
 .star-map-version-switch {
   position: fixed;
   z-index: 90;

@@ -15,7 +15,7 @@ function createB4BuildOptions(overrides = {}) {
     outfile: OUTPUT,
     splitting: false,
     target: 'es2020',
-    minify: false,
+    minify: true,
     sourcemap: false,
     logLevel: 'info',
     ...overrides,

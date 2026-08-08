@@ -8,7 +8,8 @@ const LIB_JS = path.join(__dirname, 'src', 'js', 'lib');
 const PROTOTYPE_PAGE_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.html$/;
 const PROTOTYPE_SCRIPT_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.js$/;
 const PROTOTYPE_SUPPORT_SCRIPT_PATTERN = /^b4-cosmic-stage\.js$/;
-const LOCAL_PROTOTYPE_SWITCH_PATTERN = /\s*<!-- LOCAL_PROTOTYPE_SWITCH_START -->[\s\S]*?<!-- LOCAL_PROTOTYPE_SWITCH_END -->\s*/g;
+const PUBLIC_B4_PAGE = 'star-map-b4-prototype.html';
+const PUBLIC_B4_SCRIPT = 'star-map-b4-prototype.js';
 
 function removeLocalPrototypeArtifacts() {
   let removed = 0;
@@ -28,8 +29,10 @@ function removeLocalPrototypeArtifacts() {
         continue;
       }
 
-      const isPrototypePage = PROTOTYPE_PAGE_PATTERN.test(entry.name);
-      const isPrototypeScript = PROTOTYPE_SCRIPT_PATTERN.test(entry.name)
+      const isPrototypePage = PROTOTYPE_PAGE_PATTERN.test(entry.name)
+        && entry.name !== PUBLIC_B4_PAGE;
+      const isPrototypeScript = (PROTOTYPE_SCRIPT_PATTERN.test(entry.name)
+        && entry.name !== PUBLIC_B4_SCRIPT)
         || PROTOTYPE_SUPPORT_SCRIPT_PATTERN.test(entry.name);
       if (!isPrototypePage && !isPrototypeScript) continue;
       fs.unlinkSync(entryPath);
@@ -38,16 +41,6 @@ function removeLocalPrototypeArtifacts() {
   }
 
   removeFrom(DIST);
-
-  const formalHome = path.join(DIST, 'index.html');
-  if (fs.existsSync(formalHome)) {
-    const html = fs.readFileSync(formalHome, 'utf8');
-    const productionHtml = html.replace(LOCAL_PROTOTYPE_SWITCH_PATTERN, '\n');
-    if (productionHtml !== html) {
-      fs.writeFileSync(formalHome, productionHtml);
-      removed += 1;
-    }
-  }
 
   if (removed > 0) {
     console.log(`[build] Removed ${removed} local prototype artifact(s).`);
@@ -248,7 +241,7 @@ async function main() {
   // Step 2: Copy CSS
   await buildCSS();
 
-  // Never ship local throwaway prototypes, including stale files from older builds.
+  // Keep the reviewed B4 preview public; remove every older throwaway prototype.
   removeLocalPrototypeArtifacts();
 
   // Step 3: Optimize images (WebP generation)

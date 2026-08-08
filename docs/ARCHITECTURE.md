@@ -18,6 +18,7 @@
 | 页面 | 模板 | 背景 | JS 入口 |
 |------|------|------|---------|
 | 星图首页 | `index.njk` | Three.js 3D 银河 | `star-map-3d.js` |
+| B4 星图预览 | `star-map-b4-prototype.njk` | Three.js 三世界天体观察台 | `star-map-b4-prototype.js` |
 | 明日方舟 | `arknights.njk` | Canvas 2D 琥珀粒子 | `bundle.js` |
 | 战锤40K | `wh40k.njk` | Canvas 2D 深红粒子 | `bundle.js` |
 | 最终幻想XIV | `ff14.njk` | Canvas 2D 银蓝粒子 | `bundle.js` |
@@ -234,7 +235,8 @@ npm run build:
   2. node convert-changelog.js
   3. eleventy                                ← 生成 HTML
   4. node build.js                           ← esbuild(bundle + star-map-3d) + 复制
-  5. npm test                                ← 校验页面、数据、媒体引用和体积预算
+  5. node scripts/build-b4-prototype.js       ← 构建公开 B4 预览
+  6. npm test                                ← 校验页面、数据、媒体引用和体积预算
 
 npm run dev:
   1. node src/validators/validate-data.js
@@ -264,6 +266,7 @@ dist/
 └── js/
     ├── bundle.js               (~38KB，世界页/普通页，不含 Three.js)
     ├── star-map-3d.js          (~517KB，首页专用，包含 Three.js)
+    ├── star-map-b4-prototype.js  (B4 公开预览独立 bundle)
     └── virtual-timeline.js
 ```
 
@@ -329,3 +332,4 @@ dist/
 | 2026-07-12 | V2.5.5 | OpenAI Codex | 在构建管线中补充 `npm test`；将产物说明更新为世界页约 38KB、首页星图约 517KB，并明确 Three.js 只进入首页 bundle。 | 记录可靠性测试接入和页面入口拆包后的真实架构。 |
 | 2026-07-12 | V2.5.6 | OpenAI Codex | 新增本节及强制追加式修改记录规则。 | 确保 Codex 对架构文档的修改全部可追溯。 |
 | 2026-08-02 | V2.6.0 | OpenAI Codex | 发布前核对三世界规范档案、多观测镜和本地星图原型的生产隔离边界。 | 使架构记录与 V2.6.0 的实际构建和发布范围一致。 |
+| 2026-08-09 | V2.6.2 | OpenAI Codex | 将 B4 星图加入公开构建白名单，正式首页提供双向版本切换；其他旧原型继续隔离。 | 修正将线上切换误做成仅本地入口的发布边界错误。 |
