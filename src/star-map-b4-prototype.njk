@@ -1,0 +1,1372 @@
+---
+permalink: ./star-map-b4-prototype.html
+eleventyExcludeFromCollections: true
+---
+{# Prototype question: can a controlled 3D cosmic observatory make three IP worlds explorable without turning stable subjects into particle sculptures? #}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>群星之间 · 信号档案 B4 原型</title>
+  <style>
+    :root {
+      --accent: #00c6e6;
+      --accent-rgb: 0, 198, 230;
+      --secondary: #dba34c;
+      --secondary-rgb: 219, 163, 76;
+      --ink: #f2f3f1;
+      --muted: rgba(225, 231, 236, .66);
+      --dim: rgba(225, 231, 236, .34);
+      --line: rgba(225, 231, 236, .15);
+      --line-strong: rgba(225, 231, 236, .27);
+      --surface: #05070a;
+      --header-h: 68px;
+      --rail-w: clamp(156px, 12.5vw, 184px);
+      --edge: clamp(40px, 3.6vw, 68px);
+      --progress-h: clamp(64px, 7.3vh, 72px);
+      font-family: Inter, "IBM Plex Sans", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: #020306;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #020306;
+    }
+
+    body {
+      transition: background-color .45s ease;
+    }
+
+    button,
+    a { font: inherit; }
+
+    button {
+      color: inherit;
+      border: 0;
+    }
+
+    :focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .prototype-ribbon {
+      position: fixed;
+      z-index: 80;
+      top: calc(var(--header-h) + 10px);
+      right: calc(var(--rail-w) + 22px);
+      padding: 5px 10px;
+      border: 1px solid rgba(var(--accent-rgb), .32);
+      color: rgba(232, 238, 243, .5);
+      background: rgba(2, 3, 6, .88);
+      font: 11px/1.15 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .18em;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .site-header {
+      position: fixed;
+      z-index: 70;
+      inset: 0 0 auto;
+      height: var(--header-h);
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) auto auto;
+      align-items: center;
+      gap: 28px;
+      padding: 0 clamp(20px, 3.2vw, 52px);
+      border-bottom: 1px solid rgba(var(--accent-rgb), .27);
+      background:
+        linear-gradient(90deg, rgba(var(--accent-rgb), .055), transparent 36%),
+        rgba(2, 3, 6, .94);
+      transition: border-color .45s ease, background .45s ease;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 17px;
+      width: max-content;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand strong {
+      color: var(--ink);
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: .3em;
+      transition: color .45s ease, letter-spacing .45s ease, font-family .45s ease;
+    }
+
+    .brand span,
+    .header-route,
+    .header-button,
+    .header-link {
+      font: 11px/1.3 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .15em;
+    }
+
+    .brand span { color: var(--dim); }
+
+    .header-route {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .header-route::before {
+      width: 7px;
+      height: 7px;
+      content: "";
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(var(--accent-rgb), .6);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-button,
+    .header-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid rgba(var(--accent-rgb), .25);
+      color: rgba(236, 240, 243, .78);
+      background: rgba(3, 5, 8, .72);
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color .2s ease, color .2s ease, background .2s ease;
+    }
+
+    .header-button:hover,
+    .header-link:hover {
+      color: #fff;
+      border-color: rgba(var(--accent-rgb), .65);
+      background: rgba(var(--accent-rgb), .08);
+    }
+
+    .star-map {
+      position: fixed;
+      inset: var(--header-h) 0 0;
+      min-height: 0;
+      overflow: hidden;
+      overflow: clip;
+      background:
+        radial-gradient(circle at 38% 46%, rgba(var(--accent-rgb), .025), transparent 28%),
+        #020306;
+      isolation: isolate;
+    }
+
+    .stage {
+      position: absolute;
+      z-index: 1;
+      inset: 0 var(--rail-w) 0 0;
+      overflow: hidden;
+      overflow: clip;
+    }
+
+    #b4-space,
+    .stage-grid,
+    .stage-dots,
+    .stage-vignette,
+    .world-ghost {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #b4-space {
+      z-index: 2;
+      display: block;
+      cursor: grab;
+    }
+
+    #b4-space.is-dragging { cursor: grabbing; }
+    #b4-space.is-targeting { cursor: pointer; }
+
+    .stage-grid {
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(220, 228, 235, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(220, 228, 235, .055) 1px, transparent 1px),
+        linear-gradient(45deg, transparent 49.7%, rgba(220, 228, 235, .025) 50%, transparent 50.3%),
+        linear-gradient(-45deg, transparent 49.7%, rgba(220, 228, 235, .025) 50%, transparent 50.3%);
+      background-size: 64px 64px, 64px 64px, 128px 128px, 128px 128px;
+      mask-image: linear-gradient(90deg, rgba(0, 0, 0, .82), #000 70%, rgba(0, 0, 0, .3));
+    }
+
+    .stage-dots {
+      z-index: 1;
+      opacity: .28;
+      background-image: radial-gradient(circle, rgba(237, 241, 244, .22) 0 1px, transparent 1.2px);
+      background-size: 13px 13px;
+      mask-image:
+        radial-gradient(ellipse at 14% 78%, #000, transparent 32%),
+        radial-gradient(ellipse at 72% 24%, rgba(0, 0, 0, .45), transparent 31%);
+    }
+
+    .stage-vignette {
+      z-index: 12;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(2, 3, 6, .58), transparent 11%, transparent 84%, rgba(2, 3, 6, .62)),
+        linear-gradient(rgba(2, 3, 6, .28), transparent 18%, transparent 82%, rgba(2, 3, 6, .7));
+    }
+
+    .world-ghost {
+      z-index: 1;
+      inset: auto auto -9% var(--edge);
+      width: auto;
+      height: 25%;
+      color: rgba(var(--accent-rgb), .07);
+      font: 900 clamp(88px, 12vw, 176px)/.75 Arial Black, Impact, sans-serif;
+      letter-spacing: -.09em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: color .45s ease;
+    }
+
+    .observation-plate {
+      position: absolute;
+      z-index: 4;
+      top: clamp(44px, 5.8vh, 68px);
+      right: clamp(40px, 4.5vw, 72px);
+      left: clamp(224px, 17vw, 268px);
+      width: auto;
+      max-width: none;
+      height: min(74%, 680px);
+      min-height: 430px;
+      overflow: hidden;
+      border: 1px solid rgba(228, 234, 238, .18);
+      background:
+        radial-gradient(ellipse at 54% 48%, rgba(var(--accent-rgb), .045), transparent 36%),
+        linear-gradient(135deg, rgba(var(--accent-rgb), .028), transparent 42%),
+        rgba(2, 4, 8, .12);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, .55),
+        inset 0 -80px 120px rgba(0, 0, 0, .18),
+        0 28px 90px rgba(0, 0, 0, .2);
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      pointer-events: none;
+      transition: border-color .45s ease, background .45s ease;
+    }
+
+    .observation-plate::before,
+    .observation-plate::after {
+      position: absolute;
+      z-index: 7;
+      width: 56px;
+      height: 56px;
+      content: "";
+      border-color: var(--accent);
+      opacity: .72;
+      transition: border-color .45s ease;
+    }
+
+    .observation-plate::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid;
+      border-left: 2px solid;
+    }
+
+    .observation-plate::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+
+    .cosmic-observation-field {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      overflow: hidden;
+      isolation: isolate;
+      transform-style: preserve-3d;
+    }
+
+    .cosmic-depth-layer,
+    .cosmic-reference-plane,
+    .cosmic-horizon,
+    .cosmic-warp,
+    .cosmic-static-fallback {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .cosmic-depth-layer {
+      z-index: 0;
+      inset: -8%;
+      opacity: .52;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(236, 243, 248, .17) 0 1px, transparent 1.4px),
+        radial-gradient(circle at 72% 18%, rgba(var(--accent-rgb), .2) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 82% 67%, rgba(236, 243, 248, .13) 0 1px, transparent 1.4px),
+        radial-gradient(ellipse at 54% 48%, rgba(var(--accent-rgb), .06), transparent 42%);
+      background-size: 173px 149px, 229px 191px, 137px 211px, 100% 100%;
+      transform: translateZ(-90px) scale(1.08);
+    }
+
+    .cosmic-reference-plane {
+      z-index: 1;
+      right: 8%;
+      bottom: -35%;
+      left: 8%;
+      height: 58%;
+      opacity: .2;
+      background-image:
+        linear-gradient(rgba(var(--accent-rgb), .2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--accent-rgb), .2) 1px, transparent 1px);
+      background-size: 54px 34px;
+      -webkit-mask-image: linear-gradient(to top, #000, transparent 84%);
+      mask-image: linear-gradient(to top, #000, transparent 84%);
+      transform: rotateX(66deg) translateZ(-24px);
+      transform-origin: center top;
+    }
+
+    .cosmic-horizon {
+      z-index: 2;
+      top: 18%;
+      left: 18%;
+      width: 64%;
+      aspect-ratio: 1.9;
+      border: 1px solid rgba(var(--accent-rgb), .14);
+      border-right-color: rgba(var(--accent-rgb), .3);
+      border-left-color: rgba(var(--accent-rgb), .06);
+      border-radius: 50%;
+      opacity: .76;
+      transform: rotate(-8deg) translateZ(-20px);
+      transition: border-color .45s ease, opacity .3s ease;
+    }
+
+    .cosmic-horizon::before,
+    .cosmic-horizon::after {
+      position: absolute;
+      content: "";
+      border: 1px solid rgba(var(--accent-rgb), .1);
+      border-radius: 50%;
+    }
+
+    .cosmic-horizon::before { inset: 14% -8%; }
+    .cosmic-horizon::after {
+      inset: -16% 24%;
+      border-top-color: rgba(var(--accent-rgb), .28);
+      transform: rotate(72deg);
+    }
+
+    .cosmic-static-fallback {
+      z-index: 3;
+      inset: 11% 13%;
+      display: none;
+      place-items: center;
+      opacity: .9;
+      background:
+        radial-gradient(circle at 17% 24%, rgba(239, 247, 252, .5) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 76% 72%, rgba(var(--accent-rgb), .55) 0 1px, transparent 1.6px),
+        radial-gradient(circle at 82% 18%, rgba(239, 247, 252, .34) 0 1px, transparent 1.5px);
+      background-size: 131px 113px, 173px 149px, 97px 127px;
+    }
+
+    .cosmic-fallback-world {
+      position: relative;
+      width: min(46vw, 260px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(var(--accent-rgb), .46);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 29%, rgba(239, 247, 252, .36), transparent 11%),
+        radial-gradient(circle at 38% 34%, rgba(var(--accent-rgb), .38), transparent 42%),
+        radial-gradient(circle at 64% 67%, rgba(0, 0, 0, .72), transparent 56%),
+        rgba(var(--accent-rgb), .09);
+      box-shadow:
+        inset -24px -18px 48px rgba(0, 0, 0, .72),
+        inset 10px 8px 24px rgba(var(--accent-rgb), .13),
+        0 0 46px rgba(var(--accent-rgb), .1);
+    }
+
+    .cosmic-fallback-world::before,
+    .cosmic-fallback-world::after {
+      position: absolute;
+      content: "";
+      border: 1px solid rgba(var(--accent-rgb), .22);
+      border-radius: 50%;
+    }
+
+    .cosmic-fallback-world::before {
+      inset: -18% -42%;
+      transform: rotate(-12deg);
+    }
+
+    .cosmic-fallback-world::after {
+      inset: -34% 17%;
+      border-color: rgba(235, 242, 247, .12);
+      transform: rotate(68deg);
+    }
+
+    .cosmic-fallback-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 72%;
+      height: 28%;
+      border-top: 1px solid rgba(var(--accent-rgb), .34);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(17deg);
+    }
+
+    .is-fallback .cosmic-static-fallback { display: grid; }
+    .is-fallback #b4-space { display: none; }
+
+    .plate-scan {
+      position: absolute;
+      z-index: 6;
+      top: -10%;
+      left: 0;
+      width: 100%;
+      height: 18%;
+      opacity: .11;
+      background: linear-gradient(transparent, rgba(var(--accent-rgb), .18), transparent);
+      animation: plate-scan 9s linear infinite;
+    }
+
+    @keyframes plate-scan {
+      0% { transform: translateY(-20%); }
+      100% { transform: translateY(690%); }
+    }
+
+    .plate-code,
+    .plate-status {
+      position: absolute;
+      z-index: 8;
+      top: 18px;
+      color: rgba(235, 239, 242, .38);
+      font: 11px/1.4 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .17em;
+    }
+
+    .plate-code { left: 20px; }
+    .plate-status { right: 20px; }
+
+    .plate-baseline {
+      position: absolute;
+      z-index: 7;
+      right: 20px;
+      bottom: 18px;
+      left: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent) 0 22%, rgba(229, 235, 239, .15) 22%);
+      transition: background .45s ease;
+    }
+
+    .cosmic-warp {
+      z-index: 9;
+      inset: -8%;
+      opacity: 0;
+      background:
+        linear-gradient(90deg, transparent 0 33%, rgba(var(--accent-rgb), .12) 48%, transparent 63%),
+        repeating-linear-gradient(90deg, transparent 0 31px, rgba(var(--accent-rgb), .055) 32px, transparent 33px);
+      mix-blend-mode: screen;
+      transform: scaleX(.78) translateX(-4%);
+    }
+
+    .cosmic-warp::before {
+      position: absolute;
+      inset: 6% 0;
+      content: "";
+      opacity: .42;
+      background: linear-gradient(90deg, transparent, rgba(239, 246, 250, .17), transparent);
+      transform: translateX(-100%);
+    }
+
+    .is-travelling .cosmic-warp {
+      animation: cosmic-warp-pass 1.1s cubic-bezier(.35, 0, .25, 1) both;
+    }
+
+    .is-travelling .cosmic-warp::before {
+      animation: cosmic-warp-scan 1.1s cubic-bezier(.35, 0, .25, 1) both;
+    }
+
+    @keyframes cosmic-warp-pass {
+      0%, 100% { opacity: 0; transform: scaleX(.78) translateX(-4%); }
+      34% { opacity: .16; }
+      54% { opacity: .28; transform: scaleX(1.04) translateX(2%); }
+      76% { opacity: .1; }
+    }
+
+    @keyframes cosmic-warp-scan {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .telemetry {
+      position: absolute;
+      z-index: 15;
+      top: 45px;
+      left: var(--edge);
+      display: grid;
+      gap: 8px;
+      width: 235px;
+      color: rgba(226, 232, 237, .38);
+      font: 11px/1.55 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .13em;
+      pointer-events: none;
+    }
+
+    .telemetry strong {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .16em;
+      transition: color .45s ease;
+    }
+
+    .telemetry strong::before {
+      width: 7px;
+      height: 7px;
+      content: "";
+      background: var(--accent);
+    }
+
+    .spatial-gate {
+      position: absolute;
+      z-index: 21;
+      width: 184px;
+      height: 112px;
+      padding: 15px 17px;
+      overflow: hidden;
+      border: 1px solid rgba(var(--gate-rgb), .23);
+      color: rgba(233, 238, 242, .72);
+      background:
+        linear-gradient(135deg, rgba(var(--gate-rgb), .075), transparent 52%),
+        rgba(2, 4, 7, .9);
+      text-align: left;
+      cursor: pointer;
+      transition:
+        color .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        opacity .2s ease,
+        transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .spatial-gate::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 3px;
+      content: "";
+      background: rgb(var(--gate-rgb));
+      opacity: .7;
+    }
+
+    .spatial-gate b,
+    .spatial-gate small,
+    .spatial-gate span {
+      display: block;
+    }
+
+    .spatial-gate b,
+    .spatial-gate small {
+      font: 11px/1.35 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .1em;
+    }
+
+    .spatial-gate b { color: rgb(var(--gate-rgb)); }
+
+    .spatial-gate span {
+      margin-top: 9px;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 17px;
+      opacity: .78;
+    }
+
+    .spatial-gate small {
+      margin-top: 5px;
+      color: rgba(229, 235, 240, .56);
+    }
+
+    .spatial-gate:hover,
+    .spatial-gate:focus-visible {
+      color: #fff;
+      border-color: rgba(var(--gate-rgb), .72);
+      background:
+        linear-gradient(135deg, rgba(var(--gate-rgb), .13), transparent 58%),
+        rgba(2, 4, 7, .98);
+      transform: translateY(-4px);
+    }
+
+    .spatial-gate:focus-visible {
+      outline-color: rgb(var(--gate-rgb));
+    }
+
+    .spatial-gate.is-previous {
+      top: 18%;
+      left: var(--edge);
+    }
+
+    .spatial-gate.is-next {
+      right: var(--edge);
+      bottom: calc(var(--progress-h) + 48px);
+    }
+
+    .is-travelling .spatial-gate {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .world-readout {
+      position: absolute;
+      z-index: 28;
+      bottom: calc(var(--progress-h) + 38px);
+      left: var(--edge);
+      width: 344px;
+      min-height: 174px;
+      padding: 24px 25px 22px;
+      border-top: 1px solid rgba(var(--accent-rgb), .48);
+      border-right: 1px solid rgba(231, 236, 240, .1);
+      background: rgba(2, 4, 7, .96);
+      box-shadow: 24px 20px 70px rgba(0, 0, 0, .34);
+      transition: border-color .45s ease, opacity .22s ease, transform .22s ease;
+    }
+
+    .world-readout::before {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 74px;
+      height: 2px;
+      content: "";
+      background: var(--accent);
+      transition: background .45s ease;
+    }
+
+    .world-index,
+    .world-ip,
+    .world-summary {
+      margin: 0;
+    }
+
+    .world-index,
+    .world-ip {
+      font: 11px/1.5 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .world-index { color: var(--accent); }
+
+    .world-title {
+      display: -webkit-box;
+      margin: 9px 0 5px;
+      max-height: 2.1em;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: clamp(34px, 3.5vw, 55px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: .02em;
+      text-wrap: balance;
+      transition: font-family .45s ease, letter-spacing .45s ease;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .world-ip { color: rgba(229, 235, 239, .58); }
+
+    .world-summary {
+      display: -webkit-box;
+      margin-top: 15px;
+      overflow: hidden;
+      color: rgba(229, 234, 239, .65);
+      font-size: 13px;
+      line-height: 1.75;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+
+    .world-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .world-locate,
+    .world-entry {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 13px;
+      border: 1px solid rgba(229, 235, 239, .16);
+      color: rgba(236, 240, 243, .72);
+      background: transparent;
+      font: 11px/1 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .1em;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .world-entry {
+      border-color: rgba(var(--accent-rgb), .43);
+      color: var(--ink);
+    }
+
+    .world-locate:hover,
+    .world-entry:hover {
+      border-color: var(--accent);
+      background: rgba(var(--accent-rgb), .08);
+    }
+
+    .world-readout.is-changing {
+      opacity: .18;
+      transform: translateY(14px);
+    }
+
+    .right-rail {
+      position: absolute;
+      z-index: 34;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: var(--rail-w);
+      border-left: 1px solid rgba(229, 235, 239, .16);
+      background:
+        linear-gradient(180deg, rgba(var(--accent-rgb), .035), transparent 45%),
+        rgba(2, 3, 6, .86);
+      transition: border-color .45s ease, background .45s ease;
+    }
+
+    .rail-number {
+      position: absolute;
+      top: 22%;
+      right: 20px;
+      left: 24px;
+    }
+
+    .rail-number strong {
+      display: inline-block;
+      color: var(--accent);
+      font: 800 clamp(68px, 7.5vw, 112px)/.75 Arial Black, Impact, sans-serif;
+      letter-spacing: -.09em;
+      transition: color .45s ease;
+    }
+
+    .rail-number span {
+      display: block;
+      margin: 8px 0 0 8px;
+      color: rgba(231, 236, 240, .66);
+      font: 11px/1.45 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .14em;
+    }
+
+    .rail-scale {
+      position: absolute;
+      top: 46%;
+      right: 29px;
+      bottom: 19%;
+      width: 1px;
+      background: rgba(230, 235, 239, .14);
+    }
+
+    .rail-scale::before {
+      position: absolute;
+      top: var(--scale-progress, 0%);
+      right: -4px;
+      width: 9px;
+      height: 9px;
+      content: "";
+      border: 1px solid var(--accent);
+      background: #020306;
+      transform: rotate(45deg);
+      transition: top .7s cubic-bezier(.2, .8, .2, 1), border-color .45s ease;
+    }
+
+    .rail-scale i {
+      position: absolute;
+      right: -3px;
+      width: 7px;
+      height: 1px;
+      background: rgba(229, 235, 239, .27);
+    }
+
+    .rail-caption {
+      position: absolute;
+      right: 19px;
+      bottom: 11%;
+      left: 24px;
+      color: rgba(229, 235, 239, .3);
+      font: 11px/1.7 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .13em;
+      text-align: right;
+    }
+
+    .route-progress {
+      position: absolute;
+      z-index: 31;
+      right: 0;
+      bottom: 0;
+      left: calc(var(--edge) + 350px);
+      height: var(--progress-h);
+      display: grid;
+      grid-template-columns: repeat(var(--world-count, 3), minmax(0, 1fr));
+      border-top: 1px solid rgba(229, 235, 239, .13);
+    }
+
+    .progress-node {
+      position: relative;
+      min-width: 0;
+      padding: 16px 10px 0;
+      color: rgba(227, 233, 237, .54);
+      background: transparent;
+      font: 11px/1.35 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .1em;
+      cursor: pointer;
+      transition: color .2s ease, background .2s ease;
+    }
+
+    .progress-node::before {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      content: "";
+      background: transparent;
+    }
+
+    .progress-node b,
+    .progress-node span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .progress-node span {
+      margin-top: 4px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .progress-node:hover,
+    .progress-node:focus-visible,
+    .progress-node[aria-current="true"] {
+      color: rgba(238, 242, 244, .9);
+      background: linear-gradient(rgba(var(--node-rgb), .05), transparent);
+    }
+
+    .progress-node:hover span,
+    .progress-node:focus-visible span,
+    .progress-node[aria-current="true"] span {
+      opacity: .72;
+      transform: none;
+    }
+
+    .progress-node[aria-current="true"]::before {
+      background: rgb(var(--node-rgb));
+    }
+
+    .route-progress.is-dense {
+      left: var(--edge);
+    }
+
+    .route-progress.is-dense .progress-node {
+      padding-right: 6px;
+      padding-left: 6px;
+      text-align: center;
+    }
+
+    .loading {
+      position: absolute;
+      z-index: 90;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(232, 237, 241, .54);
+      background: #020306;
+      font: 11px/1 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .18em;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    .loading[hidden] {
+      display: grid;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .index-backdrop {
+      position: fixed;
+      z-index: 74;
+      inset: var(--header-h) 0 0;
+      opacity: 0;
+      visibility: hidden;
+      background: rgba(0, 0, 0, .72);
+      cursor: pointer;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+
+    .world-directory {
+      position: fixed;
+      z-index: 76;
+      top: var(--header-h);
+      right: 0;
+      bottom: 0;
+      width: min(720px, 62vw);
+      padding: 38px 52px;
+      overflow: auto;
+      border-left: 1px solid rgba(var(--accent-rgb), .35);
+      background:
+        linear-gradient(135deg, rgba(var(--accent-rgb), .045), transparent 42%),
+        rgba(3, 5, 8, .985);
+      transform: translateX(101%);
+      transition: transform .35s cubic-bezier(.2, .8, .2, 1), border-color .45s ease;
+    }
+
+    .directory-open .index-backdrop {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .directory-open .world-directory { transform: none; }
+
+    .directory-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .directory-head p {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font: 11px/1.4 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .15em;
+    }
+
+    .directory-head h2 {
+      margin: 0;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 38px;
+      font-weight: 500;
+    }
+
+    .directory-close {
+      width: 52px;
+      height: 52px;
+      border: 1px solid var(--line);
+      background: transparent;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .directory-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 28px;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .directory-item {
+      min-width: 0;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(0, 0, 0, .12);
+    }
+
+    .directory-item.is-current {
+      background: rgba(var(--item-rgb), .11);
+    }
+
+    .directory-select {
+      width: 100%;
+      min-height: 142px;
+      padding: 20px 17px;
+      color: inherit;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .directory-select b,
+    .directory-select span {
+      display: block;
+      font: 11px/1.5 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .11em;
+    }
+
+    .directory-select b { color: rgb(var(--item-rgb)); }
+
+    .directory-select strong {
+      display: block;
+      margin: 17px 0 7px;
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 21px;
+      font-weight: 500;
+    }
+
+    .directory-select span { color: var(--dim); }
+
+    .directory-enter {
+      display: block;
+      padding: 0 17px 18px;
+      color: rgb(var(--item-rgb));
+      font: 11px/1.4 "IBM Plex Mono", "Cascadia Mono", monospace;
+      letter-spacing: .1em;
+      text-decoration: none;
+    }
+
+    body[data-world="wh40k"] .brand strong,
+    body[data-world="wh40k"] .world-title,
+    body[data-world="wh40k"] .directory-head h2 {
+      font-family: "Times New Roman", Georgia, "Noto Serif SC", serif;
+      letter-spacing: .04em;
+    }
+
+    body[data-world="wh40k"] .stage-grid {
+      background-size: 72px 72px, 72px 72px, 144px 144px, 144px 144px;
+      filter: sepia(.18);
+    }
+
+    body[data-world="wh40k"] .observation-plate {
+      background:
+        radial-gradient(ellipse at 54% 48%, rgba(var(--accent-rgb), .045), transparent 38%),
+        linear-gradient(160deg, rgba(var(--accent-rgb), .055), transparent 34%),
+        repeating-linear-gradient(0deg, transparent 0 15px, rgba(218, 203, 172, .018) 16px),
+        rgba(3, 3, 3, .16);
+    }
+
+    body[data-world="wh40k"] .cosmic-horizon {
+      border-radius: 46% 54% 48% 52%;
+      transform: rotate(-5deg) translateZ(-20px);
+    }
+
+    body[data-world="ff14"] .brand strong,
+    body[data-world="ff14"] .world-title,
+    body[data-world="ff14"] .directory-head h2 {
+      font-family: "Palatino Linotype", Palatino, Georgia, "Noto Serif SC", serif;
+      letter-spacing: .08em;
+    }
+
+    body[data-world="ff14"] .stage-grid {
+      background-size: 80px 80px, 80px 80px, 160px 160px, 160px 160px;
+      opacity: .72;
+    }
+
+    body[data-world="ff14"] .cosmic-horizon {
+      box-shadow: 0 0 48px rgba(var(--accent-rgb), .045);
+      transform: rotate(-11deg) translateZ(-20px);
+    }
+
+    body.scanning .observation-plate {
+      border-color: rgba(var(--accent-rgb), .72);
+      box-shadow: inset 0 0 80px rgba(var(--accent-rgb), .06);
+    }
+
+    body.scanning .cosmic-horizon {
+      opacity: 1;
+      border-right-color: rgba(var(--accent-rgb), .62);
+    }
+
+    body.scanning .plate-scan {
+      opacity: .28;
+      animation-duration: 1.1s;
+    }
+
+    @media (max-width: 1050px) {
+      .header-route { display: none; }
+      .site-header { grid-template-columns: 1fr auto; }
+      .observation-plate {
+        right: 28px;
+        left: clamp(190px, 18vw, 224px);
+        width: auto;
+      }
+      .world-readout { width: 320px; }
+      .route-progress { left: calc(var(--edge) + 326px); }
+    }
+
+    @media (max-height: 820px) and (min-width: 761px) {
+      .observation-plate { min-height: 0; }
+      .world-readout {
+        bottom: calc(var(--progress-h) + 20px);
+        min-height: 160px;
+        padding-top: 20px;
+      }
+      .world-summary {
+        margin-top: 10px;
+        -webkit-line-clamp: 2;
+      }
+      .world-actions { margin-top: 12px; }
+    }
+
+    @media (max-height: 680px) and (min-width: 761px) {
+    }
+
+    @media (max-width: 760px) {
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .prototype-ribbon,
+      .header-route,
+      .header-link { display: none; }
+
+      .site-header {
+        position: relative;
+        grid-template-columns: 1fr auto;
+        height: 62px;
+        padding: 0 16px;
+      }
+
+      .brand strong {
+        font-size: 17px;
+        letter-spacing: .2em;
+      }
+
+      .brand span { display: none; }
+      .header-button { min-height: 36px; padding: 0 10px; }
+
+      .star-map {
+        position: relative;
+        inset: auto;
+        min-height: calc(100vh - 62px);
+        overflow: visible;
+      }
+
+      .stage {
+        position: relative;
+        inset: auto;
+        min-height: calc(100vh - 62px);
+        padding: 24px 16px 32px;
+        overflow: visible;
+      }
+
+      #b4-space,
+      .stage-grid,
+      .stage-dots,
+      .stage-vignette,
+      .telemetry,
+      .world-ghost,
+      .right-rail,
+      .plate-scan,
+      .cosmic-warp {
+        display: none;
+      }
+
+      .observation-plate {
+        position: relative;
+        top: auto;
+        right: auto;
+        left: auto;
+        width: 100%;
+        max-width: none;
+        height: 46vh;
+        min-height: 300px;
+        margin: 0;
+        background:
+          radial-gradient(ellipse at 52% 46%, rgba(var(--accent-rgb), .055), transparent 42%),
+          rgba(4, 6, 10, .86);
+      }
+
+      .plate-status { display: none; }
+      .plate-code { right: 20px; }
+
+      .cosmic-static-fallback {
+        inset: 9% 6%;
+        display: grid;
+      }
+
+      .cosmic-fallback-world {
+        width: min(54vw, 230px);
+      }
+
+      .world-readout {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        min-height: 0;
+        margin: 18px 0 0;
+        padding: 22px 20px;
+      }
+
+      .world-title { font-size: 40px; }
+      .world-summary { display: block; }
+
+      .spatial-gate {
+        position: relative;
+        top: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        display: inline-block;
+        width: calc(50% - 6px);
+        height: auto;
+        min-height: 86px;
+        margin-top: 14px;
+        vertical-align: top;
+      }
+
+      .spatial-gate.is-next { margin-left: 8px; }
+
+      .route-progress {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        height: 62px;
+        margin-top: 24px;
+      }
+
+      .progress-node span { opacity: .62; transform: none; }
+
+      .world-directory {
+        top: 62px;
+        width: 100%;
+        padding: 24px 18px;
+      }
+
+      .directory-grid { grid-template-columns: 1fr; }
+      .index-backdrop { top: 62px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="prototype-ribbon">B4 / AUTHORED SIGNAL PLATES / LOCAL ONLY</div>
+
+  <header class="site-header">
+    <a class="brand" href="./index.html">
+      <strong>群星之间</strong>
+      <span>DEEP-SPACE ARCHIVE</span>
+    </a>
+    <div class="header-route">
+      <span id="header-world-code">ATS / ARK–TERRA</span>
+      <span>SPATIAL DISCOVERY</span>
+    </div>
+    <div class="header-actions">
+      <a class="header-link" href="./index.html">正式首页</a>
+      <button class="header-button" id="open-directory" type="button">全部世界</button>
+    </div>
+  </header>
+
+  <main class="star-map" id="b4-root">
+    <section class="stage" id="b4-stage">
+      <div class="stage-grid" aria-hidden="true"></div>
+      <div class="stage-dots" aria-hidden="true"></div>
+      <canvas id="b4-space" aria-label="可旋转、缩放并选择三个世界的三维星图"></canvas>
+      <div class="world-ghost" id="world-ghost" aria-hidden="true">TERRA</div>
+
+      <div class="observation-plate" id="observation-plate">
+        <div class="cosmic-observation-field" id="cosmic-observation-field" aria-hidden="true">
+          <div class="cosmic-depth-layer"></div>
+          <div class="cosmic-reference-plane"></div>
+          <div class="cosmic-horizon"></div>
+          <div class="cosmic-static-fallback" id="cosmic-static-fallback">
+            <span class="cosmic-fallback-world"></span>
+            <i class="cosmic-fallback-orbit"></i>
+          </div>
+          <div class="plate-scan"></div>
+          <div class="cosmic-warp" id="cosmic-warp"></div>
+        </div>
+        <span class="plate-code" id="plate-code">CELESTIAL OBSERVATORY / 01</span>
+        <span class="plate-status">CELESTIAL / CALIBRATED</span>
+        <div class="plate-baseline"></div>
+      </div>
+
+      <aside class="telemetry">
+        <strong>CELESTIAL OBSERVATION LOCKED</strong>
+        <span id="route-coordinate">ATS / ROUTE-01 / DEPTH 00.00</span>
+        <span id="route-state">FREE DISCOVERY ENABLED</span>
+      </aside>
+
+      <button class="spatial-gate is-previous" id="previous-gate" type="button"></button>
+      <button class="spatial-gate is-next" id="next-gate" type="button"></button>
+
+      <section class="world-readout" id="world-readout" aria-live="polite">
+        <p class="world-index" id="world-index">WORLD 01 / 3 · ARK–TERRA</p>
+        <h1 class="world-title" id="world-title">泰拉</h1>
+        <p class="world-ip" id="world-ip">明日方舟 / ORIGINIUM OBSERVATION</p>
+        <p class="world-summary" id="world-summary">移动城邦为躲避天灾持续迁徙，源石支撑工业与技艺，也传播矿石病。</p>
+        <div class="world-actions">
+          <button class="world-locate" id="scan-route" type="button">扫描信号</button>
+          <a class="world-entry" id="world-entry" href="./arknights.html">进入世界档案</a>
+        </div>
+      </section>
+
+      <nav class="route-progress" id="route-progress" aria-label="世界航道进度"></nav>
+      <div class="stage-vignette" aria-hidden="true"></div>
+      <div class="loading" id="b4-loading">CALIBRATING CELESTIAL OBSERVATION</div>
+    </section>
+
+    <aside class="right-rail" aria-hidden="true">
+      <div class="rail-number">
+        <strong id="rail-number">01</strong>
+        <span id="rail-total">/ 03<br>OBSERVATION</span>
+      </div>
+      <div class="rail-scale" id="rail-scale"></div>
+      <p class="rail-caption" id="rail-caption">ARKNIGHTS<br>WORLD ARCHIVE</p>
+    </aside>
+  </main>
+
+  <button class="index-backdrop" id="index-backdrop" type="button" aria-label="关闭全部世界"></button>
+  <aside class="world-directory" id="world-directory" aria-hidden="true" aria-labelledby="directory-title">
+    <header class="directory-head">
+      <div>
+        <p>ATS / COMPLETE IP DIRECTORY</p>
+        <h2 id="directory-title">全部世界</h2>
+      </div>
+      <button class="directory-close" id="directory-close" type="button" aria-label="关闭">×</button>
+    </header>
+    <div class="directory-grid" id="directory-grid"></div>
+  </aside>
+
+  <script defer src="./js/star-map-b4-prototype.js"></script>
+</body>
+</html>

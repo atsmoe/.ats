@@ -22,7 +22,7 @@ cssFiles:
     <div class="tl-cover-inner">
       <a href="./arknights.html">泰拉观测入口 / 返回</a>
       <h1>明日方舟 · 主世界线</h1>
-      <p>从前文明遗留到罗德岛当下，沿统一时域坐标查阅泰拉的规范事件记录。</p>
+      <p>从前文明遗迹到罗德岛当下，按时间顺序查阅这片大地的事件。</p>
       <div class="calendar-badge">泰 拉 历</div>
     </div>
   </header>
@@ -37,7 +37,7 @@ cssFiles:
     <header>
       <p>STATIC TERRA RECORD / FULL ARCHIVE</p>
       <h2 id="ark-noscript-title">泰拉主编年静态档案</h2>
-      <span>当前浏览器未启用脚本；以下直接展示 {{ arknightsChronicle.records }} 条主世界线规范记录。</span>
+      <span>当前浏览器未启用脚本；以下直接展示主世界线的 {{ arknightsChronicle.records }} 条记录。</span>
     </header>
     {% for era in arknightsChronicle.eras %}
     <section class="ark-noscript-era">
@@ -77,13 +77,13 @@ cssFiles:
 <div id="ref-panel">
   <button class="ref-close" id="ref-close">✕</button>
   <div class="ref-content">
-    <h2>跨 世 界 引 用</h2>
+    <h2>跨世界引用</h2>
     <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
     <div class="ref-event-date" id="ref-event-date"></div>
     <div class="ref-event-title" id="ref-event-title"></div>
     <div class="ref-event-desc" id="ref-event-desc"></div>
     <div class="ref-related"><h3>关联事件</h3></div>
-    <button class="btn-wormhole" id="btn-wormhole">穿 越 虫 洞</button>
+    <button class="btn-wormhole" id="btn-wormhole">穿越虫洞</button>
   </div>
 </div>
 

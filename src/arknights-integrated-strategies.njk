@@ -22,7 +22,7 @@ cssFiles:
     </div>
     <p class="terra-kicker">INTEGRATED STRATEGIES / ARCHIVE ARRAY</p>
     <h1 id="is-index-title">集成战略<span>世界线</span></h1>
-    <p>七个主题按发布顺序收录，序号仅用于归档。每个故事的时序关系均以各专题资料为准。</p>
+    <p>七个主题按发布顺序收录；各主题的时序以对应专题资料为准。</p>
     <div class="is-index-meta"><span>07 TOPICS</span><span>28 CURRENT ENDINGS</span><span>REVIEWED 2026-07-29</span></div>
   </header>
 
@@ -30,17 +30,17 @@ cssFiles:
     {% for topic in arknightsTopics %}
     <a class="is-index-card" href="./arknights-is-{{ topic.slug }}.html" data-context="{{ topic.id }}">
       <span class="is-index-number">IS-0{{ topic.order }}</span>
-      <span class="is-index-state">{% if topic.status == 'updating' %}LIVE / 持续核验{% else %}ARCHIVED / 已收录{% endif %}</span>
+      <span class="is-index-state">{% if topic.status == 'updating' %}LIVE / 正在核验{% else %}ARCHIVED / 已收录{% endif %}</span>
       <strong>{{ topic.name }}</strong>
       <p>{{ topic.synopsis }}</p>
-      <i>建立连接 →</i>
+      <i>查看主题 →</i>
     </a>
     {% endfor %}
   </div>
 
   <footer class="is-index-note">
-    <strong>READING PROTOCOL</strong>
-    <p>每个专题使用同一套记录、来源和 URL 语义，同时根据主题命题改变视觉、拓扑与局部交互。</p>
+    <strong>SPOILER NOTICE</strong>
+    <p>进入主题后会显示剧情转折与全部已收录结局。</p>
   </footer>
 </article>
 {% endblock %}

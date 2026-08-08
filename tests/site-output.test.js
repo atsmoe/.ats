@@ -38,6 +38,16 @@ function collectAssetReferences(value, references = new Set()) {
   return references;
 }
 
+function collectOutputFiles(directory, files = []) {
+  if (!fs.existsSync(directory)) return files;
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) collectOutputFiles(fullPath, files);
+    else files.push(fullPath);
+  }
+  return files;
+}
+
 test('production build contains every public page and data file', () => {
   const required = [
     'index.html',
@@ -68,13 +78,21 @@ test('production build contains every public page and data file', () => {
     assert.ok(fs.existsSync(path.join(DIST, relativePath)), `missing dist/${relativePath}`);
   }
 
-  const prototypePages = fs.readdirSync(DIST)
-    .filter(name => /^star-map(?:-[a-z0-9]+)*-prototype\.html$/.test(name));
-  const prototypeScripts = fs.readdirSync(path.join(DIST, 'js'))
-    .filter(name => /^star-map(?:-[a-z0-9]+)*-prototype\.js$/.test(name));
+  const outputFiles = collectOutputFiles(DIST);
+  const prototypePages = outputFiles
+    .filter(filePath => /^star-map(?:-[a-z0-9]+)*-prototype\.html$/.test(path.basename(filePath)));
+  const prototypeScripts = outputFiles
+    .filter(filePath => (
+      /^star-map(?:-[a-z0-9]+)*-prototype\.js$/.test(path.basename(filePath))
+      || path.basename(filePath) === 'b4-cosmic-stage.js'
+    ));
 
   assert.deepEqual(prototypePages, [], 'throwaway star-map pages must never be published');
   assert.deepEqual(prototypeScripts, [], 'throwaway star-map scripts must never be published');
+  assert.ok(
+    !fs.existsSync(path.join(DIST, 'js', 'prototypes')),
+    'throwaway prototype source directories must never be published',
+  );
   assert.ok(
     !fs.existsSync(path.join(DIST, 'assets', 'prototypes')),
     'throwaway prototype assets must never be published',
@@ -104,8 +122,9 @@ test('public page titles retain the complete site name', () => {
 
 test('the About page describes the archive product rather than a timeline-only site', () => {
   const about = readDist('about.html');
-  assert.match(about, /虚构世界观测与调查网站/);
-  assert.match(about, /调查档案、关系线索与时域索引/);
+  assert.match(about, /非官方的虚构世界档案/);
+  assert.match(about, /明日方舟、战锤40K与最终幻想XIV/);
+  assert.match(about, /编年页适合按时间查阅事件/);
   assert.doesNotMatch(about, /交互式编年史网站/);
 });
 

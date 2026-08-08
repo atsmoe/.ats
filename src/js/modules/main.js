@@ -32,7 +32,7 @@ function showErrorState(worldId, onRetry) {
   card.innerHTML = `
     <div class="error-icon">✦</div>
     <h3 class="error-title">星图信号中断</h3>
-    <p class="error-desc">无法连接到 ${worldId} 的编年史数据<br>请检查网络连接后重试</p>
+    <p class="error-desc">暂时无法载入编年记录，请检查网络后重试</p>
     <button class="error-retry-btn">重新连接</button>
   `;
 

@@ -19,7 +19,7 @@ cssFiles:
     <a class="ff-backlink" href="./ff14.html">← ÆTHERIS / 水晶星海入口</a>
     <p class="ff-eyebrow">THE ROAD GOES EVER ON / JOURNEY CONSTELLATION</p>
     <h1 id="journey-title">旅途<span>星座</span></h1>
-    <p>编年回答“先后”，这里聚焦每段旅途的目的地与改变。6.0终章与6.1新开端各自成星，后续故事由新的航路继续延展。</p>
+    <p>编年按时间展开，这里按旅途回看目的地与变化。6.0 的终章与 6.1 的新开端各自成篇，后续故事沿新的航路展开。</p>
     <div class="ff-journey-meta"><span>EIGHT ARCS</span><span>1.x → 7.5 PART 1</span><span>FULL STORY SPOILERS</span></div>
   </header>
 
@@ -46,12 +46,12 @@ cssFiles:
     <section class="ff-journey-panel" id="{{ journey.id }}" data-journey-panel="{{ journey.id }}" {% if not loop.first %}hidden{% endif %}>
       <header>
         <span>{{ journey.version }}</span>
-        <div><small>{{ journey.latin }}{% if journey.editorial %} / SITE READING PATH{% endif %}</small><h2>{{ journey.name }}</h2><p>{{ journey.place }}</p></div>
+        <div><small>{{ journey.latin }}{% if journey.editorial %} / EDITORIAL ARC{% endif %}</small><h2>{{ journey.name }}</h2><p>{{ journey.place }}</p></div>
       </header>
       <p class="ff-journey-summary">{{ journey.summary }}</p>
       <div class="ff-journey-records">
         {% for record in journey.records %}
-        <a href="./ff14-chronicle.html#{{ record.id }}"><time>{{ record.dateDisplay }}</time><strong>{{ record.title }}</strong><i>读取记录 →</i></a>
+        <a href="./ff14-chronicle.html#{{ record.id }}"><time>{{ record.dateDisplay }}</time><strong>{{ record.title }}</strong><i>查看记录 →</i></a>
         {% endfor %}
       </div>
       <footer>{% for source in journey.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}</footer>

@@ -23,6 +23,15 @@ test('navigation positioning is scoped to the site header', () => {
   assert.doesNotMatch(css, /^nav(?:\.visible)?\s*\{/m);
 });
 
+test('integrated-strategy card metadata remains readable', () => {
+  const css = read('src/css/arknights-world.css');
+  assert.match(
+    css,
+    /\.is-index-runtime-meta\s*\{[^}]*font:\s*11px\/1\.25/s,
+    'card result metadata must not regress to the former 9px size',
+  );
+});
+
 test('mobile navigation is hidden from assistive navigation until opened', () => {
   const html = readDist('arknights.html');
 

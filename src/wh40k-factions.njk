@@ -19,7 +19,7 @@ cssFiles:
     <a class="wh-backlink" href="./wh40k.html">← GALAXY / 破碎银河入口</a>
     <p class="wh-eyebrow">ORDO XENOS / BELLIGERENT INDEX</p>
     <h1 id="faction-title">势力<span>谱系</span></h1>
-    <p>九个稳定家族构成导航层，各自展开复杂子势力的当前编年连接与来源。</p>
+    <p>九个主要势力分列于此，可查看各自的子势力、编年记录与来源。</p>
     <div class="wh-filter-bar" role="group" aria-label="筛选势力">
       <button class="is-active" type="button" data-faction-filter="all" aria-pressed="true">ALL / 全部</button>
       <button type="button" data-faction-filter="humanity" aria-pressed="false">HUMANITY</button>
@@ -37,7 +37,7 @@ cssFiles:
         <strong>{{ faction.name }}</strong>
         <small>{{ faction.latin }}</small>
         <p>{{ faction.tone }}</p>
-        <i>OPEN DOSSIER</i>
+        <i>打开档案</i>
       </button>
       <div class="wh-faction-detail" id="{{ faction.id }}-detail" hidden>
         <p>{{ faction.summary }}</p>
@@ -53,7 +53,7 @@ cssFiles:
     {% endfor %}
   </div>
 
-  <footer class="wh-catalog-note"><strong>CATALOG RULE</strong><p>势力卡只保存规范事件 ID，不复制事件正文；当编年修订时，这里会自动指向同一条记录。</p></footer>
+  <footer class="wh-catalog-note"><strong>收录说明</strong><p>这里列出与各势力相关的事件；点击即可回到对应记录。</p></footer>
 </article>
 <noscript><style>.world-wh40k .wh-faction-detail[hidden]{display:block!important}</style></noscript>
 {% endblock %}

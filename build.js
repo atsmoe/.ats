@@ -7,32 +7,36 @@ const SRC_JS = path.join(__dirname, 'src', 'js', 'modules');
 const LIB_JS = path.join(__dirname, 'src', 'js', 'lib');
 const PROTOTYPE_PAGE_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.html$/;
 const PROTOTYPE_SCRIPT_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.js$/;
+const PROTOTYPE_SUPPORT_SCRIPT_PATTERN = /^b4-cosmic-stage\.js$/;
 
 function removeLocalPrototypeArtifacts() {
   let removed = 0;
 
-  if (fs.existsSync(DIST)) {
-    for (const entry of fs.readdirSync(DIST, { withFileTypes: true })) {
-      if (!entry.isFile() || !PROTOTYPE_PAGE_PATTERN.test(entry.name)) continue;
-      fs.unlinkSync(path.join(DIST, entry.name));
+  function removeFrom(directory) {
+    if (!fs.existsSync(directory)) return;
+
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === 'prototypes') {
+          fs.rmSync(entryPath, { recursive: true, force: true });
+          removed += 1;
+        } else {
+          removeFrom(entryPath);
+        }
+        continue;
+      }
+
+      const isPrototypePage = PROTOTYPE_PAGE_PATTERN.test(entry.name);
+      const isPrototypeScript = PROTOTYPE_SCRIPT_PATTERN.test(entry.name)
+        || PROTOTYPE_SUPPORT_SCRIPT_PATTERN.test(entry.name);
+      if (!isPrototypePage && !isPrototypeScript) continue;
+      fs.unlinkSync(entryPath);
       removed += 1;
     }
   }
 
-  const jsOutput = path.join(DIST, 'js');
-  if (fs.existsSync(jsOutput)) {
-    for (const entry of fs.readdirSync(jsOutput, { withFileTypes: true })) {
-      if (!entry.isFile() || !PROTOTYPE_SCRIPT_PATTERN.test(entry.name)) continue;
-      fs.unlinkSync(path.join(jsOutput, entry.name));
-      removed += 1;
-    }
-  }
-
-  const prototypeAssets = path.join(DIST, 'assets', 'prototypes');
-  if (fs.existsSync(prototypeAssets)) {
-    fs.rmSync(prototypeAssets, { recursive: true, force: true });
-    removed += 1;
-  }
+  removeFrom(DIST);
 
   if (removed > 0) {
     console.log(`[build] Removed ${removed} local prototype artifact(s).`);

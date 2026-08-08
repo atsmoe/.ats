@@ -119,10 +119,10 @@ function createPremise(snapshot) {
 
 function createTopology(snapshot, theme, selectedId, onSelect, signal) {
   const section = element('section', `is-topology is-topology--${snapshot.context.topologyMode}`);
-  section.appendChild(createSectionHeading('03 / NARRATIVE TOPOLOGY', theme.topologyLabel, theme.topologyNote));
+  section.appendChild(createSectionHeading('03 / ENDING PATHS', theme.topologyLabel, theme.topologyNote));
   const track = element('div', 'is-topology-track');
   track.setAttribute('role', 'tablist');
-  track.setAttribute('aria-label', '结局记录拓扑');
+  track.setAttribute('aria-label', '结局路径图');
   const ids = recordIds(snapshot);
   ids.forEach((recordId, index) => {
     const record = snapshot.recordsById[recordId];
@@ -228,7 +228,7 @@ function createEndings(snapshot, selectedId, onSelect, signal) {
   section.appendChild(createSectionHeading(
     '04 / OUTCOME RECORDS',
     '结局记录',
-    `${recordIds(snapshot).length} 份当前已核验记录。点击拓扑节点或记录可更新可分享地址。`,
+    `${recordIds(snapshot).length} 条当前已核验记录。选择节点或记录查看详情，也可以分享当前视图。`,
   ));
   const grid = element('div', 'is-ending-grid');
   recordIds(snapshot).forEach((recordId, index) => {
@@ -249,7 +249,7 @@ function createSources(snapshot) {
   section.appendChild(createSectionHeading(
     '06 / SOURCES & REVIEW',
     '来源与核验',
-    `最后核验：${snapshot.context.lastReviewedAt || '未记录'}。摘要为本站重新表述，详情以来源页为准。`,
+    `最近核验：${snapshot.context.lastReviewedAt || '未记录'}。摘要据所列资料整理，详情以来源页为准。`,
   ));
   const links = element('div', 'is-source-list');
   for (const source of snapshot.context.sources || []) links.appendChild(sourceLink(source));
