@@ -158,6 +158,11 @@ test('the star map and all archive pages keep the documented two-entry boundary'
   const index = readDist('index.html');
   assert.match(index, /src="\.\/js\/star-map-3d\.js"/);
   assert.doesNotMatch(index, /src="\.\/js\/bundle\.js"/);
+  assert.doesNotMatch(
+    index,
+    /data-local-prototype-toggle|star-map-b4-prototype/,
+    'production homepage must not expose the local B4 switch',
+  );
 
   for (const page of ['arknights-chronicle.html', 'wh40k-chronicle.html', 'ff14-chronicle.html']) {
     const html = readDist(page);

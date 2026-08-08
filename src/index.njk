@@ -14,6 +14,18 @@ cssFiles:
 {% extends "base.njk" %}
 
 {% block content %}
+<!-- LOCAL_PROTOTYPE_SWITCH_START -->
+<a
+  class="star-map-version-switch"
+  data-local-prototype-toggle
+  href="./star-map-b4-prototype.html"
+  aria-label="切换至 B4 星图原型"
+>
+  <span>LOCAL PREVIEW</span>
+  <strong>切换至 B4 星图原型</strong>
+</a>
+<!-- LOCAL_PROTOTYPE_SWITCH_END -->
+
 <!-- Star Map View -->
 <div id="star-map">
   <h1 class="sr-only">群星之间 · 世界档案</h1>

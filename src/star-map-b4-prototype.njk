@@ -163,6 +163,17 @@ eleventyExcludeFromCollections: true
       background: rgba(var(--accent-rgb), .08);
     }
 
+    .header-version-switch::before {
+      width: 5px;
+      height: 5px;
+      margin-right: 8px;
+      content: "";
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(var(--accent-rgb), .6);
+    }
+
+    .header-version-switch .switch-label-short { display: none; }
+
     .star-map {
       position: fixed;
       inset: var(--header-h) 0 0;
@@ -1144,8 +1155,7 @@ eleventyExcludeFromCollections: true
       }
 
       .prototype-ribbon,
-      .header-route,
-      .header-link { display: none; }
+      .header-route { display: none; }
 
       .site-header {
         position: relative;
@@ -1160,7 +1170,21 @@ eleventyExcludeFromCollections: true
       }
 
       .brand span { display: none; }
-      .header-button { min-height: 36px; padding: 0 10px; }
+      .header-button,
+      .header-link {
+        min-height: 36px;
+        padding: 0 10px;
+        font-size: 10px;
+      }
+
+      .header-version-switch .switch-label-long { display: none; }
+      .header-version-switch .switch-label-short { display: inline; }
+
+      .header-version-switch::before {
+        margin-right: 6px;
+      }
+
+      .header-actions { gap: 6px; }
 
       .star-map {
         position: relative;
@@ -1291,7 +1315,10 @@ eleventyExcludeFromCollections: true
       <span>SPATIAL DISCOVERY</span>
     </div>
     <div class="header-actions">
-      <a class="header-link" href="./index.html">正式首页</a>
+      <a class="header-link header-version-switch" href="./index.html" aria-label="切换至正式星图">
+        <span class="switch-label-long">切换至正式星图</span>
+        <span class="switch-label-short">正式星图</span>
+      </a>
       <button class="header-button" id="open-directory" type="button">全部世界</button>
     </div>
   </header>

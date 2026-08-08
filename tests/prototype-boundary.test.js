@@ -45,10 +45,14 @@ test('B4 source no longer carries removed observation-anchor or mother-crystal i
   }
 });
 
-test('B4 stays outside the formal homepage and production build', () => {
+test('formal and B4 star maps expose one local-only two-way switch', () => {
   const formalHome = read(FORMAL_HOME);
+  const prototype = read(TEMPLATE);
   const pkg = JSON.parse(read(path.join(ROOT, 'package.json')));
-  assert.doesNotMatch(formalHome, /star-map-b4-prototype|B4Prototype/i);
+  assert.match(formalHome, /data-local-prototype-toggle/);
+  assert.match(formalHome, /href="\.\/star-map-b4-prototype\.html"/);
+  assert.match(prototype, /header-version-switch/);
+  assert.match(prototype, /href="\.\/index\.html"[^>]*aria-label="切换至正式星图"/);
   assert.doesNotMatch(pkg.scripts.build, /build-b4-prototype|prototype:b4/i);
 });
 
