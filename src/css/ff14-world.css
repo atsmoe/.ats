@@ -610,34 +610,52 @@
 }
 
 .world-ff14.ff-chronicle-page #main-content {
-  padding-top: var(--nav-h);
+  padding-top: 0;
 }
 
 .world-ff14 .ff-chronicle-cover {
   position: relative;
-  height: 480px;
+  height: 520px;
   overflow: hidden;
+  isolation: isolate;
   background:
-    radial-gradient(circle at 78% 45%, rgba(var(--ff-rgb-violet), .18), transparent 25%),
-    radial-gradient(circle at 73% 52%, rgba(var(--ff-rgb-crystal), .11), transparent 42%),
-    linear-gradient(115deg, var(--ff-ink) 0 52%, var(--ff-ink-soft) 52%);
+    radial-gradient(circle at 77% 48%, rgba(var(--ff-rgb-violet), .2), transparent 23%),
+    radial-gradient(circle at 69% 54%, rgba(var(--ff-rgb-crystal), .11), transparent 45%),
+    linear-gradient(112deg, var(--ff-ink) 0 43%, #070b18 72%, var(--ff-ink) 100%);
 }
 
 .world-ff14 .ff-chronicle-cover::before {
   position: absolute;
   inset: 0;
+  z-index: 0;
   content: "";
   background:
-    linear-gradient(105deg, transparent 57%, rgba(var(--ff-rgb-crystal), .1) 57.1% 57.25%, transparent 57.35%),
-    repeating-radial-gradient(circle at 76% 51%, transparent 0 54px, rgba(var(--ff-rgb-crystal), .055) 55px 56px);
+    linear-gradient(rgba(var(--ff-rgb-crystal), .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--ff-rgb-crystal), .025) 1px, transparent 1px),
+    linear-gradient(105deg, transparent 53%, rgba(var(--ff-rgb-crystal), .1) 53.08% 53.2%, transparent 53.3%);
+  background-size: 52px 52px, 52px 52px, 100% 100%;
+  mask-image: linear-gradient(90deg, transparent 28%, #000 53%, #000 100%);
+}
+
+.world-ff14 .ff-chronicle-cover::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  height: auto;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(var(--ff-rgb-ink), .99) 0, rgba(var(--ff-rgb-ink), .93) 34%, transparent 62%),
+    linear-gradient(180deg, rgba(var(--ff-rgb-ink), .28), transparent 22%, transparent 76%, rgba(var(--ff-rgb-ink), .9));
 }
 
 .world-ff14 .ff-chronicle-cover .tl-cover-inner {
   position: relative;
-  z-index: 3;
+  inset: auto;
+  z-index: 4;
   width: min(calc(100% - (var(--ff-page-x) * 2)), var(--ff-max));
   margin: 0 auto;
-  padding: 58px 48% 50px 0;
+  padding: 58px 52% 50px 0;
 }
 
 .world-ff14 .ff-chronicle-cover h1 {
@@ -669,32 +687,183 @@
   background: rgba(var(--ff-rgb-crystal), .055);
 }
 
-.world-ff14 .ff-chronicle-glyph {
+.world-ff14 .ff-chronicle-telemetry {
   position: absolute;
-  top: 50%;
-  right: 13%;
-  width: 230px;
-  height: 230px;
-  border: 1px solid var(--ff-rule-strong);
-  border-radius: 50%;
-  transform: translateY(-50%);
+  z-index: 1;
+  inset: 0 0 0 31%;
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1100px;
+  mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, .34) 12%, #000 29%);
 }
 
-.world-ff14 .ff-chronicle-glyph::before,
-.world-ff14 .ff-chronicle-glyph::after,
-.world-ff14 .ff-chronicle-glyph i {
+.world-ff14 .ff-chronicle-cosmos {
   position: absolute;
-  inset: 18%;
-  content: "";
-  border: 1px solid var(--ff-rule);
-  transform: rotate(45deg);
+  inset: -1% -2% -1% -8%;
+  width: 110%;
+  height: 102%;
+  overflow: visible;
+  transform: rotateY(-5deg) translateZ(-12px);
+  transform-origin: 66% 50%;
 }
 
-.world-ff14 .ff-chronicle-glyph::after { inset: 34%; transform: rotate(0); }
-.world-ff14 .ff-chronicle-glyph i:nth-child(1) { inset: -1px; border-radius: 50%; transform: rotate(22.5deg); }
-.world-ff14 .ff-chronicle-glyph i:nth-child(2) { inset: 8%; border-radius: 50%; transform: none; }
-.world-ff14 .ff-chronicle-glyph i:nth-child(3) { inset: 28% 48%; border: 0; background: var(--ff-crystal); transform: none; box-shadow: 0 0 18px rgba(var(--ff-rgb-crystal), .8); }
-.world-ff14 .ff-chronicle-glyph i:nth-child(4) { inset: 48% 28%; border: 0; background: rgba(var(--ff-rgb-crystal), .48); transform: none; }
+.world-ff14 .ff-telemetry-orbit,
+.world-ff14 .ff-telemetry-axis,
+.world-ff14 .ff-telemetry-aether-streams path,
+.world-ff14 .ff-telemetry-source-ring,
+.world-ff14 .ff-telemetry-source-latitude,
+.world-ff14 .ff-telemetry-source-meridian,
+.world-ff14 .ff-telemetry-crystal-facet {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.world-ff14 .ff-telemetry-orbit {
+  stroke: rgba(var(--ff-rgb-crystal), .2);
+  stroke-width: 1;
+}
+
+.world-ff14 .ff-telemetry-orbit--outer {
+  stroke: rgba(var(--ff-rgb-crystal), .3);
+  stroke-dasharray: 2 11;
+}
+
+.world-ff14 .ff-telemetry-orbit--middle {
+  stroke: rgba(var(--ff-rgb-violet), .3);
+  stroke-dasharray: 34 8 2 8;
+}
+
+.world-ff14 .ff-telemetry-orbit--inner {
+  stroke: rgba(var(--ff-rgb-gold), .24);
+  stroke-dasharray: 2 5;
+}
+
+.world-ff14 .ff-telemetry-axis {
+  stroke: rgba(var(--ff-rgb-crystal), .08);
+  stroke-width: .8;
+  stroke-dasharray: 2 9;
+}
+
+.world-ff14 .ff-telemetry-aether-streams path {
+  stroke: url("#ff-chronicle-aether");
+  stroke-width: 1.25;
+  stroke-dasharray: 17 83;
+  stroke-linecap: round;
+  filter: url("#ff-chronicle-soft");
+  animation: ff-chronicle-aether-flow 13s linear infinite;
+}
+
+.world-ff14 .ff-telemetry-aether-streams path:nth-child(2) {
+  animation-duration: 17s;
+  animation-direction: reverse;
+}
+
+.world-ff14 .ff-telemetry-aether-streams path:nth-child(3) {
+  animation-duration: 20s;
+  animation-delay: -8s;
+}
+
+.world-ff14 .ff-telemetry-shard circle {
+  fill: rgba(var(--ff-rgb-panel), .82);
+  stroke: rgba(var(--ff-rgb-crystal), .45);
+  stroke-width: 1;
+  filter: url("#ff-chronicle-glow");
+  animation: ff-chronicle-shard-breathe 5.4s ease-in-out infinite;
+}
+
+.world-ff14 .ff-telemetry-shard path {
+  fill: rgba(var(--ff-rgb-crystal), .82);
+  stroke: rgba(var(--ff-rgb-white), .48);
+  stroke-width: .7;
+}
+
+.world-ff14 .ff-telemetry-shard:nth-child(3n) circle {
+  stroke: rgba(var(--ff-rgb-violet), .68);
+  animation-delay: -1.7s;
+}
+
+.world-ff14 .ff-telemetry-shard:nth-child(4n) circle {
+  stroke: rgba(var(--ff-rgb-gold), .62);
+  animation-delay: -3.1s;
+}
+
+.world-ff14 .ff-telemetry-shard:nth-child(3n) path { fill: rgba(var(--ff-rgb-violet), .78); }
+.world-ff14 .ff-telemetry-shard:nth-child(4n) path { fill: rgba(var(--ff-rgb-gold), .76); }
+
+.world-ff14 .ff-telemetry-source-aura {
+  fill: url("#ff-chronicle-source-aura");
+  filter: url("#ff-chronicle-soft");
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ff-chronicle-source-breathe 8s ease-in-out infinite;
+}
+
+.world-ff14 .ff-telemetry-source-ring {
+  stroke: rgba(var(--ff-rgb-crystal), .36);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+
+.world-ff14 .ff-telemetry-source-sphere {
+  fill: url("#ff-chronicle-source");
+  stroke: rgba(var(--ff-rgb-white), .56);
+  stroke-width: 1;
+  filter: drop-shadow(0 0 18px rgba(var(--ff-rgb-crystal), .4));
+}
+
+.world-ff14 .ff-telemetry-source-latitude,
+.world-ff14 .ff-telemetry-source-meridian {
+  stroke: rgba(var(--ff-rgb-white), .2);
+  stroke-width: .8;
+}
+
+.world-ff14 .ff-telemetry-crystal {
+  fill: rgba(var(--ff-rgb-crystal), .19);
+  stroke: rgba(var(--ff-rgb-white), .62);
+  stroke-width: 1;
+  filter: url("#ff-chronicle-glow");
+}
+
+.world-ff14 .ff-telemetry-crystal-facet {
+  stroke: rgba(var(--ff-rgb-white), .38);
+  stroke-width: .7;
+}
+
+.world-ff14 .ff-telemetry-register text {
+  fill: rgba(var(--ff-rgb-crystal), .42);
+  font: 8px ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: .22em;
+}
+
+.world-ff14 .ff-telemetry-count {
+  position: absolute;
+  top: 48px;
+  right: 3.3%;
+  color: rgba(var(--ff-rgb-crystal), .16);
+  font: 300 clamp(72px, 9vw, 132px)/.78 var(--font-serif);
+  letter-spacing: -.06em;
+}
+
+.world-ff14 .ff-telemetry-count small {
+  display: block;
+  margin-top: 12px;
+  color: rgba(var(--ff-rgb-crystal), .38);
+  font: 8px/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: .32em;
+  text-align: right;
+}
+
+.world-ff14 .ff-telemetry-lock {
+  position: absolute;
+  right: 3.5%;
+  bottom: 38px;
+  padding-right: 16px;
+  border-right: 1px solid rgba(var(--ff-rgb-gold), .42);
+  color: rgba(var(--ff-rgb-gold), .48);
+  font: 8px/1.65 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: .2em;
+  text-align: right;
+}
 
 .world-ff14 .tl-branches {
   border-color: var(--ff-rule);
@@ -1181,6 +1350,21 @@
 .world-ff14 .ff-current-boundary p { color: var(--ff-muted); font-size: 11px; line-height: 1.75; }
 .world-ff14 .ff-current-boundary .ff-boundary-sources { grid-column: 2; }
 
+@keyframes ff-chronicle-aether-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -100; }
+}
+
+@keyframes ff-chronicle-shard-breathe {
+  0%, 100% { fill-opacity: .54; stroke-opacity: .52; }
+  50% { fill-opacity: .9; stroke-opacity: 1; }
+}
+
+@keyframes ff-chronicle-source-breathe {
+  0%, 100% { opacity: .72; transform: scale(.94); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
 @keyframes ff-breathe {
   0%, 100% { opacity: .5; transform: translate(-50%, -50%) rotate(-12deg) scale(.98); }
   50% { opacity: .9; transform: translate(-50%, -50%) rotate(-8deg) scale(1.02); }
@@ -1195,6 +1379,9 @@
   .world-ff14 .ff-hero-copy { padding-right: 42%; }
   .world-ff14 .ff-current-call { width: 310px; }
   .world-ff14 .ff-entry { min-height: 315px; padding: 26px; }
+  .world-ff14 .ff-chronicle-cover .tl-cover-inner { padding-right: 45%; }
+  .world-ff14 .ff-chronicle-telemetry { left: 27%; }
+  .world-ff14 .ff-telemetry-count { opacity: .68; }
   .world-ff14 .ff-reflection-layout { grid-template-columns: minmax(500px, 1fr) minmax(340px, .8fr); gap: 30px; }
   .world-ff14 .ff-prism-map { min-height: 590px; }
   .world-ff14 .ff-reflection-panel { min-height: 590px; padding: 28px; }
@@ -1212,6 +1399,11 @@
   .world-ff14 .ff-current-call { right: 22px; bottom: 72px; width: calc(100% - 44px); }
   .world-ff14 .ff-entry-grid { grid-template-columns: 1fr; margin-top: -24px; }
   .world-ff14 .ff-entry { min-height: 260px; }
+  .world-ff14 .ff-chronicle-cover { height: 560px; }
+  .world-ff14 .ff-chronicle-cover .tl-cover-inner { padding-right: 30%; }
+  .world-ff14 .ff-chronicle-telemetry { inset: 0 -15% 0 22%; opacity: .72; }
+  .world-ff14 .ff-telemetry-count { display: none; }
+  .world-ff14 .ff-telemetry-lock { right: 17%; bottom: 30px; }
   .world-ff14 .ff-saga-grid { grid-template-columns: 1fr 100px 1fr; }
   .world-ff14 .ff-archive-boundary { grid-template-columns: 1fr; gap: 42px; }
   .world-ff14 .ff-reflection-layout { grid-template-columns: 1fr; }
@@ -1248,9 +1440,22 @@
   .world-ff14 .ff-saga-grid article:first-child { text-align: left; }
   .world-ff14 .ff-saga-crystal { min-height: 110px; border: 1px solid var(--ff-rule); }
   .world-ff14 .ff-archive-boundary dl { grid-template-columns: 1fr; }
-  .world-ff14 .ff-chronicle-cover { height: 560px; }
-  .world-ff14 .ff-chronicle-cover .tl-cover-inner { padding: 58px 0 50px; }
-  .world-ff14 .ff-chronicle-glyph { right: -84px; opacity: .22; }
+  .world-ff14 .ff-chronicle-cover { height: 610px; }
+  .world-ff14 .ff-chronicle-cover::after {
+    background:
+      linear-gradient(180deg, rgba(var(--ff-rgb-ink), .98) 0, rgba(var(--ff-rgb-ink), .92) 55%, rgba(var(--ff-rgb-ink), .36) 79%, rgba(var(--ff-rgb-ink), .92)),
+      linear-gradient(90deg, rgba(var(--ff-rgb-ink), .8), transparent);
+  }
+  .world-ff14 .ff-chronicle-cover .tl-cover-inner { padding: 52px 0 46px; }
+  .world-ff14 .ff-chronicle-cover .tl-cover-inner > p:not(.ff-eyebrow):not(.ff-chronicle-notice),
+  .world-ff14 .ff-chronicle-notice { max-width: 96%; }
+  .world-ff14 .ff-chronicle-telemetry {
+    inset: 150px -54% -42px 3%;
+    opacity: .58;
+    mask-image: linear-gradient(180deg, transparent 0, #000 17%, #000 78%, transparent 100%);
+  }
+  .world-ff14 .ff-chronicle-cosmos { inset: 0; width: 100%; height: 100%; transform: none; }
+  .world-ff14 .ff-telemetry-lock { display: none; }
   .world-ff14 .ff-noscript-era { grid-template-columns: 1fr; gap: 25px; }
   .world-ff14 .ff-noscript-record { grid-column: 1; }
   .world-ff14 .ff-atlas,
@@ -1290,7 +1495,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .world-ff14 .ff-aether-ring--outer,
-  .world-ff14 .ff-mothercrystal {
+  .world-ff14 .ff-mothercrystal,
+  .world-ff14 .ff-telemetry-aether-streams path,
+  .world-ff14 .ff-telemetry-shard circle,
+  .world-ff14 .ff-telemetry-source-aura {
     animation: none;
   }
   .world-ff14 .ff-aether-sky,

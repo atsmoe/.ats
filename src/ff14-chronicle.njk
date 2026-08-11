@@ -19,7 +19,83 @@ cssFiles:
 {% block content %}
 <div id="timeline" class="active ff-chronicle">
   <header class="tl-cover ff-chronicle-cover">
-    <div class="ff-chronicle-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="ff-chronicle-telemetry" aria-hidden="true">
+      <svg class="ff-chronicle-cosmos" viewBox="0 0 960 520" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="ff-chronicle-source" cx="36%" cy="28%" r="72%">
+            <stop offset="0" stop-color="#eefaff" stop-opacity=".98" />
+            <stop offset=".18" stop-color="#a9dded" stop-opacity=".92" />
+            <stop offset=".55" stop-color="#485d9f" stop-opacity=".74" />
+            <stop offset="1" stop-color="#080d20" stop-opacity=".92" />
+          </radialGradient>
+          <radialGradient id="ff-chronicle-source-aura">
+            <stop offset="0" stop-color="#a9dded" stop-opacity=".38" />
+            <stop offset=".42" stop-color="#9a89e8" stop-opacity=".13" />
+            <stop offset="1" stop-color="#9a89e8" stop-opacity="0" />
+          </radialGradient>
+          <linearGradient id="ff-chronicle-aether" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#9a89e8" stop-opacity="0" />
+            <stop offset=".42" stop-color="#a9dded" stop-opacity=".68" />
+            <stop offset=".7" stop-color="#d8bd78" stop-opacity=".42" />
+            <stop offset="1" stop-color="#a9dded" stop-opacity="0" />
+          </linearGradient>
+          <filter id="ff-chronicle-glow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="ff-chronicle-soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="2.4" />
+          </filter>
+        </defs>
+
+        <g class="ff-telemetry-depth-field">
+          <ellipse class="ff-telemetry-orbit ff-telemetry-orbit--outer" cx="596" cy="258" rx="332" ry="142" transform="rotate(-9 596 258)" />
+          <ellipse class="ff-telemetry-orbit ff-telemetry-orbit--middle" cx="596" cy="258" rx="270" ry="188" transform="rotate(24 596 258)" />
+          <ellipse class="ff-telemetry-orbit ff-telemetry-orbit--inner" cx="596" cy="258" rx="192" ry="98" transform="rotate(-31 596 258)" />
+          <path class="ff-telemetry-axis" d="M240 358 901 157M333 92 822 432M596 42v432" />
+        </g>
+
+        <g class="ff-telemetry-aether-streams">
+          <path pathLength="100" d="M145 338C292 244 356 349 470 278S661 101 914 171" />
+          <path pathLength="100" d="M204 118C356 194 377 134 497 213S711 419 926 330" />
+          <path pathLength="100" d="M266 453C411 362 482 449 588 343S728 197 913 242" />
+        </g>
+
+        <g class="ff-telemetry-shards">
+          <g class="ff-telemetry-shard ff-telemetry-shard--01" transform="translate(298 220)"><circle r="17" /><path d="M0-10 7 0 0 10-7 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--02" transform="translate(350 123)"><circle r="10" /><path d="M0-6 4 0 0 6-4 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--03" transform="translate(460 77)"><circle r="14" /><path d="M0-8 5 0 0 8-5 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--04" transform="translate(610 102)"><circle r="9" /><path d="M0-5 4 0 0 5-4 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--05" transform="translate(748 123)"><circle r="16" /><path d="M0-9 6 0 0 9-6 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--06" transform="translate(852 207)"><circle r="11" /><path d="M0-6 4 0 0 6-4 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--07" transform="translate(875 319)"><circle r="14" /><path d="M0-8 5 0 0 8-5 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--08" transform="translate(788 405)"><circle r="9" /><path d="M0-5 4 0 0 5-4 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--09" transform="translate(656 435)"><circle r="18" /><path d="M0-10 7 0 0 10-7 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--10" transform="translate(500 427)"><circle r="11" /><path d="M0-6 4 0 0 6-4 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--11" transform="translate(375 377)"><circle r="15" /><path d="M0-8 5 0 0 8-5 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--12" transform="translate(290 316)"><circle r="9" /><path d="M0-5 4 0 0 5-4 0Z" /></g>
+          <g class="ff-telemetry-shard ff-telemetry-shard--13" transform="translate(700 282)"><circle r="13" /><path d="M0-7 5 0 0 7-5 0Z" /></g>
+        </g>
+
+        <g class="ff-telemetry-source" transform="translate(576 258)">
+          <circle class="ff-telemetry-source-aura" r="148" />
+          <circle class="ff-telemetry-source-ring" r="96" />
+          <circle class="ff-telemetry-source-sphere" r="72" />
+          <ellipse class="ff-telemetry-source-latitude" rx="66" ry="24" />
+          <path class="ff-telemetry-source-meridian" d="M0-70C-27-44-27 44 0 70M0-70C27-44 27 44 0 70" />
+          <path class="ff-telemetry-crystal" d="M0-57 22-14 13 43 0 67-13 43-22-14Z" />
+          <path class="ff-telemetry-crystal-facet" d="m0-57 4 45 18-2M4-12 13 43 0 67M4-12-13 43M4-12-22-14" />
+        </g>
+
+        <g class="ff-telemetry-register">
+          <text x="540" y="489">THE SOURCE / XIV</text>
+          <text x="747" y="470">REFLECTION ARRAY / I—XIII</text>
+          <text x="830" y="70">AETHERIS</text>
+        </g>
+      </svg>
+      <span class="ff-telemetry-count">14<small>WORLDS</small></span>
+      <span class="ff-telemetry-lock">AETHER SIGNAL<br>CALIBRATED</span>
+    </div>
     <div class="tl-cover-inner">
       <a class="ff-backlink" href="./ff14.html">← ÆTHERIS / 水晶星海入口</a>
       <p class="ff-eyebrow">THE UNENDING JOURNEY / CANONICAL CHRONICLE</p>

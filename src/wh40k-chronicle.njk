@@ -18,6 +18,116 @@ cssFiles:
 {% block content %}
 <div id="timeline" class="active wh-chronicle">
   <header class="tl-cover wh-chronicle-cover">
+    <div class="wh-chronicle-telemetry" aria-hidden="true">
+      <div class="wh-chronicle-telemetry-head">
+        <span>SEGMENTUM SOLAR / TACTICAL PROJECTION</span>
+        <span>NOOSPHERIC LINK · 000.M42</span>
+      </div>
+      <svg class="wh-chronicle-galaxy-plane" viewBox="0 0 960 520" role="presentation" focusable="false">
+        <defs>
+          <radialGradient id="wh-chronicle-galaxy-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#f0d7a0" stop-opacity=".95"/>
+            <stop offset=".08" stop-color="#b18a4b" stop-opacity=".7"/>
+            <stop offset=".34" stop-color="#78623f" stop-opacity=".25"/>
+            <stop offset="1" stop-color="#050607" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="wh-chronicle-rift" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#42121d" stop-opacity="0"/>
+            <stop offset=".38" stop-color="#a52b34" stop-opacity=".95"/>
+            <stop offset=".6" stop-color="#d8d0bb" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#42121d" stop-opacity="0"/>
+          </linearGradient>
+          <pattern id="wh-chronicle-star-grid" width="43" height="31" patternUnits="userSpaceOnUse" patternTransform="rotate(-7)">
+            <circle cx="4" cy="5" r="1.1" fill="#e0c690" fill-opacity=".78"/>
+            <circle cx="22" cy="11" r=".65" fill="#d8d0bb" fill-opacity=".52"/>
+            <circle cx="36" cy="25" r=".8" fill="#d8d0bb" fill-opacity=".68"/>
+            <circle cx="13" cy="27" r=".45" fill="#b18a4b" fill-opacity=".7"/>
+          </pattern>
+          <filter id="wh-chronicle-star-noise" x="-20%" y="-40%" width="140%" height="180%">
+            <feTurbulence type="fractalNoise" baseFrequency=".032 .095" numOctaves="3" seed="41" result="noise"/>
+            <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+            <feColorMatrix in="mono" type="matrix" values="
+              0 0 0 0 1
+              0 0 0 0 1
+              0 0 0 0 1
+              1.4 1.4 1.4 0 -3.15" result="stars"/>
+            <feFlood flood-color="#d8d0bb" result="bone"/>
+            <feComposite in="bone" in2="stars" operator="in"/>
+          </filter>
+          <filter id="wh-chronicle-core-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="7" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <clipPath id="wh-chronicle-disc">
+            <ellipse cx="515" cy="267" rx="365" ry="190"/>
+          </clipPath>
+        </defs>
+
+        <g class="wh-chronicle-sector-grid">
+          <ellipse cx="515" cy="267" rx="378" ry="199"/>
+          <ellipse cx="515" cy="267" rx="307" ry="162"/>
+          <ellipse cx="515" cy="267" rx="234" ry="124"/>
+          <ellipse cx="515" cy="267" rx="160" ry="84"/>
+          <path d="M137 267H893M515 68V466M208 151L822 383M208 383L822 151M333 91L697 443M333 443L697 91"/>
+        </g>
+
+        <g clip-path="url(#wh-chronicle-disc)">
+          <rect x="115" y="58" width="800" height="420" fill="url(#wh-chronicle-galaxy-glow)" opacity=".75"/>
+          <rect x="115" y="58" width="800" height="420" fill="#d8d0bb" filter="url(#wh-chronicle-star-noise)" opacity=".62"/>
+          <rect x="115" y="58" width="800" height="420" fill="url(#wh-chronicle-star-grid)" opacity=".58"/>
+          <g class="wh-chronicle-spiral-arms">
+            <path d="M515 267C604 205 718 213 790 265C696 176 564 157 469 213C373 269 289 262 217 211"/>
+            <path d="M515 267C464 342 335 348 260 299C349 387 490 407 584 337C670 272 753 285 844 346"/>
+            <path d="M515 267C568 304 623 340 701 336C779 332 832 297 871 244"/>
+            <path d="M515 267C462 229 405 193 331 200C260 207 206 244 166 302"/>
+          </g>
+          <g class="wh-chronicle-star-streams">
+            <path d="M515 267C604 205 718 213 790 265C696 176 564 157 469 213C373 269 289 262 217 211"/>
+            <path d="M515 267C464 342 335 348 260 299C349 387 490 407 584 337C670 272 753 285 844 346"/>
+            <path d="M515 267C568 304 623 340 701 336C779 332 832 297 871 244"/>
+            <path d="M515 267C462 229 405 193 331 200C260 207 206 244 166 302"/>
+            <path d="M508 255C577 245 641 255 710 294C775 330 830 314 884 282"/>
+            <path d="M520 279C450 291 396 286 336 249C280 214 221 220 157 255"/>
+          </g>
+          <path class="wh-chronicle-warp-rift" d="M351 63C406 147 383 207 445 253C494 289 535 323 576 465"/>
+        </g>
+
+        <g class="wh-chronicle-warfronts">
+          <path d="M244 320C326 286 373 308 427 348"/>
+          <path d="M621 182C692 155 755 169 815 213"/>
+          <path d="M643 353C710 384 771 378 830 341"/>
+        </g>
+
+        <g class="wh-chronicle-core" filter="url(#wh-chronicle-core-glow)">
+          <circle cx="515" cy="267" r="23"/>
+          <circle cx="515" cy="267" r="7"/>
+        </g>
+
+        <g class="wh-chronicle-nodes">
+          <g transform="translate(515 267)"><circle r="4"/><path d="M0-25V-8M8 0H25"/></g>
+          <g transform="translate(382 218)"><circle r="4"/><path d="M0-17V-7M7 0H17"/></g>
+          <g transform="translate(674 225)"><circle r="4"/><path d="M0-19V-7M7 0H19"/></g>
+          <g transform="translate(707 347)"><circle r="4"/><path d="M0-17V-7M7 0H17"/></g>
+          <g transform="translate(306 334)"><circle r="4"/><path d="M0-17V-7M7 0H17"/></g>
+          <g transform="translate(786 271)"><circle r="4"/><path d="M0-15V-7M7 0H15"/></g>
+        </g>
+
+        <g class="wh-chronicle-projection-labels">
+          <text x="527" y="258">SOL</text>
+          <text x="690" y="213">ULTIMA</text>
+          <text x="245" y="350">OBSCURUS</text>
+          <text x="722" y="378">PACIFICUS</text>
+          <text x="792" y="258">EASTERN FRINGE</text>
+        </g>
+      </svg>
+      <div class="wh-chronicle-threat-scale">
+        <span>STRATEGIC THREAT</span><i></i><i></i><i></i><i></i><i></i><b>EXTREMIS</b>
+      </div>
+      <div class="wh-chronicle-telemetry-foot">
+        <span>ASTRONOMICAN / LOCKED</span>
+        <span>WARFRONTS / 03 ACTIVE</span>
+      </div>
+    </div>
     <div class="tl-cover-inner">
       <a class="wh-backlink" href="./wh40k.html">← GALAXY / 破碎银河入口</a>
       <p class="wh-eyebrow">ORDO CHRONOS / CURATED SEQUENCE</p>

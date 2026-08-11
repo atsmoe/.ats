@@ -123,7 +123,11 @@ export function populateBranchTabs() {
   if (!_data) return;
   const container = document.getElementById('tl-branches');
   container.innerHTML = '';
-  for (const b of _data.branches) {
+  const branches = _data.branches || [];
+  const hasMultipleBranches = branches.length > 1;
+  container.hidden = !hasMultipleBranches;
+  container.setAttribute('aria-hidden', String(!hasMultipleBranches));
+  for (const b of branches) {
     const btn = document.createElement('button');
     btn.className = 'tl-branch-tab' + (b.isDefault ? ' active' : '');
     btn.type = 'button';
@@ -132,7 +136,7 @@ export function populateBranchTabs() {
     btn.setAttribute('aria-pressed', String(Boolean(b.isDefault)));
     container.appendChild(btn);
   }
-  currentBranch = _data.branches.find(b => b.isDefault)?.id || 'mainline';
+  currentBranch = branches.find(b => b.isDefault)?.id || 'mainline';
   currentSubBranch = null;
   updateSubTabs();
 }

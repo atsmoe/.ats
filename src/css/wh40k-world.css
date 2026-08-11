@@ -413,18 +413,121 @@
 .world-wh40k .wh-zone-source a{ color: var(--wh-brass); font: 9px/1.5 ui-monospace, Consolas, monospace; letter-spacing: .06em; text-decoration: none; }
 .world-wh40k .wh-zone-source a:hover{ color: var(--wh-brass-bright); }
 
-/* Chronicle keeps the shared engine, but has its own codex cover. */
+/* Chronicle keeps the shared engine, with a dedicated galactic strategy cover. */
 .world-wh40k.wh-chronicle-page .tl-cover{
   height: 520px;
+  isolation: isolate;
   background:
-    radial-gradient(circle at 78% 50%, rgba(var(--wh-rgb-123-29-37), .18), transparent 24%),
+    radial-gradient(ellipse at 76% 50%, rgba(var(--wh-rgb-123-29-37), .2), transparent 31%),
+    linear-gradient(108deg, rgba(var(--wh-rgb-5-6-7), .98) 0 39%, rgba(var(--wh-rgb-5-6-7), .72) 57%, rgba(var(--wh-rgb-5-6-7), .18) 100%),
     repeating-linear-gradient(90deg, transparent 0 95px, rgba(var(--wh-rgb-216-208-187), .025) 96px), var(--wh-color-080909);
 }
-.world-wh40k .wh-chronicle-cover .tl-cover-inner{ max-width: 1120px; }
+.world-wh40k .wh-chronicle-cover::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(var(--wh-rgb-216-208-187), .018) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(var(--wh-rgb-216-208-187), .018) 1px, transparent 1px),
+    linear-gradient(118deg, transparent 0 69%, rgba(var(--wh-rgb-123-29-37), .18) 69.1% 69.25%, transparent 69.35%);
+  background-size: 96px 100%, 100% 64px, auto;
+}
+.world-wh40k .wh-chronicle-cover::after{ z-index: 2; height: 35%; pointer-events: none; }
+.world-wh40k .wh-chronicle-cover .tl-cover-inner{ z-index: 4; max-width: 1120px; }
 .world-wh40k .wh-chronicle-cover .wh-backlink{ position: static; margin-bottom: 65px; }
 .world-wh40k .wh-chronicle-cover h1{ color: var(--wh-bone); font-size: clamp(62px, 9vw, 130px); letter-spacing: -.06em; }
 .world-wh40k .wh-chronicle-cover p:not(.wh-eyebrow){ max-width: 760px; color: var(--wh-color-a39d90); line-height: 1.9; }
 .world-wh40k .wh-chronicle-cover .wh-chronicle-notice{ padding-left: 16px; border-left: 1px solid var(--wh-rule); font-size: 11px; }
+.world-wh40k .wh-chronicle-telemetry{
+  position: absolute;
+  inset: 18px 0 0 34%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--wh-brass);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 100%);
+}
+.world-wh40k .wh-chronicle-telemetry::before{
+  content: '';
+  position: absolute;
+  inset: 34px 24px 36px 5%;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .14);
+  clip-path: polygon(0 0, 94% 0, 100% 12%, 100% 100%, 7% 100%, 0 88%);
+}
+.world-wh40k .wh-chronicle-telemetry-head,
+.world-wh40k .wh-chronicle-telemetry-foot,
+.world-wh40k .wh-chronicle-threat-scale{
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  color: rgba(var(--wh-rgb-216-208-187), .42);
+  font: 8px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.world-wh40k .wh-chronicle-telemetry-head{
+  top: 49px;
+  right: 43px;
+  left: 8%;
+  justify-content: space-between;
+}
+.world-wh40k .wh-chronicle-telemetry-head span:first-child{ color: rgba(var(--wh-rgb-224-198-144), .7); }
+.world-wh40k .wh-chronicle-telemetry-foot{
+  right: 45px;
+  bottom: 50px;
+  left: 12%;
+  justify-content: flex-end;
+  gap: 32px;
+}
+.world-wh40k .wh-chronicle-telemetry-foot span::before{
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: 8px;
+  background: var(--wh-brass);
+  box-shadow: 0 0 9px rgba(var(--wh-rgb-224-198-144), .7);
+}
+.world-wh40k .wh-chronicle-galaxy-plane{
+  position: absolute;
+  inset: 17px -2% 2px 2%;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: perspective(1050px) rotateX(15deg) rotateZ(-5deg) translate3d(3%, 0, 0) scale(1.03);
+  transform-origin: 58% 52%;
+  filter: drop-shadow(0 18px 38px rgba(var(--wh-rgb-0-0-0), .78));
+}
+.world-wh40k .wh-chronicle-sector-grid{ fill: none; stroke: rgba(var(--wh-rgb-216-208-187), .16); stroke-width: 1; }
+.world-wh40k .wh-chronicle-sector-grid path{ stroke-opacity: .5; stroke-dasharray: 2 8; }
+.world-wh40k .wh-chronicle-spiral-arms{ fill: none; stroke: rgba(var(--wh-rgb-224-198-144), .46); stroke-width: 7; stroke-linecap: round; filter: blur(4px); opacity: .5; }
+.world-wh40k .wh-chronicle-star-streams{ fill: none; stroke: rgba(var(--wh-rgb-224-198-144), .86); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: .3 8; opacity: .72; }
+.world-wh40k .wh-chronicle-warp-rift{ fill: none; stroke: url(#wh-chronicle-rift); stroke-width: 7; stroke-linecap: round; filter: drop-shadow(0 0 10px rgba(var(--wh-rgb-165-43-52), .8)); }
+.world-wh40k .wh-chronicle-warfronts{ fill: none; stroke: var(--wh-color-ca555c); stroke-width: 2; stroke-dasharray: 7 7; opacity: .78; }
+.world-wh40k .wh-chronicle-core circle:first-child{ fill: rgba(var(--wh-rgb-224-198-144), .23); stroke: rgba(var(--wh-rgb-224-198-144), .8); stroke-width: 1; }
+.world-wh40k .wh-chronicle-core circle:last-child{ fill: var(--wh-brass-bright); }
+.world-wh40k .wh-chronicle-nodes{ fill: var(--wh-color-d1585f); stroke: rgba(var(--wh-rgb-224-198-144), .72); stroke-width: 1; }
+.world-wh40k .wh-chronicle-nodes path{ fill: none; stroke-dasharray: 2 3; }
+.world-wh40k .wh-chronicle-projection-labels{ fill: rgba(var(--wh-rgb-216-208-187), .42); font: 8px ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: 2px; }
+.world-wh40k .wh-chronicle-projection-labels text:first-child{ fill: var(--wh-brass-bright); }
+.world-wh40k .wh-chronicle-threat-scale{
+  top: 91px;
+  right: 34px;
+  flex-direction: column;
+  gap: 5px;
+  color: rgba(var(--wh-rgb-216-208-187), .34);
+  writing-mode: vertical-rl;
+}
+.world-wh40k .wh-chronicle-threat-scale i{ width: 12px; height: 2px; background: rgba(var(--wh-rgb-165-43-52), calc(.18 + var(--threat-step, 0))); }
+.world-wh40k .wh-chronicle-threat-scale i:nth-of-type(2){ --threat-step: .12; }
+.world-wh40k .wh-chronicle-threat-scale i:nth-of-type(3){ --threat-step: .24; }
+.world-wh40k .wh-chronicle-threat-scale i:nth-of-type(4){ --threat-step: .36; }
+.world-wh40k .wh-chronicle-threat-scale i:nth-of-type(5){ --threat-step: .48; }
+.world-wh40k .wh-chronicle-threat-scale b{ color: var(--wh-color-ca555c); font-weight: 400; }
 .world-wh40k.wh-chronicle-page .tl-branches{ border-color: var(--wh-rule); background: var(--wh-color-080909); }
 .world-wh40k.wh-chronicle-page .tl-branch-tab.active{ color: var(--wh-brass-bright); border-color: var(--wh-brass); background: rgba(var(--wh-rgb-177-138-75), .1); }
 .world-wh40k.wh-chronicle-page .event-card{ background: rgba(var(--wh-rgb-13-13-12), .94); border-color: rgba(var(--wh-rgb-177-138-75), .25); }
@@ -457,6 +560,9 @@
   .world-wh40k .wh-faction-grid{ grid-template-columns: repeat(2, 1fr); }
   .world-wh40k .wh-strategic-layout{ grid-template-columns: 1fr; }
   .world-wh40k .wh-strategic-map{ position: relative; top: auto; max-height: 690px; }
+  .world-wh40k .wh-chronicle-telemetry{ left: 27%; opacity: .72; }
+  .world-wh40k .wh-chronicle-telemetry-head span:last-child,
+  .world-wh40k .wh-chronicle-telemetry-foot span:first-child{ display: none; }
 }
 
 @media (max-width: 760px) {
@@ -494,7 +600,18 @@
   .world-wh40k .wh-strategic-map{ min-height: 430px; }
   .world-wh40k .wh-zone-point span{ display: none; }
   .world-wh40k .wh-zone-card:hover,
-.world-wh40k .wh-zone-card.is-active{ transform: none; }
+  .world-wh40k .wh-zone-card.is-active{ transform: none; }
+  .world-wh40k.wh-chronicle-page .tl-cover{ height: 480px; }
+  .world-wh40k .wh-chronicle-telemetry{
+    inset: 0 -52% 0 7%;
+    opacity: .4;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28%, #000 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 28%, #000 100%);
+  }
+  .world-wh40k .wh-chronicle-telemetry-head,
+  .world-wh40k .wh-chronicle-telemetry-foot,
+  .world-wh40k .wh-chronicle-threat-scale{ display: none; }
+  .world-wh40k .wh-chronicle-cover .tl-cover-inner{ right: 20px; left: 20px; }
   .world-wh40k .wh-chronicle-cover .wh-backlink{ margin-bottom: 42px; }
 }
 
@@ -503,7 +620,8 @@
 .world-wh40k .wh-stars circle,
 .world-wh40k .wh-command-line i,
 .world-wh40k .wh-live-meta i{ animation: none; }
-  .world-wh40k .wh-entry,
+.world-wh40k .wh-entry,
 .world-wh40k .wh-priority-signal,
 .world-wh40k .wh-zone-card{ transition: none; }
+  .world-wh40k .wh-chronicle-galaxy-plane{ transform: rotateZ(-5deg) scale(1.03); }
 }

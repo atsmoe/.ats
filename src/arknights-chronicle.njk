@@ -20,10 +20,56 @@ cssFiles:
 <div id="timeline" class="active">
   <header class="tl-cover">
     <div class="tl-cover-inner">
-      <a href="./arknights.html">泰拉观测入口 / 返回</a>
+      <span class="tl-cover-kicker">TERRA / ORIGINIUM OBSERVATION</span>
+      <a class="tl-cover-back" href="./arknights.html"><span aria-hidden="true">←</span> 泰拉档案入口</a>
       <h1>明日方舟 · 主世界线</h1>
       <p>从前文明遗迹到罗德岛当下，按时间顺序查阅这片大地的事件。</p>
-      <div class="calendar-badge">泰 拉 历</div>
+      <div class="tl-cover-footer">
+        <div class="calendar-badge">泰 拉 历</div>
+        <span class="tl-cover-status">CHRONICLE NODE ARRAY / ONLINE</span>
+      </div>
+    </div>
+
+    <div class="tl-cover-telemetry" aria-hidden="true">
+      <div class="tl-telemetry-head">
+        <span>LANDSHIP ROUTE OBSERVATION</span>
+        <span>ARK / 01-CHRONICLE</span>
+      </div>
+      <svg viewBox="0 0 920 430" preserveAspectRatio="xMidYMid slice">
+        <g class="tl-telemetry-grid-lines">
+          <path d="M40 82H880M40 162H880M40 242H880M40 322H880" />
+          <path d="M120 28V398M280 28V398M440 28V398M600 28V398M760 28V398" />
+        </g>
+        <g class="tl-telemetry-orbits">
+          <ellipse cx="592" cy="217" rx="246" ry="126" />
+          <ellipse cx="592" cy="217" rx="164" ry="82" />
+          <circle cx="592" cy="217" r="34" />
+        </g>
+        <path class="tl-telemetry-route tl-telemetry-route--ghost" d="M28 316C122 298 174 195 280 211S410 337 514 278 632 90 742 112s112 99 162 78" />
+        <path class="tl-telemetry-route tl-telemetry-route--active" d="M28 316C122 298 174 195 280 211S410 337 514 278 632 90 742 112s112 99 162 78" />
+        <g class="tl-telemetry-nodes">
+          <circle cx="118" cy="276" r="7" />
+          <circle cx="280" cy="211" r="5" />
+          <circle cx="430" cy="307" r="6" />
+          <circle cx="592" cy="217" r="12" class="tl-telemetry-node--core" />
+          <circle cx="742" cy="112" r="7" />
+          <circle cx="858" cy="185" r="5" />
+        </g>
+        <g class="tl-telemetry-reticle">
+          <path d="M592 163V188M592 246V271M538 217H563M621 217H646" />
+          <path d="M558 183L572 197M612 237L626 251M626 183L612 197M572 237L558 251" />
+        </g>
+        <g class="tl-telemetry-labels">
+          <text x="128" y="266">NODE / 02</text>
+          <text x="602" y="205">RHODES ISLAND</text>
+          <text x="752" y="101">SIGNAL / 07</text>
+          <text x="700" y="350">ORIGINIUM DENSITY 0.71</text>
+        </g>
+      </svg>
+      <div class="tl-telemetry-foot">
+        <span>ROUTE MEMORY / STABLE</span>
+        <strong>TERRA // ACTIVE</strong>
+      </div>
     </div>
   </header>
 

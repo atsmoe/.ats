@@ -111,6 +111,15 @@ test('timeline records expose a native keyboard action for their detail dialog',
   assert.match(css, /\.event-card-open:focus-visible\s*\{/);
 });
 
+test('a single chronicle branch does not render a redundant navigation rail', () => {
+  const timelineUi = read('src/js/modules/timeline-ui.js');
+  const css = read('src/css/timeline.css');
+
+  assert.match(timelineUi, /container\.hidden = !hasMultipleBranches/);
+  assert.match(timelineUi, /aria-hidden', String\(!hasMultipleBranches\)/);
+  assert.match(css, /\.tl-branches\[hidden\]\s*\{\s*display:\s*none;/);
+});
+
 test('Arknights ending cards expose a native keyboard selection action', () => {
   const topic = read('src/js/modules/arknights-integrated-strategies.js');
   const css = read('src/css/arknights-world.css');

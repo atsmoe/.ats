@@ -28,6 +28,32 @@
 .tl-cover-inner {
   position: absolute; bottom: 48px; left: 64px;
   display: flex; flex-direction: column;
+  z-index: 1;
+}
+.tl-cover-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  min-height: 40px;
+  margin-bottom: 14px;
+  padding: 0 14px;
+  color: var(--gold-dim);
+  background: rgba(8, 8, 12, .64);
+  border: 1px solid rgba(201,160,80,.32);
+  font: 11px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 2px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.tl-cover-back:visited { color: var(--gold-dim); }
+.tl-cover-back:hover,
+.tl-cover-back:focus-visible {
+  color: var(--gold);
+  border-color: rgba(201,160,80,.72);
+  transform: translateX(-4px);
+  outline: none;
 }
 .tl-cover h1 {
   font-family: var(--font-serif);
@@ -120,6 +146,7 @@
 /* Event cards */
 .tl-event {
   position: relative;
+  z-index: 1;
   width: 440px;
   margin-bottom: 24px;
   opacity: 0;
@@ -147,6 +174,7 @@
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
   position: relative;
 }
+.tl-branches[hidden] { display: none; }
 .event-card-open {
   position: absolute;
   inset: 0;
@@ -453,7 +481,14 @@
    ============================================================ */
 .tl-era-header {
   display: flex; align-items: center; gap: 20px;
-  margin: 60px 0 40px calc(50% - 120px);
+  position: relative;
+  z-index: 4 !important;
+  width: calc(50% + 120px);
+  height: 140px;
+  min-height: 140px;
+  margin: 0 0 0 calc(50% - 120px);
+  padding: 80px 0 36px;
+  box-sizing: border-box;
   opacity: 0; transform: translateY(20px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
@@ -677,4 +712,540 @@
 .error-retry-btn:hover {
   background: rgba(201,160,80,0.18);
   box-shadow: 0 0 12px rgba(201,160,80,0.12);
+}
+
+/* ============================================================
+   Arknights chronicle — route telemetry cover
+   Scoped so other world timelines keep their own cover language.
+   ============================================================ */
+.world-arknights.ark-chronicle-page .tl-cover {
+  height: clamp(430px, 52vh, 560px);
+  min-height: 430px;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 71% 47%, rgba(212, 146, 58, .14), transparent 4%),
+    radial-gradient(ellipse at 72% 52%, rgba(212, 146, 58, .06), transparent 34%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(232, 220, 200, .025) 40px),
+    linear-gradient(118deg, #08090e 0 38%, #111017 64%, #08090e 100%);
+}
+
+.world-arknights.ark-chronicle-page .tl-cover::before {
+  z-index: 0;
+  background:
+    linear-gradient(107deg, transparent 0 37%, rgba(212, 146, 58, .18) 37.15% 37.35%, transparent 37.5%),
+    linear-gradient(90deg, rgba(232, 220, 200, .022) 1px, transparent 1px);
+  background-size: auto, 126px 100%;
+}
+
+.world-arknights.ark-chronicle-page .tl-cover::after {
+  z-index: 2;
+  height: 34%;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--bg-deep), transparent);
+}
+
+.world-arknights.ark-chronicle-page .tl-cover-inner {
+  top: 0;
+  bottom: 0;
+  left: clamp(24px, 5vw, 72px);
+  z-index: 5;
+  justify-content: center;
+  width: min(530px, 42vw);
+}
+
+.world-arknights.ark-chronicle-page .tl-cover-kicker {
+  width: fit-content;
+  margin: 0 0 20px;
+  padding: 7px 13px;
+  border-left: 3px solid var(--ark-amber);
+  background: rgba(212, 146, 58, .08);
+  color: rgba(232, 220, 200, .72);
+  font: 10px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 2px;
+}
+
+.world-arknights.ark-chronicle-page .tl-cover-back {
+  margin-bottom: 22px;
+  background: rgba(8, 9, 14, .84);
+  border-color: rgba(212, 146, 58, .42);
+}
+
+.world-arknights.ark-chronicle-page .tl-cover h1 {
+  max-width: 520px;
+  font-family: var(--font-sans);
+  font-size: clamp(36px, 4.2vw, 64px);
+  font-weight: 750;
+  line-height: 1.06;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.world-arknights.ark-chronicle-page .tl-cover p {
+  max-width: 490px;
+  margin-top: 18px;
+  padding-left: 14px;
+  border-left: 1px solid rgba(212, 146, 58, .4);
+  color: rgba(232, 220, 200, .62);
+  line-height: 1.8;
+}
+
+.world-arknights.ark-chronicle-page .tl-cover-footer {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.world-arknights.ark-chronicle-page .tl-cover .calendar-badge {
+  margin: 0;
+  border: 0;
+  border-left: 2px solid var(--ark-amber);
+  border-radius: 0;
+  background: rgba(212, 146, 58, .1);
+}
+
+.world-arknights.ark-chronicle-page .tl-cover-status {
+  color: rgba(232, 220, 200, .38);
+  font: 9px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 1.6px;
+}
+
+.ark-chronicle-page .tl-cover-telemetry {
+  position: absolute;
+  inset: 20px 0 20px 34%;
+  z-index: 1;
+  overflow: hidden;
+  clip-path: polygon(10% 0, 100% 0, 100% 88%, 93% 100%, 0 100%, 5% 58%);
+  border-top: 1px solid rgba(212, 146, 58, .18);
+  border-bottom: 1px solid rgba(212, 146, 58, .14);
+  background:
+    linear-gradient(90deg, rgba(8, 9, 14, .96), transparent 23%),
+    radial-gradient(circle at 64% 50%, rgba(212, 146, 58, .085), transparent 34%),
+    rgba(10, 11, 16, .3);
+}
+
+.ark-chronicle-page .tl-cover-telemetry::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, .018) 4px),
+    linear-gradient(90deg, transparent, rgba(212, 146, 58, .035) 65%, transparent);
+  mix-blend-mode: screen;
+}
+
+.ark-chronicle-page .tl-cover-telemetry svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ark-chronicle-page .tl-telemetry-head,
+.ark-chronicle-page .tl-telemetry-foot {
+  position: absolute;
+  z-index: 2;
+  right: 28px;
+  left: 13%;
+  display: flex;
+  justify-content: space-between;
+  color: rgba(232, 220, 200, .34);
+  font: 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 1.8px;
+}
+
+.ark-chronicle-page .tl-telemetry-head { top: 18px; }
+.ark-chronicle-page .tl-telemetry-foot {
+  bottom: 18px;
+  align-items: flex-end;
+}
+.ark-chronicle-page .tl-telemetry-foot strong {
+  color: rgba(212, 146, 58, .7);
+  font-weight: 500;
+}
+
+.ark-chronicle-page .tl-telemetry-grid-lines {
+  fill: none;
+  stroke: rgba(232, 220, 200, .055);
+  stroke-width: 1;
+}
+.ark-chronicle-page .tl-telemetry-orbits {
+  fill: none;
+  stroke: rgba(212, 146, 58, .14);
+  stroke-width: 1;
+}
+.ark-chronicle-page .tl-telemetry-route {
+  fill: none;
+  stroke-width: 1.5;
+}
+.ark-chronicle-page .tl-telemetry-route--ghost {
+  stroke: rgba(232, 220, 200, .18);
+}
+.ark-chronicle-page .tl-telemetry-route--active {
+  stroke: rgba(212, 146, 58, .8);
+  stroke-dasharray: 7 13;
+  animation: ark-route-scan 9s linear infinite;
+}
+.ark-chronicle-page .tl-telemetry-nodes {
+  fill: #d4923a;
+  stroke: rgba(255, 232, 196, .7);
+  stroke-width: 1;
+}
+.ark-chronicle-page .tl-telemetry-node--core {
+  fill: rgba(212, 146, 58, .2);
+  stroke-width: 2;
+}
+.ark-chronicle-page .tl-telemetry-reticle {
+  fill: none;
+  stroke: rgba(232, 220, 200, .46);
+  stroke-width: 1;
+}
+.ark-chronicle-page .tl-telemetry-labels {
+  fill: rgba(232, 220, 200, .44);
+  font: 10px ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 2px;
+}
+
+@keyframes ark-route-scan {
+  to { stroke-dashoffset: -100; }
+}
+
+/* ============================================================
+   Shared chronicle — full-viewport event dossier
+   The flat modal DOM becomes a themed two-column archive sheet.
+   ============================================================ */
+.ark-chronicle-page {
+  --chronicle-accent: #d4923a;
+  --chronicle-accent-rgb: 212, 146, 58;
+  --chronicle-paper-rgb: 232, 220, 200;
+  --chronicle-panel-rgb: 8, 9, 13;
+  --chronicle-panel-secondary-rgb: 15, 14, 17;
+  --chronicle-title-font: var(--font-sans);
+  --chronicle-dossier-label: 'ATS / TERRA CHRONICLE / EVENT DOSSIER';
+  --chronicle-meta-label: 'LOCATION / ACTORS';
+  --chronicle-source-label: 'SOURCE TRACE / REFERENCE';
+}
+
+.wh-chronicle-page {
+  --chronicle-accent: #c44343;
+  --chronicle-accent-rgb: 196, 67, 67;
+  --chronicle-paper-rgb: 224, 214, 194;
+  --chronicle-panel-rgb: 9, 7, 8;
+  --chronicle-panel-secondary-rgb: 20, 10, 12;
+  --chronicle-title-font: var(--font-serif);
+  --chronicle-dossier-label: 'ORDO CHRONOS / IMPERIAL EVENT DOSSIER';
+  --chronicle-meta-label: 'SECTOR / BELLIGERENTS';
+  --chronicle-source-label: 'ARCHIVAL TRACE / REFERENCE';
+}
+
+.ff-chronicle-page {
+  --chronicle-accent: #83c9f4;
+  --chronicle-accent-rgb: 131, 201, 244;
+  --chronicle-paper-rgb: 231, 236, 244;
+  --chronicle-panel-rgb: 7, 10, 17;
+  --chronicle-panel-secondary-rgb: 12, 18, 29;
+  --chronicle-title-font: var(--font-serif);
+  --chronicle-dossier-label: 'THE UNENDING JOURNEY / MEMORY DOSSIER';
+  --chronicle-meta-label: 'REFLECTION / WITNESSES';
+  --chronicle-source-label: 'MEMORY TRACE / REFERENCE';
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-overlay {
+  inset: var(--nav-h) 0 0;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+  padding: 0;
+  background:
+    radial-gradient(circle at 78% 24%, rgba(var(--chronicle-accent-rgb), .1), transparent 28%),
+    linear-gradient(112deg, rgba(var(--chronicle-panel-rgb), .99), rgba(var(--chronicle-panel-secondary-rgb), .98));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 47px, rgba(var(--chronicle-paper-rgb), .025) 48px),
+    repeating-linear-gradient(90deg, transparent 0 95px, rgba(var(--chronicle-paper-rgb), .025) 96px),
+    linear-gradient(108deg, transparent 0 33%, rgba(var(--chronicle-accent-rgb), .15) 33.1% 33.25%, transparent 33.35%);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(250px, 31vw) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(min-content, 1fr);
+  column-gap: clamp(44px, 7vw, 112px);
+  row-gap: 28px;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: clamp(52px, 7vh, 92px) clamp(36px, 7vw, 116px) clamp(42px, 6vh, 72px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  align-content: start;
+  scrollbar-color: rgba(var(--chronicle-accent-rgb), .38) rgba(var(--chronicle-panel-rgb), .58);
+}
+
+/* The body qualifier keeps later world skin sheets from restoring a compact card. */
+body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card {
+  border-color: transparent;
+  background: transparent;
+}
+
+body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::-webkit-scrollbar-track {
+  background: rgba(var(--chronicle-panel-rgb), .58);
+}
+
+body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::-webkit-scrollbar-thumb {
+  background: rgba(var(--chronicle-accent-rgb), .38);
+}
+
+body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--chronicle-accent-rgb), .62);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::before {
+  content: var(--chronicle-dossier-label);
+  position: absolute;
+  top: 24px;
+  left: clamp(36px, 7vw, 116px);
+  color: rgba(var(--chronicle-paper-rgb), .3);
+  font: 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 2px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(clamp(36px, 7vw, 116px) + min(31vw, 440px) + clamp(22px, 3.5vw, 56px));
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(var(--chronicle-accent-rgb), .24) 12%, rgba(var(--chronicle-accent-rgb), .12) 86%, transparent);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-close {
+  position: fixed;
+  top: calc(var(--nav-h) + 20px);
+  right: 24px;
+  z-index: 3;
+  width: 48px;
+  height: 48px;
+  border-radius: 0;
+  background: rgba(var(--chronicle-panel-rgb), .82);
+  border-color: rgba(var(--chronicle-accent-rgb), .3);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-close:hover {
+  color: rgb(var(--chronicle-paper-rgb));
+  border-color: rgba(var(--chronicle-accent-rgb), .7);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-date {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  margin: 0;
+  padding: 14px 0 14px 18px;
+  border-left: 3px solid var(--chronicle-accent);
+  color: var(--chronicle-accent);
+  background: linear-gradient(90deg, rgba(var(--chronicle-accent-rgb), .1), transparent);
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 3px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-title {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: 22ch;
+  margin: 0;
+  padding-right: 44px;
+  color: rgb(var(--chronicle-paper-rgb));
+  font-family: var(--chronicle-title-font);
+  font-size: clamp(34px, 4.3vw, 72px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-meta {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 88px;
+  margin: 0;
+  padding: 18px;
+  border-top: 1px solid rgba(var(--chronicle-accent-rgb), .18);
+  border-bottom: 1px solid rgba(var(--chronicle-accent-rgb), .1);
+  color: rgba(var(--chronicle-paper-rgb), .5);
+  font: 11px/1.8 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 1px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-meta::before {
+  content: var(--chronicle-meta-label);
+  display: block;
+  margin-bottom: 12px;
+  color: rgba(var(--chronicle-accent-rgb), .64);
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-desc {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 72ch;
+  margin: 0;
+  padding: 28px 0 12px;
+  border-top: 1px solid rgba(var(--chronicle-paper-rgb), .1);
+  color: rgba(var(--chronicle-paper-rgb), .76);
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 2;
+  white-space: pre-wrap;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-img {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: start;
+  margin: 0;
+  padding-top: 22px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-img img {
+  max-height: min(52vh, 620px);
+  border-radius: 0;
+  border-color: rgba(var(--chronicle-accent-rgb), .18);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-sources {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: start;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid rgba(var(--chronicle-accent-rgb), .14);
+  background: rgba(var(--chronicle-panel-rgb), .38);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-sources::before {
+  content: var(--chronicle-source-label);
+  display: block;
+  margin-bottom: 12px;
+  color: rgba(var(--chronicle-accent-rgb), .64);
+  font: 9px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 2px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-sources .event-source-item {
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-sources .source-label {
+  color: rgba(var(--chronicle-paper-rgb), .52);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-source-link {
+  color: var(--chronicle-accent);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-source-link:hover {
+  color: rgb(var(--chronicle-paper-rgb));
+}
+
+@media (max-width: 900px) {
+  .world-arknights.ark-chronicle-page .tl-cover-inner {
+    width: min(500px, calc(100vw - 48px));
+  }
+  .ark-chronicle-page .tl-cover-telemetry {
+    left: 28%;
+    opacity: .52;
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card {
+    grid-template-columns: minmax(210px, 30vw) minmax(0, 1fr);
+    column-gap: 34px;
+    padding-right: 36px;
+    padding-left: 36px;
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::after { display: none; }
+}
+
+@media (max-width: 768px) {
+  .world-arknights.ark-chronicle-page .tl-cover {
+    height: 460px;
+    min-height: 460px;
+  }
+  .world-arknights.ark-chronicle-page .tl-cover-inner {
+    right: 22px;
+    left: 22px;
+    width: auto;
+  }
+  .ark-chronicle-page .tl-cover-telemetry {
+    inset: 0;
+    clip-path: none;
+    opacity: .28;
+  }
+  .ark-chronicle-page .tl-telemetry-head,
+  .ark-chronicle-page .tl-telemetry-foot { display: none; }
+  .world-arknights.ark-chronicle-page .tl-cover h1 {
+    font-size: clamp(30px, 9vw, 44px);
+  }
+  .world-arknights.ark-chronicle-page .tl-cover-status { display: none; }
+
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    padding: 68px 22px 36px;
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card::before {
+    top: 22px;
+    left: 22px;
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-close {
+    top: calc(var(--nav-h) + 10px);
+    right: 10px;
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-date,
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-title,
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-meta,
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-desc,
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-img,
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-sources {
+    margin-bottom: 24px;
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-title {
+    max-width: none;
+    padding-right: 36px;
+    font-size: clamp(28px, 8vw, 42px);
+  }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-desc {
+    padding-top: 20px;
+    font-size: 15px;
+    line-height: 1.85;
+  }
+  .tl-era-header {
+    width: calc(100% - 40px);
+    margin-left: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ark-chronicle-page .tl-telemetry-route--active { animation: none; }
 }

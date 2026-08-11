@@ -36,6 +36,56 @@ async function initArchivePage(pageType) {
   }
 }
 
+function initTerraMapDialog() {
+  const dialog = document.getElementById('terra-map-dialog');
+  const openButton = document.querySelector('[data-terra-map-open]');
+  const closeButton = dialog?.querySelector('[data-terra-map-close]');
+  const zoomButton = dialog?.querySelector('[data-terra-map-zoom]');
+  const viewport = dialog?.querySelector('.terra-map-viewport');
+  if (!dialog || !openButton || !closeButton || !zoomButton || !viewport) return;
+
+  const clamp = value => Math.min(1, Math.max(0, value));
+
+  function setZoomed(zoomed, focus = { x: 0.5, y: 0.5 }) {
+    viewport.classList.toggle('is-zoomed', zoomed);
+    zoomButton.setAttribute('aria-pressed', String(zoomed));
+    zoomButton.textContent = zoomed ? '还原 1×' : '放大 2×';
+
+    requestAnimationFrame(() => {
+      if (!zoomed) {
+        viewport.scrollTo({ left: 0, top: 0 });
+        return;
+      }
+
+      viewport.scrollTo({
+        left: clamp(focus.x) * viewport.scrollWidth - viewport.clientWidth / 2,
+        top: clamp(focus.y) * viewport.scrollHeight - viewport.clientHeight / 2,
+      });
+    });
+  }
+
+  function toggleZoom(focus) {
+    setZoomed(!viewport.classList.contains('is-zoomed'), focus);
+  }
+
+  openButton.addEventListener('click', () => {
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+  });
+  closeButton.addEventListener('click', () => dialog.close());
+  zoomButton.addEventListener('click', () => toggleZoom());
+  viewport.addEventListener('dblclick', event => {
+    const bounds = viewport.getBoundingClientRect();
+    toggleZoom({
+      x: (event.clientX - bounds.left) / bounds.width,
+      y: (event.clientY - bounds.top) / bounds.height,
+    });
+  });
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', () => setZoomed(false));
+}
+
 export function initArknightsEntry() {
   const pageType = document.body.dataset.page;
   const legacyDestination = pageType === 'arknights-home'
@@ -50,6 +100,8 @@ export function initArknightsEntry() {
   BackgroundManager.switchTo('arknights');
   initNav();
   dismissPortalOverlay();
+
+  if (pageType === 'arknights-home') initTerraMapDialog();
 
   if (pageType === 'arknights-is-index' || pageType === 'arknights-is-topic') {
     return initArchivePage(pageType);

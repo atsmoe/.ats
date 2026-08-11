@@ -287,8 +287,21 @@ test('public pages retain the critical navigation and interaction containers', (
   assert.match(arknights, /id="terra-world"/, 'Arknights needs a Terra world portal');
   assert.match(arknights, /href="\.\/arknights-chronicle\.html"/);
   assert.match(arknights, /href="\.\/arknights-integrated-strategies\.html"/);
-  assert.match(arknights, /href="#terra-atlas"/);
-  assert.match(arknights, /href="#observations"/);
+  assert.match(arknights, /id="terra-map-dialog"/);
+  assert.match(arknights, /terra-community-administrative-map\.png/);
+  assert.match(arknights, /terra-community-administrative-map-preview\.webp/);
+  assert.equal(
+    (arknights.match(/class="terra-chronicle-launch"/g) || []).length,
+    1,
+    'Arknights home should expose one route that actually leaves the page',
+  );
+  assert.doesNotMatch(arknights, /class="terra-entry-grid"/);
+  assert.match(arknights, /data-terra-map-zoom/);
+  assert.match(arknights, /download="terra-community-administrative-map\.png"/);
+  assert.doesNotMatch(arknights, />专题观测</);
+  for (const [topicPage] of ARKNIGHTS_TOPIC_PAGES) {
+    assert.match(arknights, new RegExp(`href="\\.\\/${topicPage}"`));
+  }
   assert.doesNotMatch(arknights, /id="tl-container"|id="ark-dossier"/);
 
   const isIndex = readDist('arknights-integrated-strategies.html');
