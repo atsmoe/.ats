@@ -4,11 +4,12 @@
   "description": "群星之间 · 世界档案 — 虚构世界观测与调查系统",
   "private": true,
   "scripts": {
+    "assets:terra": "node scripts/terra-globe-assets.js",
     "validate": "node src/validators/validate-data.js --validate-only",
     "build:data": "node src/validators/validate-data.js",
-    "dev": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && eleventy --serve --port 9000",
+    "dev": "npm run assets:terra && node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && eleventy --serve --port 9000",
     "prototype:b4": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && eleventy --serve --port 9000",
-    "build": "node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && npm test",
+    "build": "npm run assets:terra && node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && npm test",
     "test": "node --test",
     "changelog": "node convert-changelog.js"
   },
@@ -16,6 +17,7 @@
     "@11ty/eleventy": "^3.0.0",
     "@11ty/eleventy-img": "^6.0.4",
     "esbuild": "^0.25.0",
+    "sharp": "^0.33.5",
     "three": "0.136.0"
   }
 }

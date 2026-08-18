@@ -45,32 +45,28 @@ test('mobile navigation is hidden from assistive navigation until opened', () =>
   );
 });
 
-test('star-map worlds are real links and the detail overlay is an inert dialog', () => {
+test('star-map world signals have keyboard controls and a linked non-WebGL fallback', () => {
   const html = readDist('index.html');
   const css = read('src/css/star-map.css');
-  const interaction = read('src/js/modules/star-map.js');
-  const markers = [...html.matchAll(
-    /<a\b[^>]*class="galaxy-marker"[^>]*data-world="([^"]+)"[^>]*href="([^"]+)"/g,
-  )].map(match => [match[1], match[2]]);
+  const interaction = read('src/js/modules/star-map-entry.js');
+  const signals = [...html.matchAll(/<a\b(?=[^>]*class="star-map-signal")(?=[^>]*data-world-signal="([^"]+)")(?=[^>]*href="\.\/(arknights|wh40k|ff14)\.html")[^>]*>/g)]
+    .map(match => match[1]);
+  const fallback = html.match(/<nav id="star-map-fallback"[\s\S]*?<\/nav>/)?.[0] || '';
 
-  assert.deepEqual(markers, [
-    ['arknights', './arknights.html'],
-    ['wh40k', './wh40k.html'],
-    ['ff14', './ff14.html'],
-  ]);
+  assert.deepEqual(signals, ['arknights', 'wh40k', 'ff14']);
+  assert.match(fallback, /href="\.\/arknights\.html"/);
+  assert.match(fallback, /href="\.\/wh40k\.html"/);
+  assert.match(fallback, /href="\.\/ff14\.html"/);
   assert.match(html, /<h1\b[^>]*class="sr-only"/);
-  assert.match(
-    html,
-    /id="galaxy-detail"[^>]*role="dialog"[^>]*aria-modal="true"[^>]*aria-hidden="true"[^>]*\binert\b/s,
-  );
+  assert.match(html, /id="star-map-readout"[^>]*aria-live="polite"/);
   assert.match(
     css,
-    /\.galaxy-marker\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px;/s,
-    'keyboard-focusable world markers need a real hit box',
+    /\.star-map-signal\s*\{[^}]*min-height:\s*66px;/s,
+    'keyboard-focusable world signals need a real hit box',
   );
   assert.match(interaction, /new AbortController\(\)/);
-  assert.match(interaction, /export function destroyStarMap\(\)/);
-  assert.match(interaction, /listen\(window, 'pagehide', destroyStarMap/);
+  assert.match(interaction, /function destroy\(\)/);
+  assert.match(interaction, /listen\(window, 'pagehide', destroy/);
 });
 
 test('FFXIV no-script lenses remove inactive selector controls', () => {

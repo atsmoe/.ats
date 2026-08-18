@@ -270,10 +270,12 @@ test('Arknights publishes seven sourced integrated-strategy contexts with stable
 
 test('public pages retain the critical navigation and interaction containers', () => {
   const index = readDist('index.html');
-  assert.match(index, /id="galaxy-markers"/);
-  assert.match(index, /data-world="arknights"/);
-  assert.match(index, /data-world="wh40k"/);
-  assert.match(index, /data-world="ff14"/);
+  assert.match(index, /id="star-map-stage"/);
+  assert.match(index, /id="star-map-readout"/);
+  assert.match(index, /data-world-signal="arknights"/);
+  assert.match(index, /data-world-signal="wh40k"/);
+  assert.match(index, /data-world-signal="ff14"/);
+  assert.match(index, /id="star-map-fallback"/);
 
   for (const page of ['arknights-chronicle.html', 'wh40k-chronicle.html', 'ff14-chronicle.html']) {
     const html = readDist(page);

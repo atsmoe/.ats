@@ -14,65 +14,90 @@ cssFiles:
 {% extends "base.njk" %}
 
 {% block content %}
-<a
-  class="star-map-version-switch"
-  data-star-map-version-switch
-  href="./star-map-b4-prototype.html"
-  aria-label="切换至 B4 星图原型"
->
-  <span>B4 PREVIEW</span>
-  <strong>切换至 B4 星图原型</strong>
-</a>
+<section id="star-map-stage" aria-labelledby="star-map-title">
+  <h1 id="star-map-title" class="sr-only">群星之间 · 三世界空间档案</h1>
 
-<!-- Star Map View -->
-<div id="star-map">
-  <h1 class="sr-only">群星之间 · 世界档案</h1>
-  <!-- 3D cluster markers (positioned by star-map-3d.js) -->
-  <div id="galaxy-markers">
-    <a class="galaxy-marker" id="marker-arknights" data-world="arknights" href="./arknights.html">
-      <div class="galaxy-marker-glow" style="--marker-color: #d4923a;"></div>
-      <div class="galaxy-marker-core" style="--marker-color: #d4923a;"></div>
-      <div class="galaxy-marker-label">泰拉大陆</div>
+  <div class="star-map-field-grid" aria-hidden="true"></div>
+  <div class="star-map-scanline" aria-hidden="true"></div>
+  <div class="star-map-vignette" aria-hidden="true"></div>
+
+  <header class="star-map-telemetry" aria-hidden="true">
+    <strong><i></i> DEEP FIELD ACQUIRED</strong>
+    <span id="star-map-route-state">ATS / ROUTE-01 / ARK–TERRA</span>
+  </header>
+
+  <a
+    class="star-map-version-switch"
+    data-star-map-version-switch
+    href="./star-map-b4-prototype.html"
+    aria-label="查看上一版 B4 星图"
+  >
+    <span>PREVIOUS PLATE</span>
+    <strong>B4 星图</strong>
+  </a>
+
+  <div id="star-map-signals" aria-label="空间中的其他世界">
+    <a class="star-map-signal" href="./arknights.html" data-world-signal="arknights" style="--x:34%;--y:50%;--signal:#d9a441;--signal-rgb:217,164,65">
+      <span class="star-map-signal-reticle" aria-hidden="true"></span>
+      <small>01 / ARK–TERRA</small>
+      <strong>泰拉</strong>
+      <em>明日方舟</em>
     </a>
-    <a class="galaxy-marker" id="marker-wh40k" data-world="wh40k" href="./wh40k.html">
-      <div class="galaxy-marker-glow" style="--marker-color: #c85050;"></div>
-      <div class="galaxy-marker-core" style="--marker-color: #c85050;"></div>
-      <div class="galaxy-marker-label">破碎银河</div>
+    <a class="star-map-signal" href="./wh40k.html" data-world-signal="wh40k" style="--x:18%;--y:28%;--signal:#b9433e;--signal-rgb:185,67,62">
+      <span class="star-map-signal-reticle" aria-hidden="true"></span>
+      <small>02 / WH–M42</small>
+      <strong>破碎银河</strong>
+      <em>战锤 40,000</em>
     </a>
-    <a class="galaxy-marker" id="marker-ff14" data-world="ff14" href="./ff14.html">
-      <div class="galaxy-marker-glow" style="--marker-color: #b8c4d8;"></div>
-      <div class="galaxy-marker-core" style="--marker-color: #b8c4d8;"></div>
-      <div class="galaxy-marker-label">艾欧泽亚</div>
+    <a class="star-map-signal" href="./ff14.html" data-world-signal="ff14" style="--x:22%;--y:72%;--signal:#8fc8f3;--signal-rgb:143,200,243">
+      <span class="star-map-signal-reticle" aria-hidden="true"></span>
+      <small>03 / FF–AETHER</small>
+      <strong>十四世界</strong>
+      <em>最终幻想 XIV</em>
     </a>
   </div>
 
-  <!-- Galaxy hover tooltip -->
-  <div class="galaxy-tooltip" id="galaxy-tooltip">
-    <div class="gt-name" id="gt-name"></div>
-    <div class="gt-sub" id="gt-sub"></div>
-    <div class="gt-hint">点击查看详情</div>
-  </div>
-</div>
+  <article id="star-map-readout" aria-live="polite">
+    <p class="star-map-readout-index" id="star-map-readout-index">WORLD 01 / 03 · ARK–TERRA</p>
+    <p class="star-map-readout-ip" id="star-map-readout-ip">明日方舟 / ORIGINIUM OBSERVATION</p>
+    <h2 id="star-map-readout-title">泰拉</h2>
+    <p class="star-map-readout-summary" id="star-map-readout-summary">天灾与源石共同改写文明的生存方式。移动城邦、国家与组织在这颗行星上留下彼此交叠的记录。</p>
+    <dl class="star-map-readout-facts" id="star-map-readout-facts">
+      <div><dt>结构</dt><dd>独立行星 / 近轨道观测</dd></div>
+      <div><dt>档案</dt><dd>主世界线 · 集成战略 · 泰拉图谱</dd></div>
+    </dl>
+    <a class="star-map-enter" id="star-map-enter" href="./arknights.html">
+      <span>进入世界档案</span><b aria-hidden="true">↗</b>
+    </a>
+  </article>
 
-<!-- Galaxy detail overlay -->
-<div id="galaxy-detail"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="detail-title"
-  aria-describedby="detail-desc"
-  aria-hidden="true"
-  inert>
-  <div class="detail-overlay" id="detail-overlay"></div>
-  <button class="detail-close" id="detail-close" type="button" aria-label="关闭世界详情">✕</button>
-  <div class="detail-content">
-    <div class="detail-body">
-      <canvas id="galaxy-canvas" width="640" height="640"></canvas>
-    </div>
-    <div class="detail-title" id="detail-title"></div>
-    <div class="detail-sub" id="detail-sub"></div>
-    <p class="detail-desc" id="detail-desc"></p>
-    <div class="detail-calendar" id="detail-calendar"></div>
-    <button class="btn-detail-enter" id="detail-enter-btn" type="button">进入编年史</button>
-  </div>
-</div>
+  <aside class="star-map-provenance" id="star-map-provenance">
+    <strong>TERRA SURFACE / COMMUNITY CARTOGRAPHY</strong>
+    <p>六边形区划依据官方公开信息；地形与部分标注来自社区补绘。球面化仅用于视觉观察，不代表官方地理投影。</p>
+  </aside>
+
+  <p class="star-map-instruction" id="star-map-instruction">
+    <span>拖动旋转当前天体</span><span>滚轮调整观测距离</span><span>点击远距信号切换世界</span>
+  </p>
+
+  <div id="star-map-loading" role="status">CALIBRATING SPATIAL ATLAS</div>
+
+  <nav id="star-map-fallback" aria-label="世界档案">
+    <p>三维星图暂时不可用，仍可直接进入世界档案。</p>
+    <a href="./arknights.html">明日方舟</a>
+    <a href="./wh40k.html">战锤 40,000</a>
+    <a href="./ff14.html">最终幻想 XIV</a>
+  </nav>
+
+  <noscript>
+    <style>
+      #star-map-fallback { display: grid !important; }
+      #star-map-loading,
+      #star-map-signals,
+      #star-map-readout,
+      .star-map-provenance,
+      .star-map-instruction { display: none !important; }
+    </style>
+  </noscript>
+</section>
 {% endblock %}

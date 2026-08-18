@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "file": "terra-community-administrative-map.png",
+    "width": 4081,
+    "height": 5488
+  },
+  "provenance": {
+    "classification": "community-cartography",
+    "notice": "六边形区域依据官方公开信息；地形与部分标注为社区补充。球面纹理由本站从社区地图重新投影。",
+    "limitations": "源图没有地理坐标。本投影用于视觉呈现，不能作为精确地理测量或官方疆界数据。"
+  },
+  "projection": {
+    "type": "equirectangular-authored",
+    "outputAspectRatio": "2:1",
+    "longitudeCenterDegrees": -18,
+    "longitudeSpanDegrees": 132,
+    "latitudeNorthDegrees": 84,
+    "latitudeSouthDegrees": -82,
+    "sourceCrop": {
+      "left": 77,
+      "top": 449,
+      "width": 4004,
+      "height": 4894
+    },
+    "destinationPixels": {
+      "left": 546,
+      "top": 34,
+      "width": 751,
+      "height": 944
+    }
+  },
+  "hexGrid": {
+    "method": "source-map-cells-baked-into-albedo",
+    "claim": "直接保留源图中的六边形区划并随地形一同球面化，不额外生成或补齐格网。"
+  },
+  "metrics": {
+    "landCoverage": 0.168373
+  },
+  "buildDiagnostics": {
+    "inspectionSize": [
+      900,
+      1210
+    ],
+    "candidateComponents": [
+      {
+        "pixels": 461362,
+        "bounds": {
+          "minX": 46,
+          "minY": 125,
+          "maxX": 875,
+          "maxY": 1151
+        }
+      },
+      {
+        "pixels": 80462,
+        "bounds": {
+          "minX": 456,
+          "minY": 848,
+          "maxX": 876,
+          "maxY": 1186
+        }
+      },
+      {
+        "pixels": 19647,
+        "bounds": {
+          "minX": 654,
+          "minY": 143,
+          "maxX": 837,
+          "maxY": 315
+        }
+      },
+      {
+        "pixels": 18301,
+        "bounds": {
+          "minX": 607,
+          "minY": 26,
+          "maxX": 862,
+          "maxY": 109
+        }
+      },
+      {
+        "pixels": 6056,
+        "bounds": {
+          "minX": 7,
+          "minY": 1156,
+          "maxX": 158,
+          "maxY": 1202
+        }
+      },
+      {
+        "pixels": 3737,
+        "bounds": {
+          "minX": 23,
+          "minY": 23,
+          "maxX": 114,
+          "maxY": 69
+        }
+      },
+      {
+        "pixels": 2449,
+        "bounds": {
+          "minX": 293,
+          "minY": 171,
+          "maxX": 369,
+          "maxY": 211
+        }
+      },
+      {
+        "pixels": 2238,
+        "bounds": {
+          "minX": 670,
+          "minY": 883,
+          "maxX": 752,
+          "maxY": 916
+        }
+      }
+    ]
+  }
+}
