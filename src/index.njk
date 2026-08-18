@@ -3,7 +3,7 @@ permalink: ./index.html
 title: 群星之间
 bodyClass: world-index
 pageType: star-map
-scriptFile: star-map-3d.js
+scriptFile: star-map-2d.js
 cssFiles:
   - base.css
   - nav.css
@@ -17,9 +17,64 @@ cssFiles:
 <section id="star-map-stage" aria-labelledby="star-map-title">
   <h1 id="star-map-title" class="sr-only">群星之间 · 三世界空间档案</h1>
 
+  <div class="star-map-scenes" aria-hidden="true">
+    <img
+      class="star-map-scene is-active"
+      src="./assets/images/star-map/scenes/terra-observation.webp"
+      alt=""
+      width="1672"
+      height="941"
+      decoding="async"
+      fetchpriority="high"
+      data-world-scene="arknights"
+    >
+    <img
+      class="star-map-scene"
+      src="./assets/images/star-map/scenes/milky-way-rift.webp"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      data-world-scene="wh40k"
+    >
+    <img
+      class="star-map-scene"
+      src="./assets/images/star-map/scenes/fourteen-worlds.webp"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      data-world-scene="ff14"
+    >
+  </div>
+
+  <div class="ff14-reflection-field" aria-hidden="true">
+    <i class="ff14-orbit ff14-orbit-a"></i>
+    <i class="ff14-orbit ff14-orbit-b"></i>
+    <i class="ff14-orbit ff14-orbit-c"></i>
+    <span class="ff14-reflection is-surviving" data-reflection="01" style="--rx:23%;--ry:19%;--rs:58px;--rd:0s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="02" style="--rx:35%;--ry:14%;--rs:42px;--rd:-1.8s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="03" style="--rx:46%;--ry:22%;--rs:30px;--rd:-3.2s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="04" style="--rx:57%;--ry:31%;--rs:46px;--rd:-4.7s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="08" style="--rx:68%;--ry:24%;--rs:36px;--rd:-6.1s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="11" style="--rx:75%;--ry:42%;--rs:27px;--rd:-7.4s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="05" style="--rx:34%;--ry:31%;--rd:-.5s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="06" style="--rx:46%;--ry:40%;--rd:-1.4s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="07" style="--rx:58%;--ry:48%;--rd:-2.3s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="09" style="--rx:69%;--ry:55%;--rd:-3.2s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="10" style="--rx:74%;--ry:64%;--rd:-4.1s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="12" style="--rx:63%;--ry:69%;--rd:-5s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="13" style="--rx:52%;--ry:60%;--rd:-5.9s"></span>
+  </div>
+
   <div class="star-map-field-grid" aria-hidden="true"></div>
   <div class="star-map-scanline" aria-hidden="true"></div>
   <div class="star-map-vignette" aria-hidden="true"></div>
+  <div class="star-map-frame" aria-hidden="true">
+    <i></i><i></i><i></i><i></i>
+  </div>
 
   <header class="star-map-telemetry" aria-hidden="true">
     <strong><i></i> DEEP FIELD ACQUIRED</strong>
@@ -30,32 +85,32 @@ cssFiles:
     class="star-map-version-switch"
     data-star-map-version-switch
     href="./star-map-b4-prototype.html"
-    aria-label="查看上一版 B4 星图"
+    aria-label="切换到 B4 星图原型"
   >
-    <span>PREVIOUS PLATE</span>
-    <strong>B4 星图</strong>
+    <span>ALTERNATE PLATE</span>
+    <strong>B4 原型</strong>
   </a>
 
-  <div id="star-map-signals" aria-label="空间中的其他世界">
-    <a class="star-map-signal" href="./arknights.html" data-world-signal="arknights" style="--x:34%;--y:50%;--signal:#d9a441;--signal-rgb:217,164,65">
+  <nav id="star-map-signals" aria-label="切换观测世界">
+    <a class="star-map-signal" href="./arknights.html" data-world-signal="arknights" style="--signal:#d9a441;--signal-rgb:217,164,65">
       <span class="star-map-signal-reticle" aria-hidden="true"></span>
       <small>01 / ARK–TERRA</small>
       <strong>泰拉</strong>
       <em>明日方舟</em>
     </a>
-    <a class="star-map-signal" href="./wh40k.html" data-world-signal="wh40k" style="--x:18%;--y:28%;--signal:#b9433e;--signal-rgb:185,67,62">
+    <a class="star-map-signal" href="./wh40k.html" data-world-signal="wh40k" style="--signal:#b9433e;--signal-rgb:185,67,62">
       <span class="star-map-signal-reticle" aria-hidden="true"></span>
       <small>02 / WH–M42</small>
       <strong>破碎银河</strong>
       <em>战锤 40,000</em>
     </a>
-    <a class="star-map-signal" href="./ff14.html" data-world-signal="ff14" style="--x:22%;--y:72%;--signal:#8fc8f3;--signal-rgb:143,200,243">
+    <a class="star-map-signal" href="./ff14.html" data-world-signal="ff14" style="--signal:#8fc8f3;--signal-rgb:143,200,243">
       <span class="star-map-signal-reticle" aria-hidden="true"></span>
       <small>03 / FF–AETHER</small>
       <strong>十四世界</strong>
       <em>最终幻想 XIV</em>
     </a>
-  </div>
+  </nav>
 
   <article id="star-map-readout" aria-live="polite">
     <p class="star-map-readout-index" id="star-map-readout-index">WORLD 01 / 03 · ARK–TERRA</p>
@@ -73,17 +128,17 @@ cssFiles:
 
   <aside class="star-map-provenance" id="star-map-provenance">
     <strong>TERRA SURFACE / COMMUNITY CARTOGRAPHY</strong>
-    <p>六边形区划依据官方公开信息；地形与部分标注来自社区补绘。球面化仅用于视觉观察，不代表官方地理投影。</p>
+    <p>六边形区划边界取自源图标出的官方公开信息；大陆轮廓与地形参考社区地图。观察构图不代表官方地理投影。</p>
   </aside>
 
   <p class="star-map-instruction" id="star-map-instruction">
-    <span>拖动旋转当前天体</span><span>滚轮调整观测距离</span><span>点击远距信号切换世界</span>
+    <span>移动指针观察景深</span><span>滚轮调整观测距离</span><span>点击远距信号切换世界</span>
   </p>
 
-  <div id="star-map-loading" role="status">CALIBRATING SPATIAL ATLAS</div>
+  <div id="star-map-loading" role="status">ACQUIRING OBSERVATION PLATE</div>
 
   <nav id="star-map-fallback" aria-label="世界档案">
-    <p>三维星图暂时不可用，仍可直接进入世界档案。</p>
+    <p>场景底图暂时无法载入，你仍可直接进入三个世界档案。</p>
     <a href="./arknights.html">明日方舟</a>
     <a href="./wh40k.html">战锤 40,000</a>
     <a href="./ff14.html">最终幻想 XIV</a>

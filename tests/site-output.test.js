@@ -69,8 +69,11 @@ test('production build contains every public page and data file', () => {
     'data/wh40k.json',
     'data/ff14.json',
     'data/event-index.json',
+    'assets/images/star-map/scenes/terra-observation.webp',
+    'assets/images/star-map/scenes/milky-way-rift.webp',
+    'assets/images/star-map/scenes/fourteen-worlds.webp',
     'js/bundle.js',
-    'js/star-map-3d.js',
+    'js/star-map-2d.js',
     'js/star-map-b4-prototype.js',
     'js/virtual-timeline.js',
     'star-map-b4-prototype.html',
@@ -164,7 +167,7 @@ test('GitHub deployment checks the complete pushed commit range', () => {
 
 test('the star map and all archive pages keep the documented two-entry boundary', () => {
   const index = readDist('index.html');
-  assert.match(index, /src="\.\/js\/star-map-3d\.js"/);
+  assert.match(index, /src="\.\/js\/star-map-2d\.js"/);
   assert.doesNotMatch(index, /src="\.\/js\/bundle\.js"/);
   assert.match(index, /data-star-map-version-switch/);
   assert.match(index, /href="\.\/star-map-b4-prototype\.html"/);
@@ -173,7 +176,7 @@ test('the star map and all archive pages keep the documented two-entry boundary'
     const html = readDist(page);
     assert.match(html, /src="\.\/js\/bundle\.js"/, `${page} must load the world bundle`);
     assert.match(html, /src="\.\/js\/virtual-timeline\.js"/, `${page} must load the timeline engine`);
-    assert.doesNotMatch(html, /src="\.\/js\/star-map-3d\.js"/, `${page} must not load Three.js`);
+    assert.doesNotMatch(html, /src="\.\/js\/star-map-2d\.js"/, `${page} must not load the star-map controller`);
   }
 
   for (const page of [
@@ -393,11 +396,11 @@ test('every media file referenced by production data exists', () => {
 
 test('bundle sizes stay within the intended page budgets', () => {
   const worldBundle = fs.statSync(path.join(DIST, 'js', 'bundle.js')).size;
-  const starMapBundle = fs.statSync(path.join(DIST, 'js', 'star-map-3d.js')).size;
+  const starMapBundle = fs.statSync(path.join(DIST, 'js', 'star-map-2d.js')).size;
   const b4Bundle = fs.statSync(path.join(DIST, 'js', 'star-map-b4-prototype.js')).size;
 
   assert.ok(worldBundle <= 180 * 1024, `world bundle is ${(worldBundle / 1024).toFixed(1)} KiB`);
-  assert.ok(starMapBundle <= 600 * 1024, `star map bundle is ${(starMapBundle / 1024).toFixed(1)} KiB`);
+  assert.ok(starMapBundle <= 80 * 1024, `star map bundle is ${(starMapBundle / 1024).toFixed(1)} KiB`);
   assert.ok(b4Bundle <= 600 * 1024, `B4 preview bundle is ${(b4Bundle / 1024).toFixed(1)} KiB`);
 });
 

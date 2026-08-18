@@ -41,7 +41,7 @@ Type: Prototype
 
 ### Answer
 
-已完成。新增星图专用入口，首页只加载包含 Three.js 的 `star-map-3d.js`，世界页加载不含 Three.js 的 `bundle.js`；生产测试会阻止两者再次混入。
+已完成。星图首页加载不含 Three.js 的 `star-map-2d.js`，世界页继续加载 `bundle.js`，B4 预览保留自己的独立 3D bundle；生产测试会阻止入口再次混用。
 
 ## #3：建立最小自动化测试保护网
 

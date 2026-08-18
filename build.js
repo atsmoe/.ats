@@ -66,13 +66,13 @@ async function buildJS() {
     logLevel: 'info',
   });
 
-  // Bundle star-map-entry.js → star-map-3d.js (star map page only, includes Three.js)
+  // Bundle the lightweight 2D scene controller used only by the star-map page.
   await esbuild.build({
     entryPoints: [path.join(SRC_JS, 'star-map-entry.js')],
     bundle: true,
     format: 'iife',
-    globalName: 'SM3D',
-    outfile: path.join(DIST, 'js', 'star-map-3d.js'),
+    globalName: 'SM2D',
+    outfile: path.join(DIST, 'js', 'star-map-2d.js'),
     splitting: false,
     target: 'es2020',
     minify: true,
@@ -90,7 +90,7 @@ async function buildJS() {
 
   // Remove bundles from the short-lived four-entry experiment. All non-star-map
   // pages are dispatched by bundle.js so the documented two-entry boundary holds.
-  for (const staleBundle of ['arknights.js', 'wh40k.js']) {
+  for (const staleBundle of ['arknights.js', 'wh40k.js', 'star-map-3d.js']) {
     const stalePath = path.join(DIST, 'js', staleBundle);
     if (fs.existsSync(stalePath)) fs.unlinkSync(stalePath);
   }
@@ -250,7 +250,7 @@ async function main() {
   // Step 4: Verify critical output files
   const criticalFiles = [
     'js/bundle.js',
-    'js/star-map-3d.js',
+    'js/star-map-2d.js',
     'js/virtual-timeline.js',
   ];
   for (const f of criticalFiles) {

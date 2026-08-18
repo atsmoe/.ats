@@ -1,4 +1,3 @@
-import { createWorldAtlasStage } from './world-atlas-stage.js';
 import { initNav } from './nav.js';
 import { ANIM } from './anim-tokens.js';
 
@@ -17,7 +16,7 @@ const WORLDS = [
       ['档案', '主世界线 · 集成战略 · 泰拉图谱'],
     ],
     href: './arknights.html',
-    instruction: '拖动旋转泰拉 · 滚轮调整观测距离 · 点击远距信号切换世界',
+    instruction: '移动指针观察景深 · 滚轮调整观测距离 · 点击远距信号切换世界',
   },
   {
     id: 'wh40k',
@@ -33,7 +32,7 @@ const WORLDS = [
       ['档案', '银河纪元 · 九大势力 · 六大战区'],
     ],
     href: './wh40k.html',
-    instruction: '拖动查看银河盘 · 滚轮调整观测距离 · 点击远距信号切换世界',
+    instruction: '移动指针观察银河景深 · 滚轮调整观测距离 · 点击远距信号切换世界',
   },
   {
     id: 'ff14',
@@ -49,7 +48,7 @@ const WORLDS = [
       ['档案', '世界编年 · 八段旅途 · 镜像记录'],
     ],
     href: './ff14.html',
-    instruction: '拖动查看十四世界 · 滚轮调整观测距离 · 点击远距信号切换世界',
+    instruction: '移动指针观察镜像层次 · 滚轮调整观测距离 · 点击远距信号切换世界',
   },
 ];
 
@@ -59,8 +58,7 @@ const controller = new AbortController();
 const { signal } = controller;
 
 const body = document.body;
-const canvas = document.getElementById('bg-canvas');
-const stageShell = document.getElementById('star-map-stage');
+const stage = document.getElementById('star-map-stage');
 const loading = document.getElementById('star-map-loading');
 const routeState = document.getElementById('star-map-route-state');
 const readout = document.getElementById('star-map-readout');
@@ -73,17 +71,15 @@ const enterLink = document.getElementById('star-map-enter');
 const provenance = document.getElementById('star-map-provenance');
 const instruction = document.getElementById('star-map-instruction');
 const signalButtons = [...document.querySelectorAll('[data-world-signal]')];
+const sceneImages = [...document.querySelectorAll('[data-world-scene]')];
 
-let stage = null;
 let activeWorld = WORLD_BY_ID.get(new URL(location.href).searchParams.get('world')) ?? WORLDS[0];
-let frameId = 0;
-let previousFrame = performance.now();
-let travelTimer = 0;
 let readoutTimer = 0;
-let pointerDown = false;
-let pointerMoved = false;
-let pointerStart = { x: 0, y: 0 };
-let pointerLast = { x: 0, y: 0 };
+let travelTimer = 0;
+let parallaxFrame = 0;
+let sceneZoom = 1.035;
+let pointerTarget = { x: 0, y: 0 };
+let pointerCurrent = { x: 0, y: 0 };
 
 function listen(target, type, handler, options = {}) {
   target?.addEventListener(type, handler, { ...options, signal });
@@ -127,12 +123,43 @@ function replaceInstruction(text) {
   }));
 }
 
+function activeScene() {
+  return sceneImages.find((scene) => scene.dataset.worldScene === activeWorld.id);
+}
+
+function syncLoadingState() {
+  const scene = activeScene();
+  const missing = !scene || scene.classList.contains('is-missing');
+  const ready = Boolean(scene?.classList.contains('is-loaded'));
+  body.classList.toggle('is-fallback', missing);
+  loading.hidden = ready || missing;
+}
+
+function handleSceneError(event) {
+  const scene = event.currentTarget;
+  scene.classList.add('is-missing');
+  scene.classList.remove('is-loaded');
+  syncLoadingState();
+}
+
+function handleSceneLoad(event) {
+  const scene = event.currentTarget;
+  scene.classList.add('is-loaded');
+  scene.classList.remove('is-missing');
+  syncLoadingState();
+}
+
 function renderWorld(world, { immediate = false } = {}) {
   setTheme(world);
+  sceneImages.forEach((scene) => {
+    const current = scene.dataset.worldScene === world.id;
+    scene.classList.toggle('is-active', current);
+  });
   signalButtons.forEach((button) => {
     const current = button.dataset.worldSignal === world.id;
     button.classList.toggle('is-current', current);
-    button.setAttribute('aria-current', current ? 'true' : 'false');
+    if (current) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
   });
   provenance.hidden = world.id !== 'arknights';
 
@@ -152,6 +179,7 @@ function renderWorld(world, { immediate = false } = {}) {
   };
   if (immediate || reducedMotion) apply();
   else readoutTimer = window.setTimeout(apply, 150);
+  syncLoadingState();
 }
 
 function updateUrl(mode = 'replace') {
@@ -162,209 +190,113 @@ function updateUrl(mode = 'replace') {
 
 function selectWorld(worldId, { historyMode = 'push', immediate = false } = {}) {
   const world = WORLD_BY_ID.get(worldId);
-  if (!world) return;
-  if (world.id === activeWorld.id && !immediate) return;
+  if (!world || (world.id === activeWorld.id && !immediate)) return;
   activeWorld = world;
-  stage?.focusWorld(world.id, { immediate });
-  requestFrame();
   renderWorld(world, { immediate });
   updateUrl(historyMode);
 
   if (!immediate && !reducedMotion) {
     body.classList.add('is-travelling');
-    routeState.textContent = `TRAVELLING / ${world.code}`;
+    routeState.textContent = `ACQUIRING / ${world.code}`;
     window.clearTimeout(travelTimer);
-    travelTimer = window.setTimeout(() => body.classList.remove('is-travelling'), 1420);
+    travelTimer = window.setTimeout(() => body.classList.remove('is-travelling'), 760);
   }
 }
 
-function resolveSignalCollision(layout, first, second, height) {
-  if (!first || !second) return;
-  if (Math.hypot(first.x - second.x, first.y - second.y) >= 150) return;
-  if (first.y <= second.y) {
-    first.y = Math.max(88, first.y - 72);
-    second.y = Math.min(height - 125, second.y + 72);
-  } else {
-    second.y = Math.max(88, second.y - 72);
-    first.y = Math.min(height - 125, first.y + 72);
+function renderParallax() {
+  parallaxFrame = 0;
+  pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * 0.075;
+  pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * 0.075;
+  stage.style.setProperty('--scene-x', `${pointerCurrent.x.toFixed(2)}px`);
+  stage.style.setProperty('--scene-y', `${pointerCurrent.y.toFixed(2)}px`);
+  if (Math.abs(pointerTarget.x - pointerCurrent.x) > 0.05 || Math.abs(pointerTarget.y - pointerCurrent.y) > 0.05) {
+    parallaxFrame = requestAnimationFrame(renderParallax);
   }
-  layout.set(first.id, first);
-  layout.set(second.id, second);
 }
 
-function updateSignalPositions() {
-  if (!stage) return;
-  const positions = stage.screenPositions();
-  const shell = stageShell.getBoundingClientRect();
-  const canvasRect = canvas.getBoundingClientRect();
-  const layout = new Map();
-  const marginX = window.innerWidth < 760 ? 36 : 78;
-  const marginTop = window.innerWidth < 760 ? 62 : 86;
-  const marginBottom = window.innerWidth < 760 ? 330 : 130;
-
-  signalButtons.forEach((button) => {
-    const worldId = button.dataset.worldSignal;
-    const position = positions[worldId];
-    if (!position) return;
-    const rawX = position.x + canvasRect.left - shell.left;
-    const rawY = position.y + canvasRect.top - shell.top;
-    const entry = {
-      id: worldId,
-      x: clamp(rawX, marginX, shell.width - marginX),
-      y: clamp(rawY, marginTop, shell.height - marginBottom),
-      rawX,
-      rawY,
-      depth: position.depth,
-    };
-    layout.set(worldId, entry);
-  });
-
-  const remote = WORLDS.filter((world) => world.id !== activeWorld.id).map((world) => layout.get(world.id));
-  resolveSignalCollision(layout, remote[0], remote[1], shell.height);
-
-  signalButtons.forEach((button) => {
-    const entry = layout.get(button.dataset.worldSignal);
-    if (!entry) return;
-    button.style.setProperty('--x', `${entry.x}px`);
-    button.style.setProperty('--y', `${entry.y}px`);
-    button.style.setProperty('--depth', String(entry.depth));
-    button.classList.toggle('is-edge-left', entry.rawX <= marginX + 1);
-    button.classList.toggle('is-edge-right', entry.rawX >= shell.width - marginX - 1);
-  });
+function requestParallaxFrame() {
+  if (reducedMotion || parallaxFrame) return;
+  parallaxFrame = requestAnimationFrame(renderParallax);
 }
 
-function resize() {
-  stage?.resize(window.innerWidth, window.innerHeight, window.devicePixelRatio || 1);
-  requestFrame();
+function updateParallax(event) {
+  if (reducedMotion) return;
+  const bounds = stage.getBoundingClientRect();
+  const x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
+  const y = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
+  pointerTarget = { x: x * -14, y: y * -10 };
+  requestParallaxFrame();
 }
 
-function frame(now) {
-  frameId = 0;
-  const delta = Math.min(.05, Math.max(0, (now - previousFrame) / 1000));
-  previousFrame = now;
-  stage?.frame({ delta, now });
-  updateSignalPositions();
-  if (!reducedMotion) requestFrame();
+function resetParallax() {
+  pointerTarget = { x: 0, y: 0 };
+  requestParallaxFrame();
 }
 
-function requestFrame() {
-  if (!stage || frameId) return;
-  previousFrame = performance.now();
-  frameId = requestAnimationFrame(frame);
-}
-
-function normalizedPointer(event) {
-  const bounds = canvas.getBoundingClientRect();
-  return {
-    x: ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
-    y: -(((event.clientY - bounds.top) / bounds.height) * 2 - 1),
-  };
-}
-
-function onPointerDown(event) {
-  if (event.button !== 0) return;
-  pointerDown = true;
-  pointerMoved = false;
-  pointerStart = { x: event.clientX, y: event.clientY };
-  pointerLast = { ...pointerStart };
-  canvas.setPointerCapture?.(event.pointerId);
-  canvas.classList.add('is-dragging');
-}
-
-function onPointerMove(event) {
-  if (!pointerDown) return;
-  const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
-  if (distance > 5) pointerMoved = true;
-  stage?.dragBy(event.clientX - pointerLast.x, event.clientY - pointerLast.y);
-  requestFrame();
-  pointerLast = { x: event.clientX, y: event.clientY };
-}
-
-function onPointerUp(event) {
-  if (!pointerDown) return;
-  pointerDown = false;
-  canvas.releasePointerCapture?.(event.pointerId);
-  canvas.classList.remove('is-dragging');
-  if (pointerMoved) return;
-  const point = normalizedPointer(event);
-  const pickedWorld = stage?.pick(point.x, point.y);
-  if (pickedWorld && pickedWorld !== activeWorld.id) selectWorld(pickedWorld);
+function updateObservationDepth(event) {
+  if (event.target instanceof Element && event.target.closest('a, button')) return;
+  event.preventDefault();
+  const delta = Math.sign(event.deltaY) * -0.008;
+  sceneZoom = Math.min(1.095, Math.max(1.02, sceneZoom + delta));
+  stage.style.setProperty('--scene-zoom', sceneZoom.toFixed(3));
 }
 
 function bindInteractions() {
+  sceneImages.forEach((scene) => {
+    listen(scene, 'load', handleSceneLoad);
+    listen(scene, 'error', handleSceneError);
+    if (scene.complete) {
+      if (scene.naturalWidth > 0) handleSceneLoad({ currentTarget: scene });
+      else handleSceneError({ currentTarget: scene });
+    }
+  });
+
   signalButtons.forEach((button) => {
     listen(button, 'click', (event) => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       selectWorld(button.dataset.worldSignal);
     });
   });
-  listen(canvas, 'pointerdown', onPointerDown);
-  listen(canvas, 'pointermove', onPointerMove);
-  listen(canvas, 'pointerup', onPointerUp);
-  listen(canvas, 'pointercancel', onPointerUp);
-  listen(canvas, 'wheel', (event) => {
-    event.preventDefault();
-    stage?.zoomBy(event.deltaY);
-    requestFrame();
-  }, { passive: false });
-  listen(canvas, 'webglcontextlost', (event) => {
-    event.preventDefault();
-    stage?.suspend(true);
-    enterFallback(new Error('WebGL context lost'));
-  });
-  listen(window, 'resize', resize);
+
+  listen(stage, 'pointermove', updateParallax, { passive: true });
+  listen(stage, 'pointerleave', resetParallax, { passive: true });
+  listen(stage, 'wheel', updateObservationDepth, { passive: false });
   listen(window, 'popstate', () => {
     const world = WORLD_BY_ID.get(new URL(location.href).searchParams.get('world')) ?? WORLDS[0];
     selectWorld(world.id, { historyMode: 'replace', immediate: true });
   });
   listen(window, 'keydown', (event) => {
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     if (event.target instanceof HTMLElement && event.target.matches('input, textarea, select, [contenteditable="true"]')) return;
+    const numericIndex = Number(event.key) - 1;
+    if (numericIndex >= 0 && numericIndex < WORLDS.length) {
+      selectWorld(WORLDS[numericIndex].id);
+      return;
+    }
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
     const index = WORLDS.findIndex((world) => world.id === activeWorld.id);
     const direction = event.key === 'ArrowRight' ? 1 : -1;
     selectWorld(WORLDS[(index + direction + WORLDS.length) % WORLDS.length].id);
   });
-  listen(document, 'visibilitychange', () => {
-    stage?.suspend(document.hidden);
-    if (!document.hidden) requestFrame();
-  });
   listen(window, 'pagehide', destroy, { once: true });
-}
-
-function enterFallback(error) {
-  console.error('[spatial atlas] WebGL stage unavailable.', error);
-  cancelAnimationFrame(frameId);
-  frameId = 0;
-  body.classList.add('is-fallback');
-  loading.hidden = true;
 }
 
 function destroy() {
   controller.abort();
-  cancelAnimationFrame(frameId);
-  window.clearTimeout(travelTimer);
+  cancelAnimationFrame(parallaxFrame);
   window.clearTimeout(readoutTimer);
-  stage?.destroy();
+  window.clearTimeout(travelTimer);
 }
 
-async function initialize() {
+function initialize() {
   initNav();
   dismissPortalOverlay();
+  bindInteractions();
   renderWorld(activeWorld, { immediate: true });
   updateUrl('replace');
-  bindInteractions();
-
-  try {
-    stage = createWorldAtlasStage({ canvas, initialWorld: activeWorld.id, reducedMotion });
-    canvas.classList.add('interactive');
-    resize();
-    requestFrame();
-    await stage.ready;
-    loading.hidden = true;
-  } catch (error) {
-    enterFallback(error);
-  }
+  stage.style.setProperty('--scene-zoom', sceneZoom.toFixed(3));
+  body.classList.add('is-ready');
 }
 
 initialize();

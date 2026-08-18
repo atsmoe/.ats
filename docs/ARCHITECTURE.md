@@ -2,13 +2,13 @@
 
 ## 一、产品形态
 
-**定义**：可视化虚拟历史查阅工具——在三维星图中漫游，进入不同世界的编年史，在时间线上阅读事件、查看图片、观看视频片段。
+**定义**：可视化虚构世界档案——从可交互的二维深空观测首页进入不同世界，在编年、专题和图谱中阅读记录。
 
 **核心体验路径**：
 ```
-三维星图（OrbitControls 漫游）
-  → 发现星团 → 悬停查看名称 → 点击查看详情覆盖层
-    → 点击"进入编年史" → 跳转到世界时间线页
+二维深空观测页（场景切换、视差与观察景深）
+  → 发现远距信号 → 切换世界观测底图 → 阅读世界摘要
+    → 点击"进入世界档案" → 跳转到对应世界入口
       → 浏览事件时间线 → 点击事件卡片 → 查看图片/视频/描述
         → 点击跨世界引用 → 传送门过渡 → 到达另一世界
 ```
@@ -17,7 +17,7 @@
 
 | 页面 | 模板 | 背景 | JS 入口 |
 |------|------|------|---------|
-| 星图首页 | `index.njk` | Three.js 3D 银河 | `star-map-3d.js` |
+| 星图首页 | `index.njk` | 三张独立 2D 深空场景 | `star-map-2d.js` |
 | B4 星图预览 | `star-map-b4-prototype.njk` | Three.js 三世界天体观察台 | `star-map-b4-prototype.js` |
 | 明日方舟 | `arknights.njk` | Canvas 2D 琥珀粒子 | `bundle.js` |
 | 战锤40K | `wh40k.njk` | Canvas 2D 深红粒子 | `bundle.js` |
@@ -49,7 +49,7 @@
 |----|------|------|------|
 | SSG | 11ty (Eleventy) | ^3.0.0 | 轻量 Nunjucks 模板，零运行时框架 |
 | JS 打包 | esbuild | ^0.25.0 | 快、IIFE 输出 |
-| 3D 渲染 | Three.js | **0.136.0**（精确锁定） | 星图首页 3D 银河效果 |
+| 原型 3D 渲染 | Three.js | **0.136.0**（精确锁定） | B4 公开预览独立使用，正式首页不加载 |
 | UI 组件 | 无 | — | 原生 HTML + CSS 实现 |
 
 ### 不引入的技术
@@ -137,7 +137,7 @@ findEventById(eventId)       // → { id, title, ... } | null  (O(1) via index)
              │ import / 调用
 ┌────────────▼ Engine Layer ──────┐
 │  virtual-timeline.js            │
-│  star-map-3d.js                 │
+│  star-map-2d.js                 │
 │  particle-background.js         │
 │  background-manager.js          │
 └────────────┬────────────────────┘
@@ -175,26 +175,21 @@ const data = await loadWorldData(worldId);     // fetch 加载
 
 ---
 
-## 五、3D 星图首页
+## 五、2D 星图首页
 
-### Three.js 场景
+### 场景边界
 
-| 组件 | 桌面 | 移动 |
-|------|------|------|
-| 背景粒子（球体核心） | 50,000 | 10,000 |
-| 背景粒子（外围盘面） | 100,000 | 20,000 |
-| 星团结（每世界） | 5,000 | 2,000 |
-| **总计** | ~165,000 | ~36,000 |
+正式首页使用三张经审定的 16:9 WebP：泰拉近轨观测、破碎银河与十四世界。HTML 直接声明图片和三个世界链接，脚本仅负责切换状态、轻微视差、滚轮观察景深、URL 同步与键盘操作。
 
-交互：OrbitControls（旋转/缩放，禁用平移）+ 自动慢旋转 + 鼠标视差。
+Three.js 只留在 B4 预览的独立 bundle 中。正式首页脚本不得 import Three.js 或旧 `world-atlas-stage`，图片载入失败和禁用脚本时仍保留三个直达档案入口。
 
-### 星团标记
+### 交互层
 
-HTML `.galaxy-marker` 叠在 Three.js Canvas 上方，JS 每帧投影 3D→2D 屏幕坐标。
-
-### 入场动画
-
-T+0ms 场景渐显 → T+400ms 第一个 marker → T+800ms 第二个 → T+1200ms 第三个
+- 单击远距信号：在当前页切换观测场景。
+- 单击“进入世界档案”：访问当前世界入口。
+- `←` / `→` 或 `1` / `2` / `3`：键盘切换世界。
+- 指针移动：小幅场景视差；滚轮：有限范围内调整观察景深。
+- `prefers-reduced-motion`：取消视差、脉冲和长过渡。
 
 ---
 
@@ -234,7 +229,7 @@ npm run build:
   1. node src/validators/validate-data.js   ← 校验 + 扁平化 + 索引
   2. node convert-changelog.js
   3. eleventy                                ← 生成 HTML
-  4. node build.js                           ← esbuild(bundle + star-map-3d) + 复制
+  4. node build.js                           ← esbuild(bundle + star-map-2d) + 复制
   5. node scripts/build-b4-prototype.js       ← 构建公开 B4 预览
   6. npm test                                ← 校验页面、数据、媒体引用和体积预算
 
@@ -265,7 +260,7 @@ dist/
 ├── css/                         (7 个文件)
 └── js/
     ├── bundle.js               (~38KB，世界页/普通页，不含 Three.js)
-    ├── star-map-3d.js          (~517KB，首页专用，包含 Three.js)
+    ├── star-map-2d.js          (首页专用，体积预算 80KB，不含 Three.js)
     ├── star-map-b4-prototype.js  (B4 公开预览独立 bundle)
     └── virtual-timeline.js
 ```
@@ -277,7 +272,7 @@ dist/
 | 等级 | 特性 | 桌面 | 平板 | 移动 |
 |------|------|------|------|------|
 | A | 时间线阅读 | ✅ | ✅ | ✅ 右置 |
-| B | 3D 星图 | ✅ 150K | ✅ 80K | ✅ 30K |
+| B | 2D 星图 | ✅ 场景视差 | ✅ 降低位移 | ✅ 正常阅读 |
 | B | Canvas 2D 背景 | ✅ 500星 | ✅ 400星 | ✅ 300星 |
 | C | 图片/视频 | ✅ | ✅ | ✅ |
 | C | 传送门动画 | ✅ | ✅ | ✅ 简化fade |

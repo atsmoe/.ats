@@ -45,7 +45,7 @@ test('mobile navigation is hidden from assistive navigation until opened', () =>
   );
 });
 
-test('star-map world signals have keyboard controls and a linked non-WebGL fallback', () => {
+test('star-map world signals have keyboard controls and a linked scene fallback', () => {
   const html = readDist('index.html');
   const css = read('src/css/star-map.css');
   const interaction = read('src/js/modules/star-map-entry.js');

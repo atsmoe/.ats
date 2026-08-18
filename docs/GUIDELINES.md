@@ -76,7 +76,7 @@
 | 检测方式 | `window.innerWidth < 768` 或 `matchMedia('(max-width: 768px)')` |
 |----------|------|
 | 检测时机 | 模块 `init()` 时检测一次，`resize` 时 debounce 重新检测 |
-| Three.js 粒子数 | 桌面 150K / 移动 30K，`init()` 时决定，不动态切换 |
+| 星图场景 | 三张 1672×941 WebP；切换时只改变透明度与变换，不创建实时粒子 |
 | Canvas 2D 星数 | 桌面按 preset / 移动 × 0.6 |
 | backdrop-filter: blur | 移动端检测 `CSS.supports()`，不支持则 fallback 为 `rgba` 背景 |
 | 3D 倾斜卡片 | 移动端关闭 `mousemove` 监听 |
@@ -89,7 +89,7 @@
 | validate 先于一切 | `npm run build` 第一步是 `validate-data.js`，失败则 exit(1) |
 | 不做 file:// 兼容 | HTML 中不出现 inline JSON，所有数据走 fetch |
 | Three.js 精确版本 | `package.json` 中 `"three": "0.136.0"`，不加 `^` 或 `~` |
-| esbuild 入口 | `main.js` → `bundle.js`（世界页）+ `star-map-entry.js` → `star-map-3d.js`（首页），两个独立 bundle |
+| esbuild 入口 | `main.js` → `bundle.js`（世界页）+ `star-map-entry.js` → `star-map-2d.js`（首页），两个独立 bundle |
 | 产出检查 | build 后验证 `dist/data/event-index.json` 存在且非空 |
 
 ## 十、发布与日志规则
