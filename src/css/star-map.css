@@ -24,9 +24,6 @@ body[data-page="star-map"] #main-content {
 }
 
 #star-map-stage {
-  --scene-x: 0px;
-  --scene-y: 0px;
-  --scene-zoom: 1.035;
   position: fixed;
   inset: var(--nav-h) 0 0;
   z-index: 51;
@@ -70,24 +67,15 @@ body[data-page="star-map"] #main-content {
   object-fit: cover;
   object-position: center;
   opacity: 0;
-  visibility: hidden;
-  transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(var(--scene-zoom));
+  transform: scale(1.035);
   filter: saturate(.92) contrast(1.04) brightness(.9);
-  transition:
-    opacity 900ms cubic-bezier(.22, .75, .18, 1),
-    visibility 900ms step-end,
-    transform 100ms linear;
-  will-change: transform, opacity;
+  transition: opacity var(--transition-slow);
+  will-change: opacity;
 }
 
 .star-map-scene.is-active {
   z-index: 1;
   opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 900ms cubic-bezier(.22, .75, .18, 1),
-    visibility 0s step-start,
-    transform 100ms linear;
 }
 
 .star-map-scene.is-missing { display: none; }
@@ -97,16 +85,12 @@ body[data-page="star-map"] #main-content {
   inset: 0;
   z-index: 2;
   opacity: 0;
-  visibility: hidden;
   pointer-events: none;
-  transform: translate3d(var(--scene-x), var(--scene-y), 0);
-  transition: opacity 720ms ease, visibility 720ms step-end, transform 140ms linear;
+  transition: opacity var(--transition-slow);
 }
 
 body[data-world="ff14"] .ff14-reflection-field {
   opacity: 1;
-  visibility: visible;
-  transition: opacity 900ms ease, visibility 0s step-start, transform 140ms linear;
 }
 
 .ff14-orbit {
@@ -580,8 +564,8 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
 
 @media (max-width: 760px) {
   body[data-page="star-map"] { min-height: 100dvh; }
-  #star-map-stage { inset: var(--nav-h) 0 0; --scene-zoom: 1.02; }
-  .star-map-scene { inset: -1%; width: 102%; height: 102%; object-position: 38% 50%; }
+  #star-map-stage { inset: var(--nav-h) 0 0; }
+  .star-map-scene { inset: -1%; width: 102%; height: 102%; object-position: 38% 50%; transform: scale(1.02); }
   .ff14-reflection-field { transform: none; }
   .ff14-reflection.is-surviving { transform: translate(-50%, -50%) scale(.7); }
   .star-map-scenes::after { background: linear-gradient(180deg, rgba(1, 4, 8, .12), transparent 28%, rgba(1, 4, 8, .28) 54%, rgba(1, 4, 8, .9) 100%); }
@@ -621,7 +605,6 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
   .star-map-enter { min-height: 44px; margin-top: 14px; }
   .star-map-provenance { display: none; }
   .star-map-instruction { right: 16px; bottom: 25px; left: 16px; justify-content: center; }
-  .star-map-instruction span:first-child,
   .star-map-instruction span:nth-child(2) { display: none; }
   .star-map-instruction span + span::before { display: none; }
   #star-map-fallback { grid-template-columns: 1fr; }
@@ -636,7 +619,6 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
     transition-duration: .001ms !important;
   }
 
-  .star-map-scene { transform: none !important; }
   .star-map-signal-reticle { animation: none; }
   .ff14-reflection { animation: none !important; }
   .star-map-scanline { display: none; }

@@ -16,7 +16,7 @@ const WORLDS = [
       ['档案', '主世界线 · 集成战略 · 泰拉图谱'],
     ],
     href: './arknights.html',
-    instruction: '移动指针观察景深 · 滚轮调整观测距离 · 点击远距信号切换世界',
+    instruction: '选择远距信号切换世界 · 方向键或数字键选择观测目标',
   },
   {
     id: 'wh40k',
@@ -32,7 +32,7 @@ const WORLDS = [
       ['档案', '银河纪元 · 九大势力 · 六大战区'],
     ],
     href: './wh40k.html',
-    instruction: '移动指针观察银河景深 · 滚轮调整观测距离 · 点击远距信号切换世界',
+    instruction: '选择远距信号切换世界 · 方向键或数字键选择观测目标',
   },
   {
     id: 'ff14',
@@ -48,7 +48,7 @@ const WORLDS = [
       ['档案', '世界编年 · 八段旅途 · 镜像记录'],
     ],
     href: './ff14.html',
-    instruction: '移动指针观察镜像层次 · 滚轮调整观测距离 · 点击远距信号切换世界',
+    instruction: '选择远距信号切换世界 · 方向键或数字键选择观测目标',
   },
 ];
 
@@ -58,7 +58,6 @@ const controller = new AbortController();
 const { signal } = controller;
 
 const body = document.body;
-const stage = document.getElementById('star-map-stage');
 const loading = document.getElementById('star-map-loading');
 const routeState = document.getElementById('star-map-route-state');
 const readout = document.getElementById('star-map-readout');
@@ -76,10 +75,6 @@ const sceneImages = [...document.querySelectorAll('[data-world-scene]')];
 let activeWorld = WORLD_BY_ID.get(new URL(location.href).searchParams.get('world')) ?? WORLDS[0];
 let readoutTimer = 0;
 let travelTimer = 0;
-let parallaxFrame = 0;
-let sceneZoom = 1.035;
-let pointerTarget = { x: 0, y: 0 };
-let pointerCurrent = { x: 0, y: 0 };
 
 function listen(target, type, handler, options = {}) {
   target?.addEventListener(type, handler, { ...options, signal });
@@ -203,44 +198,6 @@ function selectWorld(worldId, { historyMode = 'push', immediate = false } = {}) 
   }
 }
 
-function renderParallax() {
-  parallaxFrame = 0;
-  pointerCurrent.x += (pointerTarget.x - pointerCurrent.x) * 0.075;
-  pointerCurrent.y += (pointerTarget.y - pointerCurrent.y) * 0.075;
-  stage.style.setProperty('--scene-x', `${pointerCurrent.x.toFixed(2)}px`);
-  stage.style.setProperty('--scene-y', `${pointerCurrent.y.toFixed(2)}px`);
-  if (Math.abs(pointerTarget.x - pointerCurrent.x) > 0.05 || Math.abs(pointerTarget.y - pointerCurrent.y) > 0.05) {
-    parallaxFrame = requestAnimationFrame(renderParallax);
-  }
-}
-
-function requestParallaxFrame() {
-  if (reducedMotion || parallaxFrame) return;
-  parallaxFrame = requestAnimationFrame(renderParallax);
-}
-
-function updateParallax(event) {
-  if (reducedMotion) return;
-  const bounds = stage.getBoundingClientRect();
-  const x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
-  const y = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
-  pointerTarget = { x: x * -14, y: y * -10 };
-  requestParallaxFrame();
-}
-
-function resetParallax() {
-  pointerTarget = { x: 0, y: 0 };
-  requestParallaxFrame();
-}
-
-function updateObservationDepth(event) {
-  if (event.target instanceof Element && event.target.closest('a, button')) return;
-  event.preventDefault();
-  const delta = Math.sign(event.deltaY) * -0.008;
-  sceneZoom = Math.min(1.095, Math.max(1.02, sceneZoom + delta));
-  stage.style.setProperty('--scene-zoom', sceneZoom.toFixed(3));
-}
-
 function bindInteractions() {
   sceneImages.forEach((scene) => {
     listen(scene, 'load', handleSceneLoad);
@@ -259,9 +216,6 @@ function bindInteractions() {
     });
   });
 
-  listen(stage, 'pointermove', updateParallax, { passive: true });
-  listen(stage, 'pointerleave', resetParallax, { passive: true });
-  listen(stage, 'wheel', updateObservationDepth, { passive: false });
   listen(window, 'popstate', () => {
     const world = WORLD_BY_ID.get(new URL(location.href).searchParams.get('world')) ?? WORLDS[0];
     selectWorld(world.id, { historyMode: 'replace', immediate: true });
@@ -284,7 +238,6 @@ function bindInteractions() {
 
 function destroy() {
   controller.abort();
-  cancelAnimationFrame(parallaxFrame);
   window.clearTimeout(readoutTimer);
   window.clearTimeout(travelTimer);
 }
@@ -295,7 +248,6 @@ function initialize() {
   bindInteractions();
   renderWorld(activeWorld, { immediate: true });
   updateUrl('replace');
-  stage.style.setProperty('--scene-zoom', sceneZoom.toFixed(3));
   body.classList.add('is-ready');
 }
 

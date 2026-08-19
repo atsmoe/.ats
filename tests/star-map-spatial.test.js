@@ -30,15 +30,20 @@ test('formal star map owns three authored 2D scenes and three native world route
   assert.match(template, /不代表官方地理投影/u);
 });
 
-test('formal star map interaction is a lightweight 2D controller', () => {
+test('formal star map keeps its observation plate stationary while worlds remain selectable', () => {
   const entry = read('src/js/modules/star-map-entry.js');
+  const template = read('src/index.njk');
+  const stylesheet = read('src/css/star-map.css');
   const build = read('build.js');
 
   assert.doesNotMatch(entry, /world-atlas-stage|from ['"]three['"]|WebGL|webglcontextlost/);
   assert.match(entry, /\[data-world-scene\]/);
   assert.match(entry, /function selectWorld\(/);
-  assert.match(entry, /function updateParallax\(/);
-  assert.match(entry, /function updateObservationDepth\(/);
+  assert.doesNotMatch(entry, /pointermove|pointerleave|wheel|updateParallax|updateObservationDepth/);
+  assert.doesNotMatch(stylesheet, /--scene-(?:x|y|zoom)/);
+  assert.doesNotMatch(stylesheet, /\.star-map-instruction span:first-child[^{]*\{[^}]*display:\s*none/s);
+  assert.doesNotMatch(template, /移动指针|滚轮|观察景深|观测距离/);
+  assert.match(template, /方向键或数字键/);
   assert.match(entry, /prefers-reduced-motion/);
   assert.match(build, /star-map-2d\.js/);
   assert.doesNotMatch(build, /outfile:[^\n]*star-map-3d\.js/);
