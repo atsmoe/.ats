@@ -50,6 +50,55 @@ cssFiles:
     >
   </div>
 
+  <svg class="star-map-world-motion" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="terra-limb-light" cx="50%" cy="50%" r="50%">
+        <stop class="terra-light-core" offset="0" stop-opacity=".88"></stop>
+        <stop class="terra-light-mid" offset=".22" stop-opacity=".42"></stop>
+        <stop class="terra-light-edge" offset="1" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="wh40k-core-light" cx="50%" cy="50%" r="50%">
+        <stop class="wh40k-core-light" offset="0" stop-opacity=".5"></stop>
+        <stop class="wh40k-core-mid" offset=".34" stop-opacity=".16"></stop>
+        <stop class="wh40k-core-edge" offset="1" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="terra-grid-fade" cx="50%" cy="50%" r="50%">
+        <stop class="motion-mask-solid" offset=".42" stop-opacity="1"></stop>
+        <stop class="motion-mask-clear" offset="1" stop-opacity="0"></stop>
+      </radialGradient>
+      <filter id="star-map-soft-glow" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="6"></feGaussianBlur>
+      </filter>
+      <mask id="terra-grid-north" maskUnits="userSpaceOnUse" x="170" y="240" width="250" height="230">
+        <ellipse cx="292" cy="354" rx="118" ry="105" fill="url(#terra-grid-fade)"></ellipse>
+      </mask>
+      <mask id="terra-grid-center" maskUnits="userSpaceOnUse" x="470" y="440" width="500" height="250">
+        <ellipse cx="716" cy="566" rx="236" ry="116" fill="url(#terra-grid-fade)"></ellipse>
+      </mask>
+      <mask id="terra-grid-south" maskUnits="userSpaceOnUse" x="490" y="580" width="260" height="250">
+        <ellipse cx="619" cy="704" rx="122" ry="114" fill="url(#terra-grid-fade)"></ellipse>
+      </mask>
+    </defs>
+
+    <g data-motion-world="arknights">
+      <circle class="terra-limb-glow" cx="876" cy="382" r="72" fill="url(#terra-limb-light)"></circle>
+      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-north)" style="--motion-delay:-2.5s"></image>
+      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-center)" style="--motion-delay:-8s"></image>
+      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-south)" style="--motion-delay:-14s"></image>
+      <circle class="terra-observation-wave" cx="776" cy="411" r="22"></circle>
+      <circle class="terra-observation-core" cx="776" cy="411" r="3"></circle>
+    </g>
+
+    <g data-motion-world="wh40k">
+      <circle class="wh40k-core-glow" cx="505" cy="607" r="106" fill="url(#wh40k-core-light)"></circle>
+      <path class="wh40k-rift-glow" d="M-32 474 C88 512 150 572 244 640 C348 716 454 777 555 814 C650 850 752 905 872 962"></path>
+      <path class="wh40k-rift-flow" pathLength="1" d="M-32 474 C88 512 150 572 244 640 C348 716 454 777 555 814 C650 850 752 905 872 962"></path>
+      <circle class="wh40k-rift-node" style="--motion-delay:-1s" cx="242" cy="640" r="5"></circle>
+      <circle class="wh40k-rift-node" style="--motion-delay:-5s" cx="405" cy="720" r="5"></circle>
+      <circle class="wh40k-rift-node" style="--motion-delay:-9s" cx="532" cy="806" r="5"></circle>
+    </g>
+  </svg>
+
   <div class="ff14-reflection-field" aria-hidden="true">
     <i class="ff14-orbit ff14-orbit-a"></i>
     <i class="ff14-orbit ff14-orbit-b"></i>
@@ -60,13 +109,13 @@ cssFiles:
     <span class="ff14-reflection is-surviving" data-reflection="04" style="--rx:57%;--ry:31%;--rs:46px;--rd:-4.7s"></span>
     <span class="ff14-reflection is-surviving" data-reflection="08" style="--rx:68%;--ry:24%;--rs:36px;--rd:-6.1s"></span>
     <span class="ff14-reflection is-surviving" data-reflection="11" style="--rx:75%;--ry:42%;--rs:27px;--rd:-7.4s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="05" style="--rx:34%;--ry:31%;--rd:-.5s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="06" style="--rx:46%;--ry:40%;--rd:-1.4s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="07" style="--rx:58%;--ry:48%;--rd:-2.3s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="09" style="--rx:69%;--ry:55%;--rd:-3.2s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="10" style="--rx:74%;--ry:64%;--rd:-4.1s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="12" style="--rx:63%;--ry:69%;--rd:-5s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="13" style="--rx:52%;--ry:60%;--rd:-5.9s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="05" style="--rx:34%;--ry:31%;--rd:-.5s;--flow-angle:93deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="06" style="--rx:46%;--ry:40%;--rd:-1.4s;--flow-angle:148deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="07" style="--rx:58%;--ry:48%;--rd:-2.3s;--flow-angle:180deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="09" style="--rx:69%;--ry:55%;--rd:-3.2s;--flow-angle:191deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="10" style="--rx:74%;--ry:64%;--rd:-4.1s;--flow-angle:201deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="12" style="--rx:63%;--ry:69%;--rd:-5s;--flow-angle:215deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="13" style="--rx:52%;--ry:60%;--rd:-5.9s;--flow-angle:212deg"></span>
   </div>
 
   <div class="star-map-field-grid" aria-hidden="true"></div>

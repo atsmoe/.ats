@@ -58,6 +58,7 @@ const controller = new AbortController();
 const { signal } = controller;
 
 const body = document.body;
+const stage = document.getElementById('star-map-stage');
 const loading = document.getElementById('star-map-loading');
 const routeState = document.getElementById('star-map-route-state');
 const readout = document.getElementById('star-map-readout');
@@ -86,6 +87,24 @@ function dismissPortalOverlay() {
   overlay.style.opacity = '0';
   overlay.style.pointerEvents = 'none';
   overlay.style.transition = `opacity ${ANIM.duration.normal}ms ${ANIM.easing.out}`;
+}
+
+function configureMotionTokens() {
+  const tokens = {
+    '--motion-acquire': `${ANIM.duration.acquire}ms`,
+    '--motion-signal': `${ANIM.duration.signal}ms`,
+    '--motion-reflection': `${ANIM.duration.reflection}ms`,
+    '--motion-return': `${ANIM.duration.returnFlow}ms`,
+    '--motion-return-flow': `${ANIM.duration.returnFlow}ms`,
+    '--motion-glow': `${ANIM.duration.glow}ms`,
+    '--motion-reticle': `${ANIM.duration.reticle}ms`,
+    '--motion-rift': `${ANIM.duration.rift}ms`,
+    '--motion-survey': `${ANIM.duration.survey}ms`,
+    '--motion-ease': ANIM.easing.inOut,
+    '--motion-out': ANIM.easing.out,
+    '--motion-linear': ANIM.easing.linear,
+  };
+  Object.entries(tokens).forEach(([name, value]) => stage.style.setProperty(name, value));
 }
 
 function setTheme(world) {
@@ -194,7 +213,7 @@ function selectWorld(worldId, { historyMode = 'push', immediate = false } = {}) 
     body.classList.add('is-travelling');
     routeState.textContent = `ACQUIRING / ${world.code}`;
     window.clearTimeout(travelTimer);
-    travelTimer = window.setTimeout(() => body.classList.remove('is-travelling'), 760);
+    travelTimer = window.setTimeout(() => body.classList.remove('is-travelling'), ANIM.duration.acquire);
   }
 }
 
@@ -245,6 +264,7 @@ function destroy() {
 function initialize() {
   initNav();
   dismissPortalOverlay();
+  configureMotionTokens();
   bindInteractions();
   renderWorld(activeWorld, { immediate: true });
   updateUrl('replace');

@@ -4,6 +4,24 @@
 body[data-page="star-map"] {
   --atlas-accent: #d9a441;
   --atlas-accent-rgb: 217, 164, 65;
+  --motion-terra-light-core: #fff2d2;
+  --motion-terra-light-mid: #e8aa5f;
+  --motion-terra-light-edge: #d9893d;
+  --motion-terra-grid-rgb: 232, 174, 91;
+  --motion-terra-wave-rgb: 246, 199, 123;
+  --motion-terra-core: #f4c578;
+  --motion-terra-core-rgb: 240, 177, 78;
+  --motion-wh40k-core: #fff1d4;
+  --motion-wh40k-core-mid: #dfbc97;
+  --motion-wh40k-rift-rgb: 220, 43, 57;
+  --motion-wh40k-rift-bright-rgb: 255, 101, 100;
+  --motion-wh40k-node-rgb: 255, 99, 99;
+  --motion-ff14-source-rgb: 123, 202, 249;
+  --motion-ff14-source-mid-rgb: 99, 153, 222;
+  --motion-ff14-return-rgb: 238, 202, 126;
+  --motion-neutral-light: #fff;
+  --motion-neutral-dark: #000;
+  --motion-neutral-rgb: 255, 255, 255;
   width: 100%;
   height: 100vh;
   overflow: hidden;
@@ -80,6 +98,127 @@ body[data-page="star-map"] #main-content {
 
 .star-map-scene.is-missing { display: none; }
 
+.star-map-world-motion {
+  position: absolute;
+  inset: -2.5%;
+  z-index: 2;
+  width: 105%;
+  height: 105%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 1;
+  transform: scale(1.035);
+  transform-origin: center;
+}
+
+.star-map-world-motion [data-motion-world] {
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.star-map-world-motion [data-motion-world] *,
+.ff14-reflection-field::before,
+.ff14-reflection-field .ff14-orbit,
+.ff14-reflection-field .ff14-reflection,
+.ff14-reflection-field .ff14-reflection::after {
+  animation-play-state: paused;
+}
+
+body[data-world="arknights"] .star-map-world-motion [data-motion-world="arknights"],
+body[data-world="wh40k"] .star-map-world-motion [data-motion-world="wh40k"] {
+  opacity: 1;
+}
+
+body[data-world="arknights"] .star-map-world-motion [data-motion-world="arknights"] *,
+body[data-world="wh40k"] .star-map-world-motion [data-motion-world="wh40k"] *,
+body[data-world="ff14"] .ff14-reflection-field::before,
+body[data-world="ff14"] .ff14-reflection-field .ff14-orbit,
+body[data-world="ff14"] .ff14-reflection-field .ff14-reflection,
+body[data-world="ff14"] .ff14-reflection-field .ff14-reflection::after {
+  animation-play-state: running;
+}
+
+.terra-light-core { stop-color: var(--motion-terra-light-core); }
+.terra-light-mid { stop-color: var(--motion-terra-light-mid); }
+.terra-light-edge { stop-color: var(--motion-terra-light-edge); }
+.wh40k-core-light { stop-color: var(--motion-wh40k-core); }
+.wh40k-core-mid { stop-color: var(--motion-wh40k-core-mid); }
+.wh40k-core-edge { stop-color: var(--atlas-accent); }
+.motion-mask-solid { stop-color: var(--motion-neutral-light); }
+.motion-mask-clear { stop-color: var(--motion-neutral-dark); }
+
+.terra-limb-glow {
+  opacity: .17;
+  filter: url(#star-map-soft-glow);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: terra-limb-breathe var(--motion-glow) var(--motion-ease) infinite;
+}
+
+.terra-grid-activation {
+  opacity: 0;
+  mix-blend-mode: screen;
+  filter: brightness(1.28) saturate(1.14) drop-shadow(0 0 5px rgba(var(--motion-terra-grid-rgb), .28));
+  animation: terra-grid-activate var(--motion-survey) var(--motion-ease) var(--motion-delay, 0s) infinite;
+}
+
+.terra-observation-wave {
+  fill: none;
+  stroke: rgba(var(--motion-terra-wave-rgb), .82);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: terra-observation-wave var(--motion-glow) var(--motion-ease) -2s infinite;
+}
+
+.terra-observation-core {
+  fill: var(--motion-terra-core);
+  filter: drop-shadow(0 0 8px rgba(var(--motion-terra-core-rgb), .78));
+  animation: star-map-status-pulse var(--motion-signal) var(--motion-ease) infinite;
+}
+
+.wh40k-core-glow {
+  opacity: .11;
+  filter: url(#star-map-soft-glow);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wh40k-core-breathe var(--motion-glow) var(--motion-ease) infinite;
+}
+
+.wh40k-rift-glow,
+.wh40k-rift-flow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.wh40k-rift-glow {
+  stroke: rgba(var(--motion-wh40k-rift-rgb), .17);
+  stroke-width: 16;
+  filter: url(#star-map-soft-glow);
+  animation: wh40k-rift-breathe var(--motion-glow) var(--motion-ease) infinite;
+}
+
+.wh40k-rift-flow {
+  stroke: rgba(var(--motion-wh40k-rift-bright-rgb), .76);
+  stroke-width: 1.35;
+  stroke-dasharray: .055 .945;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 5px rgba(var(--motion-wh40k-rift-rgb), .72));
+  opacity: .58;
+  animation: wh40k-rift-flow var(--motion-rift) var(--motion-linear) infinite;
+}
+
+.wh40k-rift-node {
+  fill: rgba(var(--motion-wh40k-node-rgb), .68);
+  filter: drop-shadow(0 0 10px rgba(var(--motion-wh40k-rift-rgb), .92));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wh40k-rift-node var(--motion-glow) var(--motion-ease) var(--motion-delay, 0s) infinite;
+}
+
 .ff14-reflection-field {
   position: absolute;
   inset: 0;
@@ -87,6 +226,20 @@ body[data-page="star-map"] #main-content {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-slow);
+}
+
+.ff14-reflection-field::before {
+  content: '';
+  position: absolute;
+  left: 33%;
+  top: 48%;
+  width: min(34vw, 480px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--motion-ff14-source-rgb), .17), rgba(var(--motion-ff14-source-mid-rgb), .06) 38%, transparent 70%);
+  filter: blur(12px);
+  transform: translate(-50%, -50%);
+  animation: ff14-source-breathe var(--motion-glow) var(--motion-ease) infinite;
 }
 
 body[data-world="ff14"] .ff14-reflection-field {
@@ -104,10 +257,11 @@ body[data-world="ff14"] .ff14-reflection-field {
   border-bottom-color: rgba(207, 174, 108, .12);
   border-radius: 50%;
   transform: rotate(17deg);
+  animation: ff14-orbit-phase var(--motion-reflection) var(--motion-ease) -1s infinite;
 }
 
-.ff14-orbit-b { left: 14%; top: -12%; width: 68%; height: 90%; transform: rotate(25deg); opacity: .72; }
-.ff14-orbit-c { left: 23%; top: -3%; width: 57%; height: 78%; transform: rotate(34deg); opacity: .5; }
+.ff14-orbit-b { left: 14%; top: -12%; width: 68%; height: 90%; transform: rotate(25deg); opacity: .72; animation-delay: -4s; }
+.ff14-orbit-c { left: 23%; top: -3%; width: 57%; height: 78%; transform: rotate(34deg); opacity: .5; animation-delay: -7s; }
 
 .ff14-reflection {
   position: absolute;
@@ -126,7 +280,7 @@ body[data-world="ff14"] .ff14-reflection-field {
     radial-gradient(circle at 34% 29%, rgba(243, 249, 255, .9) 0 2%, transparent 4%),
     radial-gradient(circle at 35% 32%, rgba(147, 192, 230, .82), rgba(74, 93, 150, .7) 36%, rgba(18, 26, 54, .88) 68%, rgba(3, 7, 18, .96));
   box-shadow: inset -9px -7px 15px rgba(0, 0, 0, .72), 0 0 18px rgba(131, 194, 236, .25);
-  animation: ff14-reflection-breathe 8s ease-in-out var(--rd) infinite;
+  animation: ff14-reflection-breathe var(--motion-reflection) var(--motion-ease) var(--rd) infinite;
 }
 
 .ff14-reflection.is-surviving::after {
@@ -144,7 +298,7 @@ body[data-world="ff14"] .ff14-reflection-field {
   background: rgba(250, 219, 145, .66);
   box-shadow: 0 0 8px rgba(229, 188, 103, .85), 0 0 24px rgba(229, 188, 103, .34);
   transform: translate(-50%, -50%) rotate(45deg);
-  animation: ff14-return-pulse 5.8s ease-in-out var(--rd) infinite;
+  animation: ff14-return-pulse var(--motion-return) var(--motion-ease) var(--rd) infinite;
 }
 
 .ff14-reflection.is-rejoined::after {
@@ -154,9 +308,11 @@ body[data-world="ff14"] .ff14-reflection-field {
   top: 2px;
   width: clamp(36px, 5vw, 84px);
   height: 1px;
-  background: linear-gradient(90deg, rgba(222, 184, 104, .48), transparent);
-  transform: rotate(-45deg);
+  background: linear-gradient(90deg, rgba(var(--motion-ff14-return-rgb), .08), rgba(var(--motion-ff14-return-rgb), .76), rgba(var(--motion-ff14-return-rgb), .12), transparent);
+  background-size: 240% 100%;
+  transform: rotate(calc(var(--flow-angle) - 45deg));
   transform-origin: left center;
+  animation: ff14-return-flow var(--motion-return-flow) var(--motion-linear) var(--rd) infinite;
 }
 
 body[data-world="arknights"] .star-map-scene[data-world-scene="arknights"] {
@@ -185,8 +341,24 @@ body[data-world="ff14"] .star-map-scene[data-world-scene="ff14"] {
 
 .star-map-scanline {
   z-index: 4;
-  opacity: .045;
-  background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(255, 255, 255, .025) 4px);
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(var(--motion-neutral-rgb), .0012) 4px);
+}
+
+.star-map-scanline::before,
+.star-map-scanline::after {
+  content: '';
+  position: absolute;
+  inset: -24% 0 auto;
+  height: 24%;
+  opacity: 0;
+  background: linear-gradient(180deg, transparent, rgba(var(--atlas-accent-rgb), .025) 72%, rgba(var(--atlas-accent-rgb), .14) 100%);
+  box-shadow: 0 1px 0 rgba(var(--atlas-accent-rgb), .18);
+  will-change: transform, opacity;
+}
+
+body.is-ready .star-map-scanline::before,
+body.is-travelling .star-map-scanline::after {
+  animation: star-map-acquire var(--motion-acquire) var(--motion-out) 1 both;
 }
 
 .star-map-vignette {
@@ -271,6 +443,7 @@ body[data-world="ff14"] .star-map-vignette {
   display: inline-block;
   background: currentColor;
   box-shadow: 0 0 16px rgba(var(--atlas-accent-rgb), .68);
+  animation: star-map-status-pulse var(--motion-signal) var(--motion-ease) infinite;
 }
 
 .star-map-version-switch {
@@ -380,7 +553,7 @@ body[data-world="ff14"] .star-map-vignette {
   border: 1px solid rgba(var(--signal-rgb), .62);
   border-radius: 50%;
   box-shadow: 0 0 22px rgba(var(--signal-rgb), .18);
-  animation: star-map-pulse 3.2s ease-in-out infinite;
+  animation: star-map-pulse var(--motion-signal) var(--motion-ease) infinite;
 }
 
 .star-map-signal-reticle::before,
@@ -390,6 +563,10 @@ body[data-world="ff14"] .star-map-vignette {
   inset: 6px;
   border: 1px solid var(--signal);
   transform: rotate(45deg);
+}
+
+.star-map-signal-reticle::before {
+  animation: star-map-reticle-turn var(--motion-reticle) var(--motion-linear) infinite;
 }
 
 .star-map-signal-reticle::after {
@@ -540,9 +717,65 @@ body[data-world="ff14"] [data-world-signal="wh40k"] { --x: 57%; --y: 18%; }
 body.is-travelling .star-map-field-grid { opacity: .3; }
 body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px); }
 
+@keyframes star-map-acquire {
+  0% { opacity: 0; transform: translateY(0); }
+  14% { opacity: .78; }
+  100% { opacity: 0; transform: translateY(620%); }
+}
+
 @keyframes star-map-pulse {
   0%, 100% { box-shadow: 0 0 10px rgba(var(--signal-rgb), .1); }
   50% { box-shadow: 0 0 28px rgba(var(--signal-rgb), .32); }
+}
+
+@keyframes star-map-status-pulse {
+  0%, 100% { opacity: .42; }
+  48% { opacity: 1; }
+  58% { opacity: .62; }
+}
+
+@keyframes star-map-reticle-turn {
+  from { transform: rotate(45deg); }
+  to { transform: rotate(405deg); }
+}
+
+@keyframes terra-limb-breathe {
+  0%, 100% { opacity: .1; transform: scale(.92); }
+  50% { opacity: .25; transform: scale(1.08); }
+}
+
+@keyframes terra-grid-activate {
+  0%, 18%, 100% { opacity: 0; }
+  34% { opacity: .08; }
+  48% { opacity: .24; }
+  68% { opacity: .06; }
+}
+
+@keyframes terra-observation-wave {
+  0%, 62% { opacity: 0; transform: scale(.82); }
+  68% { opacity: .78; }
+  100% { opacity: 0; transform: scale(2.8); }
+}
+
+@keyframes wh40k-core-breathe {
+  0%, 100% { opacity: .07; transform: scale(.94); }
+  50% { opacity: .16; transform: scale(1.07); }
+}
+
+@keyframes wh40k-rift-breathe {
+  0%, 100% { opacity: .42; }
+  50% { opacity: .8; }
+}
+
+@keyframes wh40k-rift-flow {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes wh40k-rift-node {
+  0%, 68%, 100% { opacity: .14; transform: scale(.72); }
+  76% { opacity: .92; transform: scale(1.7); }
+  86% { opacity: .32; transform: scale(1); }
 }
 
 @keyframes ff14-reflection-breathe {
@@ -553,6 +786,22 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
 @keyframes ff14-return-pulse {
   0%, 100% { opacity: .34; }
   50% { opacity: .9; }
+}
+
+@keyframes ff14-return-flow {
+  from { background-position: 100% 0; opacity: .3; }
+  44% { opacity: .8; }
+  to { background-position: -140% 0; opacity: .22; }
+}
+
+@keyframes ff14-source-breathe {
+  0%, 100% { opacity: .42; transform: translate(-50%, -50%) scale(.94); }
+  50% { opacity: .88; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+@keyframes ff14-orbit-phase {
+  0%, 100% { opacity: .28; }
+  50% { opacity: .8; }
 }
 
 @media (max-width: 1080px) {
@@ -566,6 +815,7 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
   body[data-page="star-map"] { min-height: 100dvh; }
   #star-map-stage { inset: var(--nav-h) 0 0; }
   .star-map-scene { inset: -1%; width: 102%; height: 102%; object-position: 38% 50%; transform: scale(1.02); }
+  .star-map-world-motion { display: none; }
   .ff14-reflection-field { transform: none; }
   .ff14-reflection.is-surviving { transform: translate(-50%, -50%) scale(.7); }
   .star-map-scenes::after { background: linear-gradient(180deg, rgba(1, 4, 8, .12), transparent 28%, rgba(1, 4, 8, .28) 54%, rgba(1, 4, 8, .9) 100%); }
@@ -612,6 +862,7 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
 
 @media (prefers-reduced-motion: reduce) {
   .star-map-scene,
+  .star-map-world-motion [data-motion-world],
   .star-map-signal,
   #star-map-readout,
   #star-map-loading,
@@ -619,7 +870,18 @@ body.is-travelling #star-map-readout { opacity: .22; transform: translateX(14px)
     transition-duration: .001ms !important;
   }
 
-  .star-map-signal-reticle { animation: none; }
-  .ff14-reflection { animation: none !important; }
+  .star-map-world-motion,
+  .star-map-world-motion *,
+  .star-map-telemetry i,
+  .star-map-signal-reticle,
+  .star-map-signal-reticle::before,
+  .ff14-orbit,
+  .ff14-reflection,
+  .ff14-reflection-field::before,
+  .ff14-reflection.is-rejoined::after {
+    animation: none !important;
+  }
+
+  .star-map-world-motion { display: none; }
   .star-map-scanline { display: none; }
 }
