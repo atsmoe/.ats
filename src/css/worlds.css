@@ -45,8 +45,8 @@
   --ark-cover-side-offset: 22px;
   --ark-cover-caption-right: 24px;
   --ark-cover-caption-mobile-right: 16px;
-  --ark-cover-font-xs: 9px;
-  --ark-cover-font-sm: 10px;
+  --ark-cover-font-xs: var(--site-min-font-size);
+  --ark-cover-font-sm: var(--site-min-font-size);
   --ark-cover-font-body: 13px;
   --ark-cover-font-body-compact: 12px;
   --ark-cover-letter-spacing: 2px;

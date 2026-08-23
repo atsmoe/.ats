@@ -39,7 +39,7 @@ body[data-page="star-map"] footer {
 
 .star-map-version-switch span {
   color: var(--gold-dim);
-  font: 9px/1.2 monospace;
+  font: var(--site-min-font-size)/1.2 monospace;
   letter-spacing: .16em;
 }
 
@@ -63,6 +63,10 @@ body[data-page="star-map"] footer {
   outline-offset: 3px;
 }
 
+.star-map-version-switch--b5 {
+  top: calc(var(--nav-h) + 72px);
+}
+
 @media (max-width: 600px) {
   .star-map-version-switch {
     top: calc(var(--nav-h) + 10px);
@@ -71,8 +75,12 @@ body[data-page="star-map"] footer {
     padding: 0 12px;
   }
 
+  .star-map-version-switch--b5 {
+    top: calc(var(--nav-h) + 64px);
+  }
+
   .star-map-version-switch span { display: none; }
-  .star-map-version-switch strong { font-size: 11px; }
+  .star-map-version-switch strong { font-size: var(--site-min-font-size); }
 }
 
 #star-map {
@@ -208,11 +216,11 @@ body[data-page="star-map"] footer {
   letter-spacing: 4px; color: var(--text);
 }
 .galaxy-tooltip .gt-sub {
-  font-size: 11px; letter-spacing: 2px;
+  font-size: var(--site-min-font-size); letter-spacing: 2px;
   color: var(--text-muted); margin-top: 4px;
 }
 .galaxy-tooltip .gt-hint {
-  font-size: 10px; letter-spacing: 1px;
+  font-size: var(--site-min-font-size); letter-spacing: 1px;
   color: rgba(201,160,80,0.4); margin-top: 8px;
 }
 
@@ -271,7 +279,7 @@ body[data-page="star-map"] footer {
   margin-top: 4px;
   padding: 4px 16px;
   border: 1px solid rgba(201,160,80,0.3);
-  font-size: 11px; letter-spacing: 3px;
+  font-size: var(--site-min-font-size); letter-spacing: 3px;
   color: var(--gold-dim);
 }
 

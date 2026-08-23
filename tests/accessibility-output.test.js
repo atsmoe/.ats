@@ -27,8 +27,8 @@ test('integrated-strategy card metadata remains readable', () => {
   const css = read('src/css/arknights-world.css');
   assert.match(
     css,
-    /\.is-index-runtime-meta\s*\{[^}]*font:\s*11px\/1\.25/s,
-    'card result metadata must not regress to the former 9px size',
+    /\.is-index-runtime-meta\s*\{[^}]*font:\s*var\(--site-min-font-size\)\/1\.25/s,
+    'card result metadata must honor the global 12px minimum',
   );
 });
 
@@ -61,7 +61,7 @@ test('star-map worlds are real links and the detail overlay is an inert dialog',
   assert.match(html, /<h1\b[^>]*class="sr-only"/);
   assert.match(
     html,
-    /id="galaxy-detail"[^>]*role="dialog"[^>]*aria-modal="true"[^>]*aria-hidden="true"[^>]*\binert\b/s,
+    /id="galaxy-detail"[^>]*role="dialog"[^>]*aria-modal="true"[^>]*aria-labelledby="detail-title"[^>]*aria-describedby="detail-desc"[^>]*aria-hidden="true"[^>]*\binert\b/s,
   );
   assert.match(
     css,
@@ -111,6 +111,73 @@ test('timeline records expose a native keyboard action for their detail dialog',
   assert.match(css, /\.event-card-open:focus-visible\s*\{/);
 });
 
+test('chronicle event dialogs advertise adjacent-event keyboard navigation', () => {
+  for (const page of [
+    'src/arknights-chronicle.njk',
+    'src/wh40k-chronicle.njk',
+    'src/ff14-chronicle.njk',
+  ]) {
+    const template = read(page);
+    assert.match(
+      template,
+      /role="dialog"[^>]*aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"/,
+      `${page} must expose the supported arrow keys`,
+    );
+    assert.match(template, /class="event-modal-navigation"/);
+    assert.match(template, /滚轮或方向键切换相邻事件/);
+    assert.match(template, /class="event-modal-navigation-position"/);
+  }
+});
+
+test('timeline modal wires keyboard and non-passive wheel navigation once', () => {
+  const timelineUi = read('src/js/modules/timeline-ui.js');
+  const css = read('src/css/timeline.css');
+
+  assert.match(timelineUi, /createEventModalNavigator/);
+  assert.match(timelineUi, /modalNavigator\?\.handleKey\(e\)/);
+  assert.match(
+    timelineUi,
+    /modal\.addEventListener\('wheel', onModalWheel, \{ passive: false \}\)/,
+  );
+  assert.match(
+    timelineUi,
+    /modal\.removeEventListener\('wheel', onModalWheel\)/,
+  );
+  assert.match(timelineUi, /getScrollState:\s*\(\) => modalCard/);
+  assert.match(timelineUi, /function onPageHide\(event\)\s*\{\s*if \(!event\.persisted\) destroyEventModal\(\);/);
+  assert.match(timelineUi, /window\.addEventListener\('pagehide', onPageHide\)/);
+  assert.match(timelineUi, /window\.removeEventListener\('pagehide', onPageHide\)/);
+  assert.match(timelineUi, /event-modal-navigation-position/);
+  assert.match(
+    css,
+    /\.event-modal-navigation\s*\{[^}]*grid-column:\s*1\s*\/\s*-1;[^}]*grid-row:\s*4;[^}]*flex-wrap:\s*wrap;[^}]*gap:\s*var\(--space-sm\);[^}]*padding-top:\s*var\(--space-sm\);/s,
+  );
+});
+
+test('timeline modal gives adjacent records a directional reduced-motion-aware transition', () => {
+  const timelineUi = read('src/js/modules/timeline-ui.js');
+  const css = read('src/css/timeline.css');
+
+  assert.match(timelineUi, /createEventModalTransition/);
+  assert.match(
+    timelineUi,
+    /createEventModalTransition\(modal\?\.querySelector\('\.event-modal-card'\)/,
+  );
+  assert.match(timelineUi, /duration:\s*ANIM\.duration\.fast/);
+  assert.match(timelineUi, /easing:\s*ANIM\.easing\.out/);
+  assert.match(timelineUi, /function openEventModal\(evt, direction = 0\)/);
+  assert.match(timelineUi, /modalTransition\?\.play\(direction\)/);
+  assert.match(timelineUi, /modalTransition\?\.cancel\(\)/);
+  assert.match(css, /@keyframes event-modal-content-enter-a/);
+  assert.match(css, /@keyframes event-modal-content-enter-b/);
+  assert.match(css, /\.event-modal-card\.is-modal-switching-a/);
+  assert.match(css, /\.event-modal-card\.is-modal-switching-b/);
+  assert.match(
+    css,
+    /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.event-modal-card:is\([^)]*is-modal-switching-a[^)]*is-modal-switching-b[^)]*\)/,
+  );
+});
+
 test('a single chronicle branch does not render a redundant navigation rail', () => {
   const timelineUi = read('src/js/modules/timeline-ui.js');
   const css = read('src/css/timeline.css');
@@ -127,6 +194,6 @@ test('Arknights ending cards expose a native keyboard selection action', () => {
   assert.match(topic, /element\(\s*'button',\s*'is-ending-select'/);
   assert.match(topic, /selectButton\.type = 'button'/);
   assert.match(topic, /selectButton\.setAttribute\('aria-pressed'/);
-  assert.match(topic, /event\.target\.closest\('a, button'\)/);
+  assert.match(topic, /event\.target\.closest\('a, button, \.is-route-guide'\)/);
   assert.match(css, /\.is-ending-select:focus-visible/);
 });

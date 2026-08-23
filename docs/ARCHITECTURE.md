@@ -19,6 +19,7 @@
 |------|------|------|---------|
 | 星图首页 | `index.njk` | Three.js 3D 银河 | `star-map-3d.js` |
 | B4 星图预览 | `star-map-b4-prototype.njk` | Three.js 三世界天体观察台 | `star-map-b4-prototype.js` |
+| B5 星图预览 | `star-map-b5-prototype.njk` | 三张固定 2D 观测场景 | `star-map-b5-prototype.js` |
 | 明日方舟 | `arknights.njk` | Canvas 2D 琥珀粒子 | `bundle.js` |
 | 战锤40K | `wh40k.njk` | Canvas 2D 深红粒子 | `bundle.js` |
 | 最终幻想XIV | `ff14.njk` | Canvas 2D 银蓝粒子 | `bundle.js` |
@@ -196,6 +197,14 @@ HTML `.galaxy-marker` 叠在 Three.js Canvas 上方，JS 每帧投影 3D→2D �
 
 T+0ms 场景渐显 → T+400ms 第一个 marker → T+800ms 第二个 → T+1200ms 第三个
 
+### 公开预览边界
+
+B4 与 B5 使用独立模板、样式和 bundle。正式首页继续加载 `star-map-3d.js`；B5 使用固定二维底图、显式世界切换与键盘控制，不 import Three.js。生产清理只对白名单中的 B4、B5 页面及脚本放行。
+
+### 编年事件档案连续导航
+
+三套编年页面共用 `event-modal-navigation.js` 计算当前可见事件序列，并由 `event-modal-transition.js` 处理有方向的短过渡。弹窗关闭与模块销毁必须取消过渡和输入状态；系统减少动态效果时直接更新内容。
+
 ---
 
 ## 六、设计系统
@@ -236,7 +245,8 @@ npm run build:
   3. eleventy                                ← 生成 HTML
   4. node build.js                           ← esbuild(bundle + star-map-3d) + 复制
   5. node scripts/build-b4-prototype.js       ← 构建公开 B4 预览
-  6. npm test                                ← 校验页面、数据、媒体引用和体积预算
+  6. node scripts/build-b5-prototype.js       ← 构建公开 B5 预览
+  7. npm test                                ← 校验页面、数据、媒体引用和体积预算
 
 npm run dev:
   1. node src/validators/validate-data.js
@@ -267,6 +277,7 @@ dist/
     ├── bundle.js               (~38KB，世界页/普通页，不含 Three.js)
     ├── star-map-3d.js          (~517KB，首页专用，包含 Three.js)
     ├── star-map-b4-prototype.js  (B4 公开预览独立 bundle)
+    ├── star-map-b5-prototype.js  (B5 公开预览独立 bundle，不含 Three.js)
     └── virtual-timeline.js
 ```
 
@@ -333,3 +344,4 @@ dist/
 | 2026-07-12 | V2.5.6 | OpenAI Codex | 新增本节及强制追加式修改记录规则。 | 确保 Codex 对架构文档的修改全部可追溯。 |
 | 2026-08-02 | V2.6.0 | OpenAI Codex | 发布前核对三世界规范档案、多观测镜和本地星图原型的生产隔离边界。 | 使架构记录与 V2.6.0 的实际构建和发布范围一致。 |
 | 2026-08-09 | V2.6.2 | OpenAI Codex | 将 B4 星图加入公开构建白名单，正式首页提供双向版本切换；其他旧原型继续隔离。 | 修正将线上切换误做成仅本地入口的发布边界错误。 |
+| 2026-08-24 | V2.7.0 | OpenAI Codex | 新增独立 B5 二维观测预览，并记录三世界事件档案的连续导航与过渡边界。 | 保留正式粒子星图，允许线上并行评审 B4、B5，同时约束弹窗状态清理和减少动态效果。 |

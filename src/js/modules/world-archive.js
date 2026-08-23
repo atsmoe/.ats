@@ -76,7 +76,15 @@ function compileContexts(branches, parentId, model) {
       status: branch.status,
       type: branch.type,
       sharedPremise: branch.sharedPremise || '',
+      continuityNote: branch.continuityNote || '',
+      storyBeats: (branch.storyBeats || []).map(beat => ({ ...beat })),
       topologyMode: branch.topologyMode || 'parallel',
+      endingPriority: branch.endingPriority
+        ? {
+          note: branch.endingPriority.note || '',
+          items: (branch.endingPriority.items || []).map(item => ({ ...item })),
+        }
+        : null,
       entityIds: [...(branch.entityIds || [])],
       sources: [...(branch.sources || [])],
       lastReviewedAt: branch.lastReviewedAt || null,

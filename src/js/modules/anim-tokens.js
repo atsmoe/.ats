@@ -17,7 +17,20 @@ export const ANIM = {
     out: 'cubic-bezier(0.16, 1, 0.3, 1)',
     in: 'cubic-bezier(0.7, 0, 0.6, 1)',
     inOut: 'ease-in-out',
+    linear: 'linear',
     bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+  },
+
+  observation: {
+    acquire: 820,
+    territoryReveal: 620,
+    signal: 3200,
+    reflection: 9000,
+    returnFlow: 6200,
+    glow: 11000,
+    reticle: 14000,
+    rift: 15000,
+    survey: 21000,
   },
 
   portal: {

@@ -175,7 +175,10 @@ function archiveValidationErrors(worldId, data) {
         'order',
         'description',
         'sharedPremise',
+        'continuityNote',
+        'storyBeats',
         'topologyMode',
+        'endingPriority',
         'lastReviewedAt',
       ]) {
         if (branch[field] === undefined || branch[field] === null || branch[field] === '') {
@@ -185,23 +188,87 @@ function archiveValidationErrors(worldId, data) {
       if (PLACEHOLDER_COPY.test(`${branch.name || ''} ${branch.description || ''}`)) {
         archiveErrors.push(`${label}: contains placeholder copy`);
       }
+      if (!Array.isArray(branch.storyBeats) || branch.storyBeats.length < 3) {
+        archiveErrors.push(`${label}: needs at least three story beats`);
+      } else {
+        for (const [index, beat] of branch.storyBeats.entries()) {
+          if (
+            typeof beat?.title !== 'string'
+            || beat.title.trim().length === 0
+            || typeof beat?.description !== 'string'
+            || beat.description.trim().length < 12
+            || PLACEHOLDER_COPY.test(`${beat.title} ${beat.description}`)
+          ) {
+            archiveErrors.push(`${label}: storyBeats[${index}] needs a title and substantive description`);
+          }
+        }
+      }
       if (!hasTraceableSource(branch.sources)) {
         archiveErrors.push(`${label}: needs at least one traceable source`);
       }
       if (!Array.isArray(branch.endings) || branch.endings.length === 0) {
         archiveErrors.push(`${label}: needs at least one ending`);
       }
+      const endingPriority = branch.endingPriority;
+      if (!endingPriority || typeof endingPriority !== 'object' || Array.isArray(endingPriority)) {
+        archiveErrors.push(`${label}: needs a structured endingPriority`);
+      } else {
+        if (typeof endingPriority.note !== 'string' || endingPriority.note.trim().length < 18) {
+          archiveErrors.push(`${label}: endingPriority needs a substantive note`);
+        }
+        if (!Array.isArray(endingPriority.items)) {
+          archiveErrors.push(`${label}: endingPriority.items must be an array`);
+        } else {
+          const endingIds = new Set((branch.endings || []).map(ending => ending.id));
+          const priorityIds = new Set();
+          const priorityValues = new Set();
+          let previousPriority = Number.POSITIVE_INFINITY;
+          for (const [index, item] of endingPriority.items.entries()) {
+            const priorityLabel = `${label}/endingPriority.items[${index}]`;
+            if (!endingIds.has(item?.recordId)) {
+              archiveErrors.push(`${priorityLabel}: references an unknown ending`);
+            } else if (priorityIds.has(item.recordId)) {
+              archiveErrors.push(`${priorityLabel}: duplicates ending "${item.recordId}"`);
+            }
+            priorityIds.add(item?.recordId);
+            if (!Number.isInteger(item?.priority) || item.priority < 0) {
+              archiveErrors.push(`${priorityLabel}: priority must be a non-negative integer`);
+            } else {
+              if (priorityValues.has(item.priority)) {
+                archiveErrors.push(`${priorityLabel}: duplicates priority P${item.priority}`);
+              }
+              if (item.priority >= previousPriority) {
+                archiveErrors.push(`${priorityLabel}: items must be ordered from highest to lowest priority`);
+              }
+              priorityValues.add(item.priority);
+              previousPriority = item.priority;
+            }
+            for (const field of ['routeKey', 'condition', 'outcome']) {
+              if (typeof item?.[field] !== 'string' || item[field].trim().length < 4) {
+                archiveErrors.push(`${priorityLabel}: needs "${field}"`);
+              }
+            }
+            if (item?.triggerMode && item.triggerMode !== 'event') {
+              archiveErrors.push(`${priorityLabel}: unknown triggerMode "${item.triggerMode}"`);
+            }
+          }
+          if (priorityIds.size !== endingIds.size) {
+            archiveErrors.push(`${label}: endingPriority must cover every ending exactly once`);
+          }
+        }
+      }
       for (const ending of branch.endings || []) {
         const fallbackId = branch.id && ending.endingNumber !== undefined
           ? `${branch.id}-ending-${ending.endingNumber}`
           : '(unknown ending)';
+        const endingLabel = `${label}/${ending.id || fallbackId}`;
         if (!ending.id) {
           archiveErrors.push(
             `${label}: ending ${ending.endingNumber ?? '?'} needs an explicit stable id`,
           );
         }
         if (PLACEHOLDER_COPY.test(`${ending.title || ''} ${ending.description || ''}`)) {
-          archiveErrors.push(`${label}/${ending.id || fallbackId}: contains placeholder copy`);
+          archiveErrors.push(`${endingLabel}: contains placeholder copy`);
         }
         if (
           typeof ending.aftermath !== 'string'
@@ -209,13 +276,55 @@ function archiveValidationErrors(worldId, data) {
           || PLACEHOLDER_COPY.test(ending.aftermath)
         ) {
           archiveErrors.push(
-            `${label}/${ending.id || fallbackId}: needs a substantive aftermath`,
+            `${endingLabel}: needs a substantive aftermath`,
           );
         }
         if (!hasTraceableSource(ending.sources)) {
           archiveErrors.push(
-            `${label}/${ending.id || fallbackId}: needs at least one traceable source`,
+            `${endingLabel}: needs at least one traceable source`,
           );
+        }
+
+        const guide = ending.routeGuide;
+        if (!guide || typeof guide !== 'object' || Array.isArray(guide)) {
+          archiveErrors.push(`${endingLabel}: needs a structured routeGuide`);
+          continue;
+        }
+        for (const field of [
+          'prerequisites',
+          'steps',
+          'requiredState',
+          'forbiddenState',
+          'optionalSteps',
+          'warnings',
+        ]) {
+          if (!Array.isArray(guide[field])) {
+            archiveErrors.push(`${endingLabel}: routeGuide.${field} must be an array`);
+          }
+        }
+        if (!Array.isArray(guide.prerequisites) || guide.prerequisites.length === 0) {
+          archiveErrors.push(`${endingLabel}: routeGuide needs at least one prerequisite note`);
+        }
+        if (!Array.isArray(guide.steps) || guide.steps.length === 0) {
+          archiveErrors.push(`${endingLabel}: routeGuide needs at least one route step`);
+        }
+        for (const [stepIndex, step] of [
+          ...(guide.steps || []),
+          ...(guide.optionalSteps || []),
+        ].entries()) {
+          for (const field of ['stage', 'node', 'event', 'trigger', 'choice', 'result']) {
+            if (typeof step?.[field] !== 'string' || step[field].trim().length === 0) {
+              archiveErrors.push(`${endingLabel}: route step ${stepIndex + 1} needs "${field}"`);
+            }
+          }
+        }
+        for (const field of ['stage', 'operation', 'entry']) {
+          if (
+            typeof guide.finalBattle?.[field] !== 'string'
+            || guide.finalBattle[field].trim().length === 0
+          ) {
+            archiveErrors.push(`${endingLabel}: routeGuide.finalBattle needs "${field}"`);
+          }
         }
       }
     }
@@ -275,7 +384,10 @@ function flattenBranch(branch) {
     'parentBranchId',
     'divergeAtEventId',
     'sharedPremise',
+    'continuityNote',
+    'storyBeats',
     'topologyMode',
+    'endingPriority',
     'entityIds',
     'sources',
     'lastReviewedAt',

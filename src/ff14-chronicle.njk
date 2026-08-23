@@ -89,7 +89,7 @@ cssFiles:
 
         <g class="ff-telemetry-register">
           <text x="540" y="489">THE SOURCE / XIV</text>
-          <text x="747" y="470">REFLECTION ARRAY / I—XIII</text>
+          <text x="875" y="470" text-anchor="end">REFLECTION ARRAY / I—XIII</text>
           <text x="830" y="70">AETHERIS</text>
         </g>
       </svg>
@@ -135,7 +135,7 @@ cssFiles:
 </noscript>
 
 <div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-ff14" aria-describedby="event-modal-desc-ff14">
+  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-ff14" aria-describedby="event-modal-desc-ff14" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">
     <button class="event-modal-close" title="关闭">✕</button>
     <div class="event-modal-date"></div>
     <div class="event-modal-title" id="event-modal-title-ff14"></div>
@@ -143,6 +143,12 @@ cssFiles:
     <div class="event-modal-desc" id="event-modal-desc-ff14"></div>
     <div class="event-modal-img"></div>
     <div class="event-modal-sources"></div>
+    <div class="event-modal-navigation" aria-live="polite" aria-atomic="true">
+      <span class="event-modal-navigation-previous" aria-hidden="true">← ↑</span>
+      <span>滚轮或方向键切换相邻事件</span>
+      <strong class="event-modal-navigation-position"></strong>
+      <span class="event-modal-navigation-next" aria-hidden="true">↓ →</span>
+    </div>
   </div>
 </div>
 

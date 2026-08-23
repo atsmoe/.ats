@@ -41,7 +41,7 @@
   color: var(--gold-dim);
   background: rgba(8, 8, 12, .64);
   border: 1px solid rgba(201,160,80,.32);
-  font: 11px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 2px;
   text-decoration: none;
   text-transform: uppercase;
@@ -71,7 +71,7 @@
   margin-top: 12px;
   padding: 4px 16px;
   border: 1px solid rgba(201,160,80,0.3);
-  font-size: 11px; letter-spacing: 3px;
+  font-size: var(--site-min-font-size); letter-spacing: 3px;
   color: var(--gold-dim);
   align-self: flex-start;
 }
@@ -107,14 +107,14 @@
 }
 .tl-branch-tab.active::before {
   content: '●';
-  font-size: 6px;
+  font-size: var(--site-min-font-size);
   margin-right: 8px;
   color: var(--ark-amber);
   vertical-align: middle;
 }
 .tl-branch-tab:not(.active)::before {
   content: '○';
-  font-size: 6px;
+  font-size: var(--site-min-font-size);
   margin-right: 8px;
   color: var(--text-muted);
   vertical-align: middle;
@@ -448,7 +448,7 @@
   margin-top: 14px;
 }
 .event-card .event-ref:hover { color: var(--gold-bright); }
-.event-card .event-ref::after { content: '↗'; font-size: 10px; }
+.event-card .event-ref::after { content: '↗'; font-size: var(--site-min-font-size); }
 
 /* Diverge marker inline */
 .diverge-inline {
@@ -473,7 +473,7 @@
   animation: diverge-pulse 2s ease-in-out infinite;
 }
 .diverge-inline span {
-  font-size: 11px; color: var(--text-muted);
+  font-size: var(--site-min-font-size); color: var(--text-muted);
 }
 
 /* ============================================================
@@ -505,13 +505,13 @@
 }
 
 .event-meta {
-  font-size: 11px; color: rgba(201,160,80,0.35);
+  font-size: var(--site-min-font-size); color: rgba(201,160,80,0.35);
   margin-bottom: 10px; letter-spacing: 1px;
 }
 
 .event-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 .event-tag {
-  font-size: 10px; letter-spacing: 1px;
+  font-size: var(--site-min-font-size); letter-spacing: 1px;
   padding: 3px 10px;
   border: 1px solid rgba(201,160,80,0.15);
   border-radius: 3px;
@@ -521,7 +521,7 @@
 .event-diverge-badge {
   margin-top: 14px; padding-top: 12px;
   border-top: 1px solid rgba(212,146,58,0.2);
-  font-size: 11px; color: var(--ark-amber);
+  font-size: var(--site-min-font-size); color: var(--ark-amber);
   display: flex; align-items: center; gap: 8px;
   letter-spacing: 1px;
 }
@@ -530,11 +530,11 @@
   margin-top: 10px; padding: 10px 12px;
   background: rgba(8,8,16,0.4);
   border-left: 2px solid rgba(201,160,80,0.3);
-  font-size: 11px; color: rgba(201,160,80,0.5);
+  font-size: var(--site-min-font-size); color: rgba(201,160,80,0.5);
   line-height: 1.6; letter-spacing: 1px;
 }
 .event-conditions .cond-icon {
-  color: var(--ark-amber); font-size: 8px; margin-right: 4px;
+  color: var(--ark-amber); font-size: var(--site-min-font-size); margin-right: 4px;
 }
 
 /* Ending event cards */
@@ -569,7 +569,7 @@
 .tl-sub-tab.active { color: var(--ark-amber); border-bottom-color: var(--ark-amber); }
 .tl-sub-tab:hover { color: var(--gold); }
 .tl-sub-tab.pending { color: rgba(201,160,80,0.3); font-style: italic; }
-.tl-sub-tab.pending::after { content: ' [待完工]'; font-size: 9px; color: rgba(201,160,80,0.3); }
+.tl-sub-tab.pending::after { content: ' [待完工]'; font-size: var(--site-min-font-size); color: rgba(201,160,80,0.3); }
 .diamond-small {
   display: inline-block;
   width: 8px; height: 8px;
@@ -623,7 +623,7 @@
 /* Year label — hidden by default, shown on hover */
 .era-nav-dot .label {
   position: absolute; left: 28px; top: 50%; transform: translateY(-50%);
-  font-size: 9px; letter-spacing: 1.5px;
+  font-size: var(--site-min-font-size); letter-spacing: 1.5px;
   color: rgba(201,160,80,0);
   white-space: nowrap;
   transition: color 0.3s ease;
@@ -760,7 +760,7 @@
   border-left: 3px solid var(--ark-amber);
   background: rgba(212, 146, 58, .08);
   color: rgba(232, 220, 200, .72);
-  font: 10px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 2px;
 }
 
@@ -806,7 +806,7 @@
 
 .world-arknights.ark-chronicle-page .tl-cover-status {
   color: rgba(232, 220, 200, .38);
-  font: 9px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 1.6px;
 }
 
@@ -850,7 +850,7 @@
   display: flex;
   justify-content: space-between;
   color: rgba(232, 220, 200, .34);
-  font: 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 1.8px;
 }
 
@@ -902,7 +902,7 @@
 }
 .ark-chronicle-page .tl-telemetry-labels {
   fill: rgba(232, 220, 200, .44);
-  font: 10px ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size) ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 2px;
 }
 
@@ -1022,7 +1022,7 @@ body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-moda
   top: 24px;
   left: clamp(36px, 7vw, 116px);
   color: rgba(var(--chronicle-paper-rgb), .3);
-  font: 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 2px;
 }
 
@@ -1091,7 +1091,7 @@ body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-moda
   border-top: 1px solid rgba(var(--chronicle-accent-rgb), .18);
   border-bottom: 1px solid rgba(var(--chronicle-accent-rgb), .1);
   color: rgba(var(--chronicle-paper-rgb), .5);
-  font: 11px/1.8 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1.8 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 1px;
 }
 
@@ -1100,7 +1100,7 @@ body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-moda
   display: block;
   margin-bottom: 12px;
   color: rgba(var(--chronicle-accent-rgb), .64);
-  font-size: 9px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 2px;
 }
 
@@ -1146,7 +1146,7 @@ body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-moda
   display: block;
   margin-bottom: 12px;
   color: rgba(var(--chronicle-accent-rgb), .64);
-  font: 9px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font: var(--site-min-font-size)/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 2px;
 }
 
@@ -1165,6 +1165,114 @@ body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-moda
 
 :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-source-link:hover {
   color: rgb(var(--chronicle-paper-rgb));
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(var(--chronicle-accent-rgb), .12);
+  color: rgba(var(--chronicle-paper-rgb), .54);
+  font: var(--site-min-font-size)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 1px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation[hidden] {
+  display: none;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation-position {
+  color: var(--chronicle-accent);
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation-previous,
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation-next {
+  color: rgba(var(--chronicle-accent-rgb), .82);
+  transition: opacity var(--transition-fast);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation.is-at-start .event-modal-navigation-previous,
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-navigation.is-at-end .event-modal-navigation-next {
+  opacity: .2;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card:is(.is-modal-switching-a, .is-modal-switching-b) :is(
+  .event-modal-date,
+  .event-modal-title,
+  .event-modal-meta,
+  .event-modal-desc,
+  .event-modal-img,
+  .event-modal-sources
+) {
+  animation-duration: var(--event-modal-switch-duration);
+  animation-timing-function: var(--event-modal-switch-easing);
+  animation-fill-mode: backwards;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card.is-modal-switching-a :is(
+  .event-modal-date,
+  .event-modal-title,
+  .event-modal-meta,
+  .event-modal-desc,
+  .event-modal-img,
+  .event-modal-sources
+) {
+  animation-name: event-modal-content-enter-a;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card.is-modal-switching-b :is(
+  .event-modal-date,
+  .event-modal-title,
+  .event-modal-meta,
+  .event-modal-desc,
+  .event-modal-img,
+  .event-modal-sources
+) {
+  animation-name: event-modal-content-enter-b;
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card:is(.is-modal-switching-a, .is-modal-switching-b) :is(
+  .event-modal-meta,
+  .event-modal-desc
+) {
+  animation-delay: calc(var(--event-modal-switch-duration) * .16);
+}
+
+:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card:is(.is-modal-switching-a, .is-modal-switching-b) :is(
+  .event-modal-img,
+  .event-modal-sources
+) {
+  animation-delay: calc(var(--event-modal-switch-duration) * .32);
+}
+
+@keyframes event-modal-content-enter-a {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--event-modal-switch-direction) * var(--space-sm)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes event-modal-content-enter-b {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--event-modal-switch-direction) * var(--space-sm)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 900px) {
@@ -1248,4 +1356,14 @@ body:is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-moda
 
 @media (prefers-reduced-motion: reduce) {
   .ark-chronicle-page .tl-telemetry-route--active { animation: none; }
+  :is(.ark-chronicle-page, .wh-chronicle-page, .ff-chronicle-page) .event-modal-card:is(.is-modal-switching-a, .is-modal-switching-b) :is(
+    .event-modal-date,
+    .event-modal-title,
+    .event-modal-meta,
+    .event-modal-desc,
+    .event-modal-img,
+    .event-modal-sources
+  ) {
+    animation: none;
+  }
 }

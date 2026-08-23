@@ -70,7 +70,7 @@
 .world-ff14 .ff-entry > i,
 .world-ff14 .ff-atlas-legend,
 .world-ff14 .ff-journey-meta {
-  font: 500 10px/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font: 500 var(--site-min-font-size)/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace;
   letter-spacing: .19em;
   text-transform: uppercase;
 }
@@ -272,7 +272,7 @@
 .world-ff14 .ff-aether-label {
   position: absolute;
   color: rgba(var(--ff-rgb-crystal), .38);
-  font: 8px/1.4 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace;
   letter-spacing: .2em;
 }
 
@@ -329,7 +329,7 @@
   padding: 13px 20px;
   border: 1px solid var(--ff-rule-strong);
   color: var(--ff-text);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   letter-spacing: .08em;
   text-decoration: none;
   transition: background var(--ff-motion-fast) ease, border-color var(--ff-motion-fast) ease;
@@ -367,7 +367,7 @@
 .world-ff14 .ff-current-call span,
 .world-ff14 .ff-current-call i {
   color: var(--ff-crystal);
-  font: 9px/1.4 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace;
   letter-spacing: .16em;
 }
 
@@ -470,7 +470,7 @@
 .world-ff14 .ff-saga-boundary > header span,
 .world-ff14 .ff-archive-boundary span {
   color: var(--ff-crystal);
-  font: 9px/1.4 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace;
   letter-spacing: .2em;
 }
 
@@ -498,7 +498,7 @@
 .world-ff14 .ff-saga-grid article:first-child { text-align: right; }
 .world-ff14 .ff-saga-grid article > span {
   color: var(--ff-dim);
-  font: 10px/1.4 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace;
   letter-spacing: .16em;
 }
 
@@ -519,7 +519,7 @@
   display: inline-block;
   margin-top: 24px;
   color: var(--ff-crystal);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   text-decoration: none;
 }
 
@@ -573,7 +573,7 @@
 
 .world-ff14 .ff-archive-boundary dt {
   color: var(--ff-dim);
-  font-size: 10px;
+  font-size: var(--site-min-font-size);
   letter-spacing: .12em;
 }
 
@@ -593,7 +593,7 @@
 .world-ff14 .ff-boundary-sources a,
 .world-ff14 .ff-model-rule > a {
   color: var(--ff-crystal);
-  font: 9px/1.6 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.6 ui-monospace, Consolas, monospace;
   letter-spacing: .08em;
   text-decoration: none;
 }
@@ -676,7 +676,7 @@
   max-width: 650px;
   margin-top: 13px;
   color: var(--ff-dim);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   line-height: 1.7;
 }
 
@@ -831,7 +831,7 @@
 
 .world-ff14 .ff-telemetry-register text {
   fill: rgba(var(--ff-rgb-crystal), .42);
-  font: 8px ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font: var(--site-min-font-size) ui-monospace, "SFMono-Regular", Consolas, monospace;
   letter-spacing: .22em;
 }
 
@@ -848,7 +848,7 @@
   display: block;
   margin-top: 12px;
   color: rgba(var(--ff-rgb-crystal), .38);
-  font: 8px/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
   letter-spacing: .32em;
   text-align: right;
 }
@@ -856,11 +856,11 @@
 .world-ff14 .ff-telemetry-lock {
   position: absolute;
   right: 3.5%;
-  bottom: 38px;
+  bottom: 104px;
   padding-right: 16px;
   border-right: 1px solid rgba(var(--ff-rgb-gold), .42);
   color: rgba(var(--ff-rgb-gold), .48);
-  font: 8px/1.65 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font: var(--site-min-font-size)/1.65 ui-monospace, "SFMono-Regular", Consolas, monospace;
   letter-spacing: .2em;
   text-align: right;
 }
@@ -950,7 +950,7 @@
   display: block;
   margin-bottom: 11px;
   color: var(--ff-dim);
-  font: 9px/1.5 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.5 ui-monospace, Consolas, monospace;
   letter-spacing: .13em;
 }
 
@@ -961,10 +961,10 @@
 }
 
 .world-ff14 .ff-noscript-record:first-of-type { border-top: 0; padding-top: 0; }
-.world-ff14 .ff-noscript-record time { color: var(--ff-dim); font-size: 10px; letter-spacing: .12em; }
+.world-ff14 .ff-noscript-record time { color: var(--ff-dim); font-size: var(--site-min-font-size); letter-spacing: .12em; }
 .world-ff14 .ff-noscript-record h4 { margin-top: 9px; color: var(--ff-text); font: 400 21px/1.3 var(--font-serif); }
 .world-ff14 .ff-noscript-record p { margin-top: 11px; color: var(--ff-muted); font-size: 13px; line-height: 1.85; white-space: pre-line; }
-.world-ff14 .ff-noscript-record a { display: inline-block; margin: 13px 14px 0 0; color: var(--ff-crystal); font-size: 10px; text-decoration: none; }
+.world-ff14 .ff-noscript-record a { display: inline-block; margin: 13px 14px 0 0; color: var(--ff-crystal); font-size: var(--site-min-font-size); text-decoration: none; }
 
 /* Shared atlas / journey shells */
 
@@ -1111,10 +1111,10 @@
 }
 
 .world-ff14 .ff-reflection-node span {
-  font: 10px/1 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, Consolas, monospace;
   letter-spacing: .12em;
 }
-.world-ff14 .ff-reflection-node strong { margin-top: 5px; font: 400 10px/1.3 var(--font-sans); }
+.world-ff14 .ff-reflection-node strong { margin-top: 5px; font: 400 var(--site-min-font-size)/1.3 var(--font-sans); }
 .world-ff14 .ff-reflection-node i {
   position: absolute;
   z-index: -1;
@@ -1160,7 +1160,7 @@
   align-items: center;
   gap: 14px;
   color: var(--ff-dim);
-  font: 8px/1 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, Consolas, monospace;
   letter-spacing: .16em;
 }
 .world-ff14 .ff-prism-caption i { height: 1px; flex: 1; background: var(--ff-rule); }
@@ -1183,15 +1183,15 @@
 .world-ff14 .ff-reflection-panel > header > span,
 .world-ff14 .ff-reflection-panel > header > i {
   color: var(--ff-dim);
-  font: 9px/1.4 ui-monospace, Consolas, monospace;
+  font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace;
   letter-spacing: .16em;
 }
 .world-ff14 .ff-reflection-panel > header > i { position: absolute; top: 0; right: 0; color: var(--ff-crystal); font-style: normal; }
 .world-ff14 .ff-reflection-panel h2 { margin-top: 48px; color: var(--ff-crystal-bright); font: 400 43px/1 var(--font-serif); }
-.world-ff14 .ff-reflection-panel header small { display: block; margin-top: 10px; color: var(--ff-violet); font-size: 9px; letter-spacing: .2em; }
+.world-ff14 .ff-reflection-panel header small { display: block; margin-top: 10px; color: var(--ff-violet); font-size: var(--site-min-font-size); letter-spacing: .2em; }
 .world-ff14 .ff-reflection-panel > p { margin-top: 28px; color: var(--ff-muted); font-size: 13px; line-height: 1.9; }
 .world-ff14 .ff-reflection-records { margin-top: 38px; }
-.world-ff14 .ff-reflection-records > span { color: var(--ff-dim); font: 9px/1.4 ui-monospace, Consolas, monospace; letter-spacing: .15em; }
+.world-ff14 .ff-reflection-records > span { color: var(--ff-dim); font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace; letter-spacing: .15em; }
 .world-ff14 .ff-reflection-records > a {
   display: grid;
   grid-template-columns: minmax(120px, .45fr) 1fr auto;
@@ -1202,16 +1202,16 @@
   color: var(--ff-text);
   text-decoration: none;
 }
-.world-ff14 .ff-reflection-records > a time { color: var(--ff-dim); font-size: 9px; }
+.world-ff14 .ff-reflection-records > a time { color: var(--ff-dim); font-size: var(--site-min-font-size); }
 .world-ff14 .ff-reflection-records > a strong { font-size: 12px; font-weight: 400; }
 .world-ff14 .ff-reflection-records > a i { color: var(--ff-crystal); font-style: normal; }
 .world-ff14 .ff-reflection-records > a:hover strong { color: var(--ff-crystal); }
 .world-ff14 .ff-reflection-panel > footer { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 34px; }
-.world-ff14 .ff-reflection-panel > footer a { color: var(--ff-crystal); font-size: 9px; line-height: 1.6; text-decoration: none; }
+.world-ff14 .ff-reflection-panel > footer a { color: var(--ff-crystal); font-size: var(--site-min-font-size); line-height: 1.6; text-decoration: none; }
 .world-ff14 .ff-quiet-record { margin-top: 18px; padding: 40px 26px; border: 1px dashed var(--ff-rule); text-align: center; }
 .world-ff14 .ff-quiet-record i { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--ff-dim); transform: rotate(45deg); }
-.world-ff14 .ff-quiet-record strong { display: block; margin-top: 18px; color: var(--ff-dim); font: 10px/1.4 ui-monospace, Consolas, monospace; letter-spacing: .18em; }
-.world-ff14 .ff-quiet-record p { max-width: 320px; margin: 12px auto 0; color: var(--ff-dim); font-size: 11px; line-height: 1.7; }
+.world-ff14 .ff-quiet-record strong { display: block; margin-top: 18px; color: var(--ff-dim); font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace; letter-spacing: .18em; }
+.world-ff14 .ff-quiet-record p { max-width: 320px; margin: 12px auto 0; color: var(--ff-dim); font-size: var(--site-min-font-size); line-height: 1.7; }
 
 .world-ff14 .ff-model-rule {
   display: grid;
@@ -1222,7 +1222,7 @@
   border: 1px solid var(--ff-rule);
   color: var(--ff-muted);
 }
-.world-ff14 .ff-model-rule strong { color: var(--ff-crystal); font: 9px/1.5 ui-monospace, Consolas, monospace; letter-spacing: .16em; }
+.world-ff14 .ff-model-rule strong { color: var(--ff-crystal); font: var(--site-min-font-size)/1.5 ui-monospace, Consolas, monospace; letter-spacing: .16em; }
 .world-ff14 .ff-model-rule p { font-size: 12px; line-height: 1.8; }
 .world-ff14 .ff-model-rule > a { grid-column: 2; }
 
@@ -1298,7 +1298,7 @@
 }
 .world-ff14 .ff-journey-node.is-active i { background: var(--ff-crystal); box-shadow: 0 0 24px rgba(var(--ff-rgb-crystal), .8); }
 .world-ff14 .ff-journey-node.is-current i { border-color: var(--ff-gold); }
-.world-ff14 .ff-journey-node > span { font: 9px/1.3 ui-monospace, Consolas, monospace; letter-spacing: .13em; }
+.world-ff14 .ff-journey-node > span { font: var(--site-min-font-size)/1.3 ui-monospace, Consolas, monospace; letter-spacing: .13em; }
 .world-ff14 .ff-journey-node > strong { max-width: 100px; margin-top: 7px; font: 400 12px/1.3 var(--font-serif); }
 
 .world-ff14 .ff-journey-panels {
@@ -1315,9 +1315,9 @@
 .world-ff14 .ff-journey-panel[hidden] { display: none; }
 .world-ff14 .ff-journey-panel > header { display: grid; grid-template-columns: 70px 1fr; gap: 22px; grid-row: 1 / span 2; }
 .world-ff14 .ff-journey-panel > header > span { color: var(--ff-crystal); font: 400 24px/1 var(--font-serif); writing-mode: vertical-rl; }
-.world-ff14 .ff-journey-panel header small { color: var(--ff-violet); font: 9px/1.4 ui-monospace, Consolas, monospace; letter-spacing: .17em; }
+.world-ff14 .ff-journey-panel header small { color: var(--ff-violet); font: var(--site-min-font-size)/1.4 ui-monospace, Consolas, monospace; letter-spacing: .17em; }
 .world-ff14 .ff-journey-panel h2 { margin-top: 16px; color: var(--ff-crystal-bright); font: 400 clamp(36px, 5vw, 62px)/.95 var(--font-serif); }
-.world-ff14 .ff-journey-panel header p { margin-top: 22px; color: var(--ff-dim); font-size: 11px; letter-spacing: .1em; }
+.world-ff14 .ff-journey-panel header p { margin-top: 22px; color: var(--ff-dim); font-size: var(--site-min-font-size); letter-spacing: .1em; }
 .world-ff14 .ff-journey-summary { align-self: end; padding-bottom: 28px; color: var(--ff-muted); font-size: 14px; line-height: 1.9; }
 .world-ff14 .ff-journey-records { border-top: 1px solid var(--ff-rule); }
 .world-ff14 .ff-journey-records a {
@@ -1330,11 +1330,11 @@
   color: var(--ff-text);
   text-decoration: none;
 }
-.world-ff14 .ff-journey-records time { color: var(--ff-dim); font-size: 9px; }
+.world-ff14 .ff-journey-records time { color: var(--ff-dim); font-size: var(--site-min-font-size); }
 .world-ff14 .ff-journey-records strong { font-size: 12px; font-weight: 400; }
-.world-ff14 .ff-journey-records i { color: var(--ff-crystal); font-size: 9px; font-style: normal; }
+.world-ff14 .ff-journey-records i { color: var(--ff-crystal); font-size: var(--site-min-font-size); font-style: normal; }
 .world-ff14 .ff-journey-panel > footer { grid-column: 2; display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 26px; }
-.world-ff14 .ff-journey-panel > footer a { color: var(--ff-crystal); font-size: 9px; text-decoration: none; }
+.world-ff14 .ff-journey-panel > footer a { color: var(--ff-crystal); font-size: var(--site-min-font-size); text-decoration: none; }
 
 .world-ff14 .ff-current-boundary {
   display: grid;
@@ -1345,9 +1345,9 @@
   border-left: 2px solid var(--ff-gold);
   background: rgba(var(--ff-rgb-gold), .05);
 }
-.world-ff14 .ff-current-boundary > span { grid-row: 1 / span 2; color: var(--ff-gold); font: 9px/1.5 ui-monospace, Consolas, monospace; letter-spacing: .16em; }
+.world-ff14 .ff-current-boundary > span { grid-row: 1 / span 2; color: var(--ff-gold); font: var(--site-min-font-size)/1.5 ui-monospace, Consolas, monospace; letter-spacing: .16em; }
 .world-ff14 .ff-current-boundary strong { color: var(--ff-text); font: 400 18px/1.3 var(--font-serif); }
-.world-ff14 .ff-current-boundary p { color: var(--ff-muted); font-size: 11px; line-height: 1.75; }
+.world-ff14 .ff-current-boundary p { color: var(--ff-muted); font-size: var(--site-min-font-size); line-height: 1.75; }
 .world-ff14 .ff-current-boundary .ff-boundary-sources { grid-column: 2; }
 
 @keyframes ff-chronicle-aether-flow {
@@ -1389,6 +1389,10 @@
   .world-ff14 .ff-journey-nodes { padding: 24px 18px; }
 }
 
+@media (max-width: 900px) {
+  .world-ff14 .ff-telemetry-lock { display: none; }
+}
+
 @media (max-width: 860px) {
   .world-ff14 { --ff-page-x: 22px; }
   .world-ff14 .ff-hero { min-height: 980px; }
@@ -1403,7 +1407,6 @@
   .world-ff14 .ff-chronicle-cover .tl-cover-inner { padding-right: 30%; }
   .world-ff14 .ff-chronicle-telemetry { inset: 0 -15% 0 22%; opacity: .72; }
   .world-ff14 .ff-telemetry-count { display: none; }
-  .world-ff14 .ff-telemetry-lock { right: 17%; bottom: 30px; }
   .world-ff14 .ff-saga-grid { grid-template-columns: 1fr 100px 1fr; }
   .world-ff14 .ff-archive-boundary { grid-template-columns: 1fr; gap: 42px; }
   .world-ff14 .ff-reflection-layout { grid-template-columns: 1fr; }

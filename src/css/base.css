@@ -15,10 +15,12 @@
   --ark-blue: #4a5568;
   --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', 'SimSun', 'NSimSun', 'FangSong', serif;
   --font-sans: 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Microsoft JhengHei', 'Hiragino Sans GB', sans-serif;
+  --site-min-font-size: 12px;
   --nav-h: 56px;
   --panel-w: 400px;
 
   /* Design tokens */
+  --space-sm: 12px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;
@@ -27,6 +29,11 @@
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-normal: 300ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  --layer-background: 0;
+  --layer-content: 10;
+  --layer-content-raised: 20;
+  --layer-overlay: 80;
+  --layer-navigation: 100;
 }
 
 /* ============================================================
@@ -111,7 +118,7 @@ footer {
 }
 .footer-links a:hover { color: var(--gold); }
 .footer-credit {
-  font-size: 11px; line-height: 1.6;
+  font-size: var(--site-min-font-size); line-height: 1.6;
   color: rgba(201,160,80,0.25);
   letter-spacing: 1px;
   margin-top: 14px;
@@ -125,7 +132,7 @@ footer {
 .footer-credit a:hover { color: var(--gold-dim); }
 
 .footer-copy {
-  font-size: 10px; letter-spacing: 1px;
+  font-size: var(--site-min-font-size); letter-spacing: 1px;
   color: rgba(201,160,80,0.2);
   margin-top: 16px;
 }

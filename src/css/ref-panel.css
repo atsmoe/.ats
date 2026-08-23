@@ -36,7 +36,7 @@
 }
 
 .ref-world-label {
-  text-align: center; font-size: 11px; letter-spacing: 3px;
+  text-align: center; font-size: var(--site-min-font-size); letter-spacing: 3px;
   color: var(--text-muted); margin-bottom: 12px;
 }
 

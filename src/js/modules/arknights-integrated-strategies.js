@@ -104,6 +104,11 @@ function createOverview(snapshot, theme) {
   section.appendChild(createSectionHeading('01 / OVERVIEW', '主题概览'));
   const grid = element('div', 'is-overview-grid');
   grid.appendChild(element('p', 'is-overview-copy', snapshot.context.description));
+  const continuity = element('aside', 'is-continuity-note');
+  continuity.appendChild(element('span', '', 'WORLDLINE STATUS'));
+  continuity.appendChild(element('strong', '', '世界线性质'));
+  continuity.appendChild(element('p', '', snapshot.context.continuityNote));
+  grid.appendChild(continuity);
 
   section.appendChild(grid);
   return section;
@@ -117,22 +122,66 @@ function createPremise(snapshot) {
   return section;
 }
 
+function createStoryBeats(snapshot) {
+  const section = element('section', 'is-story');
+  section.appendChild(createSectionHeading(
+    '03 / STORY SEQUENCE',
+    '剧情脉络',
+    '从共同起点到结局分歧的关键阶段。',
+  ));
+  const grid = element('div', 'is-story-grid');
+  for (const [index, beat] of (snapshot.context.storyBeats || []).entries()) {
+    const article = element('article', 'is-story-beat');
+    article.appendChild(element('span', '', `STEP / ${String(index + 1).padStart(2, '0')}`));
+    article.appendChild(element('h3', '', beat.title));
+    article.appendChild(element('p', '', beat.description));
+    grid.appendChild(article);
+  }
+  section.appendChild(grid);
+  return section;
+}
+
 function createTopology(snapshot, theme, selectedId, onSelect, signal) {
   const section = element('section', `is-topology is-topology--${snapshot.context.topologyMode}`);
-  section.appendChild(createSectionHeading('03 / ENDING PATHS', theme.topologyLabel, theme.topologyNote));
+  section.appendChild(createSectionHeading('04 / ENDING PATHS', theme.topologyLabel, theme.topologyNote));
   const track = element('div', 'is-topology-track');
   track.setAttribute('role', 'tablist');
   track.setAttribute('aria-label', '结局路径图');
+  const priorityByRecord = new Map(
+    (snapshot.context.endingPriority?.items || []).map(item => [item.recordId, item]),
+  );
   const ids = recordIds(snapshot);
   ids.forEach((recordId, index) => {
     const record = snapshot.recordsById[recordId];
+    const priority = priorityByRecord.get(recordId);
     const button = element('button', 'is-topology-node');
     button.type = 'button';
     button.dataset.record = recordId;
+    button.dataset.pathRank = String(priority?.priority ?? index);
+    if (priority?.triggerMode) button.dataset.triggerMode = priority.triggerMode;
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-selected', String(recordId === selectedId));
-    button.appendChild(element('span', '', record.code || `0${index + 1}`));
+    button.setAttribute(
+      'aria-label',
+      `${record.title}，优先级 P${priority?.priority ?? index}，关键条件：${priority?.routeKey || '默认路线'}`,
+    );
+    const meta = element('span', 'is-topology-node-meta');
+    meta.append(
+      element('span', 'is-topology-code', record.code || `0${index + 1}`),
+      element(
+        'span',
+        'is-topology-rank',
+        priority?.triggerMode === 'event'
+          ? `P${priority.priority} / 事件终战`
+          : `P${priority?.priority ?? index}`,
+      ),
+    );
+    button.appendChild(meta);
+    const sigil = element('i', 'is-topology-sigil');
+    sigil.setAttribute('aria-hidden', 'true');
+    button.appendChild(sigil);
     button.appendChild(element('strong', '', record.title));
+    button.appendChild(element('small', 'is-topology-key', priority?.routeKey || '默认路线'));
     button.addEventListener(
       'click',
       () => onSelect(recordId, { scroll: true, focus: true }),
@@ -144,7 +193,144 @@ function createTopology(snapshot, theme, selectedId, onSelect, signal) {
   return section;
 }
 
-function createEndingCard(record, index, selectedId, onSelect, signal) {
+function createRouteList(title, items, className = '') {
+  if (!items?.length) return null;
+  const section = element('section', `is-route-list ${className}`.trim());
+  section.appendChild(element('h4', '', title));
+  const list = element('ul', '');
+  for (const item of items) list.appendChild(element('li', '', item));
+  section.appendChild(list);
+  return section;
+}
+
+function createEndingPriority(priorityData, currentRecordId) {
+  if (!priorityData?.items?.length) return null;
+  const section = element('section', 'is-route-priority');
+  section.appendChild(element('h4', '', '终局判定优先级'));
+  section.appendChild(element('p', 'is-route-priority-note', priorityData.note));
+  const list = element('ol', 'is-route-priority-list');
+  for (const item of priorityData.items) {
+    const row = element('li', 'is-route-priority-item');
+    row.classList.toggle('is-current', item.recordId === currentRecordId);
+    row.dataset.priority = String(item.priority);
+    const heading = element('div', 'is-route-priority-heading');
+    heading.append(
+      element(
+        'span',
+        'is-route-priority-badge',
+        item.triggerMode === 'event' ? `P${item.priority} / 事件终战` : `P${item.priority}`,
+      ),
+      element('strong', '', item.outcome),
+    );
+    row.append(
+      heading,
+      element('small', 'is-route-priority-key', item.routeKey),
+      element('p', '', item.condition),
+    );
+    list.appendChild(row);
+  }
+  section.appendChild(list);
+  return section;
+}
+
+function createRouteStep(step, index, optional = false) {
+  const item = element('li', 'is-route-step');
+  const marker = element('span', 'is-route-step-index', optional
+    ? `OPTION / ${String(index + 1).padStart(2, '0')}`
+    : `STEP / ${String(index + 1).padStart(2, '0')}`);
+  const meta = element('p', 'is-route-step-meta', [step.stage, step.node].filter(Boolean).join(' / '));
+  const title = element('h5', '', step.event);
+  item.append(marker, meta, title);
+
+  const details = element('dl', 'is-route-step-details');
+  for (const [label, value] of [
+    ['出现条件', step.trigger],
+    ['选择', step.choice],
+    ['获得 / 变化', step.result],
+    ['补充', step.note],
+  ]) {
+    if (!value) continue;
+    details.append(element('dt', '', label), element('dd', '', value));
+  }
+  item.appendChild(details);
+  return item;
+}
+
+function createRouteGuide(record, selected, endingPriority) {
+  const guide = record.routeGuide;
+  if (!guide) return null;
+
+  const details = element('details', 'is-route-guide');
+  details.dataset.routeFor = record.id;
+  details.open = selected;
+  const summary = element('summary', 'is-route-summary');
+  summary.append(
+    element('span', '', 'ROUTE GUIDE'),
+    element('strong', '', selected ? '完整路线已展开' : '查看完整路线'),
+    element('small', '', `${guide.steps.length} 个必要步骤${guide.optionalSteps?.length ? ` / ${guide.optionalSteps.length} 个可选步骤` : ''}`),
+  );
+  details.appendChild(summary);
+
+  const body = element('div', 'is-route-body');
+  if (guide.availability) {
+    const availability = element('p', 'is-route-availability', guide.availability);
+    availability.prepend(element('strong', '', '开放状态 '));
+    body.appendChild(availability);
+  }
+
+  const prerequisites = createRouteList('局外前置', guide.prerequisites, 'is-route-prerequisites');
+  if (prerequisites) body.appendChild(prerequisites);
+
+  const route = element('section', 'is-route-sequence');
+  route.appendChild(element('h4', '', '本局路线'));
+  const steps = element('ol', 'is-route-steps');
+  guide.steps.forEach((step, index) => steps.appendChild(createRouteStep(step, index)));
+  route.appendChild(steps);
+  body.appendChild(route);
+
+  const state = element('div', 'is-route-state-grid');
+  const required = createRouteList('终局必须满足', guide.requiredState, 'is-route-required');
+  const priority = createEndingPriority(endingPriority, record.id);
+  if (required) state.appendChild(required);
+  if (priority) state.appendChild(priority);
+  if (state.childElementCount) body.appendChild(state);
+
+  const final = element('section', 'is-route-final');
+  final.append(element('span', '', 'FINAL BATTLE'), element('h4', '', guide.finalBattle.operation));
+  const finalDetails = element('dl', '');
+  for (const [label, value] of [
+    ['所在区域', guide.finalBattle.stage],
+    ['主要敌人', guide.finalBattle.boss],
+    ['进入方式', guide.finalBattle.entry],
+  ]) {
+    if (!value) continue;
+    finalDetails.append(element('dt', '', label), element('dd', '', value));
+  }
+  final.appendChild(finalDetails);
+  body.appendChild(final);
+
+  if (guide.optionalSteps?.length) {
+    const optional = element('section', 'is-route-optional');
+    optional.appendChild(element('h4', '', '可选支援'));
+    const optionalSteps = element('ol', 'is-route-steps');
+    guide.optionalSteps.forEach((step, index) => {
+      optionalSteps.appendChild(createRouteStep(step, index, true));
+    });
+    optional.appendChild(optionalSteps);
+    body.appendChild(optional);
+  }
+
+  const warnings = createRouteList('提示', guide.warnings, 'is-route-warnings');
+  if (warnings) body.appendChild(warnings);
+  details.appendChild(body);
+  details.addEventListener('toggle', () => {
+    const label = details.querySelector('.is-route-summary strong');
+    if (label) label.textContent = details.open ? '完整路线已展开' : '查看完整路线';
+  });
+  return details;
+}
+
+function createEndingCard(record, index, selectedId, onSelect, signal, endingPriority) {
   const article = element('article', 'is-ending-card');
   article.id = record.id;
   article.dataset.record = record.id;
@@ -187,13 +373,18 @@ function createEndingCard(record, index, selectedId, onSelect, signal) {
   aftermath.append(` ${record.aftermath}`);
   article.appendChild(aftermath);
 
+  const routeGuide = createRouteGuide(record, record.id === selectedId, endingPriority);
+  if (routeGuide) article.appendChild(routeGuide);
+
   const sources = element('div', 'is-ending-sources');
   for (const source of record.sources || []) sources.appendChild(sourceLink(source));
   article.appendChild(sources);
   article.addEventListener(
     'click',
     event => {
-      if (!event.target.closest('a, button')) onSelect(record.id, { scroll: false });
+      if (!event.target.closest('a, button, .is-route-guide')) {
+        onSelect(record.id, { scroll: false });
+      }
     },
     { signal },
   );
@@ -203,7 +394,7 @@ function createEndingCard(record, index, selectedId, onSelect, signal) {
 function createRelations(snapshot, theme) {
   const section = element('section', 'is-relations');
   section.appendChild(createSectionHeading(
-    '05 / RELATED RECORDS',
+    '06 / RELATED RECORDS',
     '关联记录',
     '每个条目均可直达对应资料页。',
   ));
@@ -226,7 +417,7 @@ function createRelations(snapshot, theme) {
 function createEndings(snapshot, selectedId, onSelect, signal) {
   const section = element('section', 'is-endings');
   section.appendChild(createSectionHeading(
-    '04 / OUTCOME RECORDS',
+    '05 / OUTCOME RECORDS',
     '结局记录',
     `${recordIds(snapshot).length} 条当前已核验记录。选择节点或记录查看详情，也可以分享当前视图。`,
   ));
@@ -238,6 +429,7 @@ function createEndings(snapshot, selectedId, onSelect, signal) {
       selectedId,
       onSelect,
       signal,
+      snapshot.context.endingPriority,
     ));
   });
   section.appendChild(grid);
@@ -247,7 +439,7 @@ function createEndings(snapshot, selectedId, onSelect, signal) {
 function createSources(snapshot) {
   const section = element('section', 'is-topic-sources');
   section.appendChild(createSectionHeading(
-    '06 / SOURCES & REVIEW',
+    '07 / SOURCES & REVIEW',
     '来源与核验',
     `最近核验：${snapshot.context.lastReviewedAt || '未记录'}。摘要据所列资料整理，详情以来源页为准。`,
   ));
@@ -312,6 +504,8 @@ export function initIntegratedStrategyTopic({ archive, contextId }) {
         selectButton.setAttribute('aria-pressed', String(selected));
         selectButton.textContent = selected ? '当前记录' : '聚焦记录';
       }
+      const routeGuide = node.querySelector?.('.is-route-guide');
+      if (routeGuide && selected) routeGuide.open = true;
     });
     writeRequestedRecord(recordId);
     const card = content.querySelector(`.is-ending-card[data-record="${recordId}"]`);
@@ -322,6 +516,7 @@ export function initIntegratedStrategyTopic({ archive, contextId }) {
   content.replaceChildren(
     createOverview(snapshot, theme),
     createPremise(snapshot),
+    createStoryBeats(snapshot),
     createTopology(snapshot, theme, selectedId, updateSelection, signal),
     createEndings(snapshot, selectedId, updateSelection, signal),
     createRelations(snapshot, theme),

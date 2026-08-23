@@ -1,0 +1,217 @@
+---
+permalink: ./star-map-b5-prototype.html
+title: 群星之间 · B5 观测星图
+bodyClass: world-index b5-observation-preview
+pageType: star-map
+scriptFile: star-map-b5-prototype.js
+cssFiles:
+  - base.css
+  - nav.css
+  - star-map-b5-prototype.css
+  - worlds.css
+  - responsive.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<section id="star-map-stage" aria-labelledby="star-map-title">
+  <h1 id="star-map-title" class="sr-only">群星之间 · 三世界空间档案</h1>
+
+  <div class="star-map-scenes" aria-hidden="true">
+    <img
+      class="star-map-scene is-active"
+      src="./assets/images/star-map/scenes/terra-observation-natural.webp"
+      alt=""
+      width="1672"
+      height="941"
+      decoding="async"
+      fetchpriority="high"
+      data-world-scene="arknights"
+    >
+    <img
+      class="star-map-scene"
+      src="./assets/images/star-map/scenes/milky-way-rift.webp"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      data-world-scene="wh40k"
+    >
+    <img
+      class="star-map-scene"
+      src="./assets/images/star-map/scenes/fourteen-worlds.webp"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      data-world-scene="ff14"
+    >
+    <img
+      class="terra-territory-layer"
+      id="terra-territory-layer"
+      src="./assets/images/star-map/scenes/terra-territory-projection.svg"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      aria-hidden="true"
+    >
+  </div>
+
+  <svg class="star-map-world-motion" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="terra-limb-light" cx="50%" cy="50%" r="50%">
+        <stop class="terra-light-core" offset="0" stop-opacity=".88"></stop>
+        <stop class="terra-light-mid" offset=".22" stop-opacity=".42"></stop>
+        <stop class="terra-light-edge" offset="1" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="wh40k-core-light" cx="50%" cy="50%" r="50%">
+        <stop class="wh40k-core-light" offset="0" stop-opacity=".5"></stop>
+        <stop class="wh40k-core-mid" offset=".34" stop-opacity=".16"></stop>
+        <stop class="wh40k-core-edge" offset="1" stop-opacity="0"></stop>
+      </radialGradient>
+      <filter id="star-map-soft-glow" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="6"></feGaussianBlur>
+      </filter>
+    </defs>
+
+    <g data-motion-world="arknights">
+      <circle class="terra-limb-glow" cx="775" cy="335" r="78" fill="url(#terra-limb-light)"></circle>
+      <circle class="terra-observation-wave" cx="776" cy="411" r="22"></circle>
+      <circle class="terra-observation-core" cx="776" cy="411" r="3"></circle>
+    </g>
+
+    <g data-motion-world="wh40k">
+      <circle class="wh40k-core-glow" cx="505" cy="607" r="106" fill="url(#wh40k-core-light)"></circle>
+      <path class="wh40k-rift-glow" d="M-32 474 C88 512 150 572 244 640 C348 716 454 777 555 814 C650 850 752 905 872 962"></path>
+      <path class="wh40k-rift-flow" pathLength="1" d="M-32 474 C88 512 150 572 244 640 C348 716 454 777 555 814 C650 850 752 905 872 962"></path>
+      <circle class="wh40k-rift-node" style="--motion-delay:-1s" cx="242" cy="640" r="5"></circle>
+      <circle class="wh40k-rift-node" style="--motion-delay:-5s" cx="405" cy="720" r="5"></circle>
+      <circle class="wh40k-rift-node" style="--motion-delay:-9s" cx="532" cy="806" r="5"></circle>
+    </g>
+  </svg>
+
+  <div class="ff14-reflection-field" aria-hidden="true">
+    <i class="ff14-orbit ff14-orbit-a"></i>
+    <i class="ff14-orbit ff14-orbit-b"></i>
+    <i class="ff14-orbit ff14-orbit-c"></i>
+    <span class="ff14-reflection is-surviving" data-reflection="01" style="--rx:23%;--ry:19%;--rs:58px;--rd:0s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="02" style="--rx:35%;--ry:14%;--rs:42px;--rd:-1.8s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="03" style="--rx:46%;--ry:22%;--rs:30px;--rd:-3.2s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="04" style="--rx:57%;--ry:31%;--rs:46px;--rd:-4.7s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="08" style="--rx:68%;--ry:24%;--rs:36px;--rd:-6.1s"></span>
+    <span class="ff14-reflection is-surviving" data-reflection="11" style="--rx:75%;--ry:42%;--rs:27px;--rd:-7.4s"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="05" style="--rx:34%;--ry:31%;--rd:-.5s;--flow-angle:93deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="06" style="--rx:46%;--ry:40%;--rd:-1.4s;--flow-angle:148deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="07" style="--rx:58%;--ry:48%;--rd:-2.3s;--flow-angle:180deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="09" style="--rx:69%;--ry:55%;--rd:-3.2s;--flow-angle:191deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="10" style="--rx:74%;--ry:64%;--rd:-4.1s;--flow-angle:201deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="12" style="--rx:63%;--ry:69%;--rd:-5s;--flow-angle:215deg"></span>
+    <span class="ff14-reflection is-rejoined" data-reflection="13" style="--rx:52%;--ry:60%;--rd:-5.9s;--flow-angle:212deg"></span>
+  </div>
+
+  <div class="star-map-field-grid" aria-hidden="true"></div>
+  <div class="star-map-scanline" aria-hidden="true"></div>
+  <div class="star-map-vignette" aria-hidden="true"></div>
+  <div class="star-map-frame" aria-hidden="true">
+    <i></i><i></i><i></i><i></i>
+  </div>
+
+  <header class="star-map-telemetry" aria-hidden="true">
+    <strong><i></i> DEEP FIELD ACQUIRED</strong>
+    <span id="star-map-route-state">ATS / ROUTE-01 / ARK–TERRA</span>
+  </header>
+
+  <button
+    class="terra-territory-toggle"
+    id="terra-territory-toggle"
+    type="button"
+    aria-pressed="false"
+    aria-controls="terra-territory-layer"
+    aria-label="疆域投影"
+    hidden
+  >
+    <span>TERRITORY PROJECTION</span>
+    <strong>疆域投影</strong>
+    <em id="terra-territory-status" aria-hidden="true">OFF</em>
+  </button>
+
+  <a
+    class="star-map-version-switch"
+    data-star-map-version-switch
+    href="./index.html"
+    aria-label="返回正式星图首页"
+  >
+    <span>FORMAL PLATE</span>
+    <strong>返回正式星图</strong>
+  </a>
+
+  <nav id="star-map-signals" aria-label="切换观测世界">
+    <a class="star-map-signal" href="./arknights.html" data-world-signal="arknights" style="--signal:#d9a441;--signal-rgb:217,164,65">
+      <span class="star-map-signal-reticle" aria-hidden="true"></span>
+      <small>01 / ARK–TERRA</small>
+      <strong>泰拉</strong>
+      <em>明日方舟</em>
+    </a>
+    <a class="star-map-signal" href="./wh40k.html" data-world-signal="wh40k" style="--signal:#b9433e;--signal-rgb:185,67,62">
+      <span class="star-map-signal-reticle" aria-hidden="true"></span>
+      <small>02 / WH–M42</small>
+      <strong>破碎银河</strong>
+      <em>战锤 40,000</em>
+    </a>
+    <a class="star-map-signal" href="./ff14.html" data-world-signal="ff14" style="--signal:#8fc8f3;--signal-rgb:143,200,243">
+      <span class="star-map-signal-reticle" aria-hidden="true"></span>
+      <small>03 / FF–AETHER</small>
+      <strong>十四世界</strong>
+      <em>最终幻想 XIV</em>
+    </a>
+  </nav>
+
+  <article id="star-map-readout" aria-live="polite">
+    <p class="star-map-readout-index" id="star-map-readout-index">WORLD 01 / 03 · ARK–TERRA</p>
+    <p class="star-map-readout-ip" id="star-map-readout-ip">明日方舟 / ORIGINIUM OBSERVATION</p>
+    <h2 id="star-map-readout-title">泰拉</h2>
+    <p class="star-map-readout-summary" id="star-map-readout-summary">天灾与源石共同改写文明的生存方式。移动城邦、国家与组织在这颗行星上留下彼此交叠的记录。</p>
+    <dl class="star-map-readout-facts" id="star-map-readout-facts">
+      <div><dt>结构</dt><dd>独立行星 / 近轨道观测</dd></div>
+      <div><dt>档案</dt><dd>主世界线 · 集成战略 · 泰拉图谱</dd></div>
+    </dl>
+    <a class="star-map-enter" id="star-map-enter" href="./arknights.html">
+      <span>进入世界档案</span><b aria-hidden="true">↗</b>
+    </a>
+  </article>
+
+  <aside class="star-map-provenance" id="star-map-provenance">
+    <strong>TERRA SURFACE / ILLUSTRATIVE OBSERVATION</strong>
+    <p>大陆轮廓与地形分布参考社区地图重制；疆域图层仅显示已完成逐格闭合核验的官方公开六边形区划。无法唯一判定的区域暂不绘制；行星落点为地形配准，不代表精确地理测绘。</p>
+  </aside>
+
+  <p class="star-map-instruction" id="star-map-instruction">
+    <span>选择远距信号切换世界</span><span>方向键或数字键选择观测目标</span>
+  </p>
+
+  <div id="star-map-loading" role="status">ACQUIRING OBSERVATION PLATE</div>
+
+  <nav id="star-map-fallback" aria-label="世界档案">
+    <p>场景底图暂时无法载入，你仍可直接进入三个世界档案。</p>
+    <a href="./arknights.html">明日方舟</a>
+    <a href="./wh40k.html">战锤 40,000</a>
+    <a href="./ff14.html">最终幻想 XIV</a>
+  </nav>
+
+  <noscript>
+    <style>
+      #star-map-fallback { display: grid !important; }
+      #star-map-loading,
+      #star-map-signals,
+      #star-map-readout,
+      .terra-territory-toggle,
+      .star-map-provenance,
+      .star-map-instruction { display: none !important; }
+    </style>
+  </noscript>
+</section>
+{% endblock %}
