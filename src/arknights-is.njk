@@ -38,14 +38,44 @@ cssFiles:
       <div class="is-topic-noscript">
         <style>.is-topic-loading{display:none}.is-topic-noscript{display:block}</style>
         <p class="is-topic-noscript-warning"><strong>完整剧透静态档案：</strong>当前浏览器未启用脚本，无法显示剧透确认；以下内容将直接展示全部结局。</p>
-        <section><span>01 / OVERVIEW</span><h2>主题概览</h2><p>{{ topic.description }}</p></section>
+        <section><span>01 / OVERVIEW</span><h2>主题概览</h2><p>{{ topic.description }}</p><aside><strong>世界线性质：</strong>{{ topic.continuityNote }}</aside></section>
         <section><span>02 / COMMON PREMISE</span><h2>共同起点</h2><p>{{ topic.sharedPremise }}</p></section>
-        <section><span>03 / ENDING PATHS</span><h2>结局路径</h2><p>以下依次列出本专题已收录的结局。</p></section>
-        <section><span>04 / OUTCOME RECORDS</span><h2>结局记录</h2>
-          {% for ending in topic.endings %}<article id="{{ ending.id }}"><h3>{{ ending.title }}</h3><p>{{ ending.description }}</p>{% if ending.conditions %}<p><strong>观测条件：</strong>{{ ending.conditions }}</p>{% endif %}<p><strong>后续：</strong>{{ ending.aftermath }}</p>{% for source in ending.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}</article>{% endfor %}
+        <section><span>03 / STORY SEQUENCE</span><h2>剧情脉络</h2><ol>{% for beat in topic.storyBeats %}<li><h3>{{ beat.title }}</h3><p>{{ beat.description }}</p></li>{% endfor %}</ol></section>
+        <section><span>04 / ENDING PATHS</span><h2>结局路径</h2><p>{{ topic.endingPriority.note }}</p>
+          <ol class="is-noscript-topology">{% for item in topic.endingPriority.items %}<li data-path-rank="{{ item.priority }}"{% if item.triggerMode %} data-trigger-mode="{{ item.triggerMode }}"{% endif %}><span>P{{ item.priority }}{% if item.triggerMode == 'event' %} / 事件终战{% endif %}</span><strong>{{ item.outcome }}</strong><small>{{ item.routeKey }}</small><p>{{ item.condition }}</p></li>{% endfor %}</ol>
         </section>
-        <section><span>05 / RELATED RECORDS</span><h2>关联记录</h2><div>{% for entity in topic.entities %}<a href="{{ entity.url }}" target="_blank" rel="noopener noreferrer">{{ entity.label }} ↗</a>{% endfor %}</div></section>
-        <section><span>06 / SOURCES & REVIEW</span><h2>来源与核验</h2><p>最近核验：{{ topic.lastReviewedAt }}</p>{% for source in topic.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}</section>
+        <section><span>05 / OUTCOME RECORDS</span><h2>结局记录</h2>
+          {% for ending in topic.endings %}
+            <article id="{{ ending.id }}">
+              <h3>{{ ending.title }}</h3>
+              <p>{{ ending.description }}</p>
+              {% if ending.conditions %}<p><strong>观测条件：</strong>{{ ending.conditions }}</p>{% endif %}
+              <p><strong>后续：</strong>{{ ending.aftermath }}</p>
+              {% if ending.routeGuide %}
+                <details class="is-route-guide">
+                  <summary class="is-route-summary"><span>ROUTE GUIDE</span><strong>查看完整路线</strong><small>{{ ending.routeGuide.steps | length }} 个必要步骤{% if ending.routeGuide.optionalSteps | length %} / {{ ending.routeGuide.optionalSteps | length }} 个可选步骤{% endif %}</small></summary>
+                  <div class="is-route-body">
+                    {% if ending.routeGuide.availability %}<p class="is-route-availability"><strong>开放状态 </strong>{{ ending.routeGuide.availability }}</p>{% endif %}
+                    <section class="is-route-list is-route-prerequisites"><h4>局外前置</h4><ul>{% for item in ending.routeGuide.prerequisites %}<li>{{ item }}</li>{% endfor %}</ul></section>
+                    <section class="is-route-sequence"><h4>本局路线</h4><ol class="is-route-steps">
+                      {% for step in ending.routeGuide.steps %}<li class="is-route-step"><span class="is-route-step-index">STEP / {{ loop.index }}</span><p class="is-route-step-meta">{{ step.stage }} / {{ step.node }}</p><h5>{{ step.event }}</h5><dl><dt>出现条件</dt><dd>{{ step.trigger }}</dd><dt>选择</dt><dd>{{ step.choice }}</dd><dt>获得 / 变化</dt><dd>{{ step.result }}</dd>{% if step.note %}<dt>补充</dt><dd>{{ step.note }}</dd>{% endif %}</dl></li>{% endfor %}
+                    </ol></section>
+                    <div class="is-route-state-grid">
+                      {% if ending.routeGuide.requiredState | length %}<section class="is-route-list is-route-required"><h4>终局必须满足</h4><ul>{% for item in ending.routeGuide.requiredState %}<li>{{ item }}</li>{% endfor %}</ul></section>{% endif %}
+                      <section class="is-route-priority"><h4>终局判定优先级</h4><p class="is-route-priority-note">{{ topic.endingPriority.note }}</p><ol class="is-route-priority-list">{% for item in topic.endingPriority.items %}<li class="is-route-priority-item{% if item.recordId == ending.id %} is-current{% endif %}" data-priority="{{ item.priority }}"><div class="is-route-priority-heading"><span class="is-route-priority-badge">P{{ item.priority }}{% if item.triggerMode == 'event' %} / 事件终战{% endif %}</span><strong>{{ item.outcome }}</strong></div><small class="is-route-priority-key">{{ item.routeKey }}</small><p>{{ item.condition }}</p></li>{% endfor %}</ol></section>
+                    </div>
+                    <section class="is-route-final"><span>FINAL BATTLE</span><h4>{{ ending.routeGuide.finalBattle.operation }}</h4><dl><dt>所在区域</dt><dd>{{ ending.routeGuide.finalBattle.stage }}</dd>{% if ending.routeGuide.finalBattle.boss %}<dt>主要敌人</dt><dd>{{ ending.routeGuide.finalBattle.boss }}</dd>{% endif %}<dt>进入方式</dt><dd>{{ ending.routeGuide.finalBattle.entry }}</dd></dl></section>
+                    {% if ending.routeGuide.optionalSteps | length %}<section class="is-route-optional"><h4>可选支援</h4><ol class="is-route-steps">{% for step in ending.routeGuide.optionalSteps %}<li class="is-route-step"><span class="is-route-step-index">OPTION / {{ loop.index }}</span><p class="is-route-step-meta">{{ step.stage }} / {{ step.node }}</p><h5>{{ step.event }}</h5><dl><dt>出现条件</dt><dd>{{ step.trigger }}</dd><dt>选择</dt><dd>{{ step.choice }}</dd><dt>获得 / 变化</dt><dd>{{ step.result }}</dd>{% if step.note %}<dt>补充</dt><dd>{{ step.note }}</dd>{% endif %}</dl></li>{% endfor %}</ol></section>{% endif %}
+                    {% if ending.routeGuide.warnings | length %}<section class="is-route-list is-route-warnings"><h4>提示</h4><ul>{% for item in ending.routeGuide.warnings %}<li>{{ item }}</li>{% endfor %}</ul></section>{% endif %}
+                  </div>
+                </details>
+              {% endif %}
+              {% for source in ending.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}
+            </article>
+          {% endfor %}
+        </section>
+        <section><span>06 / RELATED RECORDS</span><h2>关联记录</h2><div>{% for entity in topic.entities %}<a href="{{ entity.url }}" target="_blank" rel="noopener noreferrer">{{ entity.label }} ↗</a>{% endfor %}</div></section>
+        <section><span>07 / SOURCES & REVIEW</span><h2>来源与核验</h2><p>最近核验：{{ topic.lastReviewedAt }}</p>{% for source in topic.sources %}<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>{% endfor %}</section>
       </div>
     </noscript>
   </div>

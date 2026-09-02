@@ -121,7 +121,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   color: var(--archive-muted);
   border-bottom: 1px solid var(--archive-rule-soft);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 9px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -155,7 +155,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 .world-arknights .ark-chronicle-intro span {
   color: var(--theme-color);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 10px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 3px;
   text-transform: uppercase;
 }
@@ -173,7 +173,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 .world-arknights .ark-archive-heading h1 span {
   display: block;
   color: var(--theme-color);
-  font-size: 0.3em;
+  font-size: max(var(--site-min-font-size), 0.3em);
   line-height: 1.5;
   letter-spacing: 8px;
 }
@@ -215,13 +215,13 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 
 .world-arknights .ark-archive-coverage dt {
   color: var(--archive-muted);
-  font-size: 10px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 1px;
 }
 
 .world-arknights .ark-archive-coverage dd {
   color: var(--archive-paper);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   line-height: 1.6;
 }
 
@@ -252,7 +252,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 
 .world-arknights .ark-observation-lenses > *:last-child { border-right: 0; }
 .world-arknights .ark-observation-lenses b { color: rgba(var(--theme-rgb), 0.6); font: inherit; }
-.world-arknights .ark-observation-lenses small { margin-left: auto; font: 9px/1 ui-monospace, monospace; letter-spacing: 1px; }
+.world-arknights .ark-observation-lenses small { margin-left: auto; font: var(--site-min-font-size)/1 ui-monospace, monospace; letter-spacing: 1px; }
 .world-arknights .ark-observation-lenses .active {
   color: var(--archive-paper);
   background: rgba(var(--theme-rgb), 0.1);
@@ -280,7 +280,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   justify-items: center;
   gap: var(--archive-gap-md);
   color: var(--archive-muted);
-  font: 10px/1.5 ui-monospace, monospace;
+  font: var(--site-min-font-size)/1.5 ui-monospace, monospace;
   letter-spacing: 2px;
 }
 
@@ -372,7 +372,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 
 .world-arknights .ark-context p {
   color: var(--archive-muted);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   line-height: 1.75;
 }
 
@@ -383,7 +383,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   color: var(--archive-alert);
   background: rgba(var(--theme-rgb), 0.07);
   border: 1px solid rgba(var(--theme-rgb), 0.28);
-  font: 9px/1 ui-monospace, monospace;
+  font: var(--site-min-font-size)/1 ui-monospace, monospace;
   letter-spacing: 2px;
 }
 
@@ -414,7 +414,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 }
 
 .world-arknights .ark-outcome-button:last-child { border-right: 0; }
-.world-arknights .ark-outcome-button span { display: block; font: 9px/1 ui-monospace, monospace; letter-spacing: 2px; }
+.world-arknights .ark-outcome-button span { display: block; font: var(--site-min-font-size)/1 ui-monospace, monospace; letter-spacing: 2px; }
 .world-arknights .ark-outcome-button strong {
   display: block;
   margin-top: var(--archive-gap-sm);
@@ -491,7 +491,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   color: var(--archive-muted);
   border-top: 1px solid var(--archive-divider);
   border-bottom: 1px solid var(--archive-divider);
-  font-size: 10px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 1px;
 }
 
@@ -509,7 +509,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   color: var(--archive-muted);
   background: rgba(var(--archive-paper-rgb), 0.018);
   border-left: 2px solid rgba(var(--theme-rgb), 0.52);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   line-height: 1.75;
 }
 
@@ -529,7 +529,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   border: 1px solid var(--theme-color);
   border-radius: 0;
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
@@ -538,7 +538,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 
 .world-arknights .ark-record-source-note {
   color: var(--archive-muted);
-  font-size: 10px;
+  font-size: var(--site-min-font-size);
   line-height: 1.6;
 }
 
@@ -551,7 +551,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
   color: var(--archive-muted);
   background: rgba(var(--theme-rgb), 0.04);
   border-top: 1px solid var(--archive-rule-soft);
-  font: 9px/1.6 ui-monospace, monospace;
+  font: var(--site-min-font-size)/1.6 ui-monospace, monospace;
   letter-spacing: 1px;
 }
 
@@ -611,7 +611,7 @@ body.world-arknights.ark-spoiler-locked { overflow: hidden; }
 
 .world-arknights .ark-spoiler-actions a {
   color: var(--archive-muted);
-  font-size: 11px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 1px;
   text-decoration: none;
 }

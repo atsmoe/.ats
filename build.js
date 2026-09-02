@@ -10,6 +10,8 @@ const PROTOTYPE_SCRIPT_PATTERN = /^star-map(?:-[a-z0-9]+)*-prototype\.js$/;
 const PROTOTYPE_SUPPORT_SCRIPT_PATTERN = /^b4-cosmic-stage\.js$/;
 const PUBLIC_B4_PAGE = 'star-map-b4-prototype.html';
 const PUBLIC_B4_SCRIPT = 'star-map-b4-prototype.js';
+const PUBLIC_B5_PAGE = 'star-map-b5-prototype.html';
+const PUBLIC_B5_SCRIPT = 'star-map-b5-prototype.js';
 
 function removeLocalPrototypeArtifacts() {
   let removed = 0;
@@ -30,9 +32,11 @@ function removeLocalPrototypeArtifacts() {
       }
 
       const isPrototypePage = PROTOTYPE_PAGE_PATTERN.test(entry.name)
-        && entry.name !== PUBLIC_B4_PAGE;
+        && entry.name !== PUBLIC_B4_PAGE
+        && entry.name !== PUBLIC_B5_PAGE;
       const isPrototypeScript = (PROTOTYPE_SCRIPT_PATTERN.test(entry.name)
-        && entry.name !== PUBLIC_B4_SCRIPT)
+        && entry.name !== PUBLIC_B4_SCRIPT
+        && entry.name !== PUBLIC_B5_SCRIPT)
         || PROTOTYPE_SUPPORT_SCRIPT_PATTERN.test(entry.name);
       if (!isPrototypePage && !isPrototypeScript) continue;
       fs.unlinkSync(entryPath);
@@ -241,7 +245,7 @@ async function main() {
   // Step 2: Copy CSS
   await buildCSS();
 
-  // Keep the reviewed B4 preview public; remove every older throwaway prototype.
+  // Keep the reviewed B4 and B5 previews public; remove every older throwaway prototype.
   removeLocalPrototypeArtifacts();
 
   // Step 3: Optimize images (WebP generation)

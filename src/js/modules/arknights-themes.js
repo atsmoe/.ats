@@ -36,8 +36,8 @@ export const INTEGRATED_STRATEGY_THEMES = Object.freeze({
     accent: '#a8dbe6',
     accentAlt: '#d9f3ef',
     topologyLabel: '远征测绘',
-    topologyNote: '四份报告记录科考队深入因非冰原的远征，从山脉一路走向时间尽头。',
-    entities: { sami: '萨米', magallan: '麦哲伦', collapse: '坍缩', 'star-gate': '星门' },
+    topologyNote: '四份报告记录联合远征队深入因非冰原，从北方防线一路走向巨构与时间异常。',
+    entities: { sami: '萨米', magallan: '麦哲伦', collapse: '坍缩', 'star-gate': '北方巨构' },
   },
   'if-sarkaz-endless': {
     slug: 'sarkaz',
@@ -66,8 +66,8 @@ export const INTEGRATED_STRATEGY_THEMES = Object.freeze({
     accent: '#9fe353',
     accentAlt: '#53bfa8',
     topologyLabel: '递归树海',
-    topologyNote: '三份当前结局分别以重启、重构与调和收束；树海仍留下尚未展开的分岔。',
-    entities: { blackflow: '黑流树海', 'columbian-expedition': '哥伦比亚探索队', parts: '零件', 'ideal-domain': '理想域' },
+    topologyNote: '三项当前结局分别处理黑流减缓、证据公开与理想域调和；树海剧情仍在更新。',
+    entities: { blackflow: '黑流树海', 'columbian-expedition': '托科马探索者', parts: '零件', 'ideal-domain': '理想域' },
   },
 });
 

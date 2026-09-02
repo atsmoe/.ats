@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "path": "src/assets/images/arknights/terra-community-administrative-map.png",
+    "sha256": "f1c047c06e568751209c6c5ec1f76ebdd1f6eb8ef38334c86124879dd3bf3128",
+    "size": [4081, 5488],
+    "classification": "community-cartography-with-official-hex-cells"
+  },
+  "grid": {
+    "horizontalPeriod": 50,
+    "radius": 28.666666666666668,
+    "rowStep": 43,
+    "evenRowOriginX": 24,
+    "oddRowOriginX": -1,
+    "originY": 29
+  },
+  "method": {
+    "selection": "manual-cell-by-cell-against-pinned-source",
+    "occlusionRule": "Only complete a hidden edge when both visible ends and adjacent grid edges uniquely determine the same closed contour.",
+    "projection": "Source-space topology is visually reprojected to the authored observation plate; the plate has no geodetic coordinates."
+  },
+  "regions": [
+    {
+      "id": "sami",
+      "labelZh": "萨米",
+      "labelEn": "Sami",
+      "color": "#627dc3",
+      "selectedCellIds": [
+        "r45c30", "r46c29", "r46c30", "r46c31", "r47c27",
+        "r47c28", "r47c29", "r47c30", "r47c31", "r47c32",
+        "r48c28", "r48c29", "r48c30", "r48c31", "r49c29"
+      ],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 28,
+        "inferredOccludedEdges": 6,
+        "note": "十五格轮廓沿官方冷蓝色粗线闭合；仅补全标题与徽记遮挡的六段。"
+      }
+    },
+    {
+      "id": "ursus",
+      "labelZh": "乌萨斯",
+      "labelEn": "Ursus",
+      "color": "#a54b50",
+      "selectedCellIds": [
+        "r43c52", "r44c51", "r44c52", "r44c53", "r44c57",
+        "r44c58", "r44c59", "r45c53", "r45c54", "r45c55",
+        "r45c56", "r45c57", "r45c58", "r45c59", "r45c60",
+        "r46c45", "r46c46", "r46c50", "r46c52", "r46c53",
+        "r46c54", "r46c55", "r46c56", "r46c57", "r46c58",
+        "r47c41", "r47c46", "r47c47", "r47c49", "r47c50",
+        "r47c51", "r47c52", "r47c53", "r47c54", "r47c55",
+        "r47c56", "r47c57", "r48c41", "r48c45", "r48c46",
+        "r48c47", "r48c48", "r48c50", "r48c51", "r48c52",
+        "r48c53", "r48c54", "r48c55", "r48c56", "r48c57",
+        "r49c32", "r49c34", "r49c40", "r49c41", "r49c46",
+        "r49c47", "r49c48", "r49c49", "r49c50", "r49c51",
+        "r49c52", "r49c53", "r49c54", "r49c55", "r49c56",
+        "r50c30", "r50c31", "r50c32", "r50c33", "r50c34",
+        "r50c35", "r50c36", "r50c37", "r50c38", "r50c39",
+        "r50c40", "r50c41", "r50c42", "r50c45", "r50c47",
+        "r50c48", "r50c49", "r50c50", "r50c51", "r50c52",
+        "r50c53", "r50c54", "r50c55", "r51c32", "r51c33",
+        "r51c34", "r51c35", "r51c36", "r51c37", "r51c38",
+        "r51c39", "r51c41", "r51c42", "r51c43", "r51c44",
+        "r51c45", "r51c46", "r51c47", "r51c48", "r51c49",
+        "r51c50", "r51c51", "r51c52", "r51c53", "r51c54",
+        "r52c33", "r52c34", "r52c35", "r52c36", "r52c37",
+        "r52c38", "r52c39", "r52c40", "r52c41", "r52c42",
+        "r52c43", "r52c44", "r52c45", "r52c46", "r52c47",
+        "r52c48", "r52c49", "r52c51", "r52c52", "r52c54",
+        "r53c37", "r53c38", "r53c40", "r53c41", "r53c42",
+        "r53c43", "r53c44", "r53c45", "r53c47", "r53c48",
+        "r53c49", "r53c52", "r54c40", "r54c41", "r54c42",
+        "r54c43", "r54c44", "r54c47", "r55c41", "r55c42",
+        "r55c43", "r56c42", "r57c42", "r57c43", "r58c43"
+      ],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 226,
+        "inferredOccludedEdges": 2,
+        "closedContours": 4,
+        "interiorHoleCellIds": ["r48c49", "r50c46", "r51c40"],
+        "note": "一百五十五格构成单一连通主体；外轮廓与三个内部单格空洞逐边闭合，仅鹰徽遮挡 r48c49 两段下缘且补全唯一。"
+      }
+    },
+    {
+      "id": "kazimierz",
+      "labelZh": "卡西米尔",
+      "labelEn": "Kazimierz",
+      "color": "#c76570",
+      "selectedCellIds": [
+        "r53c33", "r53c34", "r53c35", "r53c36", "r53c39",
+        "r54c32", "r54c33", "r54c34", "r54c35", "r54c36",
+        "r54c37", "r54c38", "r54c39", "r55c33", "r55c34",
+        "r55c35", "r55c36", "r55c37", "r56c32", "r56c33",
+        "r56c34", "r56c35", "r56c36", "r57c33", "r57c34",
+        "r57c35", "r57c36", "r58c32", "r58c35", "r58c36",
+        "r59c34"
+      ],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 55,
+        "inferredOccludedEdges": 5,
+        "note": "主体三十格与南侧离散一格均沿官方粗线逐格确认；西侧徽记遮挡五段按闭合拓扑补全。"
+      }
+    },
+    {
+      "id": "kjerag",
+      "labelZh": "谢拉格",
+      "labelEn": "Kjerag",
+      "color": "#78a68d",
+      "selectedCellIds": ["r62c30"],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 4,
+        "inferredOccludedEdges": 2,
+        "note": "源图在谢拉格点位只给出一个官方粗线六边形；东、东南边由地名遮挡。"
+      }
+    },
+    {
+      "id": "higashi",
+      "labelZh": "东国",
+      "labelEn": "Higashi",
+      "color": "#e1c84e",
+      "selectedCellIds": [
+        "r47c63", "r48c63", "r48c64", "r48c65", "r49c63",
+        "r49c64", "r49c65", "r49c66", "r50c65", "r51c65"
+      ],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 16,
+        "inferredOccludedEdges": 14,
+        "note": "主体、锁川格与御机尾格构成唯一闭合轮廓；文字遮挡边均由相邻可见格线闭合。"
+      }
+    },
+    {
+      "id": "yan",
+      "labelZh": "炎国",
+      "labelEn": "Yan",
+      "color": "#e58a68",
+      "selectedCellIds": [
+        "r51c66", "r51c68", "r52c57", "r52c58", "r52c64",
+        "r52c65", "r52c67", "r53c56", "r53c57", "r53c58",
+        "r53c64", "r53c66", "r53c67", "r53c68", "r54c58",
+        "r54c59", "r54c60", "r54c61", "r54c62", "r54c63",
+        "r54c65", "r54c66", "r54c67", "r54c68", "r55c58",
+        "r55c59", "r55c60", "r55c61", "r55c62", "r55c63",
+        "r55c64", "r55c65", "r55c66", "r55c67", "r55c68",
+        "r55c69", "r55c70", "r55c71", "r56c56", "r56c59",
+        "r56c60", "r56c61", "r56c62", "r56c63", "r56c64",
+        "r56c65", "r56c66", "r56c67", "r56c68", "r57c59",
+        "r57c60", "r57c61", "r57c62", "r57c63", "r57c64",
+        "r57c65", "r57c66", "r57c67", "r57c68", "r58c61",
+        "r58c62", "r58c63", "r58c64", "r58c65", "r58c66",
+        "r58c67", "r59c61", "r59c62", "r59c63", "r59c64",
+        "r59c65", "r59c66", "r60c57", "r60c59", "r60c60",
+        "r60c61", "r60c62", "r60c63", "r60c65", "r60c66",
+        "r61c62", "r61c63", "r61c64", "r61c65", "r61c66",
+        "r62c61", "r62c62", "r62c63", "r63c64"
+      ],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 146,
+        "inferredOccludedEdges": 4,
+        "note": "主体八十七格与两枚离散格逐格闭合；百灶路线已排除，仅补全四段被标识或地形遮挡且拓扑唯一的边。"
+      }
+    },
+    {
+      "id": "victoria",
+      "labelZh": "维多利亚",
+      "labelEn": "Victoria",
+      "color": "#c98770",
+      "selectedCellIds": [
+        "r60c36", "r60c37", "r60c38", "r61c37", "r61c39",
+        "r62c36", "r62c37", "r63c37", "r64c36", "r64c37",
+        "r64c38", "r64c39", "r64c40", "r65c32", "r65c33",
+        "r65c35", "r65c36", "r65c37", "r65c38", "r65c39",
+        "r65c40", "r66c33", "r66c34", "r66c35", "r66c36",
+        "r66c37", "r66c38", "r66c39", "r67c35", "r67c36",
+        "r67c37", "r67c38", "r67c39", "r68c35", "r68c36",
+        "r68c37", "r68c38", "r68c39", "r68c40", "r69c35",
+        "r69c36", "r69c37", "r69c38", "r69c39", "r69c40",
+        "r69c41", "r70c35", "r70c36", "r70c38", "r70c39",
+        "r70c40", "r71c36", "r71c37", "r71c39", "r71c40"
+      ],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 96,
+        "inferredOccludedEdges": 0,
+        "closedContours": 1,
+        "interiorHoleCellIds": [],
+        "partiallyOccludedButDirectlyVisibleEdges": 6,
+        "note": "五十五格构成一条无空洞的闭合外轮廓；六段文字遮挡边仍保留直接可见的珊瑚色描边，无需拓扑猜补。"
+      }
+    },
+    {
+      "id": "minos",
+      "labelZh": "米诺斯",
+      "labelEn": "Minos",
+      "color": "#73b591",
+      "selectedCellIds": ["r70c26", "r71c26", "r71c27"],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 9,
+        "inferredOccludedEdges": 3,
+        "note": "三格闭合范围；内部较深青色线为路线标记，未作为边界。"
+      }
+    },
+    {
+      "id": "laterano",
+      "labelZh": "拉特兰",
+      "labelEn": "Laterano",
+      "color": "#d9b55f",
+      "selectedCellIds": ["r70c44", "r71c44", "r71c45"],
+      "review": {
+        "status": "manual-verified",
+        "visibleBoundaryEdges": 7,
+        "inferredOccludedEdges": 5,
+        "note": "三格闭合范围；标题与徽记遮挡处由同色轮廓两端和相邻格线闭合。"
+      }
+    }
+  ],
+  "exclusions": [
+    {
+      "id": "kazdel-activity-range",
+      "reason": "源图标注为卡兹戴尔活动范围，不等同于正式国家疆界。"
+    },
+    {
+      "id": "aegir",
+      "reason": "源图仅提供方位标识，没有可逐格核验的六边形范围。"
+    },
+    {
+      "id": "siesta",
+      "reason": "源图为城市点位，不作为国家或地区范围。"
+    },
+    {
+      "id": "unknown-area",
+      "reason": "未探明地域没有可归属的国家或地区语义。"
+    }
+  ],
+  "blocked": [
+    "sargon", "columbia",
+    "leithanien", "iberia", "bolivar", "siracusa",
+    "rim-billiton", "acahualla", "infy-icefield", "foehn-hotlands"
+  ]
+}

@@ -1,13 +1,13 @@
 ---
-permalink: ./index.html
-title: 群星之间
-bodyClass: world-index
+permalink: ./star-map-b5-prototype.html
+title: 群星之间 · B5 观测星图
+bodyClass: world-index b5-observation-preview
 pageType: star-map
-scriptFile: star-map-2d.js
+scriptFile: star-map-b5-prototype.js
 cssFiles:
   - base.css
   - nav.css
-  - star-map.css
+  - star-map-b5-prototype.css
   - worlds.css
   - responsive.css
 ---
@@ -17,36 +17,48 @@ cssFiles:
 <section id="star-map-stage" aria-labelledby="star-map-title">
   <h1 id="star-map-title" class="sr-only">群星之间 · 三世界空间档案</h1>
 
-<a
-  class="star-map-version-switch star-map-version-switch--b5"
-  data-star-map-version-switch="b5"
-  href="./star-map-b5-prototype.html"
-  aria-label="切换至 B5 观测星图原型"
->
-  <span>B5 PREVIEW</span>
-  <strong>切换至 B5 观测星图</strong>
-</a>
-
-<!-- Star Map View -->
-<div id="star-map">
-  <h1 class="sr-only">群星之间 · 世界档案</h1>
-  <!-- 3D cluster markers (positioned by star-map-3d.js) -->
-  <div id="galaxy-markers">
-    <a class="galaxy-marker" id="marker-arknights" data-world="arknights" href="./arknights.html">
-      <div class="galaxy-marker-glow" style="--marker-color: #d4923a;"></div>
-      <div class="galaxy-marker-core" style="--marker-color: #d4923a;"></div>
-      <div class="galaxy-marker-label">泰拉大陆</div>
-    </a>
-    <a class="galaxy-marker" id="marker-wh40k" data-world="wh40k" href="./wh40k.html">
-      <div class="galaxy-marker-glow" style="--marker-color: #c85050;"></div>
-      <div class="galaxy-marker-core" style="--marker-color: #c85050;"></div>
-      <div class="galaxy-marker-label">破碎银河</div>
-    </a>
-    <a class="galaxy-marker" id="marker-ff14" data-world="ff14" href="./ff14.html">
-      <div class="galaxy-marker-glow" style="--marker-color: #b8c4d8;"></div>
-      <div class="galaxy-marker-core" style="--marker-color: #b8c4d8;"></div>
-      <div class="galaxy-marker-label">艾欧泽亚</div>
-    </a>
+  <div class="star-map-scenes" aria-hidden="true">
+    <img
+      class="star-map-scene is-active"
+      src="./assets/images/star-map/scenes/terra-observation-natural.webp"
+      alt=""
+      width="1672"
+      height="941"
+      decoding="async"
+      fetchpriority="high"
+      data-world-scene="arknights"
+    >
+    <img
+      class="star-map-scene"
+      src="./assets/images/star-map/scenes/milky-way-rift.webp"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      data-world-scene="wh40k"
+    >
+    <img
+      class="star-map-scene"
+      src="./assets/images/star-map/scenes/fourteen-worlds.webp"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      data-world-scene="ff14"
+    >
+    <img
+      class="terra-territory-layer"
+      id="terra-territory-layer"
+      src="./assets/images/star-map/scenes/terra-territory-projection.svg"
+      alt=""
+      width="1672"
+      height="941"
+      loading="eager"
+      decoding="async"
+      aria-hidden="true"
+    >
   </div>
 
   <svg class="star-map-world-motion" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -61,29 +73,13 @@ cssFiles:
         <stop class="wh40k-core-mid" offset=".34" stop-opacity=".16"></stop>
         <stop class="wh40k-core-edge" offset="1" stop-opacity="0"></stop>
       </radialGradient>
-      <radialGradient id="terra-grid-fade" cx="50%" cy="50%" r="50%">
-        <stop class="motion-mask-solid" offset=".42" stop-opacity="1"></stop>
-        <stop class="motion-mask-clear" offset="1" stop-opacity="0"></stop>
-      </radialGradient>
       <filter id="star-map-soft-glow" x="-80%" y="-80%" width="260%" height="260%">
         <feGaussianBlur stdDeviation="6"></feGaussianBlur>
       </filter>
-      <mask id="terra-grid-north" maskUnits="userSpaceOnUse" x="170" y="240" width="250" height="230">
-        <ellipse cx="292" cy="354" rx="118" ry="105" fill="url(#terra-grid-fade)"></ellipse>
-      </mask>
-      <mask id="terra-grid-center" maskUnits="userSpaceOnUse" x="470" y="440" width="500" height="250">
-        <ellipse cx="716" cy="566" rx="236" ry="116" fill="url(#terra-grid-fade)"></ellipse>
-      </mask>
-      <mask id="terra-grid-south" maskUnits="userSpaceOnUse" x="490" y="580" width="260" height="250">
-        <ellipse cx="619" cy="704" rx="122" ry="114" fill="url(#terra-grid-fade)"></ellipse>
-      </mask>
     </defs>
 
     <g data-motion-world="arknights">
-      <circle class="terra-limb-glow" cx="876" cy="382" r="72" fill="url(#terra-limb-light)"></circle>
-      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-north)" style="--motion-delay:-2.5s"></image>
-      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-center)" style="--motion-delay:-8s"></image>
-      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-south)" style="--motion-delay:-14s"></image>
+      <circle class="terra-limb-glow" cx="775" cy="335" r="78" fill="url(#terra-limb-light)"></circle>
       <circle class="terra-observation-wave" cx="776" cy="411" r="22"></circle>
       <circle class="terra-observation-core" cx="776" cy="411" r="3"></circle>
     </g>
@@ -129,14 +125,28 @@ cssFiles:
     <span id="star-map-route-state">ATS / ROUTE-01 / ARK–TERRA</span>
   </header>
 
+  <button
+    class="terra-territory-toggle"
+    id="terra-territory-toggle"
+    type="button"
+    aria-pressed="false"
+    aria-controls="terra-territory-layer"
+    aria-label="疆域投影"
+    hidden
+  >
+    <span>TERRITORY PROJECTION</span>
+    <strong>疆域投影</strong>
+    <em id="terra-territory-status" aria-hidden="true">OFF</em>
+  </button>
+
   <a
     class="star-map-version-switch"
     data-star-map-version-switch
-    href="./star-map-b4-prototype.html"
-    aria-label="切换到 B4 星图原型"
+    href="./index.html"
+    aria-label="返回正式星图首页"
   >
-    <span>ALTERNATE PLATE</span>
-    <strong>B4 原型</strong>
+    <span>FORMAL PLATE</span>
+    <strong>返回正式星图</strong>
   </a>
 
   <nav id="star-map-signals" aria-label="切换观测世界">
@@ -175,8 +185,8 @@ cssFiles:
   </article>
 
   <aside class="star-map-provenance" id="star-map-provenance">
-    <strong>TERRA SURFACE / COMMUNITY CARTOGRAPHY</strong>
-    <p>六边形区划边界取自源图标出的官方公开信息；大陆轮廓与地形参考社区地图。观察构图不代表官方地理投影。</p>
+    <strong>TERRA SURFACE / ILLUSTRATIVE OBSERVATION</strong>
+    <p>大陆轮廓与地形分布参考社区地图重制；疆域图层仅显示已完成逐格闭合核验的官方公开六边形区划。无法唯一判定的区域暂不绘制；行星落点为地形配准，不代表精确地理测绘。</p>
   </aside>
 
   <p class="star-map-instruction" id="star-map-instruction">
@@ -198,6 +208,7 @@ cssFiles:
       #star-map-loading,
       #star-map-signals,
       #star-map-readout,
+      .terra-territory-toggle,
       .star-map-provenance,
       .star-map-instruction { display: none !important; }
     </style>

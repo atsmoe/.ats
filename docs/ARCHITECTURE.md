@@ -19,6 +19,7 @@
 |------|------|------|---------|
 | 星图首页 | `index.njk` | 三张独立 2D 深空场景 | `star-map-2d.js` |
 | B4 星图预览 | `star-map-b4-prototype.njk` | Three.js 三世界天体观察台 | `star-map-b4-prototype.js` |
+| B5 星图预览 | `star-map-b5-prototype.njk` | 三张固定 2D 观测场景 | `star-map-b5-prototype.js` |
 | 明日方舟 | `arknights.njk` | Canvas 2D 琥珀粒子 | `bundle.js` |
 | 战锤40K | `wh40k.njk` | Canvas 2D 深红粒子 | `bundle.js` |
 | 最终幻想XIV | `ff14.njk` | Canvas 2D 银蓝粒子 | `bundle.js` |
@@ -192,6 +193,14 @@ Three.js 只留在 B4 预览的独立 bundle 中。正式首页脚本不得 impo
 - 常驻动效仅作用于独立 SVG 观测路径、局部光晕、信号脉冲和 FFXIV 镜像轨迹；世界切换时允许一次短扫描，禁止驱动底图位移、缩放或旋转。
 - `prefers-reduced-motion`：取消脉冲和长过渡。
 
+### 公开预览边界
+
+B4 与 B5 使用独立模板、样式和 bundle。正式首页继续加载 `star-map-3d.js`；B5 使用固定二维底图、显式世界切换与键盘控制，不 import Three.js。生产清理只对白名单中的 B4、B5 页面及脚本放行。
+
+### 编年事件档案连续导航
+
+三套编年页面共用 `event-modal-navigation.js` 计算当前可见事件序列，并由 `event-modal-transition.js` 处理有方向的短过渡。弹窗关闭与模块销毁必须取消过渡和输入状态；系统减少动态效果时直接更新内容。
+
 ---
 
 ## 六、设计系统
@@ -232,7 +241,8 @@ npm run build:
   3. eleventy                                ← 生成 HTML
   4. node build.js                           ← esbuild(bundle + star-map-2d) + 复制
   5. node scripts/build-b4-prototype.js       ← 构建公开 B4 预览
-  6. npm test                                ← 校验页面、数据、媒体引用和体积预算
+  6. node scripts/build-b5-prototype.js       ← 构建公开 B5 预览
+  7. npm test                                ← 校验页面、数据、媒体引用和体积预算
 
 npm run dev:
   1. node src/validators/validate-data.js
@@ -263,6 +273,7 @@ dist/
     ├── bundle.js               (~38KB，世界页/普通页，不含 Three.js)
     ├── star-map-2d.js          (首页专用，体积预算 80KB，不含 Three.js)
     ├── star-map-b4-prototype.js  (B4 公开预览独立 bundle)
+    ├── star-map-b5-prototype.js  (B5 公开预览独立 bundle，不含 Three.js)
     └── virtual-timeline.js
 ```
 
@@ -329,5 +340,4 @@ dist/
 | 2026-07-12 | V2.5.6 | OpenAI Codex | 新增本节及强制追加式修改记录规则。 | 确保 Codex 对架构文档的修改全部可追溯。 |
 | 2026-08-02 | V2.6.0 | OpenAI Codex | 发布前核对三世界规范档案、多观测镜和本地星图原型的生产隔离边界。 | 使架构记录与 V2.6.0 的实际构建和发布范围一致。 |
 | 2026-08-09 | V2.6.2 | OpenAI Codex | 将 B4 星图加入公开构建白名单，正式首页提供双向版本切换；其他旧原型继续隔离。 | 修正将线上切换误做成仅本地入口的发布边界错误。 |
-| 2026-08-19 | V2.6.2 | OpenAI Codex | 将正式星图改为固定二维构图，移除指针视差与滚轮景深，同时保留世界切换、URL 和键盘操作。 | 避免整幅观测底图随输入漂移，保持空间坐标与画面重心稳定。 |
-| 2026-08-19 | V2.6.2 | OpenAI Codex | 为固定二维星图增加泰拉六边形测绘扫光、战锤大裂隙流、FFXIV 镜像回归光流和一次性观测扫描。 | 在不移动底图的前提下恢复世界场景的生命感，并让动效保持各自的世界语义。 |
+| 2026-08-24 | V2.7.0 | OpenAI Codex | 新增独立 B5 二维观测预览，并记录三世界事件档案的连续导航与过渡边界。 | 保留正式粒子星图，允许线上并行评审 B4、B5，同时约束弹窗状态清理和减少动态效果。 |

@@ -62,8 +62,8 @@ cssFiles:
         <g class="tl-telemetry-labels">
           <text x="128" y="266">NODE / 02</text>
           <text x="602" y="205">RHODES ISLAND</text>
-          <text x="752" y="101">SIGNAL / 07</text>
-          <text x="700" y="350">ORIGINIUM DENSITY 0.71</text>
+          <text x="790" y="101" text-anchor="end">SIGNAL / 07</text>
+          <text x="790" y="350" text-anchor="end">ORIGINIUM DENSITY 0.71</text>
         </g>
       </svg>
       <div class="tl-telemetry-foot">
@@ -108,7 +108,7 @@ cssFiles:
 </noscript>
 
 <div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-arknights" aria-describedby="event-modal-desc-arknights">
+  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-arknights" aria-describedby="event-modal-desc-arknights" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">
     <button class="event-modal-close" title="关闭">✕</button>
     <div class="event-modal-date"></div>
     <div class="event-modal-title" id="event-modal-title-arknights"></div>
@@ -116,6 +116,12 @@ cssFiles:
     <div class="event-modal-desc" id="event-modal-desc-arknights"></div>
     <div class="event-modal-img"></div>
     <div class="event-modal-sources"></div>
+    <div class="event-modal-navigation" aria-live="polite" aria-atomic="true">
+      <span class="event-modal-navigation-previous" aria-hidden="true">← ↑</span>
+      <span>滚轮或方向键切换相邻事件</span>
+      <strong class="event-modal-navigation-position"></strong>
+      <span class="event-modal-navigation-next" aria-hidden="true">↓ →</span>
+    </div>
   </div>
 </div>
 

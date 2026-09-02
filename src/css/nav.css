@@ -70,7 +70,7 @@
   color: var(--gold);
 }
 .nav-worlds-trigger .arrow {
-  font-size: 9px;
+  font-size: var(--site-min-font-size);
   margin-left: 2px;
   transition: transform 0.25s ease;
 }
@@ -120,7 +120,7 @@
 }
 .nav-worlds-item.active::before {
   content: '● ';
-  font-size: 6px;
+  font-size: var(--site-min-font-size);
   vertical-align: middle;
 }
 
@@ -219,7 +219,7 @@
 .nav-mobile-heading {
   display: block;
   padding: 8px 24px 12px;
-  font-size: 10px;
+  font-size: var(--site-min-font-size);
   letter-spacing: 3px;
   color: rgba(201,160,80,0.4);
   text-transform: uppercase;

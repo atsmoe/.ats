@@ -83,7 +83,7 @@
     letter-spacing: 4px;
   }
   .detail-sub {
-    font-size: 11px;
+    font-size: var(--site-min-font-size);
   }
   .detail-desc {
     font-size: 12px;
@@ -192,7 +192,7 @@
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(201,160,80,0.3);
     color: var(--gold-dim);
-    font-size: 10px;
+    font-size: var(--site-min-font-size);
     letter-spacing: 2px;
     cursor: pointer;
     font-family: var(--font-serif);
@@ -238,7 +238,7 @@
   }
   .era-mobile-item.current::before {
     content: '● ';
-    font-size: 6px;
+    font-size: var(--site-min-font-size);
     color: var(--ark-amber);
   }
   #back-to-top {
@@ -255,11 +255,11 @@
     gap: 16px;
   }
   .footer-links a {
-    font-size: 11px;
+    font-size: var(--site-min-font-size);
     letter-spacing: 1px;
   }
   .footer-credit {
-    font-size: 10px;
+    font-size: var(--site-min-font-size);
     padding: 0 8px;
   }
 }
@@ -288,11 +288,11 @@
     font-size: 16px;
   }
   .event-card .event-date {
-    font-size: 10px;
+    font-size: var(--site-min-font-size);
     letter-spacing: 2px;
   }
   .event-meta {
-    font-size: 10px;
+    font-size: var(--site-min-font-size);
   }
 
   .tl-cover {
@@ -312,11 +312,11 @@
 
   .tl-branch-tab {
     padding: 8px 12px;
-    font-size: 11px;
+    font-size: var(--site-min-font-size);
   }
   .tl-sub-tab {
     padding: 8px 14px;
-    font-size: 10px;
+    font-size: var(--site-min-font-size);
   }
   .tl-branches,
   .tl-sub-branches {

@@ -75,8 +75,10 @@ test('production build contains every public page and data file', () => {
     'js/bundle.js',
     'js/star-map-2d.js',
     'js/star-map-b4-prototype.js',
+    'js/star-map-b5-prototype.js',
     'js/virtual-timeline.js',
     'star-map-b4-prototype.html',
+    'star-map-b5-prototype.html',
   ];
 
   for (const relativePath of required) {
@@ -88,12 +90,14 @@ test('production build contains every public page and data file', () => {
     .filter(filePath => (
       /^star-map(?:-[a-z0-9]+)*-prototype\.html$/.test(path.basename(filePath))
       && path.basename(filePath) !== 'star-map-b4-prototype.html'
+      && path.basename(filePath) !== 'star-map-b5-prototype.html'
     ));
   const prototypeScripts = outputFiles
     .filter(filePath => (
       (
         /^star-map(?:-[a-z0-9]+)*-prototype\.js$/.test(path.basename(filePath))
         && path.basename(filePath) !== 'star-map-b4-prototype.js'
+        && path.basename(filePath) !== 'star-map-b5-prototype.js'
       )
       || path.basename(filePath) === 'b4-cosmic-stage.js'
     ));
@@ -171,6 +175,8 @@ test('the star map and all archive pages keep the documented two-entry boundary'
   assert.doesNotMatch(index, /src="\.\/js\/bundle\.js"/);
   assert.match(index, /data-star-map-version-switch/);
   assert.match(index, /href="\.\/star-map-b4-prototype\.html"/);
+  assert.match(index, /href="\.\/star-map-b5-prototype\.html"/);
+  assert.match(readDist('star-map-b5-prototype.html'), /src="\.\/js\/star-map-b5-prototype\.js"/);
 
   for (const page of ['arknights-chronicle.html', 'wh40k-chronicle.html', 'ff14-chronicle.html']) {
     const html = readDist(page);
@@ -398,10 +404,12 @@ test('bundle sizes stay within the intended page budgets', () => {
   const worldBundle = fs.statSync(path.join(DIST, 'js', 'bundle.js')).size;
   const starMapBundle = fs.statSync(path.join(DIST, 'js', 'star-map-2d.js')).size;
   const b4Bundle = fs.statSync(path.join(DIST, 'js', 'star-map-b4-prototype.js')).size;
+  const b5Bundle = fs.statSync(path.join(DIST, 'js', 'star-map-b5-prototype.js')).size;
 
   assert.ok(worldBundle <= 180 * 1024, `world bundle is ${(worldBundle / 1024).toFixed(1)} KiB`);
   assert.ok(starMapBundle <= 80 * 1024, `star map bundle is ${(starMapBundle / 1024).toFixed(1)} KiB`);
   assert.ok(b4Bundle <= 600 * 1024, `B4 preview bundle is ${(b4Bundle / 1024).toFixed(1)} KiB`);
+  assert.ok(b5Bundle <= 80 * 1024, `B5 preview bundle is ${(b5Bundle / 1024).toFixed(1)} KiB`);
 });
 
 test('desktop timeline geometry keeps both event columns inside the viewport', () => {

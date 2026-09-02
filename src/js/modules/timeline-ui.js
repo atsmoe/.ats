@@ -2,7 +2,10 @@
    timeline-ui.js — Branch tabs, event rendering, era nav
    ═══════════════════════════════════════════════════════════ */
 
+import { ANIM } from './anim-tokens.js';
 import { dateSortVal, eraLabel } from './data-loader.js';
+import { createEventModalNavigator } from './event-modal-navigation.js';
+import { createEventModalTransition } from './event-modal-transition.js';
 import { normalizeEventSources } from './event-sources.js';
 
 let _data = null;
@@ -687,6 +690,36 @@ document.getElementById('tl-sub-branches').addEventListener('click', (e) => {
 const modal = document.getElementById('event-modal');
 let modalOpen = false;
 let modalReturnFocus = null;
+let modalCurrentEventId = null;
+let modalNavigator = null;
+let modalTransition = null;
+
+function getNavigableModalEvents() {
+  const virtualEvents = typeof VirtualTimeline !== 'undefined' && VirtualTimeline.items
+    ? VirtualTimeline.items
+      .filter(item => item.type === 'event' && item.data?.id)
+      .map(item => item.data)
+    : [];
+  if (virtualEvents.some(event => event.id === modalCurrentEventId)) return virtualEvents;
+
+  return getBranchEvents(currentSubBranch || currentBranch)
+    .flatMap(group => group.events || [])
+    .filter(event => event?.id);
+}
+
+function updateModalNavigation() {
+  const navigation = modal?.querySelector('.event-modal-navigation');
+  const position = navigation?.querySelector('.event-modal-navigation-position');
+  if (!navigation || !position) return;
+
+  const events = getNavigableModalEvents();
+  const currentIndex = events.findIndex(event => event.id === modalCurrentEventId);
+  const available = currentIndex >= 0 && events.length > 1;
+  navigation.hidden = !available;
+  position.textContent = available ? `${currentIndex + 1} / ${events.length}` : '';
+  navigation.classList.toggle('is-at-start', currentIndex === 0);
+  navigation.classList.toggle('is-at-end', currentIndex === events.length - 1);
+}
 
 function onCardClick(e) {
   if (e.target.closest('.cross-world-link')) return;
@@ -717,6 +750,7 @@ function onKeyDown(e) {
     history.back();
     return;
   }
+  if (modalNavigator?.handleKey(e)) return;
   if (e.key !== 'Tab') return;
 
   const focusable = [...modal.querySelectorAll(
@@ -734,6 +768,10 @@ function onKeyDown(e) {
   }
 }
 
+function onModalWheel(e) {
+  if (modalOpen) modalNavigator?.handleWheel(e);
+}
+
 function onModalOverlayClick(e) {
   if (e.target === modal && modalOpen) history.back();
 }
@@ -746,11 +784,34 @@ function onCloseButtonClick() {
   if (modalOpen) history.back();
 }
 
+function onPageHide(event) {
+  if (!event.persisted) destroyEventModal();
+}
+
 export function initEventModal() {
+  const modalCard = modal?.querySelector('.event-modal-card');
+  modalTransition = createEventModalTransition(modal?.querySelector('.event-modal-card'), {
+    duration: ANIM.duration.fast,
+    easing: ANIM.easing.out,
+  });
+  modalNavigator = createEventModalNavigator({
+    getEvents: getNavigableModalEvents,
+    getCurrentEventId: () => modalCurrentEventId,
+    openEvent: openEventModal,
+    getScrollState: () => modalCard ? ({
+      scrollTop: modalCard.scrollTop,
+      scrollHeight: modalCard.scrollHeight,
+      clientHeight: modalCard.clientHeight,
+    }) : null,
+  });
   document.addEventListener('click', onCardClick);
   document.addEventListener('keydown', onKeyDown);
   window.addEventListener('popstate', onPopState);
-  if (modal) modal.addEventListener('click', onModalOverlayClick);
+  window.addEventListener('pagehide', onPageHide);
+  if (modal) {
+    modal.addEventListener('click', onModalOverlayClick);
+    modal.addEventListener('wheel', onModalWheel, { passive: false });
+  }
   const closeBtn = modal?.querySelector('.event-modal-close');
   if (closeBtn) closeBtn.addEventListener('click', onCloseButtonClick);
 }
@@ -759,14 +820,22 @@ export function destroyEventModal() {
   document.removeEventListener('click', onCardClick);
   document.removeEventListener('keydown', onKeyDown);
   window.removeEventListener('popstate', onPopState);
-  if (modal) modal.removeEventListener('click', onModalOverlayClick);
+  window.removeEventListener('pagehide', onPageHide);
+  if (modal) {
+    modal.removeEventListener('click', onModalOverlayClick);
+    modal.removeEventListener('wheel', onModalWheel);
+  }
   const closeBtn = modal?.querySelector('.event-modal-close');
   if (closeBtn) closeBtn.removeEventListener('click', onCloseButtonClick);
   if (modalOpen) closeEventModal();
+  modalTransition?.cancel();
+  modalTransition = null;
+  modalNavigator = null;
 }
 
-function openEventModal(evt) {
+function openEventModal(evt, direction = 0) {
   if (!modal) return;
+  modalCurrentEventId = evt.id || null;
   // Fill content
   modal.querySelector('.event-modal-date').textContent = evt.dateDisplay || '';
   modal.querySelector('.event-modal-title').textContent = evt.title || '';
@@ -841,6 +910,11 @@ function openEventModal(evt) {
     sourcesEl.appendChild(item);
   });
 
+  const modalCard = modal.querySelector('.event-modal-card');
+  if (modalCard) modalCard.scrollTop = 0;
+  if (direction === 0) modalNavigator?.reset();
+  updateModalNavigation();
+
   // Show
   const wasOpen = modalOpen;
   if (!wasOpen) modalReturnFocus = document.activeElement;
@@ -848,6 +922,7 @@ function openEventModal(evt) {
   document.body.style.overflow = 'hidden';
   modalOpen = true;
   if (!wasOpen) history.pushState({ modalOpen: true }, '');
+  modalTransition?.play(direction);
   requestAnimationFrame(() => modal.querySelector('.event-modal-close')?.focus());
 }
 
@@ -861,6 +936,9 @@ function closeEventModal() {
   modal.style.display = 'none';
   document.body.style.overflow = '';
   modalOpen = false;
+  modalCurrentEventId = null;
+  modalNavigator?.reset();
+  modalTransition?.cancel();
   if (modalReturnFocus?.isConnected) modalReturnFocus.focus();
   modalReturnFocus = null;
 }
