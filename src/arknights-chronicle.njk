@@ -2,7 +2,7 @@
 permalink: ./arknights-chronicle.html
 title: 明日方舟 · 主世界线
 bodyClass: world-arknights ark-chronicle-page
-pageType: world
+pageType: arknights-chronicle
 worldId: arknights
 viewId: chronicle
 cssFiles:
@@ -13,6 +13,7 @@ cssFiles:
   - ref-panel.css
   - worlds.css
   - responsive.css
+  - arknights-chronicle.css
 ---
 {% extends "base.njk" %}
 
@@ -73,9 +74,14 @@ cssFiles:
     </div>
   </header>
 
-  <div class="tl-branches" id="tl-branches"></div>
-  <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;"></div>
-  <div class="tl-container" id="tl-container"></div>
+  <div id="ark-chronicle-directory" class="ark-chronicle-directory" role="region" tabindex="-1" aria-labelledby="ark-directory-title">
+    <header class="ark-directory-head">
+      <p>CHRONICLE CHAPTER INDEX / TERRA</p>
+      <h2 id="ark-directory-title">章节目录</h2>
+      <p>按时代与时间段查阅主世界线；关键节点可直接进入，短篇同期档案在正文中展开。</p>
+    </header>
+    <div id="ark-chapter-list" class="ark-chapter-list" aria-live="polite"></div>
+  </div>
 </div>
 
 <noscript>
@@ -96,7 +102,13 @@ cssFiles:
         {% if record.sources and record.sources.length %}
         <footer>
           {% for source in record.sources %}
-          <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a>
+          <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title or source.text }} ↗</a>
+          {% endfor %}
+        </footer>
+        {% elif record.prtsSources and record.prtsSources.length %}
+        <footer>
+          {% for source in record.prtsSources %}
+          <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.text or source.title }} ↗</a>
           {% endfor %}
         </footer>
         {% endif %}
@@ -107,42 +119,31 @@ cssFiles:
   </article>
 </noscript>
 
-<div id="event-modal" class="event-modal-overlay" style="display:none;">
-  <div class="event-modal-card" role="dialog" aria-modal="true" aria-labelledby="event-modal-title-arknights" aria-describedby="event-modal-desc-arknights" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">
-    <button class="event-modal-close" title="关闭">✕</button>
-    <div class="event-modal-date"></div>
-    <div class="event-modal-title" id="event-modal-title-arknights"></div>
-    <div class="event-modal-meta"></div>
-    <div class="event-modal-desc" id="event-modal-desc-arknights"></div>
-    <div class="event-modal-img"></div>
-    <div class="event-modal-sources"></div>
-    <div class="event-modal-navigation" aria-live="polite" aria-atomic="true">
-      <span class="event-modal-navigation-previous" aria-hidden="true">← ↑</span>
-      <span>滚轮或方向键切换相邻事件</span>
-      <strong class="event-modal-navigation-position"></strong>
-      <span class="event-modal-navigation-next" aria-hidden="true">↓ →</span>
+<section id="ark-reader" class="ark-reader" role="dialog" aria-modal="true" aria-labelledby="ark-reader-title" aria-hidden="true" aria-keyshortcuts="Escape Alt+ArrowLeft Alt+ArrowRight" hidden>
+  <header class="ark-reader-toolbar">
+    <div>
+      <p>RHODES ISLAND / CONTINUOUS ARCHIVE</p>
+      <h2 id="ark-reader-title">连续阅读</h2>
     </div>
+    <label class="ark-reader-progress-label">
+      <span class="sr-only">阅读进度</span>
+      <progress data-ark-reader-progress max="100" value="0"></progress>
+      <output data-ark-reader-progress-text aria-live="polite">0 / {{ arknightsChronicle.records }}</output>
+    </label>
+    <div class="ark-reader-toolbar-actions">
+      <button type="button" data-ark-reader-previous aria-label="上一章">上一章</button>
+      <button type="button" data-ark-reader-next aria-label="下一章">下一章</button>
+      <button type="button" data-ark-reader-close class="ark-reader-close" aria-label="关闭连续阅读器">关闭</button>
+    </div>
+  </header>
+  <div class="ark-reader-grid">
+    <nav class="ark-reader-index" aria-label="时代与章节索引">
+      <div id="ark-reader-index-list"></div>
+    </nav>
+    <div id="ark-reader-scroll" class="ark-reader-scroll" tabindex="0">
+      <div id="ark-reader-content" class="ark-reader-content"></div>
+    </div>
+    <aside id="ark-reader-context" class="ark-reader-context" aria-live="polite" aria-atomic="true"></aside>
   </div>
-</div>
-
-<div id="overlay"></div>
-<div id="ref-panel">
-  <button class="ref-close" id="ref-close">✕</button>
-  <div class="ref-content">
-    <h2>跨世界引用</h2>
-    <div class="ref-world-label" id="ref-world-label">—— 跨世界引用 ——</div>
-    <div class="ref-event-date" id="ref-event-date"></div>
-    <div class="ref-event-title" id="ref-event-title"></div>
-    <div class="ref-event-desc" id="ref-event-desc"></div>
-    <div class="ref-related"><h3>关联事件</h3></div>
-    <button class="btn-wormhole" id="btn-wormhole">穿越虫洞</button>
-  </div>
-</div>
-
-<nav id="era-nav" aria-label="时代索引"></nav>
-<button id="back-to-top" title="回到顶部">▲</button>
-{% endblock %}
-
-{% block extraScripts %}
-<script defer src="./js/virtual-timeline.js"></script>
+</section>
 {% endblock %}

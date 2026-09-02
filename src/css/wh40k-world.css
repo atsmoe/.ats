@@ -11,6 +11,10 @@
   --wh-brass: #b18a4b;
   --wh-brass-bright: #e0c690;
   --wh-blood: #7b1d25;
+  --wh-status-verified: #9cc39f;
+  --wh-status-disputed: #e19a7b;
+  --wh-rgb-status-verified: 91, 154, 99;
+  --wh-rgb-status-disputed: 177, 68, 42;
   --wh-rule: rgba(177, 138, 75, .24);
   --wh-max: 1480px;
   color: var(--wh-bone);
@@ -60,6 +64,641 @@
   --wh-rgb-5-6-7: 5, 6, 7;
   --wh-rgb-8-8-8: 8, 8, 8;
   --wh-rgb-9-10-10: 9, 10, 10;
+}
+
+/* ============================================================
+   WH40K chronicle chapter index and continuous reader
+   ============================================================ */
+.world-wh40k .wh-reader-root {
+  position: relative;
+  width: min(1220px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 54px 0 120px;
+  color: var(--wh-bone);
+}
+
+.world-wh40k .wh-chapter-index-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 28px;
+  align-items: end;
+  margin-bottom: 42px;
+  padding: 0 4px 24px;
+  border-bottom: 1px solid rgba(var(--wh-rgb-177-138-75), .28);
+}
+
+.world-wh40k .wh-chapter-index-head .wh-reader-kicker {
+  grid-column: 1 / -1;
+}
+
+.world-wh40k .wh-chapter-index-head h2 {
+  font: 800 clamp(26px, 3vw, 42px)/1.1 var(--font-serif);
+  letter-spacing: .16em;
+}
+
+.world-wh40k .wh-chapter-index-head > p:last-child {
+  color: var(--wh-muted);
+  font: var(--site-min-font-size)/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+}
+
+.world-wh40k .wh-reader-kicker {
+  color: var(--wh-brass);
+  font: var(--site-min-font-size)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .18em;
+}
+
+.world-wh40k .wh-era-dossier {
+  display: grid;
+  grid-template-columns: minmax(230px, .68fr) minmax(0, 1.8fr);
+  gap: 38px;
+  padding: 34px 0 42px;
+  border-top: 1px solid rgba(var(--wh-rgb-177-138-75), .18);
+}
+
+.world-wh40k .wh-era-dossier-head {
+  position: sticky;
+  top: calc(var(--nav-h) + 22px);
+  align-self: start;
+}
+
+.world-wh40k .wh-era-number {
+  display: block;
+  margin-bottom: 14px;
+  color: rgba(var(--wh-rgb-177-138-75), .58);
+  font: 700 34px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .12em;
+}
+
+.world-wh40k .wh-era-dossier h3 {
+  margin-bottom: 12px;
+  color: var(--wh-bone);
+  font: 800 22px/1.3 var(--font-serif);
+  letter-spacing: .08em;
+}
+
+.world-wh40k .wh-era-dossier-head > p {
+  color: var(--wh-muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.world-wh40k .wh-era-factions,
+.world-wh40k .wh-reader-chapter-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.world-wh40k .wh-dossier-token {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .23);
+  color: var(--wh-muted);
+  background: rgba(var(--wh-rgb-15-14-11), .72);
+  font-size: var(--site-min-font-size);
+  line-height: 1.35;
+}
+
+.world-wh40k .wh-chapter-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.world-wh40k .wh-chapter-card {
+  position: relative;
+  background:
+    linear-gradient(110deg, rgba(var(--wh-rgb-177-138-75), .07), transparent 44%),
+    rgba(var(--wh-rgb-10-11-11), .86);
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .23);
+  box-shadow: inset 4px 0 0 rgba(var(--wh-rgb-123-29-37), .56);
+}
+
+.world-wh40k .wh-chapter-card::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .07);
+  pointer-events: none;
+}
+
+.world-wh40k .wh-chapter-open {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  padding: 22px 24px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.world-wh40k .wh-chapter-code {
+  margin-bottom: 9px;
+  color: var(--wh-muted);
+  font: var(--site-min-font-size)/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .12em;
+}
+
+.world-wh40k .wh-chapter-open strong {
+  color: var(--wh-bone);
+  font: 800 20px/1.35 var(--font-serif);
+  letter-spacing: .08em;
+}
+
+.world-wh40k .wh-chapter-summary {
+  margin-top: 9px;
+  color: var(--wh-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.world-wh40k .wh-chapter-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 22px;
+  margin-top: 16px;
+  color: var(--wh-brass);
+  font: var(--site-min-font-size)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+}
+
+.world-wh40k .wh-chapter-open:hover,
+.world-wh40k .wh-chapter-open:focus-visible {
+  background: rgba(var(--wh-rgb-177-138-75), .06);
+  outline: 2px solid rgba(var(--wh-rgb-224-198-144), .72);
+  outline-offset: 3px;
+}
+
+.wh-reader-open {
+  overflow: hidden;
+}
+
+body.wh-reader-open #nav {
+  visibility: hidden;
+}
+
+.world-wh40k .wh-reader-overlay[hidden] {
+  display: none;
+}
+
+.world-wh40k .wh-reader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: block;
+  padding: 18px;
+  background: rgba(var(--wh-rgb-2-3-3), .96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.world-wh40k .wh-reader-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(390px, 1fr) minmax(270px, 340px);
+  width: min(1580px, 100%);
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .31);
+  background: var(--wh-color-090909);
+  box-shadow: 0 24px 80px rgba(var(--wh-rgb-0-0-0), .72), inset 0 0 0 5px var(--wh-void);
+}
+
+.world-wh40k .wh-reader-rail,
+.world-wh40k .wh-reader-context {
+  min-width: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(var(--wh-rgb-255-255-255), .012) 0 1px, transparent 1px 5px),
+    var(--wh-ink);
+}
+
+.world-wh40k .wh-reader-rail {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(var(--wh-rgb-177-138-75), .19);
+}
+
+.world-wh40k .wh-reader-rail-head {
+  flex: 0 0 auto;
+  padding: 28px 22px 18px;
+  border-bottom: 1px solid rgba(var(--wh-rgb-177-138-75), .18);
+}
+
+.world-wh40k .wh-reader-rail-head h2 {
+  margin: 8px 0 16px;
+  color: var(--wh-bone);
+  font: 800 20px/1.3 var(--font-serif);
+  letter-spacing: .1em;
+}
+
+.world-wh40k .wh-reader-search {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .26);
+  border-radius: 0;
+  color: var(--wh-bone);
+  background: var(--wh-color-080909);
+  font-size: 14px;
+}
+
+.world-wh40k .wh-reader-search:focus-visible {
+  outline: 2px solid var(--wh-brass);
+  outline-offset: 2px;
+}
+
+.world-wh40k .wh-reader-rail-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px 10px 30px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--wh-brass) var(--wh-ink);
+}
+
+.world-wh40k .wh-reader-rail-era h3 {
+  padding: 16px 10px 8px;
+  color: var(--wh-muted);
+  font: 700 var(--site-min-font-size)/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+}
+
+.world-wh40k .wh-reader-rail-chapter {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 10px 9px 14px;
+  border: 0;
+  border-left: 2px solid transparent;
+  color: var(--wh-muted);
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+
+.world-wh40k .wh-reader-rail-chapter:hover,
+.world-wh40k .wh-reader-rail-chapter:focus-visible,
+.world-wh40k .wh-reader-rail-chapter.is-current {
+  border-left-color: var(--wh-blood);
+  color: var(--wh-bone);
+  background: rgba(var(--wh-rgb-177-138-75), .07);
+  outline: none;
+}
+
+.world-wh40k .wh-reader-reading {
+  position: relative;
+  min-width: 0;
+  overflow-y: auto;
+  scroll-padding-top: 40px;
+  background:
+    linear-gradient(90deg, rgba(var(--wh-rgb-123-29-37), .04), transparent 18%, transparent 82%, rgba(var(--wh-rgb-123-29-37), .04)),
+    var(--wh-color-11100e);
+  scrollbar-width: thin;
+  scrollbar-color: var(--wh-brass) var(--wh-color-11100e);
+}
+
+.world-wh40k .wh-reader-reading:focus-visible {
+  outline: 2px solid var(--wh-brass);
+  outline-offset: -3px;
+}
+
+.world-wh40k .wh-reader-chapter-head,
+.world-wh40k .wh-reader-body {
+  width: min(760px, calc(100% - 72px));
+  margin: 0 auto;
+}
+
+.world-wh40k .wh-reader-chapter-head {
+  padding: 70px 0 42px;
+  border-bottom: 1px solid rgba(var(--wh-rgb-177-138-75), .2);
+}
+
+.world-wh40k .wh-reader-chapter-head h1 {
+  margin: 12px 0 15px;
+  color: var(--wh-bone);
+  font: 900 clamp(30px, 4vw, 52px)/1.18 var(--font-serif);
+  letter-spacing: .1em;
+}
+
+.world-wh40k .wh-reader-chapter-head > p:last-of-type {
+  color: var(--wh-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.world-wh40k .wh-reader-progress {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  width: 100%;
+  height: 3px;
+  background: var(--wh-color-11100e);
+}
+
+.world-wh40k .wh-reader-progress > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--wh-blood), var(--wh-brass));
+  transition: width var(--transition-fast);
+}
+
+.world-wh40k .wh-reader-body {
+  padding: 38px 0 100px;
+}
+
+.world-wh40k .wh-reader-event {
+  position: relative;
+  padding: 30px 0 38px 34px;
+  border-left: 1px solid rgba(var(--wh-rgb-177-138-75), .24);
+  scroll-margin-top: 40px;
+}
+
+.world-wh40k .wh-reader-event::before {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: -5px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--wh-brass);
+  background: var(--wh-color-11100e);
+  transform: rotate(45deg);
+}
+
+.world-wh40k .wh-reader-event:focus-visible {
+  outline: 2px solid rgba(var(--wh-rgb-177-138-75), .62);
+  outline-offset: 5px;
+}
+
+.world-wh40k .wh-reader-event.is-secondary {
+  margin-left: 18px;
+  padding-top: 22px;
+  padding-bottom: 28px;
+  border-left-color: rgba(var(--wh-rgb-177-138-75), .13);
+}
+
+.world-wh40k .wh-reader-event.is-secondary::before {
+  top: 28px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: none;
+}
+
+.world-wh40k .wh-reader-event-date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  color: var(--wh-brass);
+  font: var(--site-min-font-size)/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+}
+
+.world-wh40k .wh-reader-event-date .is-uncertain,
+.world-wh40k .wh-reader-warning {
+  color: var(--wh-brass-bright);
+}
+
+.world-wh40k .wh-status {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 3px 7px;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .28);
+  font: 700 var(--site-min-font-size)/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .06em;
+}
+
+.world-wh40k .wh-status.is-verified { color: var(--wh-status-verified); border-color: rgba(var(--wh-rgb-status-verified), .5); }
+.world-wh40k .wh-status.is-disputed { color: var(--wh-status-disputed); border-color: rgba(var(--wh-rgb-status-disputed), .56); }
+.world-wh40k .wh-status.is-reviewing { color: var(--wh-brass-bright); }
+
+.world-wh40k .wh-reader-event h3 {
+  margin: 13px 0 12px;
+  color: var(--wh-bone);
+  font: 800 23px/1.4 var(--font-serif);
+  letter-spacing: .06em;
+}
+
+.world-wh40k .wh-reader-copy {
+  color: var(--wh-bone);
+  font-size: 16px;
+  line-height: 1.95;
+  letter-spacing: .02em;
+}
+
+.world-wh40k .wh-reader-contemporaries {
+  margin: 26px 0 0;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .18);
+  background: rgba(var(--wh-rgb-0-0-0), .14);
+}
+
+.world-wh40k .wh-reader-contemporaries > summary {
+  min-height: 48px;
+  padding: 14px 18px;
+  color: var(--wh-brass-bright);
+  font: 700 13px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+
+.world-wh40k .wh-reader-contemporaries > summary:focus-visible {
+  outline: 2px solid var(--wh-brass);
+  outline-offset: 3px;
+}
+
+.world-wh40k .wh-reader-contemporaries[open] {
+  padding: 0 22px 22px;
+}
+
+.world-wh40k .wh-reader-context {
+  overflow-y: auto;
+  padding: 22px 22px 40px;
+  border-left: 1px solid rgba(var(--wh-rgb-177-138-75), .19);
+  scrollbar-width: thin;
+  scrollbar-color: var(--wh-brass) var(--wh-ink);
+}
+
+.world-wh40k .wh-reader-close {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .36);
+  color: var(--wh-bone);
+  background: var(--wh-color-11100e);
+  font: 700 13px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .12em;
+  cursor: pointer;
+}
+
+.world-wh40k .wh-reader-close:hover,
+.world-wh40k .wh-reader-close:focus-visible {
+  border-color: var(--wh-brass);
+  outline: 2px solid var(--wh-brass);
+  outline-offset: 2px;
+}
+
+.world-wh40k .wh-reader-shortcuts {
+  margin: 9px 0 26px;
+  color: var(--wh-muted);
+  font: var(--site-min-font-size)/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  text-align: center;
+}
+
+.world-wh40k .wh-reader-context-head {
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(var(--wh-rgb-177-138-75), .17);
+}
+
+.world-wh40k .wh-reader-context-head h3 {
+  margin: 13px 0 0;
+  color: var(--wh-bone);
+  font: 800 20px/1.45 var(--font-serif);
+}
+
+.world-wh40k .wh-reader-warning {
+  margin-top: 12px;
+  font-size: var(--site-min-font-size);
+  line-height: 1.55;
+}
+
+.world-wh40k .wh-reader-facts {
+  display: grid;
+  grid-template-columns: minmax(72px, auto) 1fr;
+  gap: 10px 12px;
+  margin: 22px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.world-wh40k .wh-reader-facts dt { color: var(--wh-muted); }
+.world-wh40k .wh-reader-facts dd { color: var(--wh-bone); }
+
+.world-wh40k .wh-reader-media {
+  margin: 22px 0;
+  border: 1px solid rgba(var(--wh-rgb-177-138-75), .2);
+}
+
+.world-wh40k .wh-reader-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.world-wh40k .wh-reader-no-media {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px dashed rgba(var(--wh-rgb-177-138-75), .18);
+  color: var(--wh-muted);
+  font-size: var(--site-min-font-size);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.world-wh40k .wh-reader-sources h4 {
+  margin-bottom: 10px;
+  color: var(--wh-brass);
+  font: 700 var(--site-min-font-size)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .1em;
+}
+
+.world-wh40k .wh-reader-source {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--wh-bone);
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.world-wh40k a.wh-reader-source:hover,
+.world-wh40k a.wh-reader-source:focus-visible {
+  color: var(--wh-brass-bright);
+  outline: 1px solid var(--wh-brass);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1100px) {
+  .world-wh40k .wh-reader-shell {
+    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+    overflow-y: auto;
+  }
+  .world-wh40k .wh-reader-context {
+    grid-column: 1 / -1;
+    overflow: visible;
+    border-top: 1px solid rgba(var(--wh-rgb-177-138-75), .19);
+    border-left: 0;
+  }
+  .world-wh40k .wh-reader-reading { min-height: 100%; }
+}
+
+@media (max-width: 760px) {
+  .world-wh40k .wh-reader-root {
+    width: min(100% - 28px, 1220px);
+    padding-top: 34px;
+  }
+  .world-wh40k .wh-chapter-index-head,
+  .world-wh40k .wh-era-dossier {
+    grid-template-columns: 1fr;
+  }
+  .world-wh40k .wh-era-dossier { gap: 22px; }
+  .world-wh40k .wh-era-dossier-head { position: static; }
+  .world-wh40k .wh-reader-overlay { padding: 0; }
+  .world-wh40k .wh-reader-shell {
+    display: block;
+    overflow-y: auto;
+    border: 0;
+  }
+  .world-wh40k .wh-reader-rail,
+  .world-wh40k .wh-reader-reading,
+  .world-wh40k .wh-reader-context {
+    overflow: visible;
+  }
+  .world-wh40k .wh-reader-rail {
+    border-right: 0;
+    border-bottom: 1px solid rgba(var(--wh-rgb-177-138-75), .19);
+  }
+  .world-wh40k .wh-reader-rail-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 18px 18px;
+  }
+  .world-wh40k .wh-reader-rail-era {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+  .world-wh40k .wh-reader-rail-era h3 { display: none; }
+  .world-wh40k .wh-reader-rail-chapter {
+    width: auto;
+    min-width: max-content;
+    border: 1px solid rgba(var(--wh-rgb-177-138-75), .18);
+  }
+  .world-wh40k .wh-reader-chapter-head,
+  .world-wh40k .wh-reader-body {
+    width: min(100% - 36px, 760px);
+  }
+  .world-wh40k .wh-reader-chapter-head { padding-top: 48px; }
+  .world-wh40k .wh-reader-event { padding-left: 24px; }
+  .world-wh40k .wh-reader-copy { font-size: 15px; line-height: 1.85; }
+  .world-wh40k .wh-reader-context { padding-bottom: 70px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-wh40k .wh-reader-progress > span,
+  .world-wh40k .wh-chapter-open,
+  .world-wh40k .wh-reader-rail-chapter {
+    transition: none;
+  }
 }
 
 .world-wh40k::after{
@@ -547,6 +1186,10 @@
 .world-wh40k .wh-noscript-record time{ color: var(--wh-muted); font: var(--site-min-font-size)/1 ui-monospace, Consolas, monospace; letter-spacing: .16em; }
 .world-wh40k .wh-noscript-record h4{ margin-top: 9px; color: var(--wh-bone); font: 700 20px/1.3 var(--font-serif); }
 .world-wh40k .wh-noscript-record p{ margin-top: 10px; color: var(--wh-color-a39d90); font-size: 13px; line-height: 1.8; }
+.world-wh40k .wh-noscript-record img{ display: block; width: min(100%, 720px); height: auto; margin-top: 18px; border: 1px solid var(--wh-rule); }
+.world-wh40k .wh-noscript-record a{ display: block; width: fit-content; margin-top: 10px; color: var(--wh-brass-bright); font-size: var(--site-min-font-size); overflow-wrap: anywhere; }
+.world-wh40k .wh-noscript-record.is-disputed{ border-left: 2px solid var(--wh-status-disputed); padding-left: 18px; }
+.world-wh40k .wh-noscript-record.is-disputed > strong{ display: block; margin-bottom: 10px; color: var(--wh-status-disputed); font-size: var(--site-min-font-size); letter-spacing: .08em; }
 
 @keyframes wh-star { from { opacity: .35; transform: scale(.7); } to { opacity: 1; transform: scale(1.3); } }
 @keyframes wh-rift-flow { to { stroke-dashoffset: -90; } }

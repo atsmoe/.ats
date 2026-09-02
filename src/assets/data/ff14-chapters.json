@@ -1,0 +1,1688 @@
+{
+  "schemaVersion": 1,
+  "baselineSha": "b34e10cf79cc073c420610797466d226d70f166e",
+  "rules": {
+    "sourceOrder": "branch.eras[].events[]",
+    "boundaries": [
+      "world branch",
+      "era",
+      "version tag",
+      "maximum 12 events"
+    ],
+    "summary": "verbatim leading sentence(s) from summarySourceEventIds"
+  },
+  "branchStats": [
+    {
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "chapterCount": 50,
+      "eventCount": 337
+    },
+    {
+      "branchId": "shards",
+      "branchName": "镜像世界",
+      "chapterCount": 3,
+      "eventCount": 14
+    },
+    {
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "chapterCount": 10,
+      "eventCount": 61
+    },
+    {
+      "branchId": "lore",
+      "branchName": "设定百科",
+      "chapterCount": 3,
+      "eventCount": 27
+    }
+  ],
+  "chapters": [
+    {
+      "id": "mainline--world-unsundered--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "world-unsundered",
+      "eraTitle": "万古前·古代世界",
+      "title": "万古前·古代世界（1）",
+      "versionRange": "万古前",
+      "eventIds": [
+        "ff14-001",
+        "ff14-002",
+        "ff14-003",
+        "ff14-004",
+        "ff14-005",
+        "ff14-006",
+        "ff14-007",
+        "ff14-008",
+        "ff14-009",
+        "ff14-010",
+        "ff14-011",
+        "ff14-012"
+      ],
+      "keyEventIds": [
+        "ff14-001"
+      ],
+      "summarySourceEventIds": [
+        "ff14-001",
+        "ff14-002"
+      ],
+      "summary": "在已经被遗忘的、世界仍为一体的年代，星球被称作“亚伊太利斯”而非“海德林”，其含义为“耀眼的天空”。 拥有宛如神术的“创造魔法”、生命长久的古代人以及他们仿佛可以永久持续下去的繁荣社会，突如其来地迎来了终结。"
+    },
+    {
+      "id": "mainline--world-unsundered--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "world-unsundered",
+      "eraTitle": "万古前·古代世界",
+      "title": "万古前·古代世界（2）",
+      "versionRange": "万古前",
+      "eventIds": [
+        "ff14-013",
+        "ff14-014",
+        "ff14-015",
+        "ff14-016",
+        "ff14-017",
+        "ff14-018",
+        "ff14-019",
+        "ff14-020",
+        "ff14-021",
+        "ff14-022",
+        "ff14-023",
+        "ff14-024"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-013",
+        "ff14-014"
+      ],
+      "summary": "万魔殿是由拉哈布雷亚院管理的设施，在厄尔庇斯的正下方。 无影 关于无影（日文︰アシエン，英文︰Ascian）的记载，散见于各种传说、神话以及历史书中。"
+    },
+    {
+      "id": "mainline--world-unsundered--03",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "world-unsundered",
+      "eraTitle": "万古前·古代世界",
+      "title": "万古前·古代世界（3）",
+      "versionRange": "万古前",
+      "eventIds": [
+        "ff14-025",
+        "ff14-026",
+        "ff14-027",
+        "ff14-028"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-025",
+        "ff14-026"
+      ],
+      "summary": "萨雷安哲学家议会通过与“星球的意志”交流，得知了世界的真相，遵循彻底的保密主旨隐瞒了信息，对外贯彻完全不干涉主义，对内筹备逃往星外的计划。 英雄从厄尔庇斯归来后，拂晓血盟围绕既定方针与对立的哲学家议会进行了接触。"
+    },
+    {
+      "id": "mainline--first-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "first-calamity",
+      "eraTitle": "第一灵灾·第一星历",
+      "title": "第一灵灾·第一星历 · 第一灵灾～第一星历",
+      "versionRange": "第一灵灾～第一星历",
+      "eventIds": [
+        "ff14-029",
+        "ff14-030"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-029",
+        "ff14-030"
+      ],
+      "summary": "究竟世界从何起源，对于这个永恒之谜的答案，各种族和民族都有不同的创世神话流传于世。 第一星历时代被认为是各种族制造石器、使用火种、踏入文明化道路的时期。"
+    },
+    {
+      "id": "mainline--second-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "second-calamity",
+      "eraTitle": "第二灵灾·第二星历",
+      "title": "第二灵灾·第二星历 · 第二灵灾～第二星历",
+      "versionRange": "第二灵灾～第二星历",
+      "eventIds": [
+        "ff14-031",
+        "ff14-032"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-031",
+        "ff14-032"
+      ],
+      "summary": "虽然在诸王的统治下人类社会走向繁荣，但是并没有永远持续下去，终于发生了雷之灾厄“第二灵灾”。 人类依靠原始魔法的力量克服了长久持续的恶劣气候。"
+    },
+    {
+      "id": "mainline--third-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "third-calamity",
+      "eraTitle": "第三灵灾·第三星历",
+      "title": "第三灵灾·第三星历 · 第三灵灾～第三星历",
+      "versionRange": "第三灵灾～第三星历",
+      "eventIds": [
+        "ff14-033",
+        "ff14-034",
+        "ff14-035",
+        "ff14-036",
+        "ff14-037",
+        "ff14-038",
+        "ff14-039",
+        "ff14-040",
+        "ff14-041"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-033",
+        "ff14-034"
+      ],
+      "summary": "繁荣产生财富，进而产生对立，这种情况在任何一个时代都是一样的。 距今大约600年前，沙都“乌尔达哈”有一个名叫寇伊纳克的少年。"
+    },
+    {
+      "id": "mainline--fourth-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "fourth-calamity",
+      "eraTitle": "第四灵灾·第四星历",
+      "title": "第四灵灾·第四星历 · 第四灵灾～第四星历",
+      "versionRange": "第四灵灾～第四星历",
+      "eventIds": [
+        "ff14-042",
+        "ff14-043",
+        "ff14-044",
+        "ff14-045"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-042",
+        "ff14-043"
+      ],
+      "summary": "通过殊死战斗获得了南方大陆支配权的赞德并没有沉醉在胜利的美酒之下。 撼动艾欧泽亚全境的大地震使水晶塔下沉至地表以下，依靠水晶塔带来巨大能量作为支撑的古代亚拉戈文明分崩离析。"
+    },
+    {
+      "id": "mainline--fifth-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "fifth-calamity",
+      "eraTitle": "第五灵灾·第五星历",
+      "title": "第五灵灾·第五星历 · 第五灵灾～第五星历",
+      "versionRange": "第五灵灾～第五星历",
+      "eventIds": [
+        "ff14-046",
+        "ff14-047"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-046",
+        "ff14-047"
+      ],
+      "summary": "虽然详细经过不得而知，但为第四星历打上繁荣休止符的，确实是冰之灾厄“第五灵灾”的到来。 经过了被称为“大冰雪时代”的第五灵灾后，第五星历到来，伟大的魔法文明在艾欧泽亚上蓬勃发展。"
+    },
+    {
+      "id": "mainline--sixth-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-calamity",
+      "eraTitle": "第六灵灾",
+      "title": "第六灵灾",
+      "versionRange": "第六灵灾",
+      "eventIds": [
+        "ff14-048"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-048"
+      ],
+      "summary": "正如各城邦的魔法师所预见的那样，不久“第六灵灾”到来了。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历0年～第六星历0年前后",
+      "versionRange": "第六星历0年～第六星历0年前后",
+      "eventIds": [
+        "ff14-060",
+        "ff14-074",
+        "ff14-081",
+        "ff14-092",
+        "ff14-125",
+        "ff14-141",
+        "ff14-167",
+        "ff14-179",
+        "ff14-185",
+        "ff14-214",
+        "ff14-050",
+        "ff14-053"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-060",
+        "ff14-074"
+      ],
+      "summary": "萨雷安魔法大学的研究团队开始对北洋群岛的各岛屿进行大规模的地脉调查。 前战死的苍天之龙骑士瓦勒鲁瓦扬列为战神哈罗妮的圣徒。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历0年前后（1）",
+      "versionRange": "第六星历0年前后",
+      "eventIds": [
+        "ff14-054",
+        "ff14-055",
+        "ff14-057",
+        "ff14-062",
+        "ff14-065",
+        "ff14-066",
+        "ff14-068",
+        "ff14-072",
+        "ff14-086",
+        "ff14-088",
+        "ff14-091",
+        "ff14-101"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-054",
+        "ff14-055"
+      ],
+      "summary": "精灵族移民们在耸立于云海之巅的岩石山上开始建设供奉哈罗妮的圣堂（即后来的“圣托尔丹大圣堂”）。 七大天龙之一的圣龙“赫拉斯瓦尔格”因爱吞噬圣女“希瓦”。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--03",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历0年前后（2）",
+      "versionRange": "第六星历0年前后",
+      "eventIds": [
+        "ff14-102",
+        "ff14-105",
+        "ff14-107",
+        "ff14-115",
+        "ff14-120",
+        "ff14-122",
+        "ff14-134",
+        "ff14-135",
+        "ff14-151",
+        "ff14-159",
+        "ff14-162",
+        "ff14-168"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-102",
+        "ff14-105"
+      ],
+      "summary": "利姆萨·罗敏萨的掠夺品市场进一步发展，同时开始了正规的海洋贸易。 激怒了元灵的鸟人族被赶出了黑衣森林。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--04",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历元年～第六星历1年",
+      "versionRange": "第六星历元年～第六星历1年",
+      "eventIds": [
+        "ff14-049",
+        "ff14-051",
+        "ff14-070",
+        "ff14-075",
+        "ff14-103",
+        "ff14-112",
+        "ff14-132",
+        "ff14-136",
+        "ff14-139",
+        "ff14-143",
+        "ff14-152",
+        "ff14-160"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-049",
+        "ff14-051"
+      ],
+      "summary": "大洪水之后，长期持续的异常天气恢复正常。 随着人口的增长，萨雷安的直接民主制政体不堪重负，为了打破“重要政策决定迟迟不能付诸实施”的现状，人们通过投票选出议员，组建了“哲学家议会”。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--05",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历1年～第六星历2年",
+      "versionRange": "第六星历1年～第六星历2年",
+      "eventIds": [
+        "ff14-163",
+        "ff14-173",
+        "ff14-190",
+        "ff14-204",
+        "ff14-215",
+        "ff14-082",
+        "ff14-087",
+        "ff14-104",
+        "ff14-109",
+        "ff14-118",
+        "ff14-128",
+        "ff14-142"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-163",
+        "ff14-173"
+      ],
+      "summary": "在黑衣森林发生了格里达尼亚民众激怒元灵的事件。 在与东方的交易中获得大量财富的豪商，对斗技场财团进行了巨额投资。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--06",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历2年～第六星历3年",
+      "versionRange": "第六星历2年～第六星历3年",
+      "eventIds": [
+        "ff14-146",
+        "ff14-153",
+        "ff14-186",
+        "ff14-193",
+        "ff14-196",
+        "ff14-205",
+        "ff14-216",
+        "ff14-052",
+        "ff14-076",
+        "ff14-094",
+        "ff14-114",
+        "ff14-119"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-146",
+        "ff14-153"
+      ],
+      "summary": "格里达尼亚的人族之间“锁死病”流行。 萨雷安本国组成第一次移民团，向龙堡内陆低地出发。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--07",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历3年～第六星历4年",
+      "versionRange": "第六星历3年～第六星历4年",
+      "eventIds": [
+        "ff14-144",
+        "ff14-148",
+        "ff14-154",
+        "ff14-174",
+        "ff14-181",
+        "ff14-197",
+        "ff14-206",
+        "ff14-058",
+        "ff14-077",
+        "ff14-083",
+        "ff14-095",
+        "ff14-113"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-144",
+        "ff14-148"
+      ],
+      "summary": "阿拉米格佣兵部队与萨雷安签订契约，为保护观测基地的安全，展开对龙堡内陆低地的怪物的清剿作战。 乌尔达哈地下的希拉狄哈水道发生大量僵尸出现事件。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--08",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历4年～第六星历5年",
+      "versionRange": "第六星历4年～第六星历5年",
+      "eventIds": [
+        "ff14-116",
+        "ff14-126",
+        "ff14-137",
+        "ff14-149",
+        "ff14-169",
+        "ff14-194",
+        "ff14-198",
+        "ff14-208",
+        "ff14-056",
+        "ff14-061",
+        "ff14-069",
+        "ff14-078"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-116",
+        "ff14-126"
+      ],
+      "summary": "西拉诺西亚港湾设施进行整饬，“小麦酒港”建立。 阿拉米格军队击退了从奥萨德次大陆北部入侵的人族游牧民势力。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--09",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历5年",
+      "versionRange": "第六星历5年",
+      "eventIds": [
+        "ff14-084",
+        "ff14-089",
+        "ff14-093",
+        "ff14-096",
+        "ff14-121",
+        "ff14-150",
+        "ff14-158",
+        "ff14-170",
+        "ff14-180",
+        "ff14-182",
+        "ff14-187",
+        "ff14-191"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-084",
+        "ff14-089"
+      ],
+      "summary": "第一次地灵族讨伐。 加雷马共和国与聚居在中央山脉的鲁加族山岳之民签订契约，雇用他们的魔法兵来保卫首都周边。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--10",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历5年～第六星历6年",
+      "versionRange": "第六星历5年～第六星历6年",
+      "eventIds": [
+        "ff14-199",
+        "ff14-209",
+        "ff14-063",
+        "ff14-079",
+        "ff14-097",
+        "ff14-110",
+        "ff14-123",
+        "ff14-145",
+        "ff14-157",
+        "ff14-164",
+        "ff14-171",
+        "ff14-195"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-199",
+        "ff14-209"
+      ],
+      "summary": "劳班（当时22岁）在国境线的小规模冲突中对拥有魔导兵器的帝国军队进行愚弄，借此功绩升迁为将领。 利姆萨·罗敏萨与佣兵团海雄旅团签订契约，委托他们对地灵族的土神“泰坦”、鱼人族的水神“利维亚桑”进行讨伐。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--11",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历6年～第六星历7年",
+      "versionRange": "第六星历6年～第六星历7年",
+      "eventIds": [
+        "ff14-200",
+        "ff14-207",
+        "ff14-210",
+        "ff14-067",
+        "ff14-071",
+        "ff14-073",
+        "ff14-090",
+        "ff14-098",
+        "ff14-111",
+        "ff14-117",
+        "ff14-129",
+        "ff14-140"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-200",
+        "ff14-207"
+      ],
+      "summary": "劳班（当时23岁）遭受帝国军狙击兵的枪击而身负重伤，为了养伤离开国境，回到位于基拉巴尼亚山区故乡他所出生的小村子。 前芬戴尔村被毁一事得到邪龙进入活动期的消息，出于保存战力的主要目的。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--12",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历7年～第六星历8年",
+      "versionRange": "第六星历7年～第六星历8年",
+      "eventIds": [
+        "ff14-147",
+        "ff14-155",
+        "ff14-172",
+        "ff14-176",
+        "ff14-183",
+        "ff14-201",
+        "ff14-211",
+        "ff14-059",
+        "ff14-085",
+        "ff14-099",
+        "ff14-108",
+        "ff14-124"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-147",
+        "ff14-155"
+      ],
+      "summary": "从乌尔达哈派遣来的炼金术士开发了锁死病的特效药。 女雕刻家佩瑟勒开始着手制作哈尔德拉斯雕像（征龙像）。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--13",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历8年～第六星历9年",
+      "versionRange": "第六星历8年～第六星历9年",
+      "eventIds": [
+        "ff14-130",
+        "ff14-156",
+        "ff14-165",
+        "ff14-177",
+        "ff14-184",
+        "ff14-188",
+        "ff14-202",
+        "ff14-212",
+        "ff14-064",
+        "ff14-080",
+        "ff14-100",
+        "ff14-106"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-130",
+        "ff14-156"
+      ],
+      "summary": "乌尔达哈意图夺回水源地，发动对希拉狄哈的入侵。 乌尔达哈的第二公主萨萨莫·乌尔·萨莫尝试发动政变推翻她的姐姐但告失败。"
+    },
+    {
+      "id": "mainline--sixth-astral-era--14",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "sixth-astral-era",
+      "eraTitle": "第六星历·编年",
+      "title": "第六星历·编年 · 第六星历9年",
+      "versionRange": "第六星历9年",
+      "eventIds": [
+        "ff14-127",
+        "ff14-131",
+        "ff14-133",
+        "ff14-138",
+        "ff14-161",
+        "ff14-166",
+        "ff14-175",
+        "ff14-178",
+        "ff14-189",
+        "ff14-192",
+        "ff14-203",
+        "ff14-213"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-127",
+        "ff14-131"
+      ],
+      "summary": "在希拉狄哈，拉拉维弗·希拉·塔塔维弗即位。 阿拉米格佣兵部队与乌尔达哈签订契约，出兵参与希拉狄哈包围战。"
+    },
+    {
+      "id": "mainline--seventh-calamity--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "seventh-calamity",
+      "eraTitle": "第七灵灾",
+      "title": "第七灵灾（1）",
+      "versionRange": "第七灵灾",
+      "eventIds": [
+        "ff14-217",
+        "ff14-218",
+        "ff14-219",
+        "ff14-220",
+        "ff14-221",
+        "ff14-222",
+        "ff14-223",
+        "ff14-224",
+        "ff14-225",
+        "ff14-226",
+        "ff14-227",
+        "ff14-228"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-217",
+        "ff14-218"
+      ],
+      "summary": "（本篇对应游戏内版本 1.0［旧FF14］主线剧情） 后世的历史学家对第七灵灾究竟是从什么时候开始的这个问题进行过激烈的争论。 由于阿拉米格的陷落，其余的艾欧泽亚城邦不得不进行紧急应对。"
+    },
+    {
+      "id": "mainline--seventh-calamity--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "seventh-calamity",
+      "eraTitle": "第七灵灾",
+      "title": "第七灵灾（2）",
+      "versionRange": "第七灵灾",
+      "eventIds": [
+        "ff14-229",
+        "ff14-230",
+        "ff14-231",
+        "ff14-232",
+        "ff14-233"
+      ],
+      "keyEventIds": [
+        "ff14-230",
+        "ff14-231"
+      ],
+      "summarySourceEventIds": [
+        "ff14-229",
+        "ff14-230"
+      ],
+      "summary": "就这样路易索瓦开始着手“请神”秘术仪式所需的准备工作。 在后世的历史中被记载为“加尔提诺战役”的这场第六星历最后的战役，简直是一次倾尽各方全力的战斗。"
+    },
+    {
+      "id": "mainline--realm-reborn--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5)（1）",
+      "versionRange": "2.0",
+      "eventIds": [
+        "ff14-234",
+        "ff14-235",
+        "ff14-236",
+        "ff14-237",
+        "ff14-238",
+        "ff14-239",
+        "ff14-240",
+        "ff14-241",
+        "ff14-242",
+        "ff14-243",
+        "ff14-244",
+        "ff14-245"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-234",
+        "ff14-235"
+      ],
+      "summary": "由于卫月的破碎以及其内部所出现的古代蛮神“巴哈姆特”的攻击，艾欧泽亚各地遭受的巨大的破坏。 加尔提诺战役结束后半年，在乌尔达哈城中一隅，一个组织成立了。"
+    },
+    {
+      "id": "mainline--realm-reborn--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5)（2）",
+      "versionRange": "2.0",
+      "eventIds": [
+        "ff14-246",
+        "ff14-247"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-246",
+        "ff14-247"
+      ],
+      "summary": "根据战后“拂晓血盟”所公开发表的最终报告书，帝国军所使用的对蛮神兵器“究极神兵”当初在基拉巴尼亚地区的深山里被发现时“如同化石”。 以究极神兵被破坏为标志，贤者行军行动成功落下帷幕。"
+    },
+    {
+      "id": "mainline--realm-reborn--03",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5) · 2.1",
+      "versionRange": "2.1",
+      "eventIds": [
+        "ff14-248",
+        "ff14-249"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-248",
+        "ff14-249"
+      ],
+      "summary": "成功实施了究极神兵破坏作战的冒险者，被称赞为“光之战士重现”，成为了新生艾欧泽亚的“英雄”。 定好了本部的迁移目的地，正准备着手准备搬迁之时，“拂晓”收到了一件急报——在黑衣森林，蛮神被召唤了出来。"
+    },
+    {
+      "id": "mainline--realm-reborn--04",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5) · 2.2",
+      "versionRange": "2.2",
+      "eventIds": [
+        "ff14-250",
+        "ff14-251"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-250",
+        "ff14-251"
+      ],
+      "summary": "虽说本部已经转移到了丧灵钟，但立刻就想利用“拂晓血盟”的人并不会放弃。 在收容多玛难民的问题暂时得到了解决的同时，水晶失窃事件的搜查也得到了进展。"
+    },
+    {
+      "id": "mainline--realm-reborn--05",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5) · 2.3",
+      "versionRange": "2.3",
+      "eventIds": [
+        "ff14-252",
+        "ff14-253",
+        "ff14-254"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-252",
+        "ff14-253"
+      ],
+      "summary": "下一场骚乱的导火索，在沙都“乌尔达哈”被点燃。 乌尔达哈的骚乱由于迅速的应对，总算是被镇压了下来。"
+    },
+    {
+      "id": "mainline--realm-reborn--06",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5) · 2.4",
+      "versionRange": "2.4",
+      "eventIds": [
+        "ff14-255",
+        "ff14-256"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-255",
+        "ff14-256"
+      ],
+      "summary": "水晶义勇队成立不久，总帅阿尔菲诺的属下收到一个匿名情报，称有加雷马帝国的密探潜入了某个国家的军队当中。 正在库尔札斯的会谈进行当中，传来了从皇都出发的运送支援物资的运输队遭到不知名者所袭击的凶信。"
+    },
+    {
+      "id": "mainline--realm-reborn--07",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "realm-reborn",
+      "eraTitle": "第七星历·重生之境(2.0~2.5)",
+      "title": "第七星历·重生之境(2.0~2.5)",
+      "versionRange": "2.5",
+      "eventIds": [
+        "ff14-257",
+        "ff14-258",
+        "ff14-259",
+        "ff14-260"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-257",
+        "ff14-258"
+      ],
+      "summary": "在水晶义勇队持续推进对乌尔达哈非法武器交易进行搜查的同时，皇都派出的使者造访了拂晓血盟。 作为“拂晓血盟”蛮神对策的其中一环，或可称为“对无影兵器”的魔器开发正在秘密进行着。"
+    },
+    {
+      "id": "mainline--heavensward--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5)（1）",
+      "versionRange": "3.0",
+      "eventIds": [
+        "ff14-261",
+        "ff14-262",
+        "ff14-263",
+        "ff14-264",
+        "ff14-265",
+        "ff14-266",
+        "ff14-267",
+        "ff14-268",
+        "ff14-269",
+        "ff14-270",
+        "ff14-271",
+        "ff14-272"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-261",
+        "ff14-262"
+      ],
+      "summary": "凭借“拂晓”贤人们的帮助逃出王宫的光之战士，在萨纳兰的荒野与阿尔菲诺再次相会，并在恒辉队的将领皮平以及贸易商人、西德等人的帮助下成功摆脱追兵，逃向北方的库尔札斯。 在阿尔菲诺和塔塔露经过与苍穹骑士的决斗、光明正大恢复自由之身的同时，光之战士受到教皇托尔丹七世的邀请前往教皇厅。"
+    },
+    {
+      "id": "mainline--heavensward--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5)（2）",
+      "versionRange": "3.0",
+      "eventIds": [
+        "ff14-273",
+        "ff14-274",
+        "ff14-275",
+        "ff14-276",
+        "ff14-277"
+      ],
+      "keyEventIds": [
+        "ff14-277"
+      ],
+      "summarySourceEventIds": [
+        "ff14-273",
+        "ff14-274"
+      ],
+      "summary": "在茫然不知所措的一行人背后，教皇留下一句“去往魔大陆”，乘坐飞空艇“天阳号”飞向云海的另一端而去。 紧跟前往魔大陆的教皇等人的脚步，光之战士等人也开始了行动。"
+    },
+    {
+      "id": "mainline--heavensward--03",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5) · 3.1",
+      "versionRange": "3.1",
+      "eventIds": [
+        "ff14-278",
+        "ff14-279",
+        "ff14-280"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-278",
+        "ff14-279"
+      ],
+      "summary": "由于教皇的离去，没有国家元首的伊修加德社会动荡。 “拂晓血盟”朝着重建一个完整组织的方向开始了新的活动。"
+    },
+    {
+      "id": "mainline--heavensward--04",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5) · 3.2",
+      "versionRange": "3.2",
+      "eventIds": [
+        "ff14-281",
+        "ff14-282"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-281",
+        "ff14-282"
+      ],
+      "summary": "与皇都持续走向变革的同时，“拂晓血盟”也开始了新的步伐。 光之战士所带回的“创世秘密”实在是令人难以置信。"
+    },
+    {
+      "id": "mainline--heavensward--05",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5) · 3.3",
+      "versionRange": "3.3",
+      "eventIds": [
+        "ff14-283",
+        "ff14-284",
+        "ff14-285"
+      ],
+      "keyEventIds": [
+        "ff14-285"
+      ],
+      "summarySourceEventIds": [
+        "ff14-283",
+        "ff14-284"
+      ],
+      "summary": "邪龙之影出现在庆典之上并进行宣战，明白昭示了龙族不久将要进攻皇都。 成功通过圣龙的试炼之后，天空立刻传来龙啸的轰鸣。"
+    },
+    {
+      "id": "mainline--heavensward--06",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5) · 3.4",
+      "versionRange": "3.4",
+      "eventIds": [
+        "ff14-286",
+        "ff14-287",
+        "ff14-288"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-286",
+        "ff14-287"
+      ],
+      "summary": "终结了历经千年的“龙诗战争”的光之战士在神殿骑士团总骑士长艾默里克·德·博雷尔的招待下，正在共进晚餐。 从贤人于里昂热处得知土神“泰坦”有即将被再次召唤的预兆的光之战士等人，从塞尔法特尔继续向拉诺西亚进发，并在当地与年幼的地灵族“嘎埠”相遇。"
+    },
+    {
+      "id": "mainline--heavensward--07",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "heavensward",
+      "eraTitle": "第七星历·苍穹之禁城(3.0~3.5)",
+      "title": "第七星历·苍穹之禁城(3.0~3.5)",
+      "versionRange": "3.5",
+      "eventIds": [
+        "ff14-289",
+        "ff14-290",
+        "ff14-291"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-289",
+        "ff14-290"
+      ],
+      "summary": "“拂晓”的据点“石之家”迎来了紧急来使的拜访——阿拉米格解放军一员的梅·娜格前来投奔好友伊达，并带来了在基拉巴尼亚地区持续发生的紧急事态的消息。 在同盟军进行出击准备的同时，“拂晓”为了打消铁面公卿进攻长城的念头，向基拉巴尼亚方面派出了作为与阿拉米格解放军沟通桥梁的伊达和帕帕力莫。"
+    },
+    {
+      "id": "mainline--stormblood--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "stormblood",
+      "eraTitle": "第七星历·红莲之狂潮(4.0~4.3)",
+      "title": "第七星历·红莲之狂潮(4.0~4.3)（1）",
+      "versionRange": "4.0",
+      "eventIds": [
+        "ff14-292",
+        "ff14-293",
+        "ff14-294",
+        "ff14-295",
+        "ff14-296",
+        "ff14-297",
+        "ff14-298",
+        "ff14-299",
+        "ff14-300",
+        "ff14-301",
+        "ff14-302",
+        "ff14-303"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-292",
+        "ff14-293"
+      ],
+      "summary": "控制了巴埃萨长城的艾欧泽亚同盟军，并没有趁势继续东进。 “拂晓”的人员凭借各自擅长的领域，为阿拉米格解放军进行协助。"
+    },
+    {
+      "id": "mainline--stormblood--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "stormblood",
+      "eraTitle": "第七星历·红莲之狂潮(4.0~4.3)",
+      "title": "第七星历·红莲之狂潮(4.0~4.3)（2）",
+      "versionRange": "4.0",
+      "eventIds": [
+        "ff14-304",
+        "ff14-305",
+        "ff14-306",
+        "ff14-307",
+        "ff14-308",
+        "ff14-309",
+        "ff14-310",
+        "ff14-311"
+      ],
+      "keyEventIds": [
+        "ff14-309",
+        "ff14-311"
+      ],
+      "summarySourceEventIds": [
+        "ff14-304",
+        "ff14-305"
+      ],
+      "summary": "决战由多玛的百姓拉开了序幕。 就在东方陷入动乱漩涡的同时，西方的艾欧泽亚也处在战斗之中。"
+    },
+    {
+      "id": "mainline--stormblood--03",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "stormblood",
+      "eraTitle": "第七星历·红莲之狂潮(4.0~4.3)",
+      "title": "第七星历·红莲之狂潮(4.0~4.3) · 4.1",
+      "versionRange": "4.1",
+      "eventIds": [
+        "ff14-312",
+        "ff14-313",
+        "ff14-314"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-312",
+        "ff14-313"
+      ],
+      "summary": "奔走于艾欧泽亚和东方地区的战斗，在阿拉米格走向了终点。 从加雷马帝国的手中夺回祖国的阿拉米格人们开始建设新的国家。"
+    },
+    {
+      "id": "mainline--stormblood--04",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "stormblood",
+      "eraTitle": "第七星历·红莲之狂潮(4.0~4.3)",
+      "title": "第七星历·红莲之狂潮(4.0~4.3) · 4.2",
+      "versionRange": "4.2",
+      "eventIds": [
+        "ff14-315",
+        "ff14-316",
+        "ff14-317",
+        "ff14-318"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-315",
+        "ff14-316"
+      ],
+      "summary": "在劳班带领下阿拉米格踏出新的一步的时候，“拂晓血盟”收到了急报，东阿尔迪纳德商会的掌柜汉考克掌握了重要的情报。 国主飞燕一方面对成功生还的豪雪表示热烈欢迎，另一方面对怎么处置夜露感到迷茫。"
+    },
+    {
+      "id": "mainline--stormblood--05",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "stormblood",
+      "eraTitle": "第七星历·红莲之狂潮(4.0~4.3)",
+      "title": "第七星历·红莲之狂潮(4.0~4.3)",
+      "versionRange": "4.3",
+      "eventIds": [
+        "ff14-319",
+        "ff14-320",
+        "ff14-321",
+        "ff14-322"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-319",
+        "ff14-320"
+      ],
+      "summary": "居住在归燕馆的豪雪和夜露，从旁人看来就是一对和睦的祖父和孙女。 从此后的经过回头来看，夜露的记忆大概在帝国湖畔堡见到养父母的时候就恢复了吧。"
+    },
+    {
+      "id": "mainline--shadowbringers--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "shadowbringers",
+      "eraTitle": "第七星历·暗影之逆焰(5.0)",
+      "title": "第七星历·暗影之逆焰(5.0)",
+      "versionRange": "5.0",
+      "eventIds": [
+        "ff14-323",
+        "ff14-324",
+        "ff14-325",
+        "ff14-326"
+      ],
+      "keyEventIds": [
+        "ff14-323"
+      ],
+      "summarySourceEventIds": [
+        "ff14-323",
+        "ff14-324"
+      ],
+      "summary": "决战到来之际，无影米特隆和无影阿洛格里夫使用了“超越之力”，融合了灵魂来进行战斗。 伊甸释放的光之力给环境带来了剧烈的变化。"
+    },
+    {
+      "id": "mainline--endwalker--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "endwalker",
+      "eraTitle": "第七星历·晓月之终途(6.0)",
+      "title": "第七星历·晓月之终途(6.0)",
+      "versionRange": "6.0",
+      "eventIds": [
+        "ff14-327",
+        "ff14-328",
+        "ff14-329",
+        "ff14-330",
+        "ff14-331"
+      ],
+      "keyEventIds": [
+        "ff14-327",
+        "ff14-329",
+        "ff14-331"
+      ],
+      "summarySourceEventIds": [
+        "ff14-327",
+        "ff14-328"
+      ],
+      "summary": "末日现象再次侵入原初世界。 追击法丹尼尔的旅途抵达月面。"
+    },
+    {
+      "id": "mainline--newfound-adventure--01",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "newfound-adventure",
+      "eraTitle": "第七星历·崭新的冒险（6.1~7.5）",
+      "title": "第七星历·崭新的冒险（6.1~7.5）",
+      "versionRange": "6.1",
+      "eventIds": [
+        "ff14-332"
+      ],
+      "keyEventIds": [
+        "ff14-332"
+      ],
+      "summarySourceEventIds": [
+        "ff14-332"
+      ],
+      "summary": "海德林与佐迪亚克的漫长篇章在6.0告一段落。"
+    },
+    {
+      "id": "mainline--newfound-adventure--02",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "newfound-adventure",
+      "eraTitle": "第七星历·崭新的冒险（6.1~7.5）",
+      "title": "第七星历·崭新的冒险（6.1~7.5） · 7.0",
+      "versionRange": "7.0",
+      "eventIds": [
+        "ff14-333",
+        "ff14-334",
+        "ff14-335"
+      ],
+      "keyEventIds": [
+        "ff14-333",
+        "ff14-335"
+      ],
+      "summarySourceEventIds": [
+        "ff14-333",
+        "ff14-334"
+      ],
+      "summary": "来自西方大陆图拉尔的请求让旧友重新聚首。 图莱尤拉即将决定下一位统治者。"
+    },
+    {
+      "id": "mainline--newfound-adventure--03",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "newfound-adventure",
+      "eraTitle": "第七星历·崭新的冒险（6.1~7.5）",
+      "title": "第七星历·崭新的冒险（6.1~7.5） · 7.3",
+      "versionRange": "7.3",
+      "eventIds": [
+        "ff14-336"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-336"
+      ],
+      "summary": "围绕亚历山德里亚、记忆与生死的危机在 7.3 继续发展；后续走向仍待揭示。"
+    },
+    {
+      "id": "mainline--newfound-adventure--04",
+      "rootBranchId": "mainline",
+      "branchId": "mainline",
+      "branchName": "原初世界·主线",
+      "eraId": "newfound-adventure",
+      "eraTitle": "第七星历·崭新的冒险（6.1~7.5）",
+      "title": "第七星历·崭新的冒险（6.1~7.5）",
+      "versionRange": "7.5",
+      "eventIds": [
+        "ff14-337"
+      ],
+      "keyEventIds": [
+        "ff14-337"
+      ],
+      "summarySourceEventIds": [
+        "ff14-337"
+      ],
+      "summary": "自第九世界雷霆肆虐之地归来后，围绕“钥匙”的调查继续展开。"
+    },
+    {
+      "id": "shard-1--norvrandt-century--01",
+      "rootBranchId": "shards",
+      "branchId": "shard-1",
+      "branchName": "第一世界·诺弗兰特",
+      "eraId": "norvrandt-century",
+      "eraTitle": "诺弗兰特百年史",
+      "title": "诺弗兰特百年史 · 诺弗兰特百年史 · 01～诺弗兰特百年史 · 12",
+      "versionRange": "诺弗兰特百年史 · 01～诺弗兰特百年史 · 12",
+      "eventIds": [
+        "ff14-s1-001",
+        "ff14-s1-002",
+        "ff14-s1-003",
+        "ff14-s1-004",
+        "ff14-s1-005",
+        "ff14-s1-006",
+        "ff14-s1-007",
+        "ff14-s1-008",
+        "ff14-s1-009",
+        "ff14-s1-010",
+        "ff14-s1-011",
+        "ff14-s1-012"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-s1-001",
+        "ff14-s1-002"
+      ],
+      "summary": "阿尔博特等人为了应对“影之王”的威胁而持续战斗，最终将在其背后操纵的无影们成功打倒。 在安穆·艾兰，结晶化的光浪至今仍然像石壁一样矗立着。"
+    },
+    {
+      "id": "shard-1--norvrandt-century--02",
+      "rootBranchId": "shards",
+      "branchId": "shard-1",
+      "branchName": "第一世界·诺弗兰特",
+      "eraId": "norvrandt-century",
+      "eraTitle": "诺弗兰特百年史",
+      "title": "诺弗兰特百年史 · 诺弗兰特百年史 · 13",
+      "versionRange": "诺弗兰特百年史 · 13",
+      "eventIds": [
+        "ff14-s1-013"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-s1-013"
+      ],
+      "summary": "水晶公的救世方案成功了吗？"
+    },
+    {
+      "id": "shard-13--thirteenth-history--01",
+      "rootBranchId": "shards",
+      "branchId": "shard-13",
+      "branchName": "第十三世界·虚无界",
+      "eraId": "thirteenth-history",
+      "eraTitle": "第十三世界观测记录",
+      "title": "第十三世界观测记录 · 第十三世界 · 暗之泛滥",
+      "versionRange": "第十三世界 · 暗之泛滥",
+      "eventIds": [
+        "ff14-s13-001"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-s13-001"
+      ],
+      "summary": "第十三世界的暗属性失衡令世界化为虚无界，许多生命失去稳定的物质形态并转化为妖异。"
+    },
+    {
+      "id": "anecdotes--calamity-memoirs--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "calamity-memoirs",
+      "eraTitle": "第七灵灾回忆录",
+      "title": "第七灵灾回忆录",
+      "versionRange": "第七灵灾",
+      "eventIds": [
+        "ff14-a-001",
+        "ff14-a-002",
+        "ff14-a-003",
+        "ff14-a-004",
+        "ff14-a-005"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-001",
+        "ff14-a-002"
+      ],
+      "summary": "荣耀的胜利号 「传令黑涡团全军，从现在开始取消一切命令。 女王陛下与七个拉拉菲尔 在乌尔达哈王宫的露台上目送恒辉队将士们离开，已经是几天前的事了。"
+    },
+    {
+      "id": "anecdotes--tales-from-the-dragonsong-war--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-from-the-dragonsong-war",
+      "eraTitle": "苍穹秘话",
+      "title": "苍穹秘话 · 第七星历·苍穹之禁城",
+      "versionRange": "第七星历·苍穹之禁城",
+      "eventIds": [
+        "ff14-a-006",
+        "ff14-a-007",
+        "ff14-a-008",
+        "ff14-a-009",
+        "ff14-a-010",
+        "ff14-a-011",
+        "ff14-a-012",
+        "ff14-a-013"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-006",
+        "ff14-a-007"
+      ],
+      "summary": "友人与巨龙 被清晨的雨打湿的干草堆，冒着白烟持续燃烧着。 冰雪女神 伊塞勒紧紧地握着手里的水蓝色水晶。"
+    },
+    {
+      "id": "anecdotes--tales-from-the-storm--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-from-the-storm",
+      "eraTitle": "红莲秘话",
+      "title": "红莲秘话 · 第七星历·红莲之狂潮",
+      "versionRange": "第七星历·红莲之狂潮",
+      "eventIds": [
+        "ff14-a-014",
+        "ff14-a-015",
+        "ff14-a-016",
+        "ff14-a-017",
+        "ff14-a-018",
+        "ff14-a-019",
+        "ff14-a-020",
+        "ff14-a-021"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-014",
+        "ff14-a-015"
+      ],
+      "summary": "红衣友人 「又一支部队被消灭了啊……」 以神拳痕为根据地的部队的指挥官老康拉德叹气喃喃说道。 某个午后的茶话会 ——在那个为光复阿拉米格而进行的空中庭园决战之后，又过了些时间。"
+    },
+    {
+      "id": "anecdotes--tales-of-the-dawn-1--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-of-the-dawn-1",
+      "eraTitle": "光之回忆录I",
+      "title": "光之回忆录I · 第七星历·暗影之逆焰",
+      "versionRange": "第七星历·暗影之逆焰",
+      "eventIds": [
+        "ff14-a-022",
+        "ff14-a-023",
+        "ff14-a-024",
+        "ff14-a-025",
+        "ff14-a-026"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-022",
+        "ff14-a-023"
+      ],
+      "summary": "直至血染双手 生为称霸世界的大帝国的皇子，这个境遇到底是幸福呢，还是不幸呢。 狩猎的开始 也许有人会认为，在一个广袤、强大帝国的统治者家族中出生，是一种幸运，但对于年少的皇子芝诺斯——加雷马帝国伟大国父索鲁斯·佐斯·加尔乌斯的曾孙——而言，这是一种诅咒。"
+    },
+    {
+      "id": "anecdotes--tales-from-the-shadows--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-from-the-shadows",
+      "eraTitle": "暗影秘话",
+      "title": "暗影秘话 · 第七星历·暗影之逆焰",
+      "versionRange": "第七星历·暗影之逆焰",
+      "eventIds": [
+        "ff14-a-027",
+        "ff14-a-028",
+        "ff14-a-029",
+        "ff14-a-030",
+        "ff14-a-031",
+        "ff14-a-032",
+        "ff14-a-033",
+        "ff14-a-034"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-027",
+        "ff14-a-028"
+      ],
+      "summary": "心愿倾注其名 在这个利姆萨·罗敏萨里，内心黑暗的人才会穿白色。 黑历史的欺瞒 在黄金港最大的酒馆「潮风亭」的一个角落里，奇特的二人组合正在喝酒。"
+    },
+    {
+      "id": "anecdotes--tales-from-the-twilight--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-from-the-twilight",
+      "eraTitle": "黎明秘话",
+      "title": "黎明秘话 · 第七星历·黎明之途",
+      "versionRange": "第七星历·黎明之途",
+      "eventIds": [
+        "ff14-a-035",
+        "ff14-a-036",
+        "ff14-a-037",
+        "ff14-a-038",
+        "ff14-a-039"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-035",
+        "ff14-a-036"
+      ],
+      "summary": "知晓其伤之人 某个晴朗的日子，多玛飞地。 梅尔维布之罪 随着在武伽玛罗武装矿山所进行的和平交涉的圆满成功，长年对立的利姆萨·罗敏萨和地灵族之间缔结了友好关系。"
+    },
+    {
+      "id": "anecdotes--tales-from-the-dawn--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-from-the-dawn",
+      "eraTitle": "晓月秘话",
+      "title": "晓月秘话 · 第七星历·晓月之终途",
+      "versionRange": "第七星历·晓月之终途",
+      "eventIds": [
+        "ff14-a-040",
+        "ff14-a-041",
+        "ff14-a-042",
+        "ff14-a-043",
+        "ff14-a-044"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-040",
+        "ff14-a-041"
+      ],
+      "summary": "某些朋友的记录 首都亚马乌罗提，其在人们生活中起着核心作用。 始于无路 埃伦维尔在大雪纷飞的皇都伊修加德收到了一封信。"
+    },
+    {
+      "id": "anecdotes--tales-under-the-new-moon--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-under-the-new-moon",
+      "eraTitle": "朔月秘话",
+      "title": "朔月秘话 · 第七星历·晓月之终途",
+      "versionRange": "第七星历·晓月之终途",
+      "eventIds": [
+        "ff14-a-045",
+        "ff14-a-046",
+        "ff14-a-047",
+        "ff14-a-048",
+        "ff14-a-049",
+        "ff14-a-050",
+        "ff14-a-051",
+        "ff14-a-052",
+        "ff14-a-053"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-045",
+        "ff14-a-046"
+      ],
+      "summary": "苍天在梦中消融 习惯这种东西，不是那么简单改变得了的。 苍天之蓝已然褪色 埃斯蒂尼安·瓦尔利诺很快就体会到了拉札罕蒸馏酒的威力。"
+    },
+    {
+      "id": "anecdotes--tales-of-the-dawn-2--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-of-the-dawn-2",
+      "eraTitle": "光之回忆录II",
+      "title": "光之回忆录II · 第七星历·晓月之终途",
+      "versionRange": "第七星历·晓月之终途",
+      "eventIds": [
+        "ff14-a-054",
+        "ff14-a-055",
+        "ff14-a-056",
+        "ff14-a-057"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-054",
+        "ff14-a-055"
+      ],
+      "summary": "往昔追忆，由此开始 映照在刚刚开启的视野之中的，是乳白色的骨头。 最强爱情 那名男子让陆行鸟骑着在荒野上奔跑而来。"
+    },
+    {
+      "id": "anecdotes--tales-under-the-golden-sun--01",
+      "rootBranchId": "anecdotes",
+      "branchId": "anecdotes",
+      "branchName": "秘话合集",
+      "eraId": "tales-under-the-golden-sun",
+      "eraTitle": "金曦秘话",
+      "title": "金曦秘话 · 第七星历·黄金港",
+      "versionRange": "第七星历·黄金港",
+      "eventIds": [
+        "ff14-a-058",
+        "ff14-a-059",
+        "ff14-a-060",
+        "ff14-a-061"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-a-058",
+        "ff14-a-059"
+      ],
+      "summary": "云间寻星 重重黑云覆盖在亚历山德里亚上空。 派对永不落幕 一个众阳之民男子正靠坐在真唯大道的阶梯上放松疲惫的身躯。"
+    },
+    {
+      "id": "lore--lore-concepts--01",
+      "rootBranchId": "lore",
+      "branchId": "lore",
+      "branchName": "设定百科",
+      "eraId": "lore-concepts",
+      "eraTitle": "概念设定",
+      "title": "概念设定 · 设定·百科（1）",
+      "versionRange": "设定·百科",
+      "eventIds": [
+        "ff14-l-001",
+        "ff14-l-002",
+        "ff14-l-003",
+        "ff14-l-004",
+        "ff14-l-005",
+        "ff14-l-006",
+        "ff14-l-007",
+        "ff14-l-008",
+        "ff14-l-009",
+        "ff14-l-010",
+        "ff14-l-011",
+        "ff14-l-012"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-l-001",
+        "ff14-l-002"
+      ],
+      "summary": "光之加护 在艾欧泽亚，人们似乎普遍认为拥有光之加护（日文︰光の加護，英文︰Blessing of Light）乃是受到星球的意志海德林的影响。"
+    },
+    {
+      "id": "lore--lore-concepts--02",
+      "rootBranchId": "lore",
+      "branchId": "lore",
+      "branchName": "设定百科",
+      "eraId": "lore-concepts",
+      "eraTitle": "概念设定",
+      "title": "概念设定 · 设定·百科（2）",
+      "versionRange": "设定·百科",
+      "eventIds": [
+        "ff14-l-013",
+        "ff14-l-014",
+        "ff14-l-015",
+        "ff14-l-016",
+        "ff14-l-017",
+        "ff14-l-018",
+        "ff14-l-019",
+        "ff14-l-020",
+        "ff14-l-021",
+        "ff14-l-022",
+        "ff14-l-023"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-l-013",
+        "ff14-l-014"
+      ],
+      "summary": "潜能量 潜能量（日文︰デュナミス，英文︰Dynamis）是一种非常矛盾的存在，它无处不在却又鲜为人知，能轻易毁灭一个世界，也能在绝望之时守护一个世界。 灵灾 灵灾（霊災，Umbral Calamity）是艾欧泽亚人对历史上由现象级魔法次元崩坏（次元圧壊，Rejoining）引发的灾难的称呼。"
+    },
+    {
+      "id": "lore--lore-historical-background--01",
+      "rootBranchId": "lore",
+      "branchId": "lore",
+      "branchName": "设定百科",
+      "eraId": "lore-historical-background",
+      "eraTitle": "历史背影",
+      "title": "历史背影 · 历史·背影",
+      "versionRange": "历史·背影",
+      "eventIds": [
+        "ff14-l-024",
+        "ff14-l-025",
+        "ff14-l-026",
+        "ff14-l-027"
+      ],
+      "keyEventIds": [],
+      "summarySourceEventIds": [
+        "ff14-l-024",
+        "ff14-l-025"
+      ],
+      "summary": "加雷马帝国东洲远征记 统一了北洲伊尔萨巴德大陆的加雷马帝国开始着手对东洲奥萨德次大陆的侵略，是在50年前。 角笛之争 第六星历1562年，作为发生了以银泪湖上空战为首的诸多历史重要事件的一年而被深刻铭记。"
+    }
+  ]
+}

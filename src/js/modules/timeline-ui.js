@@ -871,6 +871,8 @@ function openEventModal(evt, direction = 0) {
       img.decoding = 'async';                    // don't block main thread on decode
       if (imgData.width) img.width = imgData.width;
       if (imgData.height) img.height = imgData.height;
+      if (imgData.displayWidth) img.style.maxWidth = `${imgData.displayWidth}px`;
+      if (imgData.displayHeight) img.style.maxHeight = `${imgData.displayHeight}px`;
       imgEl.appendChild(img);
     }
   }

@@ -86,7 +86,7 @@ function initTerraMapDialog() {
   dialog.addEventListener('close', () => setZoomed(false));
 }
 
-export function initArknightsEntry() {
+export async function initArknightsEntry() {
   const pageType = document.body.dataset.page;
   const legacyDestination = pageType === 'arknights-home'
     ? legacyArknightsDestination(location.search, location.hash)
@@ -102,6 +102,11 @@ export function initArknightsEntry() {
   dismissPortalOverlay();
 
   if (pageType === 'arknights-home') initTerraMapDialog();
+
+  if (pageType === 'arknights-chronicle') {
+    const { initArknightsChronicle } = await import('./arknights-chronicle-reader.js');
+    return initArknightsChronicle();
+  }
 
   if (pageType === 'arknights-is-index' || pageType === 'arknights-is-topic') {
     return initArchivePage(pageType);

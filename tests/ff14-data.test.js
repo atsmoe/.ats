@@ -103,9 +103,9 @@ test('every published FFXIV record has a traceable source', () => {
   }
 });
 
-test('FFXIV catalog exposes fourteen reflections and eight journey constellations', () => {
+test('FFXIV catalog exposes only admitted clear media alongside fourteen reflections and eight journey constellations', async () => {
   delete require.cache[require.resolve(CATALOG_PATH)];
-  const catalog = require(CATALOG_PATH)();
+  const catalog = await require(CATALOG_PATH)();
   const recordIds = new Set(
     loadData().subEntities[0].timeline.branches.flatMap(branch => (
       collectRecords(branch).map(record => record.id)
@@ -142,5 +142,15 @@ test('FFXIV catalog exposes fourteen reflections and eight journey constellation
   for (const entry of rawEntries) {
     assert.equal(entry.records, undefined, `${entry.id} must not embed record copies`);
     assert.equal(entry.events, undefined, `${entry.id} must not embed event copies`);
+  }
+
+  const visibleImages = catalog.chronicleSections
+    .flatMap(section => section.events)
+    .flatMap(record => record.images || []);
+  assert.ok(visibleImages.length > 0, 'the catalog should expose admitted local originals');
+  for (const image of visibleImages) {
+    assert.match(image.src, /^\.\/assets\/images\/ff14\//);
+    assert.ok(image.displayWidth * 1.5 <= image.width);
+    assert.ok(image.displayHeight * 1.5 <= image.height);
   }
 });

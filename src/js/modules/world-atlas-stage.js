@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 const TAU = Math.PI * 2;
+const TERRA_RADIUS = 9.6;
 const WORLD_IDS = ['arknights', 'wh40k', 'ff14'];
 const WORLD_POSITIONS = Object.freeze({
   arknights: new THREE.Vector3(0, 0, 0),
@@ -10,9 +11,9 @@ const WORLD_POSITIONS = Object.freeze({
 
 const VIEW_SPECS = Object.freeze({
   arknights: {
-    cameraOffset: new THREE.Vector3(2.7, 2.2, 18.7),
-    targetOffset: new THREE.Vector3(2.15, -.72, 0),
-    fov: 41,
+    cameraOffset: new THREE.Vector3(2.7, 3.8, 19.4),
+    targetOffset: new THREE.Vector3(4.7, 2.45, 0),
+    fov: 43,
   },
   wh40k: {
     cameraOffset: new THREE.Vector3(3.8, 8.7, 21.5),
@@ -199,53 +200,108 @@ export function createTerraSystem({ quality, glowTexture, textureLoader }) {
   root.position.copy(WORLD_POSITIONS.arknights);
 
   const content = new THREE.Group();
-  content.rotation.set(-.14, -.34, -.08);
+  content.rotation.set(.06, -.58, -.1);
   root.add(content);
 
   const detail = quality === 'reduced' ? [64, 40] : [112, 72];
   const planetMaterial = new THREE.MeshStandardMaterial({
-    color: 0x17272a,
-    roughness: .86,
-    metalness: .02,
+    color: 0x1a2525,
+    emissive: 0x030707,
+    emissiveIntensity: .2,
+    roughness: .74,
+    metalness: .01,
   });
-  const planet = new THREE.Mesh(new THREE.SphereGeometry(6.2, detail[0], detail[1]), planetMaterial);
+  const planet = new THREE.Mesh(new THREE.SphereGeometry(TERRA_RADIUS, detail[0], detail[1]), planetMaterial);
   planet.name = 'terra-planet';
   planet.userData.worldId = 'arknights';
   content.add(planet);
 
-  const atmosphereWarm = createAtmosphere(6.52, 0xd7a044, .54);
-  const atmosphereCold = createAtmosphere(6.42, 0x5ba6aa, .18);
+  const atmosphereWarm = createAtmosphere(TERRA_RADIUS + .42, 0xffc184, .68);
+  const atmosphereCold = createAtmosphere(TERRA_RADIUS + .22, 0x77a7b2, .2);
   content.add(atmosphereWarm, atmosphereCold);
 
-  const nearOrbit = createOrbit(8.45, 0xd9a441, .2);
+  const cloudMaterial = new THREE.MeshStandardMaterial({
+    color: 0xdde2de,
+    transparent: true,
+    opacity: 0,
+    alphaTest: .012,
+    depthWrite: false,
+    roughness: 1,
+    metalness: 0,
+  });
+  const cloudLayer = new THREE.Mesh(
+    new THREE.SphereGeometry(TERRA_RADIUS + .075, detail[0], detail[1]),
+    cloudMaterial,
+  );
+  cloudLayer.name = 'terra-cloud-layer';
+  content.add(cloudLayer);
+
+  const lineworkMaterial = new THREE.MeshBasicMaterial({
+    color: 0xf0a354,
+    transparent: true,
+    opacity: .42,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const lineworkLayer = new THREE.Mesh(
+    new THREE.SphereGeometry(TERRA_RADIUS + .035, detail[0], detail[1]),
+    lineworkMaterial,
+  );
+  lineworkLayer.name = 'terra-source-linework';
+  content.add(lineworkLayer);
+
+  const nearOrbit = createOrbit(12.75, 0xd9a441, .1);
   nearOrbit.rotation.set(1.26, .1, -.18);
-  const farOrbit = createOrbit(10.2, 0x6d9698, .09);
+  const farOrbit = createOrbit(15.4, 0x6d9698, .055);
   farOrbit.rotation.set(.72, -.34, .28);
   content.add(nearOrbit, farOrbit);
 
   const moon = new THREE.Mesh(
-    new THREE.SphereGeometry(.62, 28, 18),
+    new THREE.SphereGeometry(.74, 28, 18),
     new THREE.MeshStandardMaterial({ color: 0x657278, roughness: .96, metalness: 0 }),
   );
-  moon.position.set(8.2, 1.2, .7);
+  moon.position.set(12.45, 1.6, .8);
   content.add(moon);
 
-  const observationGlow = createGlowSprite(glowTexture, 0xd9a441, 18, .16);
-  observationGlow.position.set(-4.5, 4.7, -2.8);
-  root.add(observationGlow);
+  const observationGlow = createGlowSprite(glowTexture, 0xd9a441, 21, .1);
+  observationGlow.position.set(-6.6, 5.9, -3.8);
+  const horizonGlow = createGlowSprite(glowTexture, 0xffc48b, 6.8, .78);
+  horizonGlow.position.set(8.7, 2.25, 3.9);
+  root.add(observationGlow, horizonGlow);
+
+  const terraKey = new THREE.DirectionalLight(0xffd0a2, 2.35);
+  terraKey.position.set(12, 5.5, 10);
+  root.add(terraKey);
 
   const ready = Promise.all([
     loadTexture(textureLoader, './assets/images/star-map/terra/terra-globe-albedo.webp', { srgb: true }),
+    loadTexture(textureLoader, './assets/images/star-map/terra/terra-globe-clouds.png', { srgb: true }),
+    loadTexture(textureLoader, './assets/images/star-map/terra/terra-globe-linework.png', { srgb: true }),
+    loadTexture(textureLoader, './assets/images/star-map/terra/terra-globe-normal.png'),
     loadTexture(textureLoader, './assets/images/star-map/terra/terra-globe-relief.png'),
-  ]).then(([albedo, relief]) => {
+  ]).then(([albedo, clouds, linework, normal, relief]) => {
     if (albedo) {
       planetMaterial.map = albedo;
-      planetMaterial.color.set(0xb8c1bf);
+      planetMaterial.color.set(0xffffff);
+      planetMaterial.needsUpdate = true;
+    }
+    if (clouds) {
+      cloudMaterial.map = clouds;
+      cloudMaterial.opacity = .34;
+      cloudMaterial.needsUpdate = true;
+    }
+    if (linework) {
+      lineworkMaterial.map = linework;
+      lineworkMaterial.needsUpdate = true;
+    }
+    if (normal) {
+      planetMaterial.normalMap = normal;
+      planetMaterial.normalScale.set(.82, .82);
       planetMaterial.needsUpdate = true;
     }
     if (relief) {
       planetMaterial.bumpMap = relief;
-      planetMaterial.bumpScale = .16;
+      planetMaterial.bumpScale = .24;
       planetMaterial.needsUpdate = true;
     }
   });
@@ -258,10 +314,12 @@ export function createTerraSystem({ quality, glowTexture, textureLoader }) {
     ready,
     update(elapsed, delta, reducedMotion) {
       if (reducedMotion) return;
-      content.rotation.y += delta * .018;
+      content.rotation.y += delta * .006;
+      cloudLayer.rotation.y += delta * .008;
       const angle = elapsed * .055 + .34;
-      moon.position.set(Math.cos(angle) * 8.35, 1.1 + Math.sin(angle * 1.7) * .4, Math.sin(angle) * 8.35);
-      observationGlow.material.opacity = .13 + Math.sin(elapsed * .42) * .025;
+      moon.position.set(Math.cos(angle) * 12.55, 1.45 + Math.sin(angle * 1.7) * .44, Math.sin(angle) * 12.55);
+      observationGlow.material.opacity = .085 + Math.sin(elapsed * .42) * .018;
+      horizonGlow.material.opacity = .72 + Math.sin(elapsed * .24) * .055;
     },
   };
 }

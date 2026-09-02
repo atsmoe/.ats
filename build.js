@@ -70,13 +70,13 @@ async function buildJS() {
     logLevel: 'info',
   });
 
-  // Bundle the lightweight 2D scene controller used only by the star-map page.
+  // Bundle star-map-entry.js → star-map-3d.js (star map page only, includes Three.js)
   await esbuild.build({
     entryPoints: [path.join(SRC_JS, 'star-map-entry.js')],
     bundle: true,
     format: 'iife',
-    globalName: 'SM2D',
-    outfile: path.join(DIST, 'js', 'star-map-2d.js'),
+    globalName: 'SM3D',
+    outfile: path.join(DIST, 'js', 'star-map-3d.js'),
     splitting: false,
     target: 'es2020',
     minify: true,
@@ -94,7 +94,7 @@ async function buildJS() {
 
   // Remove bundles from the short-lived four-entry experiment. All non-star-map
   // pages are dispatched by bundle.js so the documented two-entry boundary holds.
-  for (const staleBundle of ['arknights.js', 'wh40k.js', 'star-map-3d.js']) {
+  for (const staleBundle of ['arknights.js', 'wh40k.js']) {
     const stalePath = path.join(DIST, 'js', staleBundle);
     if (fs.existsSync(stalePath)) fs.unlinkSync(stalePath);
   }
@@ -125,8 +125,10 @@ async function buildCSS() {
 async function buildImages() {
   const Image = require('@11ty/eleventy-img');
 
-  // Collect unique image paths referenced in source data JSON
-  const dataDir = path.join(__dirname, 'src', '_data');
+  // Collect the images actually admitted into generated distribution data.
+  // Source JSON can contain legacy FFXIV references that the media-admission
+  // stage intentionally removes before this optimization pass.
+  const dataDir = path.join(DIST, 'data');
   const imageRefs = new Set();
   for (const file of fs.readdirSync(dataDir).filter(f => f.endsWith('.json'))) {
     const content = fs.readFileSync(path.join(dataDir, file), 'utf-8');
@@ -141,7 +143,7 @@ async function buildImages() {
 
   console.log(`[build] Optimising ${imageRefs.size} referenced images…`);
 
-  let count = 0, skipped = 0;
+  let count = 0, skipped = 0, preservedOriginals = 0;
   let totalRaw = 0, totalWebp = 0;
   const processed = new Set(); // relPath → true (for post-processing)
 
@@ -151,6 +153,12 @@ async function buildImages() {
   for (let i = 0; i < refs.length; i += CONCURRENCY) {
     const batch = refs.slice(i, i + CONCURRENCY);
     await Promise.all(batch.map(async (relPath) => {
+      // FFXIV public originals are intentionally admitted at source quality;
+      // do not replace them with the 960w optimization derivative.
+      if (relPath.startsWith('ff14/public-originals/')) {
+        preservedOriginals++;
+        return;
+      }
       const srcPath = path.join(__dirname, 'src', 'assets', 'images', relPath);
       if (!fs.existsSync(srcPath)) { skipped++; return; }
 
@@ -184,7 +192,7 @@ async function buildImages() {
   }
 
   const pct = totalRaw > 0 ? ((1 - totalWebp / totalRaw) * 100).toFixed(0) : 0;
-  console.log(`[build] Images: ${count} processed, ${skipped} skipped, ${totalRaw > 0 ? `960w WebP ${pct}% smaller (${(totalRaw/1024/1024).toFixed(1)}MB → ${(totalWebp/1024/1024).toFixed(1)}MB)` : ''}`);
+  console.log(`[build] Images: ${count} processed, ${skipped} skipped, ${preservedOriginals} source originals preserved, ${totalRaw > 0 ? `960w WebP ${pct}% smaller (${(totalRaw/1024/1024).toFixed(1)}MB → ${(totalWebp/1024/1024).toFixed(1)}MB)` : ''}`);
 
   // Post-process dist data JSON: point src at 960w WebP instead of original
   if (processed.size > 0) {
@@ -254,7 +262,7 @@ async function main() {
   // Step 4: Verify critical output files
   const criticalFiles = [
     'js/bundle.js',
-    'js/star-map-2d.js',
+    'js/star-map-3d.js',
     'js/virtual-timeline.js',
   ];
   for (const f of criticalFiles) {

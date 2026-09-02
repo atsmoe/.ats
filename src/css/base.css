@@ -63,6 +63,53 @@ body {
   cursor: default;
 }
 
+/* The site remains usable if an entry bundle fails before dismissing the overlay. */
+#portal-arrival {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #060a14;
+  opacity: 1;
+  pointer-events: all;
+  animation: portal-arrival-failsafe 300ms ease 4s forwards;
+}
+
+@keyframes portal-arrival-failsafe {
+  to {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+}
+
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 16px;
+  z-index: 10000;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-sm);
+  background: #0e0c08;
+  color: var(--gold-bright);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 16px));
+  transition: transform var(--transition-fast);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+}
+
+#main-content { scroll-margin-top: var(--nav-h); }
+#main-content:focus { outline: none; }
+
 /* Vignette overlay */
 body::after {
   content: '';
@@ -165,4 +212,6 @@ footer {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  #portal-arrival { animation-delay: 1s !important; }
 }

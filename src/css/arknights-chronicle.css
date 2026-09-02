@@ -1,0 +1,415 @@
+.world-arknights.ark-chronicle-page {
+  --ark-reader-rail: clamp(190px, 17vw, 270px);
+  --ark-reader-context: clamp(230px, 22vw, 340px);
+  --ark-reader-rule: rgba(224, 163, 67, .22);
+}
+
+.ark-reader-open {
+  overflow: hidden;
+}
+
+body.ark-reader-open #nav {
+  visibility: hidden;
+}
+
+.ark-chronicle-directory {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(52px, 7vw, 96px) 0 120px;
+}
+
+.ark-directory-head {
+  max-width: 760px;
+  margin-bottom: 36px;
+  padding-left: 18px;
+  border-left: 3px solid var(--ark-amber);
+}
+
+.ark-directory-head > p:first-child,
+.ark-chapter-card-meta,
+.ark-reader-toolbar p,
+.ark-reader-chapter-era,
+.ark-reader-context-label {
+  color: var(--ark-amber);
+  font: 700 var(--site-min-font-size)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .16em;
+}
+
+.ark-directory-head h2 {
+  margin: 9px 0 12px;
+  font: 800 clamp(30px, 4vw, 52px)/1.05 var(--font-serif);
+  letter-spacing: .08em;
+}
+
+.ark-directory-head > p:last-child {
+  margin: 0;
+  color: var(--ark-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.ark-chapter-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ark-chapter-card {
+  position: relative;
+  min-height: 250px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(135deg, rgba(224, 163, 67, .07), transparent 40%),
+    rgba(9, 10, 14, .84);
+  border: 1px solid rgba(226, 223, 213, .12);
+  overflow: hidden;
+}
+
+.ark-chapter-card::after {
+  content: counter(ark-chapter, decimal-leading-zero);
+  counter-increment: ark-chapter;
+  position: absolute;
+  right: 15px;
+  bottom: -12px;
+  color: rgba(226, 223, 213, .035);
+  font: 900 88px/1 ui-monospace, monospace;
+  pointer-events: none;
+}
+
+.ark-chapter-list { counter-reset: ark-chapter; }
+
+.ark-chapter-card h2 {
+  margin: 9px 0 11px;
+  font: 700 clamp(19px, 2vw, 26px)/1.35 var(--font-serif);
+}
+
+.ark-chapter-open {
+  color: var(--ark-paper);
+  text-decoration: none;
+}
+
+.ark-chapter-open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.ark-chapter-card-intro {
+  margin: 0 0 24px;
+  color: var(--ark-muted);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.ark-chapter-representative {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding: 12px 14px;
+  display: grid;
+  gap: 5px;
+  color: inherit;
+  background: rgba(0, 0, 0, .24);
+  border-left: 2px solid var(--ark-amber);
+  text-decoration: none;
+}
+
+.ark-chapter-representative span,
+.ark-chapter-representative time {
+  color: var(--ark-muted);
+  font-size: var(--site-min-font-size);
+  letter-spacing: .08em;
+}
+
+.ark-chapter-representative strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ark-chapter-card:focus-within,
+.ark-chapter-card:hover {
+  border-color: rgba(224, 163, 67, .55);
+  background-color: rgba(20, 18, 15, .94);
+}
+
+.ark-reader[hidden] { display: none; }
+
+.ark-reader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  color: var(--ark-paper);
+  background: var(--ark-bg);
+}
+
+.ark-reader-toolbar {
+  min-height: 74px;
+  padding: 11px clamp(16px, 3vw, 42px);
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 420px) auto;
+  align-items: center;
+  gap: 22px;
+  border-bottom: 1px solid var(--ark-reader-rule);
+  background: rgba(9, 10, 14, .98);
+}
+
+.ark-reader-toolbar p { margin: 0 0 3px; }
+.ark-reader-toolbar h2 { margin: 0; font: 700 21px/1.2 var(--font-serif); letter-spacing: .12em; }
+
+.ark-reader-progress-label {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  color: var(--ark-muted);
+  font: var(--site-min-font-size)/1 ui-monospace, monospace;
+}
+
+.ark-reader-progress-label progress {
+  width: 100%;
+  height: 4px;
+  border: 0;
+  background: rgba(226, 223, 213, .12);
+  accent-color: var(--ark-amber);
+}
+
+.ark-reader-progress-label progress::-webkit-progress-bar { background: rgba(226, 223, 213, .12); }
+.ark-reader-progress-label progress::-webkit-progress-value { background: var(--ark-amber); }
+
+.ark-reader-toolbar-actions { display: flex; gap: 7px; }
+
+.ark-reader-toolbar-actions button {
+  min-height: 40px;
+  padding: 0 13px;
+  color: var(--ark-paper);
+  background: rgba(226, 223, 213, .04);
+  border: 1px solid rgba(226, 223, 213, .18);
+  cursor: pointer;
+}
+
+.ark-reader-toolbar-actions button:disabled { opacity: .35; cursor: default; }
+.ark-reader-toolbar-actions .ark-reader-close { border-color: rgba(224, 163, 67, .5); }
+
+.ark-reader-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--ark-reader-rail) minmax(360px, 760px) var(--ark-reader-context);
+  justify-content: center;
+}
+
+.ark-reader-index,
+.ark-reader-context {
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: rgba(12, 13, 17, .94);
+}
+
+.ark-reader-index {
+  padding: 22px 12px 60px;
+  border-right: 1px solid rgba(226, 223, 213, .09);
+}
+
+.ark-reader-index-link {
+  min-height: 42px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  color: var(--ark-muted);
+  border-left: 2px solid transparent;
+  font-size: var(--site-min-font-size);
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.ark-reader-index-link:hover,
+.ark-reader-index-link.is-current {
+  color: var(--ark-paper);
+  border-left-color: var(--ark-amber);
+  background: rgba(224, 163, 67, .07);
+}
+
+.ark-reader-scroll {
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-padding-top: 30px;
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgba(224, 163, 67, .055) 50%, transparent 50.1%),
+    var(--ark-ink);
+}
+
+.ark-reader-content {
+  width: min(100%, 720px);
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 54px) 28vh;
+}
+
+.ark-reader-chapter { padding-top: 44px; }
+.ark-reader-chapter + .ark-reader-chapter { margin-top: 36px; border-top: 1px solid var(--ark-reader-rule); }
+
+.ark-reader-chapter-head {
+  margin-bottom: 25px;
+  padding: 0 0 20px 18px;
+  border-left: 4px solid var(--ark-amber);
+  scroll-margin-top: 28px;
+}
+
+.ark-reader-chapter-head h2 {
+  margin: 7px 0 10px;
+  font: 750 clamp(24px, 3.2vw, 38px)/1.25 var(--font-serif);
+}
+
+.ark-reader-chapter-intro { margin: 0; color: var(--ark-muted); line-height: 1.75; }
+
+.ark-reader-record {
+  position: relative;
+  margin: 0 0 16px;
+  padding: 22px 23px 24px;
+  background: rgba(15, 16, 21, .82);
+  border: 1px solid rgba(226, 223, 213, .1);
+  scroll-margin-top: 30px;
+}
+
+.ark-reader-record::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: transparent;
+}
+
+.ark-reader-record.is-major { border-color: rgba(224, 163, 67, .3); }
+.ark-reader-record.is-major::after {
+  content: 'KEY NODE';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: rgba(224, 163, 67, .62);
+  font: 700 var(--site-min-font-size)/1 ui-monospace, monospace;
+  letter-spacing: .14em;
+}
+
+.ark-reader-record.is-current {
+  border-color: rgba(224, 163, 67, .62);
+  background: rgba(28, 24, 18, .92);
+}
+.ark-reader-record.is-current::before { background: var(--ark-amber); }
+
+.ark-reader-record-date { color: var(--ark-amber); font-size: 13px; letter-spacing: .08em; }
+.ark-reader-record-title { margin: 9px 0 14px; padding-right: 64px; font: 700 20px/1.45 var(--font-serif); }
+.ark-reader-record-description { margin: 0; color: var(--ark-paper); font-size: 15px; line-height: 1.95; white-space: pre-line; }
+
+.ark-reader-inline-tags,
+.ark-reader-crossrefs { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 7px; }
+.ark-reader-inline-tags span,
+.ark-reader-crossref { padding: 4px 9px; color: var(--ark-muted); border: 1px solid rgba(226, 223, 213, .12); font-size: var(--site-min-font-size); }
+
+.ark-reader-concurrent {
+  margin-bottom: 16px;
+  border: 1px dashed rgba(226, 223, 213, .18);
+  background: rgba(7, 8, 11, .65);
+}
+
+.ark-reader-concurrent summary {
+  min-height: 50px;
+  padding: 14px 18px;
+  color: var(--ark-muted);
+  cursor: pointer;
+  font-size: 13px;
+  letter-spacing: .06em;
+}
+
+.ark-reader-concurrent[open] summary { color: var(--ark-paper); border-bottom: 1px dashed rgba(226, 223, 213, .14); }
+.ark-reader-concurrent-records { padding: 14px; }
+.ark-reader-concurrent-records .ark-reader-record:last-child { margin-bottom: 0; }
+
+.ark-reader-context {
+  padding: 26px 22px 60px;
+  border-left: 1px solid rgba(226, 223, 213, .09);
+}
+
+.ark-reader-context-title { margin: 8px 0; font: 700 20px/1.45 var(--font-serif); }
+.ark-reader-context-date { margin: 0; color: var(--ark-muted); font-size: 13px; }
+.ark-reader-context-section { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(226, 223, 213, .1); }
+.ark-reader-context-section h3 { margin: 0 0 9px; color: var(--ark-amber); font-size: 13px; letter-spacing: .1em; }
+.ark-reader-context-section p { margin: 0; color: var(--ark-muted); font-size: 13px; line-height: 1.75; }
+.ark-reader-source-list { margin: 0; padding: 0; display: grid; gap: 10px; list-style: none; }
+.ark-reader-source { color: var(--ark-muted); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.ark-reader-source a { color: var(--ark-paper); text-underline-offset: 3px; }
+.ark-reader-source-label { color: var(--ark-amber); }
+.ark-reader-images img { width: 100%; height: auto; margin-top: 10px; display: block; }
+
+.ark-reader :focus-visible,
+.ark-chronicle-directory :focus-visible {
+  outline: 2px solid var(--ark-amber);
+  outline-offset: 3px;
+}
+
+@media (max-width: 980px) {
+  .ark-reader-toolbar {
+    grid-template-columns: 1fr auto;
+  }
+  .ark-reader-progress-label { grid-column: 1 / -1; grid-row: 2; }
+  .ark-reader-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+  .ark-reader-index {
+    padding: 8px 12px;
+    border: 0;
+    border-bottom: 1px solid rgba(226, 223, 213, .09);
+    overflow-x: auto;
+  }
+  .ark-reader-index > div { display: flex; width: max-content; }
+  .ark-reader-index-link { max-width: 230px; border-left: 0; border-bottom: 2px solid transparent; }
+  .ark-reader-index-link.is-current { border-bottom-color: var(--ark-amber); }
+  .ark-reader-context {
+    max-height: 30vh;
+    padding: 13px 18px;
+    border: 0;
+    border-bottom: 1px solid rgba(226, 223, 213, .09);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 18px;
+  }
+  .ark-reader-context-label,
+  .ark-reader-context-title,
+  .ark-reader-context-date { grid-column: 1 / -1; }
+  .ark-reader-context-section { margin: 0; padding: 9px 0 0; }
+  .ark-reader-scroll { min-height: 0; }
+}
+
+@media (max-width: 720px) {
+  .ark-chronicle-directory { width: min(100% - 30px, 620px); padding-top: 48px; }
+  .ark-chapter-list { grid-template-columns: minmax(0, 1fr); }
+  .ark-chapter-card { min-height: 220px; padding: 20px; }
+  .ark-reader { inset: var(--nav-h) 0 0; }
+  .ark-reader-toolbar { min-height: 0; padding: 9px 12px; gap: 8px; }
+  .ark-reader-toolbar > div:first-child { display: none; }
+  .ark-reader-toolbar-actions { grid-column: 1 / -1; justify-content: stretch; }
+  .ark-reader-toolbar-actions button { flex: 1; }
+  .ark-reader-progress-label { grid-row: auto; }
+  .ark-reader-context { max-height: 26vh; grid-template-columns: minmax(0, 1fr); }
+  .ark-reader-context-section { display: none; }
+  .ark-reader-record { padding: 18px 17px 20px; }
+  .ark-reader-record-title { padding-right: 0; font-size: 18px; }
+  .ark-reader-record.is-major::after { position: static; display: block; margin-bottom: 8px; }
+  .ark-reader-content { padding-inline: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ark-chapter-card,
+  .ark-reader-record,
+  .ark-reader-index-link,
+  .ark-reader-toolbar-actions button {
+    scroll-behavior: auto;
+    transition: none !important;
+    animation: none !important;
+  }
+}

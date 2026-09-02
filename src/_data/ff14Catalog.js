@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { loadFf14AdmittedData } = require('../../scripts/lib/load-ff14-admitted-data.js');
 
 function collectBranchRecords(branch, records) {
   for (const era of branch.eras || []) {
@@ -31,8 +32,14 @@ function collectChronicleSections(branch, sections = []) {
   return sections;
 }
 
-module.exports = function () {
-  const source = JSON.parse(fs.readFileSync(path.join(__dirname, 'ff14.json'), 'utf8'));
+module.exports = async function () {
+  // Keep the raw archive as the authority for text and chronology, while
+  // replacing its legacy image list with the byte-admitted local originals.
+  // A missing or invalid manifest fails the build closed rather than leaking
+  // unverified artwork back into the page.
+  const source = (await loadFf14AdmittedData({
+    dataPath: path.join(__dirname, 'ff14.json'),
+  })).data;
   const records = new Map();
   const branches = source.subEntities.flatMap(entity => entity.timeline?.branches || []);
 

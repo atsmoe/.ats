@@ -140,7 +140,8 @@ cssFiles:
 
   <div class="tl-branches" id="tl-branches"></div>
   <div class="tl-sub-branches" id="tl-sub-branches" style="display:none;"></div>
-  <div class="tl-container" id="tl-container"></div>
+  <div class="tl-container" id="tl-container" hidden></div>
+  <div id="wh40k-reader" class="wh-reader-root" aria-label="战锤40K章节卷宗"></div>
 </div>
 
 <noscript>
@@ -158,10 +159,36 @@ cssFiles:
         <time>{{ record.dateDisplay }}</time>
         <h4>{{ record.title }}</h4>
         <p>{{ record.description }}</p>
+        {% if record.images and record.images.length %}{% for image in record.images %}
+        <img src="{{ image.src }}" alt="{{ image.alt or record.title }}" loading="lazy"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %}>
+        {% endfor %}{% endif %}
+        {% if record.sources and record.sources.length %}{% for source in record.sources %}
+        <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title or source.text or source.url }} ↗</a>
+        {% endfor %}{% endif %}
       </article>
       {% endfor %}
     </section>
     {% endfor %}
+    {% if wh40kCatalog.excludedChronicleRecords.length %}
+    <section class="wh-noscript-era wh-noscript-disputed">
+      <h3>待核验记录附录</h3>
+      <p>以下 {{ wh40kCatalog.excludedChronicleRecords.length }} 条记录保留原文与来源，内容存在年代、表述或来源争议，不计入已核验序列。</p>
+      {% for record in wh40kCatalog.excludedChronicleRecords %}
+      <article id="{{ record.id }}" class="wh-noscript-record is-disputed">
+        <strong>来源争议 / 复核中 · {{ record.eraTitle }}</strong>
+        <time>{{ record.dateDisplay }}</time>
+        <h4>{{ record.title }}</h4>
+        <p>{{ record.description }}</p>
+        {% if record.images and record.images.length %}{% for image in record.images %}
+        <img src="{{ image.src }}" alt="{{ image.alt or record.title }}" loading="lazy"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %}>
+        {% endfor %}{% endif %}
+        {% if record.sources and record.sources.length %}{% for source in record.sources %}
+        <a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title or source.text or source.url }} ↗</a>
+        {% endfor %}{% endif %}
+      </article>
+      {% endfor %}
+    </section>
+    {% endif %}
   </article>
 </noscript>
 
@@ -183,8 +210,8 @@ cssFiles:
   </div>
 </div>
 
-<nav id="era-nav" aria-label="时代索引"></nav>
-<button id="back-to-top" title="回到顶部">▲</button>
+<nav id="era-nav" aria-label="时代索引" hidden></nav>
+<button id="back-to-top" title="回到顶部" hidden>▲</button>
 {% endblock %}
 
 {% block extraScripts %}<script defer src="./js/virtual-timeline.js"></script>{% endblock %}

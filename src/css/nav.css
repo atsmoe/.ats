@@ -9,10 +9,16 @@
   padding: 0 40px;
   background: #0e0c08;
   border-bottom: 1px solid rgba(201,160,80,0.15);
-  transform: translateY(-100%);
+  transform: translateY(0);
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: nav-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 #nav.visible { transform: translateY(0); }
+
+@keyframes nav-enter {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
 
 .nav-left {
   display: flex; align-items: center; gap: 16px;

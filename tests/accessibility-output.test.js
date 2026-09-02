@@ -23,6 +23,53 @@ test('navigation positioning is scoped to the site header', () => {
   assert.doesNotMatch(css, /^nav(?:\.visible)?\s*\{/m);
 });
 
+test('site shell fails open when an entry bundle does not run', () => {
+  const template = read('src/_includes/base.njk');
+  const baseCss = read('src/css/base.css');
+  const navCss = read('src/css/nav.css');
+
+  assert.match(template, /id="portal-arrival"[^>]*aria-hidden="true"/);
+  assert.doesNotMatch(
+    template,
+    /id="portal-arrival"[^>]*style=/,
+    'the blocking overlay must not depend on inline styles that cannot fail open',
+  );
+  assert.match(
+    baseCss,
+    /#portal-arrival\s*\{[^}]*animation:\s*portal-arrival-failsafe/s,
+    'the overlay needs a CSS-only watchdog when the entry bundle is unavailable',
+  );
+  assert.match(
+    baseCss,
+    /@keyframes portal-arrival-failsafe\s*\{[\s\S]*opacity:\s*0;[\s\S]*pointer-events:\s*none;[\s\S]*visibility:\s*hidden;/,
+  );
+  assert.doesNotMatch(
+    navCss,
+    /^#nav\s*\{[^}]*transform:\s*translateY\(-100%\)/ms,
+    'navigation must not remain off-screen when JavaScript fails',
+  );
+  assert.match(navCss, /^#nav\s*\{[^}]*animation:\s*nav-enter/ms);
+});
+
+test('site navigation exposes a bypass link and one current destination', () => {
+  const cases = [
+    ['index.html', ['群星之间']],
+    ['arknights.html', ['明日方舟', '明日方舟']],
+    ['changelog.html', ['更新日志', '更新日志']],
+    ['about.html', ['关于', '关于']],
+  ];
+
+  for (const [page, expectedCurrentLabels] of cases) {
+    const html = readDist(page);
+    assert.match(html, /<a class="skip-link" href="#main-content">跳到主要内容<\/a>/);
+    assert.match(html, /<main id="main-content" tabindex="-1">/);
+
+    const currentLabels = [...html.matchAll(/<a\b[^>]*aria-current="page"[^>]*>([\s\S]*?)<\/a>/g)]
+      .map(match => match[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ''));
+    assert.deepEqual(currentLabels, expectedCurrentLabels, `${page} current navigation state`);
+  }
+});
+
 test('integrated-strategy card metadata remains readable', () => {
   const css = read('src/css/arknights-world.css');
   assert.match(
@@ -45,18 +92,19 @@ test('mobile navigation is hidden from assistive navigation until opened', () =>
   );
 });
 
-test('star-map world signals have keyboard controls and a linked scene fallback', () => {
+test('star-map worlds are real links and the detail overlay is an inert dialog', () => {
   const html = readDist('index.html');
   const css = read('src/css/star-map.css');
-  const interaction = read('src/js/modules/star-map-entry.js');
-  const signals = [...html.matchAll(/<a\b(?=[^>]*class="star-map-signal")(?=[^>]*data-world-signal="([^"]+)")(?=[^>]*href="\.\/(arknights|wh40k|ff14)\.html")[^>]*>/g)]
-    .map(match => match[1]);
-  const fallback = html.match(/<nav id="star-map-fallback"[\s\S]*?<\/nav>/)?.[0] || '';
+  const interaction = read('src/js/modules/star-map.js');
+  const markers = [...html.matchAll(
+    /<a\b[^>]*class="galaxy-marker"[^>]*data-world="([^"]+)"[^>]*href="([^"]+)"/g,
+  )].map(match => [match[1], match[2]]);
 
-  assert.deepEqual(signals, ['arknights', 'wh40k', 'ff14']);
-  assert.match(fallback, /href="\.\/arknights\.html"/);
-  assert.match(fallback, /href="\.\/wh40k\.html"/);
-  assert.match(fallback, /href="\.\/ff14\.html"/);
+  assert.deepEqual(markers, [
+    ['arknights', './arknights.html'],
+    ['wh40k', './wh40k.html'],
+    ['ff14', './ff14.html'],
+  ]);
   assert.match(html, /<h1\b[^>]*class="sr-only"/);
   assert.match(
     html,
@@ -64,12 +112,12 @@ test('star-map world signals have keyboard controls and a linked scene fallback'
   );
   assert.match(
     css,
-    /\.star-map-signal\s*\{[^}]*min-height:\s*66px;/s,
-    'keyboard-focusable world signals need a real hit box',
+    /\.galaxy-marker\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px;/s,
+    'keyboard-focusable world markers need a real hit box',
   );
   assert.match(interaction, /new AbortController\(\)/);
-  assert.match(interaction, /function destroy\(\)/);
-  assert.match(interaction, /listen\(window, 'pagehide', destroy/);
+  assert.match(interaction, /export function destroyStarMap\(\)/);
+  assert.match(interaction, /listen\(window, 'pagehide', destroyStarMap/);
 });
 
 test('FFXIV no-script lenses remove inactive selector controls', () => {
@@ -112,7 +160,6 @@ test('timeline records expose a native keyboard action for their detail dialog',
 
 test('chronicle event dialogs advertise adjacent-event keyboard navigation', () => {
   for (const page of [
-    'src/arknights-chronicle.njk',
     'src/wh40k-chronicle.njk',
     'src/ff14-chronicle.njk',
   ]) {
@@ -128,6 +175,17 @@ test('chronicle event dialogs advertise adjacent-event keyboard navigation', () 
   }
 });
 
+test('Arknights continuous reader advertises close and chapter keyboard navigation', () => {
+  const template = read('src/arknights-chronicle.njk');
+  assert.match(
+    template,
+    /role="dialog"[^>]*aria-keyshortcuts="Escape Alt\+ArrowLeft Alt\+ArrowRight"/,
+  );
+  assert.match(template, /data-ark-reader-previous/);
+  assert.match(template, /data-ark-reader-next/);
+  assert.match(template, /data-ark-reader-progress/);
+  assert.match(template, /aria-live="polite"/);
+});
 test('timeline modal wires keyboard and non-passive wheel navigation once', () => {
   const timelineUi = read('src/js/modules/timeline-ui.js');
   const css = read('src/css/timeline.css');

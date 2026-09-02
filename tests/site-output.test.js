@@ -15,6 +15,23 @@ const ARKNIGHTS_TOPIC_PAGES = [
   ['arknights-is-sui.html', 'if-sui-realm'],
   ['arknights-is-blackflow.html', 'if-blackflow'],
 ];
+const FORMAL_PAGES = [
+  'index.html',
+  'arknights.html',
+  'arknights-chronicle.html',
+  'arknights-integrated-strategies.html',
+  ...ARKNIGHTS_TOPIC_PAGES.map(([topicPage]) => topicPage),
+  'wh40k.html',
+  'wh40k-chronicle.html',
+  'wh40k-factions.html',
+  'wh40k-war-zones.html',
+  'ff14.html',
+  'ff14-chronicle.html',
+  'ff14-reflections.html',
+  'ff14-journeys.html',
+  'about.html',
+  'changelog.html',
+];
 
 function readDist(relativePath) {
   return fs.readFileSync(path.join(DIST, relativePath), 'utf8');
@@ -69,11 +86,8 @@ test('production build contains every public page and data file', () => {
     'data/wh40k.json',
     'data/ff14.json',
     'data/event-index.json',
-    'assets/images/star-map/scenes/terra-observation.webp',
-    'assets/images/star-map/scenes/milky-way-rift.webp',
-    'assets/images/star-map/scenes/fourteen-worlds.webp',
     'js/bundle.js',
-    'js/star-map-2d.js',
+    'js/star-map-3d.js',
     'js/star-map-b4-prototype.js',
     'js/star-map-b5-prototype.js',
     'js/virtual-timeline.js',
@@ -115,24 +129,30 @@ test('production build contains every public page and data file', () => {
 });
 
 test('public page titles retain the complete site name', () => {
-  for (const page of [
-    'index.html',
-    'arknights.html',
-    'arknights-chronicle.html',
-    'arknights-integrated-strategies.html',
-    ...ARKNIGHTS_TOPIC_PAGES.map(([topicPage]) => topicPage),
-    'wh40k.html',
-    'wh40k-chronicle.html',
-    'wh40k-factions.html',
-    'wh40k-war-zones.html',
-    'ff14.html',
-    'ff14-chronicle.html',
-    'ff14-reflections.html',
-    'ff14-journeys.html',
-    'about.html',
-  ]) {
+  for (const page of FORMAL_PAGES) {
     assert.match(readDist(page), /<title>[^<]*群星之间/, `${page} title must include 群星之间`);
   }
+});
+
+test('formal pages expose complete discovery and sharing metadata', () => {
+  for (const page of FORMAL_PAGES) {
+    const html = readDist(page);
+    const canonicalUrl = page === 'index.html'
+      ? 'https://atsmoe.github.io/.ats/'
+      : `https://atsmoe.github.io/.ats/${page}`;
+
+    assert.match(html, /<meta name="description" content="[^"]{20,}">/, `${page} description`);
+    assert.ok(html.includes(`<link rel="canonical" href="${canonicalUrl}">`), `${page} canonical URL`);
+    assert.match(html, /<meta property="og:title" content="[^"]+">/, `${page} Open Graph title`);
+    assert.match(html, /<meta property="og:description" content="[^"]{20,}">/, `${page} Open Graph description`);
+    assert.ok(html.includes(`<meta property="og:url" content="${canonicalUrl}">`), `${page} Open Graph URL`);
+    assert.match(html, /<meta property="og:type" content="website">/);
+    assert.match(html, /<meta property="og:site_name" content="群星之间 · 世界档案">/);
+    assert.match(html, /<meta name="twitter:card" content="summary">/);
+  }
+
+  assert.match(readDist('index.html'), /<title>群星之间 · 世界档案<\/title>/);
+  assert.doesNotMatch(readDist('index.html'), /<title>群星之间 — 群星之间/);
 });
 
 test('the About page describes the archive product rather than a timeline-only site', () => {
@@ -171,18 +191,22 @@ test('GitHub deployment checks the complete pushed commit range', () => {
 
 test('the star map and all archive pages keep the documented two-entry boundary', () => {
   const index = readDist('index.html');
-  assert.match(index, /src="\.\/js\/star-map-2d\.js"/);
+  assert.match(index, /src="\.\/js\/star-map-3d\.js"/);
   assert.doesNotMatch(index, /src="\.\/js\/bundle\.js"/);
   assert.match(index, /data-star-map-version-switch/);
   assert.match(index, /href="\.\/star-map-b4-prototype\.html"/);
   assert.match(index, /href="\.\/star-map-b5-prototype\.html"/);
   assert.match(readDist('star-map-b5-prototype.html'), /src="\.\/js\/star-map-b5-prototype\.js"/);
 
-  for (const page of ['arknights-chronicle.html', 'wh40k-chronicle.html', 'ff14-chronicle.html']) {
+  const arknightsChronicle = readDist('arknights-chronicle.html');
+  assert.match(arknightsChronicle, /src="\.\/js\/bundle\.js"/);
+  assert.doesNotMatch(arknightsChronicle, /src="\.\/js\/virtual-timeline\.js"/);
+
+  for (const page of ['wh40k-chronicle.html', 'ff14-chronicle.html']) {
     const html = readDist(page);
     assert.match(html, /src="\.\/js\/bundle\.js"/, `${page} must load the world bundle`);
     assert.match(html, /src="\.\/js\/virtual-timeline\.js"/, `${page} must load the timeline engine`);
-    assert.doesNotMatch(html, /src="\.\/js\/star-map-2d\.js"/, `${page} must not load the star-map controller`);
+    assert.doesNotMatch(html, /src="\.\/js\/star-map-3d\.js"/, `${page} must not load Three.js`);
   }
 
   for (const page of [
@@ -279,16 +303,25 @@ test('Arknights publishes seven sourced integrated-strategy contexts with stable
 
 test('public pages retain the critical navigation and interaction containers', () => {
   const index = readDist('index.html');
-  assert.match(index, /id="star-map-stage"/);
-  assert.match(index, /id="star-map-readout"/);
-  assert.match(index, /data-world-signal="arknights"/);
-  assert.match(index, /data-world-signal="wh40k"/);
-  assert.match(index, /data-world-signal="ff14"/);
-  assert.match(index, /id="star-map-fallback"/);
+  assert.match(index, /id="galaxy-markers"/);
+  assert.match(index, /data-world="arknights"/);
+  assert.match(index, /data-world="wh40k"/);
+  assert.match(index, /data-world="ff14"/);
 
-  for (const page of ['arknights-chronicle.html', 'wh40k-chronicle.html', 'ff14-chronicle.html']) {
+  const arknightsChronicle = readDist('arknights-chronicle.html');
+  assert.match(arknightsChronicle, /<main id="main-content"[^>]*>/);
+  assert.match(arknightsChronicle, /id="ark-chronicle-directory"/);
+  assert.match(arknightsChronicle, /id="ark-reader"/);
+  assert.match(arknightsChronicle, /id="ark-reader-scroll"/);
+  assert.doesNotMatch(arknightsChronicle, /id="tl-container"|id="event-modal"|id="tl-branches"/);
+  assert.ok(
+    (arknightsChronicle.match(/https:\/\/prts\.wiki/g) || []).length >= 800,
+    'Arknights no-script output must retain the PRTS source trail',
+  );
+
+  for (const page of ['wh40k-chronicle.html', 'ff14-chronicle.html']) {
     const html = readDist(page);
-    assert.match(html, /<main id="main-content">/, `${page} needs a main content landmark`);
+    assert.match(html, /<main id="main-content"[^>]*>/, `${page} needs a main content landmark`);
     assert.match(html, /id="tl-container"/, `${page} needs the timeline container`);
     assert.match(html, /id="event-modal"/, `${page} needs the event modal`);
     assert.match(html, /id="tl-branches"/, `${page} needs branch navigation`);
@@ -359,6 +392,8 @@ test('public pages retain the critical navigation and interaction containers', (
   assert.match(whChronicle, /CURATED SEQUENCE/);
   assert.doesNotMatch(whChronicle, /VERIFIED SEQUENCE/);
   assert.match(whChronicle, /id="wh-noscript-title"/);
+  assert.equal((whChronicle.match(/class="wh-noscript-record/g) || []).length, 123);
+  assert.equal((whChronicle.match(/class="wh-noscript-record is-disputed/g) || []).length, 7);
   for (const recordId of ['wh-115', 'wh-121', 'wh-122', 'wh-123']) {
     assert.match(whChronicle, new RegExp(`id="${recordId}"`));
   }
@@ -402,12 +437,12 @@ test('every media file referenced by production data exists', () => {
 
 test('bundle sizes stay within the intended page budgets', () => {
   const worldBundle = fs.statSync(path.join(DIST, 'js', 'bundle.js')).size;
-  const starMapBundle = fs.statSync(path.join(DIST, 'js', 'star-map-2d.js')).size;
+  const starMapBundle = fs.statSync(path.join(DIST, 'js', 'star-map-3d.js')).size;
   const b4Bundle = fs.statSync(path.join(DIST, 'js', 'star-map-b4-prototype.js')).size;
   const b5Bundle = fs.statSync(path.join(DIST, 'js', 'star-map-b5-prototype.js')).size;
 
   assert.ok(worldBundle <= 180 * 1024, `world bundle is ${(worldBundle / 1024).toFixed(1)} KiB`);
-  assert.ok(starMapBundle <= 80 * 1024, `star map bundle is ${(starMapBundle / 1024).toFixed(1)} KiB`);
+  assert.ok(starMapBundle <= 600 * 1024, `star map bundle is ${(starMapBundle / 1024).toFixed(1)} KiB`);
   assert.ok(b4Bundle <= 600 * 1024, `B4 preview bundle is ${(b4Bundle / 1024).toFixed(1)} KiB`);
   assert.ok(b5Bundle <= 80 * 1024, `B5 preview bundle is ${(b5Bundle / 1024).toFixed(1)} KiB`);
 });

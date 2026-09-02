@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "worldId": "wh40k",
+  "baseline": "b34e10cf79cc073c420610797466d226d70f166e",
+  "rules": [
+    "不改变事件在原始纪元中的先后顺序",
+    "明确共享战争、势力或因果链的相邻记录归入同章",
+    "决定战争走向、政权更替或文明阶段的记录列为锚点",
+    "解释、延伸与并行进展列为同期记录",
+    "互无直接因果关系的当代战区分别成章"
+  ],
+  "eras": [
+    {
+      "id": "ancient-war-in-heaven",
+      "title": "远古与天堂之战",
+      "summary": "星神、古圣与惧亡者的起源，天堂之战的两次转折，以及死灵长眠前的权力重排。",
+      "factions": ["星神", "古圣", "惧亡者 / 死灵", "灵族", "克欧克"],
+      "chapters": [
+        {
+          "id": "ctan-before-worlds",
+          "title": "恒星中的饥饿",
+          "summary": "星神从创世能量中形成，逐渐成为能够跨恒星迁徙的能量生命。",
+          "factions": ["星神"],
+          "anchorEventIds": ["wh-017"],
+          "eventIds": ["wh-017", "wh-018", "wh-019"]
+        },
+        {
+          "id": "old-ones-ascendant",
+          "title": "古圣与网道",
+          "summary": "古圣掌握灵能工程和跨维网络，在银河播撒生命并抵达文明鼎盛。",
+          "factions": ["古圣", "灵族", "克欧克"],
+          "anchorEventIds": ["wh-020", "wh-022", "wh-024"],
+          "eventIds": ["wh-020", "wh-021", "wh-022", "wh-023", "wh-024"]
+        },
+        {
+          "id": "necrontyr-road-to-war",
+          "title": "惧亡者走向战争",
+          "summary": "短寿与王朝分裂塑造惧亡者社会；与古圣相遇后，三执政以共同敌人为名发动天堂之战。",
+          "factions": ["惧亡者", "古圣", "三执政"],
+          "anchorEventIds": ["wh-025", "wh-029", "wh-033"],
+          "eventIds": ["wh-025", "wh-026", "wh-027", "wh-028", "wh-029", "wh-030", "wh-031", "wh-032", "wh-033"]
+        },
+        {
+          "id": "first-war-defeat",
+          "title": "第一次败局",
+          "summary": "古圣的网道优势迫使惧亡者退回光环星域，战败又令王朝联盟再次破裂。",
+          "factions": ["惧亡者", "古圣", "三执政"],
+          "anchorEventIds": ["wh-034", "wh-036"],
+          "eventIds": ["wh-034", "wh-035", "wh-036"]
+        },
+        {
+          "id": "ctan-covenant",
+          "title": "星神的契约",
+          "summary": "惧亡者为恒星生命铸造活金属躯体；欺诈者以永生为饵，使星神成为王朝的新神。",
+          "factions": ["星神", "惧亡者", "沉默之王"],
+          "anchorEventIds": ["wh-037", "wh-040", "wh-043", "wh-047"],
+          "eventIds": ["wh-037", "wh-038", "wh-039", "wh-040", "wh-041", "wh-042", "wh-043", "wh-044", "wh-045", "wh-046", "wh-047", "wh-048"]
+        },
+        {
+          "id": "biotransference",
+          "title": "生体转化",
+          "summary": "沉默之王接受永生承诺；熔炉赐予不朽机械躯体，也夺走灵魂并写入服从协议。",
+          "factions": ["惧亡者 / 死灵", "星神", "沉默之王"],
+          "anchorEventIds": ["wh-049", "wh-051", "wh-054", "wh-056"],
+          "eventIds": ["wh-049", "wh-050", "wh-051", "wh-052", "wh-053", "wh-054", "wh-055", "wh-056", "wh-057"]
+        },
+        {
+          "id": "war-renewed",
+          "title": "网道攻防",
+          "summary": "死灵与星神重新进攻古圣，巨石之门打开网道战线，却无法完全取代古圣的网络。",
+          "factions": ["死灵", "星神", "古圣", "灵族"],
+          "anchorEventIds": ["wh-058", "wh-060", "wh-061"],
+          "eventIds": ["wh-058", "wh-059", "wh-060", "wh-061", "wh-062", "wh-063", "wh-064"]
+        },
+        {
+          "id": "old-ones-last-gambit",
+          "title": "古圣的最后反攻",
+          "summary": "星神内讧为古圣留下反攻窗口；灵能战士种族与亚空间武器扭转战局，也催生失控灾难。",
+          "factions": ["古圣", "星神", "死灵", "灵族", "克欧克", "奴役者"],
+          "anchorEventIds": ["wh-065", "wh-066", "wh-070", "wh-073", "wh-074", "wh-076"],
+          "eventIds": ["wh-065", "wh-066", "wh-067", "wh-068", "wh-069", "wh-070", "wh-071", "wh-072", "wh-073", "wh-074", "wh-075", "wh-076"]
+        },
+        {
+          "id": "silent-king-revolt",
+          "title": "沉默之王的复仇",
+          "summary": "古圣覆灭后，沉默之王反攻星神，将其碎裂封存，并为死灵选择长眠与退场。",
+          "factions": ["沉默之王", "死灵", "星神", "灵族"],
+          "anchorEventIds": ["wh-077", "wh-079", "wh-081", "wh-086", "wh-087"],
+          "eventIds": ["wh-077", "wh-078", "wh-079", "wh-080", "wh-081", "wh-082", "wh-083", "wh-084", "wh-085", "wh-086", "wh-087"]
+        },
+        {
+          "id": "necron-awakening",
+          "title": "长眠之后",
+          "summary": "墓穴世界经过约六千万年开始苏醒；昔日霸权已被新势力和混沌侵蚀。",
+          "factions": ["死灵", "人类帝国", "灵族", "混沌"],
+          "anchorEventIds": ["wh-088", "wh-089"],
+          "eventIds": ["wh-088", "wh-089", "wh-090"]
+        }
+      ]
+    },
+    {
+      "id": "human-rise",
+      "title": "人类崛起（M1-M15）",
+      "summary": "远古战争后的银河逐步复苏，人类从太阳系跨入缓慢的星际迁徙。",
+      "factions": ["人类", "灵族"],
+      "chapters": [
+        {
+          "id": "galaxy-recovers",
+          "title": "复苏的银河",
+          "summary": "灵族在远古灾变后扩张；数千万年后，人类文明在泰拉兴起。",
+          "factions": ["灵族", "人类"],
+          "anchorEventIds": ["wh-091", "wh-092"],
+          "eventIds": ["wh-091", "wh-092"]
+        },
+        {
+          "id": "slow-road-to-stars",
+          "title": "星辰大迁徙",
+          "summary": "早期人类以近地航行和亚光速世代方舟建立第一批远方殖民地。",
+          "factions": ["人类"],
+          "anchorEventIds": ["wh-093"],
+          "eventIds": ["wh-093", "wh-094"]
+        }
+      ]
+    },
+    {
+      "id": "age-of-technology",
+      "title": "科技时代（M15-M25）",
+      "summary": "亚空间航行、STC 与机器智能推动人类扩张，骑士世界和星际经济随之成形。",
+      "factions": ["人类", "领航员", "骑士家族", "铁人"],
+      "chapters": [
+        {
+          "id": "warp-expansion",
+          "title": "亚空间航路开启",
+          "summary": "领航员和亚空间航行技术把分散迁徙推进为跨银河殖民。",
+          "factions": ["人类", "领航员"],
+          "anchorEventIds": ["wh-004", "wh-095"],
+          "eventIds": ["wh-004", "wh-095", "wh-096"]
+        },
+        {
+          "id": "knight-worlds",
+          "title": "骑士世界的形成",
+          "summary": "严酷殖民地借助 STC 外骨骼生存，机甲职责逐步演化为骑士家族制度。",
+          "factions": ["人类", "骑士家族"],
+          "anchorEventIds": ["wh-097", "wh-100", "wh-104"],
+          "eventIds": ["wh-097", "wh-098", "wh-099", "wh-100", "wh-101", "wh-102", "wh-103", "wh-104"]
+        },
+        {
+          "id": "technology-at-apex",
+          "title": "黄金时代的裂痕",
+          "summary": "贸易与人工造物达到高峰，铁人叛乱和灵能者涌现预示科技时代终结。",
+          "factions": ["人类", "黄金人", "石人", "铁人", "灵能者"],
+          "anchorEventIds": ["wh-105", "wh-107", "wh-108"],
+          "eventIds": ["wh-105", "wh-106", "wh-107", "wh-108", "wh-005"]
+        }
+      ]
+    },
+    {
+      "id": "age-of-strife",
+      "title": "纷争时代（M15-M30）",
+      "summary": "机器战争、亚空间风暴与灵能灾害割裂人类领地，旧夜延续数千年。",
+      "factions": ["人类", "铁人", "灵族", "混沌", "兽人"],
+      "chapters": [
+        {
+          "id": "humanity-collapses",
+          "title": "黄金时代崩塌",
+          "summary": "科技巅峰后的机器战争与亚空间风暴切断航路，灵能灾害令殖民文明相继失守。",
+          "factions": ["人类", "铁人", "灵族", "混沌", "兽人"],
+          "anchorEventIds": ["wh-003", "wh-006", "wh-110", "wh-111", "wh-113"],
+          "eventIds": ["wh-003", "wh-006", "wh-109", "wh-110", "wh-111", "wh-112", "wh-113"]
+        },
+        {
+          "id": "long-night",
+          "title": "五千年旧夜",
+          "summary": "人类世界在长期隔绝中衰败；泰拉上的帝皇随后进入公开行动阶段。",
+          "factions": ["人类", "帝皇"],
+          "anchorEventIds": ["wh-114", "wh-007"],
+          "eventIds": ["wh-114", "wh-007"]
+        }
+      ]
+    },
+    {
+      "id": "fall-of-aeldari",
+      "title": "灵族帝国的陨落（约M30）",
+      "summary": "灵族帝国的鼎盛以色孽诞生和文明毁灭告终，银河航路由此发生剧变。",
+      "factions": ["灵族", "色孽", "混沌"],
+      "chapters": [
+        {
+          "id": "birth-of-slaanesh",
+          "title": "色孽诞生",
+          "summary": "灵族帝国从鼎盛滑向灾变；色孽诞生成为文明陨落的决定性节点。",
+          "factions": ["灵族", "色孽"],
+          "anchorEventIds": ["wh-002"],
+          "eventIds": ["wh-001", "wh-002"]
+        }
+      ]
+    },
+    {
+      "id": "unification-wars",
+      "title": "统一战争（约M30）",
+      "summary": "帝皇结束泰拉割据，并为离开太阳系的征服行动建立军团体系。",
+      "factions": ["帝皇", "雷霆战士", "星界军团"],
+      "chapters": [
+        {
+          "id": "terra-unified",
+          "title": "泰拉统一",
+          "summary": "统一战争结束泰拉割据；随后建立的军团成为大远征的核心力量。",
+          "factions": ["帝皇", "雷霆战士", "星界军团"],
+          "anchorEventIds": ["wh-008", "wh-009"],
+          "eventIds": ["wh-008", "wh-009"]
+        }
+      ]
+    },
+    {
+      "id": "great-crusade",
+      "title": "大远征（约M30）",
+      "summary": "帝国从太阳系向银河扩张，失散原体的归队重塑军团指挥结构。",
+      "factions": ["人类帝国", "帝皇", "原体"],
+      "chapters": [
+        {
+          "id": "great-crusade-expands",
+          "title": "大远征与原体",
+          "summary": "帝皇发动大远征；各原体在扩张过程中被寻回并接管所属军团。",
+          "factions": ["人类帝国", "帝皇", "原体"],
+          "anchorEventIds": ["wh-010"],
+          "eventIds": ["wh-010", "wh-011"]
+        }
+      ]
+    },
+    {
+      "id": "horus-heresy",
+      "title": "荷鲁斯之乱（M31）",
+      "summary": "战帅叛乱把帝国卷入内战，最终在泰拉围城中结束。",
+      "factions": ["忠诚派军团", "叛乱军团", "混沌"],
+      "chapters": [
+        {
+          "id": "heresy-to-siege",
+          "title": "从背叛到泰拉围城",
+          "summary": "荷鲁斯之乱从伊斯特万扩散至银河，叛军最后进攻泰拉并结束内战主阶段。",
+          "factions": ["帝皇", "荷鲁斯", "忠诚派军团", "叛乱军团", "混沌"],
+          "anchorEventIds": ["wh-012", "wh-013"],
+          "eventIds": ["wh-012", "wh-013"]
+        }
+      ]
+    },
+    {
+      "id": "imperium-after-heresy",
+      "title": "帝国重建与万年沉默（M31-M41）",
+      "summary": "基利曼重组帝国，帝皇被固定于黄金王座；万年后，银河进入全面战争。",
+      "factions": ["人类帝国", "帝皇", "基利曼", "混沌", "异形势力"],
+      "chapters": [
+        {
+          "id": "second-founding-to-m41",
+          "title": "第二次开国与万年沉默",
+          "summary": "帝国在内战后重建，黄金王座维持帝皇生命；M41 的多线战争令秩序持续崩坏。",
+          "factions": ["人类帝国", "帝皇", "基利曼", "混沌", "异形势力"],
+          "anchorEventIds": ["wh-014", "wh-015", "wh-016"],
+          "eventIds": ["wh-014", "wh-015", "wh-016"]
+        }
+      ]
+    },
+    {
+      "id": "contemporary-contacts",
+      "title": "当代势力接触档案（M41-M42）",
+      "summary": "三组彼此独立的势力活动记录，覆盖钛帝国、沃坦联盟与基因窃取者教派。",
+      "factions": ["钛帝国", "沃坦联盟", "基因窃取者教派"],
+      "chapters": [
+        {
+          "id": "fifth-sphere",
+          "title": "第五次扩张球",
+          "summary": "钛帝国的第五次扩张球进入查尔纳斯扩区，在帝国暗面建立新的推进线。",
+          "factions": ["钛帝国"],
+          "anchorEventIds": ["wh-121"],
+          "eventIds": ["wh-121"]
+        },
+        {
+          "id": "leagues-emerge",
+          "title": "沃坦联盟越出核心",
+          "summary": "沃坦联盟从银河核心向外活动，开始与核心之外的势力发生接触。",
+          "factions": ["沃坦联盟"],
+          "anchorEventIds": ["wh-122"],
+          "eventIds": ["wh-122"]
+        },
+        {
+          "id": "day-of-ascension",
+          "title": "飞升之日",
+          "summary": "基因窃取者教派完成长期渗透后转向公开起义，为虫族到来准备世界。",
+          "factions": ["基因窃取者教派", "泰伦虫族", "人类帝国"],
+          "anchorEventIds": ["wh-123"],
+          "eventIds": ["wh-123"]
+        }
+      ]
+    },
+    {
+      "id": "era-indomitus-war-zones",
+      "title": "大裂隙后的当前战区",
+      "summary": "大裂隙后的六个独立战区，分别记录帝国、混沌、兽人、死灵与泰伦虫族的当前冲突。",
+      "factions": ["人类帝国", "混沌", "兽人", "死灵", "泰伦虫族"],
+      "chapters": [
+        {
+          "id": "armageddon",
+          "title": "阿米吉多顿战区",
+          "summary": "帝国在阿米吉多顿继续应对兽人战争及其遗留战线。",
+          "factions": ["人类帝国", "兽人"],
+          "anchorEventIds": ["wh-115"],
+          "eventIds": ["wh-115"]
+        },
+        {
+          "id": "death-mire",
+          "title": "死亡泥沼围城",
+          "summary": "死亡泥沼的围城行动进入战果归档阶段。",
+          "factions": ["人类帝国", "战区参战势力"],
+          "anchorEventIds": ["wh-116"],
+          "eventIds": ["wh-116"]
+        },
+        {
+          "id": "vespator-front",
+          "title": "维斯帕托战线",
+          "summary": "极限战士与死灵在奥特拉玛五百世界的维斯帕托战线交锋。",
+          "factions": ["极限战士", "死灵"],
+          "anchorEventIds": ["wh-117"],
+          "eventIds": ["wh-117"]
+        },
+        {
+          "id": "nachmund-gauntlet",
+          "title": "纳赫蒙德走廊",
+          "summary": "混沌势力重燃纳赫蒙德走廊战事，威胁帝国暗面的关键通道。",
+          "factions": ["人类帝国", "混沌"],
+          "anchorEventIds": ["wh-118"],
+          "eventIds": ["wh-118"]
+        },
+        {
+          "id": "fourth-tyrannic-war",
+          "title": "第四次泰伦战争",
+          "summary": "泰伦虫族从银河西部逼近圣域星域，帝国进入新的大规模虫族战争。",
+          "factions": ["人类帝国", "泰伦虫族"],
+          "anchorEventIds": ["wh-119"],
+          "eventIds": ["wh-119"]
+        },
+        {
+          "id": "pariah-nexus",
+          "title": "帕里亚节点争夺",
+          "summary": "死灵的静默区域成为机械修会与帝国军队持续争夺的节点。",
+          "factions": ["死灵", "机械修会", "人类帝国"],
+          "anchorEventIds": ["wh-120"],
+          "eventIds": ["wh-120"]
+        }
+      ]
+    }
+  ]
+}

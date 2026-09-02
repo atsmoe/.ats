@@ -3,7 +3,7 @@ permalink: ./index.html
 title: 群星之间
 bodyClass: world-index
 pageType: star-map
-scriptFile: star-map-2d.js
+scriptFile: star-map-3d.js
 cssFiles:
   - base.css
   - nav.css
@@ -14,8 +14,15 @@ cssFiles:
 {% extends "base.njk" %}
 
 {% block content %}
-<section id="star-map-stage" aria-labelledby="star-map-title">
-  <h1 id="star-map-title" class="sr-only">群星之间 · 三世界空间档案</h1>
+<a
+  class="star-map-version-switch"
+  data-star-map-version-switch
+  href="./star-map-b4-prototype.html"
+  aria-label="切换至 B4 星图原型"
+>
+  <span>B4 PREVIEW</span>
+  <strong>切换至 B4 星图原型</strong>
+</a>
 
 <a
   class="star-map-version-switch star-map-version-switch--b5"
@@ -49,158 +56,33 @@ cssFiles:
     </a>
   </div>
 
-  <svg class="star-map-world-motion" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-      <radialGradient id="terra-limb-light" cx="50%" cy="50%" r="50%">
-        <stop class="terra-light-core" offset="0" stop-opacity=".88"></stop>
-        <stop class="terra-light-mid" offset=".22" stop-opacity=".42"></stop>
-        <stop class="terra-light-edge" offset="1" stop-opacity="0"></stop>
-      </radialGradient>
-      <radialGradient id="wh40k-core-light" cx="50%" cy="50%" r="50%">
-        <stop class="wh40k-core-light" offset="0" stop-opacity=".5"></stop>
-        <stop class="wh40k-core-mid" offset=".34" stop-opacity=".16"></stop>
-        <stop class="wh40k-core-edge" offset="1" stop-opacity="0"></stop>
-      </radialGradient>
-      <radialGradient id="terra-grid-fade" cx="50%" cy="50%" r="50%">
-        <stop class="motion-mask-solid" offset=".42" stop-opacity="1"></stop>
-        <stop class="motion-mask-clear" offset="1" stop-opacity="0"></stop>
-      </radialGradient>
-      <filter id="star-map-soft-glow" x="-80%" y="-80%" width="260%" height="260%">
-        <feGaussianBlur stdDeviation="6"></feGaussianBlur>
-      </filter>
-      <mask id="terra-grid-north" maskUnits="userSpaceOnUse" x="170" y="240" width="250" height="230">
-        <ellipse cx="292" cy="354" rx="118" ry="105" fill="url(#terra-grid-fade)"></ellipse>
-      </mask>
-      <mask id="terra-grid-center" maskUnits="userSpaceOnUse" x="470" y="440" width="500" height="250">
-        <ellipse cx="716" cy="566" rx="236" ry="116" fill="url(#terra-grid-fade)"></ellipse>
-      </mask>
-      <mask id="terra-grid-south" maskUnits="userSpaceOnUse" x="490" y="580" width="260" height="250">
-        <ellipse cx="619" cy="704" rx="122" ry="114" fill="url(#terra-grid-fade)"></ellipse>
-      </mask>
-    </defs>
-
-    <g data-motion-world="arknights">
-      <circle class="terra-limb-glow" cx="876" cy="382" r="72" fill="url(#terra-limb-light)"></circle>
-      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-north)" style="--motion-delay:-2.5s"></image>
-      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-center)" style="--motion-delay:-8s"></image>
-      <image class="terra-grid-activation" href="./assets/images/star-map/scenes/terra-observation.webp" width="1672" height="941" preserveAspectRatio="none" mask="url(#terra-grid-south)" style="--motion-delay:-14s"></image>
-      <circle class="terra-observation-wave" cx="776" cy="411" r="22"></circle>
-      <circle class="terra-observation-core" cx="776" cy="411" r="3"></circle>
-    </g>
-
-    <g data-motion-world="wh40k">
-      <circle class="wh40k-core-glow" cx="505" cy="607" r="106" fill="url(#wh40k-core-light)"></circle>
-      <path class="wh40k-rift-glow" d="M-32 474 C88 512 150 572 244 640 C348 716 454 777 555 814 C650 850 752 905 872 962"></path>
-      <path class="wh40k-rift-flow" pathLength="1" d="M-32 474 C88 512 150 572 244 640 C348 716 454 777 555 814 C650 850 752 905 872 962"></path>
-      <circle class="wh40k-rift-node" style="--motion-delay:-1s" cx="242" cy="640" r="5"></circle>
-      <circle class="wh40k-rift-node" style="--motion-delay:-5s" cx="405" cy="720" r="5"></circle>
-      <circle class="wh40k-rift-node" style="--motion-delay:-9s" cx="532" cy="806" r="5"></circle>
-    </g>
-  </svg>
-
-  <div class="ff14-reflection-field" aria-hidden="true">
-    <i class="ff14-orbit ff14-orbit-a"></i>
-    <i class="ff14-orbit ff14-orbit-b"></i>
-    <i class="ff14-orbit ff14-orbit-c"></i>
-    <span class="ff14-reflection is-surviving" data-reflection="01" style="--rx:23%;--ry:19%;--rs:58px;--rd:0s"></span>
-    <span class="ff14-reflection is-surviving" data-reflection="02" style="--rx:35%;--ry:14%;--rs:42px;--rd:-1.8s"></span>
-    <span class="ff14-reflection is-surviving" data-reflection="03" style="--rx:46%;--ry:22%;--rs:30px;--rd:-3.2s"></span>
-    <span class="ff14-reflection is-surviving" data-reflection="04" style="--rx:57%;--ry:31%;--rs:46px;--rd:-4.7s"></span>
-    <span class="ff14-reflection is-surviving" data-reflection="08" style="--rx:68%;--ry:24%;--rs:36px;--rd:-6.1s"></span>
-    <span class="ff14-reflection is-surviving" data-reflection="11" style="--rx:75%;--ry:42%;--rs:27px;--rd:-7.4s"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="05" style="--rx:34%;--ry:31%;--rd:-.5s;--flow-angle:93deg"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="06" style="--rx:46%;--ry:40%;--rd:-1.4s;--flow-angle:148deg"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="07" style="--rx:58%;--ry:48%;--rd:-2.3s;--flow-angle:180deg"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="09" style="--rx:69%;--ry:55%;--rd:-3.2s;--flow-angle:191deg"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="10" style="--rx:74%;--ry:64%;--rd:-4.1s;--flow-angle:201deg"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="12" style="--rx:63%;--ry:69%;--rd:-5s;--flow-angle:215deg"></span>
-    <span class="ff14-reflection is-rejoined" data-reflection="13" style="--rx:52%;--ry:60%;--rd:-5.9s;--flow-angle:212deg"></span>
+  <!-- Galaxy hover tooltip -->
+  <div class="galaxy-tooltip" id="galaxy-tooltip">
+    <div class="gt-name" id="gt-name"></div>
+    <div class="gt-sub" id="gt-sub"></div>
+    <div class="gt-hint">点击查看详情</div>
   </div>
+</div>
 
-  <div class="star-map-field-grid" aria-hidden="true"></div>
-  <div class="star-map-scanline" aria-hidden="true"></div>
-  <div class="star-map-vignette" aria-hidden="true"></div>
-  <div class="star-map-frame" aria-hidden="true">
-    <i></i><i></i><i></i><i></i>
+<!-- Galaxy detail overlay -->
+<div id="galaxy-detail"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="detail-title"
+  aria-describedby="detail-desc"
+  aria-hidden="true"
+  inert>
+  <div class="detail-overlay" id="detail-overlay"></div>
+  <button class="detail-close" id="detail-close" type="button" aria-label="关闭世界详情">✕</button>
+  <div class="detail-content">
+    <div class="detail-body">
+      <canvas id="galaxy-canvas" width="640" height="640"></canvas>
+    </div>
+    <div class="detail-title" id="detail-title"></div>
+    <div class="detail-sub" id="detail-sub"></div>
+    <p class="detail-desc" id="detail-desc"></p>
+    <div class="detail-calendar" id="detail-calendar"></div>
+    <button class="btn-detail-enter" id="detail-enter-btn" type="button">进入编年史</button>
   </div>
-
-  <header class="star-map-telemetry" aria-hidden="true">
-    <strong><i></i> DEEP FIELD ACQUIRED</strong>
-    <span id="star-map-route-state">ATS / ROUTE-01 / ARK–TERRA</span>
-  </header>
-
-  <a
-    class="star-map-version-switch"
-    data-star-map-version-switch
-    href="./star-map-b4-prototype.html"
-    aria-label="切换到 B4 星图原型"
-  >
-    <span>ALTERNATE PLATE</span>
-    <strong>B4 原型</strong>
-  </a>
-
-  <nav id="star-map-signals" aria-label="切换观测世界">
-    <a class="star-map-signal" href="./arknights.html" data-world-signal="arknights" style="--signal:#d9a441;--signal-rgb:217,164,65">
-      <span class="star-map-signal-reticle" aria-hidden="true"></span>
-      <small>01 / ARK–TERRA</small>
-      <strong>泰拉</strong>
-      <em>明日方舟</em>
-    </a>
-    <a class="star-map-signal" href="./wh40k.html" data-world-signal="wh40k" style="--signal:#b9433e;--signal-rgb:185,67,62">
-      <span class="star-map-signal-reticle" aria-hidden="true"></span>
-      <small>02 / WH–M42</small>
-      <strong>破碎银河</strong>
-      <em>战锤 40,000</em>
-    </a>
-    <a class="star-map-signal" href="./ff14.html" data-world-signal="ff14" style="--signal:#8fc8f3;--signal-rgb:143,200,243">
-      <span class="star-map-signal-reticle" aria-hidden="true"></span>
-      <small>03 / FF–AETHER</small>
-      <strong>十四世界</strong>
-      <em>最终幻想 XIV</em>
-    </a>
-  </nav>
-
-  <article id="star-map-readout" aria-live="polite">
-    <p class="star-map-readout-index" id="star-map-readout-index">WORLD 01 / 03 · ARK–TERRA</p>
-    <p class="star-map-readout-ip" id="star-map-readout-ip">明日方舟 / ORIGINIUM OBSERVATION</p>
-    <h2 id="star-map-readout-title">泰拉</h2>
-    <p class="star-map-readout-summary" id="star-map-readout-summary">天灾与源石共同改写文明的生存方式。移动城邦、国家与组织在这颗行星上留下彼此交叠的记录。</p>
-    <dl class="star-map-readout-facts" id="star-map-readout-facts">
-      <div><dt>结构</dt><dd>独立行星 / 近轨道观测</dd></div>
-      <div><dt>档案</dt><dd>主世界线 · 集成战略 · 泰拉图谱</dd></div>
-    </dl>
-    <a class="star-map-enter" id="star-map-enter" href="./arknights.html">
-      <span>进入世界档案</span><b aria-hidden="true">↗</b>
-    </a>
-  </article>
-
-  <aside class="star-map-provenance" id="star-map-provenance">
-    <strong>TERRA SURFACE / COMMUNITY CARTOGRAPHY</strong>
-    <p>六边形区划边界取自源图标出的官方公开信息；大陆轮廓与地形参考社区地图。观察构图不代表官方地理投影。</p>
-  </aside>
-
-  <p class="star-map-instruction" id="star-map-instruction">
-    <span>选择远距信号切换世界</span><span>方向键或数字键选择观测目标</span>
-  </p>
-
-  <div id="star-map-loading" role="status">ACQUIRING OBSERVATION PLATE</div>
-
-  <nav id="star-map-fallback" aria-label="世界档案">
-    <p>场景底图暂时无法载入，你仍可直接进入三个世界档案。</p>
-    <a href="./arknights.html">明日方舟</a>
-    <a href="./wh40k.html">战锤 40,000</a>
-    <a href="./ff14.html">最终幻想 XIV</a>
-  </nav>
-
-  <noscript>
-    <style>
-      #star-map-fallback { display: grid !important; }
-      #star-map-loading,
-      #star-map-signals,
-      #star-map-readout,
-      .star-map-provenance,
-      .star-map-instruction { display: none !important; }
-    </style>
-  </noscript>
-</section>
+</div>
 {% endblock %}

@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { loadFf14AdmittedData } = require('../../scripts/lib/load-ff14-admitted-data.js');
 
 const SRC_DATA = path.join(__dirname, '..', '_data');
 const DIST_DATA = path.join(__dirname, '..', '..', 'dist', 'data');
@@ -504,7 +505,10 @@ async function main() {
 
     try {
       const raw = fs.readFileSync(filePath, 'utf-8');
-      const data = JSON.parse(raw);
+      let data = JSON.parse(raw);
+      // FFXIV text remains in its source JSON, while presentation media comes
+      // only from the independently byte-verified admission manifest.
+      if (worldId === 'ff14') data = (await loadFf14AdmittedData({ dataPath: filePath })).data;
       allRawData[worldId] = data;
       allEventRefs._worlds.add(worldId);
 

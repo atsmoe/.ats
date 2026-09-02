@@ -33,22 +33,32 @@ module.exports = function () {
   const mainline = source.subEntities
     .flatMap(entity => entity.timeline?.branches || [])
     .find(branch => branch.id === 'mainline');
-  const chronicleEras = (mainline?.eras || [])
+  const orderedChronicleEras = (mainline?.eras || [])
     .map((era, index) => ({
       ...era,
       sourceIndex: index,
-      events: (era.events || []).filter(record => !excludedRecordIds.has(record.id)),
     }))
-    .filter(era => era.events.length > 0)
     .sort((left, right) => {
       const leftRank = Number(left.chronologyRank ?? left.order ?? left.sourceIndex);
       const rightRank = Number(right.chronologyRank ?? right.order ?? right.sourceIndex);
       return leftRank - rightRank || left.sourceIndex - right.sourceIndex;
     });
+  const chronicleEras = orderedChronicleEras
+    .map(era => ({
+      ...era,
+      events: (era.events || []).filter(record => !excludedRecordIds.has(record.id)),
+    }))
+    .filter(era => era.events.length > 0);
+  const excludedChronicleRecords = orderedChronicleEras.flatMap(era => (
+    (era.events || [])
+      .filter(record => excludedRecordIds.has(record.id))
+      .map(record => ({ ...record, eraTitle: era.title }))
+  ));
 
   return {
     coverage: source.archive.coverage,
     chronicleEras,
+    excludedChronicleRecords,
     factions: source.archive.factionFamilies.map(faction => ({
       ...faction,
       records: resolveRecords(faction.recordIds, records),

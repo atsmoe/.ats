@@ -1,9 +1,24 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  {% set documentTitle = title ~ " — " ~ site.title %}
+  {% if title === "群星之间" %}{% set documentTitle = site.title %}{% endif %}
+  {% set documentDescription = description or site.description %}
+  {% set canonicalUrl = site.canonicalBase ~ page.url %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }} — 群星之间 · 世界档案</title>
+  <title>{{ documentTitle }}</title>
+  <meta name="description" content="{{ documentDescription }}">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#060a14">
+  <link rel="canonical" href="{{ canonicalUrl }}">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site.title }}">
+  <meta property="og:title" content="{{ documentTitle }}">
+  <meta property="og:description" content="{{ documentDescription }}">
+  <meta property="og:url" content="{{ canonicalUrl }}">
+  <meta name="twitter:card" content="summary">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
@@ -18,13 +33,15 @@
 </head>
 <body class="{{ bodyClass }}" data-page="{{ pageType }}" {% if worldId %}data-world="{{ worldId }}"{% endif %}{% if contextId %} data-context="{{ contextId }}"{% endif %}{% if viewId %} data-view="{{ viewId }}"{% endif %} data-version="{{ buildVersion }}">
 
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
   <!-- CRITICAL: portal arrival overlay — first element in body, not in any block -->
-  <div id="portal-arrival" style="position:fixed;inset:0;z-index:9999;background:#060a14;opacity:1;pointer-events:all;"></div>
+  <div id="portal-arrival" aria-hidden="true"></div>
   <noscript><style>#portal-arrival { display: none !important; }</style></noscript>
 
   {% include "nav.njk" %}
 
-  <main id="main-content">
+  <main id="main-content" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
 

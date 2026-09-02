@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     initNav();
 
+    const useWh40kReader = worldId === 'wh40k' && worldView === 'wh40k-chronicle';
+    const useFf14Reader = worldId === 'ff14' && worldView === 'ff14-chronicle';
+    const useContinuousReader = useWh40kReader || useFf14Reader;
+
     try {
       const loadedData = await loadWorldData(worldId);
       const archive = createWorldArchive(loadedData);
@@ -116,6 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (worldId === 'wh40k' && worldView === 'wh40k-chronicle') {
         const { prepareWh40kChronicle } = await import('./wh40k-chronicle-adapter.js');
         timelineData = prepareWh40kChronicle(timelineData, {
+          unsupportedRecordIds: useWh40kReader ? [] : undefined,
           preserveRecordIds: [location.hash.slice(1)].filter(Boolean),
         });
       }
@@ -125,8 +130,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       setTimelineData(timelineData);
       setPortalData(timelineData);
-      populateBranchTabs();
-      renderEvents('mainline');
+      if (useWh40kReader) {
+        const { initWh40kChronicleReader } = await import('./wh40k-chronicle-reader.js');
+        await initWh40kChronicleReader(timelineData);
+      } else if (useFf14Reader) {
+        const { initFf14Reader } = await import('./ff14-reader.js');
+        await initFf14Reader({ timelineData });
+      } else {
+        populateBranchTabs();
+        renderEvents('mainline');
+      }
       if (!isChronicleView) updateTimelineCover(worldId);
 
       if (worldId === 'arknights' && document.getElementById('ark-archive')) {
@@ -150,11 +163,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    initPortalArrival({
-      onSelectBranch: syncBranchPath,
-      onTimelineLoaded: syncEraNavigation,
-    });
-    initEventModal();
+    if (!useContinuousReader) {
+      initPortalArrival({
+        onSelectBranch: syncBranchPath,
+        onTimelineLoaded: syncEraNavigation,
+      });
+      initEventModal();
+    } else {
+      dismissPortalOverlay();
+    }
 
   } else if (pageType === 'about') {
     dismissPortalOverlay();
