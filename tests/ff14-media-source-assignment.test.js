@@ -98,6 +98,10 @@ function runCapturedSourceAssignments() {
   return results;
 }
 
+function missingCaptureNames(filePaths) {
+  return filePaths.map((filePath) => path.basename(filePath)).join(', ');
+}
+
 test('single-event source pages assign every media marker to their sole event', () => {
   const result = assignSourceMediaToEvents({
     sourcePage: '角笛之争',
@@ -631,6 +635,13 @@ test('explicit upstream decorative metadata remains visible in assignment audit'
   }]);
 });
 
+test('missing capture labels remain valid under strict path APIs', () => {
+  assert.equal(missingCaptureNames([
+    path.join(ROOT, 'tmp/ff14-media-source-catalog.json'),
+    path.join(ROOT, 'tmp/ff14-wiki-source-capture.json'),
+  ]), 'ff14-media-source-catalog.json, ff14-wiki-source-capture.json');
+});
+
 test('real 40-page capture keeps deterministic ancestry-safe assignment totals', (t) => {
   const capturePaths = [
     path.join(ROOT, 'tmp/ff14-media-source-catalog.json'),
@@ -639,7 +650,7 @@ test('real 40-page capture keeps deterministic ancestry-safe assignment totals',
   ];
   const missingCaptures = capturePaths.filter((filePath) => !fs.existsSync(filePath));
   if (missingCaptures.length > 0) {
-    t.skip(`local 40-page audit captures unavailable: ${missingCaptures.map(path.basename).join(', ')}`);
+    t.skip(`local 40-page audit captures unavailable: ${missingCaptureNames(missingCaptures)}`);
     return;
   }
 
