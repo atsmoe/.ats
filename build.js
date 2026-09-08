@@ -1,6 +1,7 @@
 const esbuild = require('esbuild');
 const fs = require('fs');
 const path = require('path');
+const { buildSearch } = require('./scripts/build-search');
 
 const DIST = path.join(__dirname, 'dist');
 const SRC_JS = path.join(__dirname, 'src', 'js', 'modules');
@@ -85,6 +86,18 @@ async function buildJS() {
     logLevel: 'info',
   });
 
+  // Search has its own small entry; Pagefind loads only after a query.
+  await esbuild.build({
+    entryPoints: [path.join(SRC_JS, 'archive-search-entry.js')],
+    bundle: true,
+    format: 'iife',
+    outfile: path.join(DIST, 'js', 'archive-search.js'),
+    target: 'es2020',
+    minify: true,
+    sourcemap: false,
+    logLevel: 'info',
+  });
+
   // Copy virtual-timeline.js to dist
   fs.mkdirSync(path.join(DIST, 'js'), { recursive: true });
   fs.copyFileSync(
@@ -92,8 +105,7 @@ async function buildJS() {
     path.join(DIST, 'js', 'virtual-timeline.js')
   );
 
-  // Remove bundles from the short-lived four-entry experiment. All non-star-map
-  // pages are dispatched by bundle.js so the documented two-entry boundary holds.
+  // Remove obsolete world bundles from the short-lived four-entry experiment.
   for (const staleBundle of ['arknights.js', 'wh40k.js']) {
     const stalePath = path.join(DIST, 'js', staleBundle);
     if (fs.existsSync(stalePath)) fs.unlinkSync(stalePath);
@@ -259,11 +271,16 @@ async function main() {
   // Step 3: Optimize images (WebP generation)
   await buildImages();
 
+  // Index validated records after their destination pages have been generated.
+  await buildSearch(DIST);
+
   // Step 4: Verify critical output files
   const criticalFiles = [
     'js/bundle.js',
     'js/star-map-3d.js',
     'js/virtual-timeline.js',
+    'js/archive-search.js',
+    'pagefind/pagefind.js',
   ];
   for (const f of criticalFiles) {
     const fp = path.join(DIST, f);

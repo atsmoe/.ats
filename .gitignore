@@ -8,3 +8,5 @@ Thumbs.db
 .env
 *.log
 docs/.timeline_progress.json
+playwright-report/
+test-results/

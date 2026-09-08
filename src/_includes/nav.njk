@@ -13,6 +13,7 @@
   </div>
 
   <div class="nav-links">
+    <a href="./search.html" class="{% if pageType === 'search' %}active{% endif %}"{% if pageType === 'search' %} aria-current="page"{% endif %}>档案检索</a>
     <a href="./changelog.html" class="{% if title === '更新日志' %}active{% endif %}"{% if title === '更新日志' %} aria-current="page"{% endif %}>更新日志</a>
     <a href="./about.html" class="{% if title === '关于' %}active{% endif %}"{% if title === '关于' %} aria-current="page"{% endif %}>关于</a>
   </div>
@@ -34,6 +35,7 @@
     {% endfor %}
   </div>
   <div class="nav-mobile-links">
+    <a href="./search.html" class="{% if pageType === 'search' %}active{% endif %}"{% if pageType === 'search' %} aria-current="page"{% endif %}>档案检索</a>
     <a href="./changelog.html" class="{% if title === '更新日志' %}active{% endif %}"{% if title === '更新日志' %} aria-current="page"{% endif %}>更新日志</a>
     <a href="./about.html" class="{% if title === '关于' %}active{% endif %}"{% if title === '关于' %} aria-current="page"{% endif %}>关于</a>
   </div>
