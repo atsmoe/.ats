@@ -379,14 +379,10 @@ export async function initArknightsChronicle() {
 
   function onKeydown(event) {
     if (!isOpen) return;
+    if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       closeFromControl();
-      return;
-    }
-    if (event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
-      event.preventDefault();
-      goToChapter(currentChapterIndex + (event.key === 'ArrowLeft' ? -1 : 1));
       return;
     }
     if (event.key !== 'Tab') return;

@@ -85,7 +85,8 @@ test('reader owns focus, keyboard, reduced motion, and no-script degradation con
   assert.match(template, /role="dialog"[^>]*aria-modal="true"/);
   assert.doesNotMatch(template, /<main id="ark-chronicle-directory"/);
   assert.match(reader, /event\.key === 'Escape'/);
-  assert.match(reader, /event\.altKey[^\n]*ArrowLeft[^\n]*ArrowRight/);
+  assert.match(reader, /event\.defaultPrevented \|\| event\.isComposing \|\| event\.altKey \|\| event\.ctrlKey \|\| event\.metaKey/);
+  assert.match(template, /aria-keyshortcuts="Escape"/);
   assert.match(reader, /event\.key !== 'Tab'/);
   assert.match(reader, /returnFocus\?\.isConnected/);
   assert.match(reader, /window\.scrollTo\(\{ top: pageScrollY, behavior: 'auto' \}\)/);

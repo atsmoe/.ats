@@ -175,12 +175,13 @@ test('chronicle event dialogs advertise adjacent-event keyboard navigation', () 
   }
 });
 
-test('Arknights continuous reader advertises close and chapter keyboard navigation', () => {
+test('Arknights continuous reader advertises close and retains explicit chapter controls', () => {
   const template = read('src/arknights-chronicle.njk');
   assert.match(
     template,
-    /role="dialog"[^>]*aria-keyshortcuts="Escape Alt\+ArrowLeft Alt\+ArrowRight"/,
+    /role="dialog"[^>]*aria-keyshortcuts="Escape"/,
   );
+  assert.doesNotMatch(template, /aria-keyshortcuts="[^"]*Alt\+Arrow(?:Left|Right)/);
   assert.match(template, /data-ark-reader-previous/);
   assert.match(template, /data-ark-reader-next/);
   assert.match(template, /data-ark-reader-progress/);

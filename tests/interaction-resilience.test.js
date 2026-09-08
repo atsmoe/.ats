@@ -159,3 +159,43 @@ test('WH40K retains plain chapter shortcuts and Escape while respecting modifier
   reader.handle(key('Escape', { target: { closest: () => ({}) } }));
   assert.deepEqual(reader.changes, [-1, 1, 'search', 'close']);
 });
+
+function arknightsKeyboard() {
+  const changes = [];
+  const first = { closest: () => null, getClientRects: () => [1], focus: () => changes.push('first') };
+  const last = { closest: () => null, getClientRects: () => [1], focus: () => changes.push('last') };
+  const context = { isOpen: true, currentChapterIndex: 1, document: { activeElement: last },
+    reader: { querySelectorAll: () => [first, last] },
+    closeFromControl: () => changes.push('close'), goToChapter: index => changes.push(index) };
+  const text = source('arknights-chronicle-reader');
+  vm.runInNewContext(text.slice(text.indexOf('  function onKeydown(event)'), text.indexOf('  function syncHistory()')) + '\nglobalThis.handle = onKeydown;', context);
+  return { handle: context.handle, changes, context, first, last };
+}
+
+test('Arknights leaves Alt arrows to browser history even in editable targets', () => {
+  const reader = arknightsKeyboard();
+  for (const tagName of ['DIV', 'INPUT', 'TEXTAREA', 'SELECT']) {
+    for (const arrow of ['ArrowLeft', 'ArrowRight']) {
+      const event = key(arrow, { altKey: true, target: { tagName, closest: () => null } });
+      reader.handle(event);
+      assert.equal(event.defaultPrevented, false, `${tagName} ${arrow} must retain browser history`);
+    }
+  }
+  assert.deepEqual(reader.changes, []);
+});
+
+test('Arknights ignores composing, handled, and modified keys but retains Escape and focus trapping', () => {
+  const reader = arknightsKeyboard();
+  for (const flags of [{ isComposing: true }, { defaultPrevented: true }, { altKey: true }, { ctrlKey: true }, { metaKey: true }]) {
+    for (const value of ['Escape', 'Tab']) reader.handle(key(value, flags));
+  }
+  assert.deepEqual(reader.changes, []);
+  reader.handle(key('Tab'));
+  reader.context.document.activeElement = reader.first;
+  reader.handle(key('Tab', { shiftKey: true }));
+  reader.handle(key('Escape'));
+  assert.deepEqual(reader.changes, ['first', 'last', 'close']);
+  reader.context.isOpen = false;
+  reader.handle(key('Escape'));
+  assert.deepEqual(reader.changes, ['first', 'last', 'close']);
+});
