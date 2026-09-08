@@ -113,6 +113,47 @@ body[data-page="star-map"] footer {
   opacity: 1;
 }
 
+.star-map-fallback-message { display: none; }
+.star-map-fallback #bg-canvas { display: none; }
+.star-map-fallback #star-map {
+  overflow: auto;
+  pointer-events: auto;
+  padding: calc(var(--nav-h) + 140px) 24px 24px;
+}
+.star-map-fallback .star-map-fallback-message {
+  display: block;
+  text-align: center;
+  color: var(--text);
+}
+.star-map-fallback #galaxy-markers {
+  position: static;
+  display: grid;
+  gap: 16px;
+  max-width: 600px;
+  margin: 24px auto;
+}
+.star-map-fallback .galaxy-marker {
+  position: static;
+  display: block;
+  width: auto;
+  height: auto;
+  min-height: 44px;
+  padding: 16px;
+  transform: none;
+  opacity: 1;
+  color: var(--text);
+  border: 1px solid var(--gold-dim);
+  text-align: center;
+  text-decoration: none;
+}
+.star-map-fallback .galaxy-marker-glow,
+.star-map-fallback .galaxy-marker-core { display: none; }
+.star-map-fallback .galaxy-marker-label {
+  position: static;
+  opacity: 1;
+  transform: none;
+}
+
 /* Marker glow */
 .galaxy-marker-glow {
   position: absolute;

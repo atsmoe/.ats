@@ -1,6 +1,6 @@
 {
   "name": "between-the-stars-chronicles",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "群星之间 · 世界档案 — 虚构世界观测与调查系统",
   "private": true,
   "scripts": {
@@ -13,7 +13,7 @@
     "prototype:b4": "npm run assets:terra && npm run assets:terra:territory && node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && eleventy --serve --port 9000",
     "prototype:b5": "npm run assets:terra && npm run assets:terra:territory && node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b5-prototype.js && eleventy --serve --port 9000",
     "build": "npm run assets:terra && npm run assets:terra:territory && node src/validators/validate-data.js --validate-only && node convert-changelog.js && eleventy && node src/validators/validate-data.js && node build.js && node scripts/build-b4-prototype.js && node scripts/build-b5-prototype.js && npm test",
-    "test": "node --test",
+    "test": "node scripts/run-tests.js",
     "changelog": "node convert-changelog.js"
   },
   "devDependencies": {

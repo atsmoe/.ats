@@ -117,7 +117,7 @@ test('star-map worlds are real links and the detail overlay is an inert dialog',
   );
   assert.match(interaction, /new AbortController\(\)/);
   assert.match(interaction, /export function destroyStarMap\(\)/);
-  assert.match(interaction, /listen\(window, 'pagehide', destroyStarMap/);
+  assert.match(interaction, /if \(!event.persisted\) destroyStarMap\(\)/);
 });
 
 test('FFXIV no-script lenses remove inactive selector controls', () => {

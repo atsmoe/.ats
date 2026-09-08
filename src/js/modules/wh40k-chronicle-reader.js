@@ -447,17 +447,19 @@ function createReader(root, archive, listenerController) {
 
   function onKeydown(event) {
     if (overlay.hidden) return;
+    if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey) return;
+    const editing = event.target?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]');
     if (event.key === 'Escape') {
       event.preventDefault();
       closeReader(true);
       return;
     }
-    if (event.key === '/' && !/input|textarea/i.test(document.activeElement?.tagName)) {
+    if (event.key === '/' && !editing) {
       event.preventDefault();
       search.focus();
       return;
     }
-    if (event.key === '[' || event.key === ']') {
+    if (!editing && (event.key === '[' || event.key === ']')) {
       event.preventDefault();
       adjacentChapter(event.key === '[' ? -1 : 1);
       return;

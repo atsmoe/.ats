@@ -467,6 +467,7 @@ export async function initFf14Reader({ timelineData }) {
     switchBranch(button.dataset.readerBranch, null, { focus: true, historyMode: 'push' });
   }, { signal });
   branchNav.addEventListener('keydown', event => {
+    if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     const buttons = [...branchNav.querySelectorAll('button')];
     let index = buttons.indexOf(document.activeElement);
@@ -507,16 +508,6 @@ export async function initFf14Reader({ timelineData }) {
     if (target) goToEvent(target, { focus: true, updateHash: false, updateHistory: false });
     else switchBranch('mainline', null, { focus: true, updateHistory: false });
     returnBar.hidden = !event.state?.ff14ReaderReturn;
-  }, { signal });
-  document.addEventListener('keydown', event => {
-    if (!event.altKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-    const chapters = chaptersFor(activeRootId);
-    const current = model.chapterByEventId.get(activeEventId);
-    const index = chapters.findIndex(chapter => chapter.id === current?.id);
-    const target = chapters[index + (event.key === 'ArrowRight' ? 1 : -1)];
-    if (!target) return;
-    event.preventDefault();
-    scrollToEvent(target.eventIds[0], { focus: true });
   }, { signal });
 
   if (typeof IntersectionObserver !== 'function') {

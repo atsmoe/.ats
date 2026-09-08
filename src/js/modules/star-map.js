@@ -304,5 +304,7 @@ export function initStarMap() {
       first.focus();
     }
   });
-  listen(window, 'pagehide', destroyStarMap, { once: true });
+  listen(window, 'pagehide', event => {
+    if (!event.persisted) destroyStarMap();
+  });
 }
