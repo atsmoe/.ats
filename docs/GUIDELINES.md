@@ -89,7 +89,7 @@
 | validate 先于一切 | `npm run build` 第一步是 `validate-data.js`，失败则 exit(1) |
 | 不做 file:// 兼容 | HTML 中不出现 inline JSON，所有数据走 fetch |
 | Three.js 精确版本 | `package.json` 中 `"three": "0.136.0"`，不加 `^` 或 `~` |
-| esbuild 入口 | `main.js` → `bundle.js`（世界页）+ `star-map-entry.js` → `star-map-3d.js`（首页），两个独立 bundle |
+| esbuild 入口 | `main.js` → `bundle.js`（世界页）；`star-map-entry.js` → `star-map-3d.js`（首页）；`archive-search-entry.js` → `archive-search.js`（检索页，按需加载 Pagefind）。B4/B5 维持各自独立预览入口 |
 | 产出检查 | build 后验证 `dist/data/event-index.json` 存在且非空 |
 
 ## 十、发布与日志规则
@@ -118,3 +118,4 @@
 | 2026-07-12 | V2.5.5 | OpenAI Codex | 新增三段版本格式 `x.x.x` 及 CI 阻断非法版本规则。 | 固化用户确认的版本策略，防止错误版本进入部署。 |
 | 2026-07-12 | V2.5.6 | OpenAI Codex | 新增本节及强制追加式修改记录规则。 | 确保 Codex 对实现规范文档的修改全部可追溯。 |
 | 2026-08-02 | V2.6.0 | OpenAI Codex | 核对三段版本、双日志守卫、生产构建验证和星图原型隔离规则。 | 确保 V2.6.0 可按同一流程重复发布且不混入实验页面。 |
+| 2026-09-08 | V2.8.3 | OpenAI Codex | 增补独立检索页入口和 Pagefind 按需加载边界。 | 让全文检索不增加首页和世界页的脚本负担。 |

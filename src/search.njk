@@ -1,0 +1,70 @@
+---
+permalink: ./search.html
+title: 档案检索
+description: 搜索明日方舟、战锤40K与最终幻想XIV的人物、地点和事件，直接阅读对应的编年与专题记录。
+bodyClass: archive-search-page
+pageType: search
+scriptFile: archive-search.js
+cssFiles:
+  - base.css
+  - nav.css
+  - responsive.css
+  - archive-search.css
+---
+{% extends "base.njk" %}
+
+{% block content %}
+<div class="archive-search" id="archive-search">
+  <header class="search-heading">
+    <p class="search-eyebrow">群星之间 · 三世界档案</p>
+    <h1>档案检索<span aria-hidden="true">✦</span></h1>
+    <p class="search-intro">从一个名字出发，找到故事发生的地方。</p>
+  </header>
+
+  <form class="search-form" role="search" action="./search.html" method="get">
+    <label for="archive-query">搜索人物、地点或事件 · 多个关键词用空格分隔</label>
+    <div class="search-input-row">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+      <input id="archive-query" name="q" type="search" maxlength="160" placeholder="例如：水月、荷鲁斯、亚马乌罗提" autocomplete="off" spellcheck="false" aria-describedby="search-spoilers" disabled>
+      <button class="search-clear" type="button" aria-label="清空搜索" hidden>×</button>
+      <button class="search-submit" type="submit" disabled>检索 <span aria-hidden="true">↗</span></button>
+    </div>
+    <fieldset class="search-worlds" disabled>
+      <legend>检索范围</legend>
+      <label><input type="radio" name="world" value="all" checked><span>全部世界</span></label>
+      {% for world in site.worldList %}
+      <label data-world="{{ world.id }}"><input type="radio" name="world" value="{{ world.id }}"><span>{{ world.name }}</span></label>
+      {% endfor %}
+    </fieldset>
+    <p class="search-spoilers" id="search-spoilers">搜索摘要包含完整剧情与结局，请留意剧透。</p>
+  </form>
+
+  <div class="search-feedback">
+    <p id="search-status" role="status" aria-live="polite" aria-atomic="true">正在准备检索…</p>
+    <button class="search-retry" type="button" hidden>重新尝试</button>
+  </div>
+
+  <section class="search-discover" aria-labelledby="search-discover-title">
+    <div class="search-suggestions">
+      <h2 id="search-discover-title">从这些线索开始</h2>
+      <div>
+        <a href="./search.html?q=水月" data-search-query="水月">水月 <span aria-hidden="true">↗</span></a>
+        <a href="./search.html?q=荷鲁斯" data-search-query="荷鲁斯">荷鲁斯 <span aria-hidden="true">↗</span></a>
+        <a href="./search.html?q=亚马乌罗提" data-search-query="亚马乌罗提">亚马乌罗提 <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <div class="search-world-cards">
+      <a href="./arknights.html" data-world="arknights"><span class="search-world-number" aria-hidden="true">01 / TERRA</span><h3>明日方舟</h3><p>天灾、源石与移动城市。沿着泰拉的历史，追寻人物与国度的命运。</p><span class="search-world-action">进入泰拉 <span aria-hidden="true">→</span></span></a>
+      <a href="./wh40k.html" data-world="wh40k"><span class="search-world-number" aria-hidden="true">02 / GALAXY</span><h3>战锤40K</h3><p>从远古天堂之战到大裂隙。查阅银河中的文明、战争与信仰。</p><span class="search-world-action">进入银河 <span aria-hidden="true">→</span></span></a>
+      <a href="./ff14.html" data-world="ff14"><span class="search-world-number" aria-hidden="true">03 / AETHERYS</span><h3>最终幻想XIV</h3><p>原初世界与十三镜像。从古代人的终末，走向冒险者的新旅途。</p><span class="search-world-action">进入水晶星海 <span aria-hidden="true">→</span></span></a>
+    </div>
+  </section>
+
+  <section class="search-results-section" aria-label="检索结果" hidden>
+    <ol class="search-results"></ol>
+    <button class="search-more" type="button" hidden>显示更多记录</button>
+  </section>
+
+  <noscript><p class="search-noscript">启用 JavaScript 后可检索档案。你也可以通过上方三个世界入口继续阅读。</p><style>#search-status, .search-suggestions { display: none; }</style></noscript>
+</div>
+{% endblock %}

@@ -1,8 +1,8 @@
 import { normalizeEventSources } from './event-sources.js';
+import { getWh40kVerificationState } from './wh40k-verification.js';
+export { getWh40kVerificationState } from './wh40k-verification.js';
 
 const DATE_UNCERTAIN_PATTERN = /约|前|后|初|中|末|远古|创世|形成|恒星时代|CURRENT|RECURRING|M\d+\s*-\s*M\d+/i;
-const VERIFIED_PATTERN = /\bverified\b|已核验|完成独立核验/i;
-const DISPUTED_PATTERN = /争议|存疑|未核验|降级|重复|错误/i;
 
 function mainline(data) {
   return (data?.branches || []).find(branch => branch.id === 'mainline') || data?.branches?.[0];
@@ -15,19 +15,6 @@ function recordIndex(data) {
       .filter(record => record?.id)
       .map(record => [record.id, record]),
   );
-}
-
-export function getWh40kVerificationState(record, excludedIds = new Set()) {
-  const explicit = [record?.verificationStatus, record?.sourceStatus, record?.verification?.status]
-    .filter(Boolean)
-    .join(' ');
-  if (excludedIds.has(record?.id) || DISPUTED_PATTERN.test(explicit)) {
-    return { code: 'disputed', label: '来源争议 / 复核中' };
-  }
-  if (VERIFIED_PATTERN.test(explicit)) {
-    return { code: 'verified', label: 'VERIFIED' };
-  }
-  return { code: 'reviewing', label: '逐条复核中' };
 }
 
 export function isWh40kDateUncertain(dateDisplay = '') {

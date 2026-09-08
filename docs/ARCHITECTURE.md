@@ -25,6 +25,7 @@
 | 最终幻想XIV | `ff14.njk` | Canvas 2D 银蓝粒子 | `bundle.js` |
 | 关于 | `about.njk` | Canvas 2D 冷色粒子 | `bundle.js` |
 | 更新日志 | `changelog.njk` | Canvas 2D 冷色粒子 | `bundle.js` |
+| 档案检索 | `search.njk` | CSS 深空渐变 | `archive-search.js`，查询后加载 Pagefind |
 
 **架构**：多页静态网站（11ty SSG），页面间 `<a href>` 跳转。
 
@@ -234,6 +235,12 @@ ANIM.easing.bounce    // cubic-bezier(0.34, 1.56, 0.64, 1)
 
 ## 七、构建管线
 
+### V2.8.3 检索扩展
+
+`build.js` 额外输出独立的 `archive-search.js`，并在页面、校验数据和图片构建完成后调用 `scripts/build-search.js`。它通过 `WorldArchive` 与共享路由生成事件和结局的搜索投影，核对 `event-index.json` 覆盖及页面存在性，再写入 `dist/pagefind/`。检索索引不包含导航、镜像 Lens 副本或图片；失败会终止构建。
+
+浏览器首次查询时才加载 Pagefind，按世界筛选并批量取回结果摘要。搜索状态存于 `search.html?q=…&world=…`，结果共用现有记录深链，兼容站点根目录和 GitHub Pages 仓库前缀。Pagefind 自带 UI 未进入产物页面。详见 [检索维护说明](SEARCH.md)。
+
 ```
 npm run build:
   1. node src/validators/validate-data.js   ← 校验 + 扁平化 + 索引
@@ -342,3 +349,4 @@ dist/
 | 2026-08-09 | V2.6.2 | OpenAI Codex | 将 B4 星图加入公开构建白名单，正式首页提供双向版本切换；其他旧原型继续隔离。 | 修正将线上切换误做成仅本地入口的发布边界错误。 |
 | 2026-08-24 | V2.7.0 | OpenAI Codex | 新增独立 B5 二维观测预览，并记录三世界事件档案的连续导航与过渡边界。 | 保留正式粒子星图，允许线上并行评审 B4、B5，同时约束弹窗状态清理和减少动态效果。 |
 | 2026-09-03 | V2.8.0 | OpenAI Codex | 统一发布三世界连续阅读、FFXIV 媒体溯源与 B5 观测星图的本地验收批次。 | 固定当前发布编号，保留远端默认首页与原型隔离边界，并让生产媒体只使用可核验的原图。 |
+| 2026-09-08 | V2.8.3 | OpenAI Codex | 增补检索页面、索引构建管线与浏览器按需加载边界。 | 为现有档案提供统一查找入口，复用来源状态和稳定记录地址。 |
