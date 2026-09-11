@@ -187,7 +187,6 @@ export async function initFf14Reader({ timelineData }) {
   let storage = null;
   try { storage = window.localStorage; } catch (_error) { /* storage can be denied */ }
   const progressStore = createProgressStore(storage);
-  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   const listenerController = new AbortController();
   const { signal } = listenerController;
   let activeRootId = 'mainline';
@@ -195,6 +194,9 @@ export async function initFf14Reader({ timelineData }) {
   let observer = null;
   let saveTimer = null;
   let navigationFrame = 0;
+  let positionFrame = 0;
+  let isPositioning = false;
+  let navigationScrollY = null;
   let navigationToken = 0;
   let fallbackScrollFrame = 0;
   let isSwitchingBranch = false;
@@ -281,6 +283,7 @@ export async function initFf14Reader({ timelineData }) {
     observer?.disconnect();
     if (typeof IntersectionObserver !== 'function') return;
     observer = new IntersectionObserver(entries => {
+      if (isSwitchingBranch || isPositioning || window.scrollY === navigationScrollY) return;
       const visible = entries
         .filter(entry => entry.isIntersecting)
         .sort((a, b) => Math.abs(a.boundingClientRect.top - 150) - Math.abs(b.boundingClientRect.top - 150));
@@ -302,9 +305,10 @@ export async function initFf14Reader({ timelineData }) {
   }
 
   function onFallbackScroll() {
-    if (fallbackScrollFrame) return;
+    if (fallbackScrollFrame || isSwitchingBranch || isPositioning) return;
     fallbackScrollFrame = requestAnimationFrame(() => {
       fallbackScrollFrame = 0;
+      if (isPositioning || window.scrollY === navigationScrollY) return;
       setActiveRecord(currentRecordFromViewport());
     });
   }
@@ -312,9 +316,22 @@ export async function initFf14Reader({ timelineData }) {
   function scrollToEvent(eventId, { focus = false, updateHash = true } = {}) {
     const target = document.getElementById(eventId);
     if (!target) return false;
-    target.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+    if (positionFrame) cancelAnimationFrame(positionFrame);
+    isPositioning = true;
+    target.scrollIntoView({ block: 'start', behavior: 'instant' });
+    navigationScrollY = window.scrollY;
     setActiveRecord(target, { syncUrl: updateHash });
     if (focus) target.focus({ preventScroll: true });
+    // Re-align once after content-visibility has laid out the destination.
+    // Observers resume on subsequent scrolling, not the initial notification.
+    positionFrame = requestAnimationFrame(() => {
+      positionFrame = 0;
+      if (target.isConnected) {
+        target.scrollIntoView({ block: 'start', behavior: 'instant' });
+        navigationScrollY = window.scrollY;
+      }
+      isPositioning = false;
+    });
     return true;
   }
 
@@ -408,6 +425,9 @@ export async function initFf14Reader({ timelineData }) {
     navigationToken += 1;
     const token = navigationToken;
     if (navigationFrame) cancelAnimationFrame(navigationFrame);
+    if (positionFrame) cancelAnimationFrame(positionFrame);
+    positionFrame = 0;
+    isPositioning = false;
     isSwitchingBranch = true;
     activeRootId = rootId;
     activeEventId = null;
@@ -510,6 +530,8 @@ export async function initFf14Reader({ timelineData }) {
     clearTimeout(saveTimer);
     saveTimer = null;
     if (navigationFrame) cancelAnimationFrame(navigationFrame);
+    if (positionFrame) cancelAnimationFrame(positionFrame);
+    positionFrame = 0;
     navigationFrame = 0;
     if (fallbackScrollFrame) cancelAnimationFrame(fallbackScrollFrame);
     fallbackScrollFrame = 0;

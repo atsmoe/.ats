@@ -61,5 +61,47 @@ test('FFXIV rejects a bookmark from another branch and honors a direct link', as
   await expect(page.locator('.ff-reader-context h2')).toHaveText('古代人与古代社会');
   await page.goto('/.ats/ff14-chronicle.html#ff14-323');
   await expect(page.locator('#ff14-323')).toBeFocused();
+  await expect(page.locator('#ff14-323')).toBeInViewport();
   await expect(page).toHaveURL(/#ff14-323$/);
+});
+
+test('WH40K chapter filtering waits for composition and clearly recovers from no results', async ({ page }) => {
+  await page.goto('/.ats/wh40k-chronicle.html#wh-017');
+  const input = page.getByRole('searchbox', { name: '筛选章节' });
+  const chapters = page.locator('.wh-reader-rail-chapter:visible');
+  await expect(chapters).toHaveCount(31);
+  // Synthetic composition events test handler boundaries, not OS-level IME.
+  await input.dispatchEvent('compositionstart');
+  await input.fill('没有这一章');
+  await expect(chapters).toHaveCount(31);
+  await input.dispatchEvent('compositionend');
+  await expect(chapters).toHaveCount(0);
+  await expect(page.getByRole('status')).toContainText('未找到匹配章节');
+  await input.press('Escape');
+  await expect(input).toHaveValue('');
+  await expect(chapters).toHaveCount(31);
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await input.fill('星神的契约');
+  await expect(chapters).toHaveCount(1);
+  await expect(chapters).toHaveText('星神的契约');
+  await page.getByRole('button', { name: '清空筛选' }).click();
+  await expect(input).toBeFocused();
+  await expect(chapters).toHaveCount(31);
+});
+
+test('WH40K explicit record wins over an old chapter query and buttons turn chapters', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/.ats/wh40k-chronicle.html?chapter=old-ones-ascendant#wh-017');
+  await expect(page.getByRole('heading', { name: '恒星中的饥饿', exact: true })).toBeVisible();
+  await expect(page.locator('#reader-wh-017')).toBeFocused();
+  await expect(page.getByRole('button', { name: '上一章', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: '下一章', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '古圣与网道', exact: true })).toBeVisible();
+  await expect(page.locator('.wh-reader-rail-chapter[aria-current="location"]')).toHaveText('古圣与网道');
+  await page.getByRole('button', { name: '上一章', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '恒星中的饥饿', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '关闭卷宗', exact: true }).click();
+  await expect(page.getByRole('dialog')).toBeHidden();
+  expect(errors).toEqual([]);
 });

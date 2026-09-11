@@ -18,14 +18,6 @@ function element(name, className, text) {
   return node;
 }
 
-function reducedMotion() {
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-}
-
-function scrollBehavior() {
-  return reducedMotion() ? 'auto' : 'smooth';
-}
-
 function recordHref(record) {
   return `#${encodeURIComponent(record.id)}`;
 }
@@ -146,6 +138,9 @@ export async function initArknightsChronicle() {
   let currentRecordNode = null;
   let currentIndexLink = null;
   let scrollFrame = 0;
+  let navigationFrame = 0;
+  let isNavigating = false;
+  let navigationScrollTop = null;
   let recordObserver = null;
 
   directoryList.innerHTML = '';
@@ -295,9 +290,10 @@ export async function initArknightsChronicle() {
   }
 
   function onReaderScroll() {
-    if (scrollFrame) return;
+    if (scrollFrame || isNavigating || !isOpen) return;
     scrollFrame = requestAnimationFrame(() => {
       scrollFrame = 0;
+      if (!isOpen || isNavigating || readerScroll.scrollTop === navigationScrollTop) return;
       setContext(currentRecordFromViewport());
     });
   }
@@ -305,6 +301,7 @@ export async function initArknightsChronicle() {
   function observeCurrentRecord() {
     if (typeof IntersectionObserver !== 'function') return false;
     recordObserver = new IntersectionObserver(entries => {
+      if (!isOpen || isNavigating || readerScroll.scrollTop === navigationScrollTop) return;
       const current = entries
         .filter(entry => entry.isIntersecting && entry.target.getClientRects().length > 0)
         .sort((left, right) => (
@@ -324,6 +321,8 @@ export async function initArknightsChronicle() {
   }
 
   function revealTarget(target, focus = true) {
+    if (navigationFrame) cancelAnimationFrame(navigationFrame);
+    isNavigating = true;
     let node = null;
     if (target?.type === 'event') {
       node = recordNodeById.get(target.id);
@@ -337,8 +336,18 @@ export async function initArknightsChronicle() {
       if (chapter?.chapter.records[0]) setContext(chapter.chapter.records[0]);
     }
     if (!node) node = readerContent.querySelector('.ark-reader-chapter-head');
-    node?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
-    if (focus) requestAnimationFrame(() => node?.focus({ preventScroll: true }));
+    // Long chapter jumps are immediate: intermediate records must not replace
+    // the explicit destination or its saved reading position.
+    node?.scrollIntoView({ behavior: 'instant', block: 'start' });
+    navigationScrollTop = readerScroll.scrollTop;
+    if (focus) node?.focus({ preventScroll: true });
+    navigationFrame = requestAnimationFrame(() => {
+      navigationFrame = 0;
+      if (!isOpen) return;
+      node?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      navigationScrollTop = readerScroll.scrollTop;
+      isNavigating = false;
+    });
   }
 
   function openReader(target, push = false, opener = null) {
@@ -356,7 +365,7 @@ export async function initArknightsChronicle() {
       const hash = target?.id ? `#${encodeURIComponent(target.id)}` : '#ark-chapter-1-1';
       history.pushState({ ...(history.state || {}), arkReaderOrigin: true }, '', hash);
     }
-    requestAnimationFrame(() => revealTarget(target));
+    revealTarget(target);
   }
 
   function closeReader({ restoreFocus = true, clearHash = false } = {}) {
@@ -371,6 +380,9 @@ export async function initArknightsChronicle() {
     siteNav?.removeAttribute('inert');
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
     scrollFrame = 0;
+    if (navigationFrame) cancelAnimationFrame(navigationFrame);
+    navigationFrame = 0;
+    isNavigating = false;
     if (clearHash && arknightsReaderTarget(location.hash)) {
       history.replaceState(null, '', `${location.pathname}${location.search}`);
     }
@@ -442,6 +454,8 @@ export async function initArknightsChronicle() {
 
   function destroy() {
     saveProgress();
+    if (navigationFrame) cancelAnimationFrame(navigationFrame);
+    navigationFrame = 0;
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
     scrollFrame = 0;
     recordObserver?.disconnect();

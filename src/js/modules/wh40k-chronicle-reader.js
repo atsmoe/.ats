@@ -97,7 +97,7 @@ function queryLocation(archive) {
   const params = new URLSearchParams(location.search);
   let eventId = location.hash.replace(/^#/, '');
   try { eventId = decodeURIComponent(eventId); } catch (_error) { /* keep raw hash */ }
-  const chapterId = params.get('chapter') || archive.eventToChapter.get(eventId);
+  const chapterId = archive.eventToChapter.get(eventId) || params.get('chapter');
   return {
     chapterId: archive.chapterById.has(chapterId) ? chapterId : null,
     eventId: archive.eventToChapter.has(eventId) ? eventId : null,
@@ -262,6 +262,12 @@ function createReader(root, archive, listenerController) {
   search.placeholder = '筛选章节（/）';
   search.setAttribute('aria-label', '筛选章节');
   railHead.appendChild(search);
+  const searchControls = element('div', 'wh-reader-search-controls');
+  const searchStatus = element('p', 'wh-reader-search-status');
+  searchStatus.setAttribute('role', 'status');
+  const clearSearch = button('wh-reader-clear-search', '清空筛选', () => resetSearch(), signal);
+  searchControls.append(searchStatus, clearSearch);
+  railHead.appendChild(searchControls);
   const railList = element('nav', 'wh-reader-rail-list');
   railList.setAttribute('aria-label', '章节目录');
   rail.append(railHead, railList);
@@ -279,7 +285,12 @@ function createReader(root, archive, listenerController) {
   const progressBar = element('span');
   progress.appendChild(progressBar);
   const body = element('div', 'wh-reader-body');
-  reading.append(chapterHead, progress, body);
+  const chapterNav = element('nav', 'wh-reader-chapter-nav');
+  chapterNav.setAttribute('aria-label', '章节翻页');
+  const previousChapter = button('', '上一章', () => adjacentChapter(-1), signal);
+  const nextChapter = button('', '下一章', () => adjacentChapter(1), signal);
+  chapterNav.append(previousChapter, nextChapter);
+  reading.append(chapterHead, chapterNav, progress, body);
 
   const context = element('aside', 'wh-reader-context');
   context.setAttribute('aria-live', 'polite');
@@ -298,11 +309,20 @@ function createReader(root, archive, listenerController) {
   let returnFocus = null;
   let returnScrollY = 0;
   let openedFromIndex = false;
-  let scrollTicking = false;
+  let scrollFrame = 0;
+  let targetFrame = 0;
+  let isComposing = false;
+
+  function cancelReadingTasks() {
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
+    if (targetFrame) cancelAnimationFrame(targetFrame);
+    scrollFrame = 0;
+    targetFrame = 0;
+  }
 
   function setUrl(eventId, mode = 'replace') {
     const url = readerUrl(currentChapter.id, eventId);
-    const state = { whReader: true, openedFromIndex, chapterId: currentChapter.id, eventId };
+    const state = { ...history.state, whReader: true, openedFromIndex, chapterId: currentChapter.id, eventId };
     history[`${mode}State`](state, '', url);
   }
 
@@ -313,10 +333,14 @@ function createReader(root, archive, listenerController) {
     const index = currentChapter.events.findIndex(item => item.id === record.id);
     const percent = currentChapter.events.length ? Math.round(((index + 1) / currentChapter.events.length) * 100) : 0;
     progress.setAttribute('aria-valuenow', String(percent));
+    progress.setAttribute('aria-valuetext', `${index + 1} / ${currentChapter.events.length} 条记录`);
     progressBar.style.width = `${percent}%`;
     if (updateUrl) setUrl(record.id);
     railList.querySelectorAll('[data-chapter-id]').forEach(node => {
-      node.classList.toggle('is-current', node.dataset.chapterId === currentChapter.id);
+      const active = node.dataset.chapterId === currentChapter.id;
+      node.classList.toggle('is-current', active);
+      if (active) node.setAttribute('aria-current', 'location');
+      else node.removeAttribute('aria-current');
     });
   }
 
@@ -336,8 +360,12 @@ function createReader(root, archive, listenerController) {
   }
 
   function renderChapter(chapter, eventId) {
+    cancelReadingTasks();
     currentChapter = chapter;
     currentEvent = null;
+    const chapterIndex = archive.chapters.indexOf(chapter);
+    previousChapter.disabled = chapterIndex === 0;
+    nextChapter.disabled = chapterIndex === archive.chapters.length - 1;
     chapterHead.replaceChildren();
     chapterHead.append(
       element('p', 'wh-reader-kicker', chapter.eraTitle),
@@ -372,10 +400,13 @@ function createReader(root, archive, listenerController) {
       body.appendChild(details);
     }
     reading.scrollTop = 0;
+    shell.scrollTop = 0;
     const target = chapter.events.find(record => record.id === eventId) || chapter.events[0];
     selectEvent(target, false);
     if (eventId) {
-      requestAnimationFrame(() => {
+      targetFrame = requestAnimationFrame(() => {
+        targetFrame = 0;
+        if (overlay.hidden || currentChapter !== chapter) return;
         const targetNode = document.getElementById(`reader-${eventId}`);
         targetNode?.scrollIntoView({ block: 'start', behavior: 'auto' });
         targetNode?.focus({ preventScroll: true });
@@ -411,6 +442,7 @@ function createReader(root, archive, listenerController) {
       history.back();
       return;
     }
+    cancelReadingTasks();
     overlay.hidden = true;
     document.body.classList.remove('wh-reader-open');
     siteNav?.removeAttribute('inert');
@@ -438,6 +470,10 @@ function createReader(root, archive, listenerController) {
     const editing = event.target?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]');
     if (event.key === 'Escape') {
       event.preventDefault();
+      if (event.target === search && search.value) {
+        resetSearch();
+        return;
+      }
       closeReader(true);
       return;
     }
@@ -466,36 +502,67 @@ function createReader(root, archive, listenerController) {
     }
   }
 
-  reading.addEventListener('scroll', () => {
-    if (scrollTicking || !currentChapter) return;
-    scrollTicking = true;
-    requestAnimationFrame(() => {
-      scrollTicking = false;
+  function onReadingScroll(event) {
+    if (scrollFrame || !currentChapter || overlay.hidden) return;
+    const container = event.currentTarget;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      if (!currentChapter || overlay.hidden) return;
       const articles = [...body.querySelectorAll('.wh-reader-event')]
         .filter(article => article.getClientRects().length > 0);
-      const readingTop = reading.getBoundingClientRect().top;
+      const marker = container.getBoundingClientRect().top + Math.min(180, container.clientHeight * 0.36);
       let active = articles[0];
       for (const article of articles) {
-        if (article.getBoundingClientRect().top <= readingTop + reading.clientHeight * 0.36) active = article;
+        if (article.getBoundingClientRect().top <= marker) active = article;
       }
       const record = currentChapter.events.find(item => item.id === active?.dataset.eventId);
       selectEvent(record);
     });
-  }, { passive: true, signal });
+  }
+  reading.addEventListener('scroll', onReadingScroll, { passive: true, signal });
+  shell.addEventListener('scroll', onReadingScroll, { passive: true, signal });
 
-  search.addEventListener('input', () => {
+  function filterChapters() {
     const query = search.value.trim().toLowerCase();
-    railList.querySelectorAll('[data-chapter-id]').forEach(node => {
-      node.hidden = Boolean(query) && !node.dataset.search.includes(query);
+    let count = 0;
+    railList.querySelectorAll('.wh-reader-rail-era').forEach(group => {
+      let visible = 0;
+      group.querySelectorAll('[data-chapter-id]').forEach(node => {
+        node.hidden = Boolean(query) && !node.dataset.search.includes(query);
+        if (!node.hidden) visible += 1;
+      });
+      group.hidden = visible === 0;
+      count += visible;
     });
+    clearSearch.disabled = !search.value;
+    searchStatus.textContent = count
+      ? `${count} / ${archive.chapters.length} 章`
+      : '未找到匹配章节，请更换关键词或清空筛选。';
+  }
+
+  function resetSearch() {
+    isComposing = false;
+    search.value = '';
+    filterChapters();
+    search.focus();
+  }
+
+  search.addEventListener('compositionstart', () => { isComposing = true; }, { signal });
+  search.addEventListener('compositionend', () => { isComposing = false; filterChapters(); }, { signal });
+  search.addEventListener('input', event => {
+    if (!isComposing && !event.isComposing) filterChapters();
   }, { signal });
   document.addEventListener('keydown', onKeydown, { signal });
-  window.addEventListener('popstate', () => {
+  function syncHistory() {
     const requested = queryLocation(archive);
+    if (!overlay.hidden && requested.chapterId === currentChapter?.id && requested.eventId === currentEvent?.id) return;
     if (!requested.chapterId) closeReader(false);
     else openChapter(requested.chapterId, requested.eventId, false);
-  }, { signal });
+  }
+  window.addEventListener('popstate', syncHistory, { signal });
+  window.addEventListener('hashchange', syncHistory, { signal });
   function destroy() {
+    cancelReadingTasks();
     listenerController.abort();
     document.body.classList.remove('wh-reader-open');
     siteNav?.removeAttribute('inert');
@@ -505,6 +572,7 @@ function createReader(root, archive, listenerController) {
     if (!event.persisted) destroy();
   }, { signal });
   renderRail();
+  filterChapters();
   return { openChapter, closeReader, destroy };
 }
 

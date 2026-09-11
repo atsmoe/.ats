@@ -313,6 +313,47 @@ body.wh-reader-open #nav {
   outline-offset: 2px;
 }
 
+.world-wh40k .wh-reader-search-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+.world-wh40k .wh-reader-search-status {
+  flex: 1;
+  color: var(--wh-bone);
+  font-size: .875rem;
+  line-height: 1.6;
+}
+.world-wh40k .wh-reader-clear-search,
+.world-wh40k .wh-reader-chapter-nav button {
+  min-height: 44px;
+  padding: var(--space-sm);
+  border: 1px solid var(--wh-rule);
+  color: var(--wh-bone);
+  background: var(--wh-ink);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.world-wh40k .wh-reader-clear-search { flex-shrink: 0; }
+.world-wh40k .wh-reader-clear-search:disabled,
+.world-wh40k .wh-reader-chapter-nav button:disabled { opacity: .5; cursor: default; }
+.world-wh40k .wh-reader-clear-search:focus-visible,
+.world-wh40k .wh-reader-chapter-nav button:focus-visible {
+  outline: 2px solid var(--wh-brass-bright);
+  outline-offset: 2px;
+}
+.world-wh40k .wh-reader-clear-search:hover:not(:disabled),
+.world-wh40k .wh-reader-chapter-nav button:hover:not(:disabled) { border-color: var(--wh-brass-bright); }
+.world-wh40k .wh-reader-chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+}
+.world-wh40k .wh-reader-rail-chapter[hidden],
+.world-wh40k .wh-reader-rail-era[hidden] { display: none; }
+
 .world-wh40k .wh-reader-rail-list {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -694,6 +735,8 @@ body.wh-reader-open #nav {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .world-wh40k .wh-reader-clear-search,
+  .world-wh40k .wh-reader-chapter-nav button,
   .world-wh40k .wh-reader-progress > span,
   .world-wh40k .wh-chapter-open,
   .world-wh40k .wh-reader-rail-chapter {
