@@ -1,6 +1,7 @@
 import { getBranches } from './data-access.js';
 import { normalizeEventSources } from './event-sources.js';
 import { worldRecordHref } from './world-routing.js';
+import { createReaderProgressStore } from './reader-progress.js';
 import {
   arknightsReaderProgress,
   arknightsReaderTarget,
@@ -114,6 +115,8 @@ export async function initArknightsChronicle() {
   const readerScroll = document.getElementById('ark-reader-scroll');
   const readerContent = document.getElementById('ark-reader-content');
   const context = document.getElementById('ark-reader-context');
+  const contextPanel = reader?.querySelector('.ark-reader-context-panel');
+  const resumeLink = directory?.querySelector('[data-ark-reader-resume]');
   const closeButton = reader?.querySelector('[data-ark-reader-close]');
   const previousButton = reader?.querySelector('[data-ark-reader-previous]');
   const nextButton = reader?.querySelector('[data-ark-reader-next]');
@@ -131,6 +134,10 @@ export async function initArknightsChronicle() {
   const recordIndexById = new Map(allRecords.map((record, index) => [record.id, index]));
   const listenerController = new AbortController();
   const { signal } = listenerController;
+  let storage = null;
+  try { storage = window.localStorage; } catch (_error) { /* storage can be denied */ }
+  const progressStore = createReaderProgressStore(storage, 'ats.arknights.reader.progress.v1');
+  const narrowScreen = window.matchMedia?.('(max-width: 980px)');
   let isOpen = false;
   let returnFocus = null;
   let pageScrollY = 0;
@@ -183,6 +190,29 @@ export async function initArknightsChronicle() {
     [...readerContent.querySelectorAll('.ark-reader-chapter')]
       .map(section => [section.id, section.querySelector('.ark-reader-chapter-head')]),
   );
+
+  function updateResumeLink() {
+    const saved = progressStore.read(mainline.id);
+    const position = model.recordsById.get(saved?.eventId);
+    if (!resumeLink) return;
+    resumeLink.hidden = !position;
+    if (!position) return;
+    resumeLink.href = recordHref(position.record);
+    resumeLink.dataset.arkReaderTarget = position.record.id;
+    resumeLink.querySelector('[data-ark-reader-resume-title]').textContent = position.record.title;
+  }
+
+  function saveProgress() {
+    if (isOpen && currentEventId) progressStore.write(mainline.id, { eventId: currentEventId });
+  }
+
+  function updateContextLayout() {
+    if (!contextPanel) return;
+    if (narrowScreen?.matches && context.contains(document.activeElement)) {
+      contextPanel.querySelector('summary')?.focus({ preventScroll: true });
+    }
+    contextPanel.open = !narrowScreen?.matches;
+  }
 
   function setContext(record) {
     if (!record || record.id === currentEventId) return;
@@ -250,6 +280,7 @@ export async function initArknightsChronicle() {
     if (isOpen && location.hash !== recordHref(record)) {
       history.replaceState(history.state, '', recordHref(record));
     }
+    saveProgress();
   }
 
   function currentRecordFromViewport() {
@@ -330,6 +361,8 @@ export async function initArknightsChronicle() {
 
   function closeReader({ restoreFocus = true, clearHash = false } = {}) {
     if (!isOpen) return;
+    saveProgress();
+    updateResumeLink();
     isOpen = false;
     reader.hidden = true;
     reader.setAttribute('aria-hidden', 'true');
@@ -362,6 +395,7 @@ export async function initArknightsChronicle() {
   }
 
   function onTargetClick(event) {
+    if (event.defaultPrevented || event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     const link = event.target.closest('[data-ark-reader-target]');
     if (!link) return;
     const target = arknightsReaderTarget(link.getAttribute('href'));
@@ -407,6 +441,7 @@ export async function initArknightsChronicle() {
   }
 
   function destroy() {
+    saveProgress();
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
     scrollFrame = 0;
     recordObserver?.disconnect();
@@ -417,6 +452,7 @@ export async function initArknightsChronicle() {
   }
 
   function onPageHide(event) {
+    saveProgress();
     if (!event.persisted) destroy();
   }
 
@@ -432,6 +468,9 @@ export async function initArknightsChronicle() {
   window.addEventListener('popstate', syncHistory, { signal });
   window.addEventListener('hashchange', syncHistory, { signal });
   window.addEventListener('pagehide', onPageHide, { signal });
+  narrowScreen?.addEventListener('change', updateContextLayout, { signal });
+  updateContextLayout();
+  updateResumeLink();
 
   const initialTarget = arknightsReaderTarget(location.hash);
   if (initialTarget) openReader(initialTarget, false);

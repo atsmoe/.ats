@@ -1,3 +1,5 @@
+import { createReaderProgressStore } from './reader-progress.js';
+
 const STORAGE_KEY = 'ats.ff14.reader.progress.v1';
 const LONG_TEXT_LIMIT = 1100;
 
@@ -44,18 +46,7 @@ export function splitLongText(text, limit = LONG_TEXT_LIMIT) {
 }
 
 export function createProgressStore(storage) {
-  function readAll() {
-    try { return JSON.parse(storage?.getItem(STORAGE_KEY) || '{}'); } catch (_error) { return {}; }
-  }
-  return {
-    read(branchId) { return readAll()[branchId] || null; },
-    write(branchId, progress) {
-      if (!storage || !branchId || !progress?.eventId) return;
-      const state = readAll();
-      state[branchId] = progress;
-      try { storage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_error) { /* private mode */ }
-    },
-  };
+  return createReaderProgressStore(storage, STORAGE_KEY);
 }
 
 export function createCrossWorldHistoryState(origin, currentState = {}) {
@@ -431,7 +422,8 @@ export async function initFf14Reader({ timelineData }) {
     });
     observeRecords();
     const stored = progressStore.read(rootId)?.eventId;
-    const eventId = requestedEventId || stored || chapters[0]?.eventIds[0];
+    const belongsToBranch = eventId => model.chapterByEventId.get(eventId)?.rootBranchId === rootId;
+    const eventId = [requestedEventId, stored, chapters[0]?.eventIds[0]].find(belongsToBranch);
     navigationFrame = requestAnimationFrame(() => {
       navigationFrame = 0;
       if (token !== navigationToken || activeRootId !== rootId) return;

@@ -80,6 +80,10 @@ cssFiles:
       <h2 id="ark-directory-title">章节目录</h2>
       <p>按时代与时间段查阅主世界线；关键节点可直接进入，短篇同期档案在正文中展开。</p>
     </header>
+    <a class="ark-reader-resume" data-ark-reader-resume data-ark-reader-target hidden>
+      <span>继续上次阅读</span>
+      <strong data-ark-reader-resume-title></strong>
+    </a>
     <div id="ark-chapter-list" class="ark-chapter-list" aria-live="polite"></div>
   </div>
 </div>
@@ -143,7 +147,10 @@ cssFiles:
     <div id="ark-reader-scroll" class="ark-reader-scroll" tabindex="0">
       <div id="ark-reader-content" class="ark-reader-content"></div>
     </div>
-    <aside id="ark-reader-context" class="ark-reader-context" aria-live="polite" aria-atomic="true"></aside>
+    <details class="ark-reader-context-panel" open>
+      <summary>当前记录与来源</summary>
+      <aside id="ark-reader-context" class="ark-reader-context" aria-label="当前记录与来源"></aside>
+    </details>
   </div>
 </section>
 {% endblock %}
