@@ -90,7 +90,7 @@ test('reader owns focus, keyboard, reduced motion, and no-script degradation con
   assert.match(reader, /event\.key !== 'Tab'/);
   assert.match(reader, /returnFocus\?\.isConnected/);
   assert.match(reader, /window\.scrollTo\(\{ top: pageScrollY, behavior: 'auto' \}\)/);
-  assert.match(reader, /prefers-reduced-motion: reduce/);
+  assert.match(reader, /scrollIntoView\(\{ behavior: 'instant'/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@media \(max-width: 720px\)/);
 });

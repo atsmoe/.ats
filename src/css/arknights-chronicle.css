@@ -137,6 +137,23 @@ body.ark-reader-open #nav {
 
 .ark-reader[hidden] { display: none; }
 
+.ark-reader-resume {
+  display: grid;
+  gap: var(--space-sm);
+  margin-bottom: calc(var(--space-sm) * 2);
+  padding: calc(var(--space-sm) * 1.5);
+  border: 1px solid var(--ark-reader-rule);
+  color: var(--ark-paper);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.ark-reader-resume[hidden] { display: none; }
+.ark-reader-resume span { color: var(--ark-amber); }
+.ark-reader-resume:hover { border-color: var(--ark-amber); }
+
+.ark-reader-context-panel { min-width: 0; min-height: 0; overflow: auto; }
+.ark-reader-context-panel > summary { display: none; }
+
 .ark-reader {
   position: fixed;
   inset: 0;
@@ -303,7 +320,10 @@ body.ark-reader-open #nav {
 
 .ark-reader-record-date { color: var(--ark-amber); font-size: 13px; letter-spacing: .08em; }
 .ark-reader-record-title { margin: 9px 0 14px; padding-right: 64px; font: 700 20px/1.45 var(--font-serif); }
-.ark-reader-record-description { margin: 0; color: var(--ark-paper); font-size: 15px; line-height: 1.95; white-space: pre-line; }
+.ark-reader-record-description { margin: 0; color: var(--ark-paper); font-size: 1rem; line-height: 1.95; white-space: pre-line; overflow-wrap: anywhere; }
+.ark-reader-record-title,
+.ark-reader-chapter-head h2,
+.ark-reader-context-title { overflow-wrap: anywhere; }
 
 .ark-reader-inline-tags,
 .ark-reader-crossrefs { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 7px; }
@@ -360,6 +380,20 @@ body.ark-reader-open #nav {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto minmax(0, 1fr);
   }
+  .ark-reader-scroll { grid-row: 3; }
+  .ark-reader-context-panel {
+    grid-row: 2;
+    max-height: 34dvh;
+    border-bottom: 1px solid var(--ark-reader-rule);
+  }
+  .ark-reader-context-panel > summary {
+    display: list-item;
+    min-height: 44px;
+    padding: var(--space-sm);
+    color: var(--ark-amber);
+    cursor: pointer;
+    font-size: .875rem;
+  }
   .ark-reader-index {
     padding: 8px 12px;
     border: 0;
@@ -370,7 +404,7 @@ body.ark-reader-open #nav {
   .ark-reader-index-link { max-width: 230px; border-left: 0; border-bottom: 2px solid transparent; }
   .ark-reader-index-link.is-current { border-bottom-color: var(--ark-amber); }
   .ark-reader-context {
-    max-height: 30vh;
+    max-height: none;
     padding: 13px 18px;
     border: 0;
     border-bottom: 1px solid rgba(226, 223, 213, .09);
@@ -389,14 +423,13 @@ body.ark-reader-open #nav {
   .ark-chronicle-directory { width: min(100% - 30px, 620px); padding-top: 48px; }
   .ark-chapter-list { grid-template-columns: minmax(0, 1fr); }
   .ark-chapter-card { min-height: 220px; padding: 20px; }
-  .ark-reader { inset: var(--nav-h) 0 0; }
+  .ark-reader { inset: 0; }
   .ark-reader-toolbar { min-height: 0; padding: 9px 12px; gap: 8px; }
   .ark-reader-toolbar > div:first-child { display: none; }
   .ark-reader-toolbar-actions { grid-column: 1 / -1; justify-content: stretch; }
   .ark-reader-toolbar-actions button { flex: 1; }
   .ark-reader-progress-label { grid-row: auto; }
-  .ark-reader-context { max-height: 26vh; grid-template-columns: minmax(0, 1fr); }
-  .ark-reader-context-section { display: none; }
+  .ark-reader-context { grid-template-columns: minmax(0, 1fr); }
   .ark-reader-record { padding: 18px 17px 20px; }
   .ark-reader-record-title { padding-right: 0; font-size: 18px; }
   .ark-reader-record.is-major::after { position: static; display: block; margin-bottom: 8px; }
