@@ -2,6 +2,32 @@ const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
   await page.route('https://fonts.loli.net/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
+  page.on('pageerror', error => console.log('NAV_PAGE_ERROR', error.message));
+  await page.addInitScript(() => {
+    window.__navFocus = [];
+    const original = HTMLElement.prototype.focus;
+    HTMLElement.prototype.focus = function (...args) {
+      const before = document.activeElement?.outerHTML?.slice(0, 160);
+      const result = original.apply(this, args);
+      if (this.closest('#nav, #nav-mobile-menu')) {
+        window.__navFocus.push({ target: this.outerHTML.slice(0, 180), before,
+          after: document.activeElement?.outerHTML?.slice(0, 160),
+          inert: this.closest('[inert]')?.outerHTML.slice(0, 180),
+          visibility: getComputedStyle(this).visibility, display: getComputedStyle(this).display });
+      }
+      return result;
+    };
+  });
+});
+
+test.afterEach(async ({ page }, info) => {
+  if (info.status !== info.expectedStatus && !page.isClosed()) {
+    console.log('NAV_FOCUS', JSON.stringify(await page.evaluate(() => ({
+      attempts: window.__navFocus, url: location.href,
+      active: document.activeElement?.outerHTML.slice(0, 180),
+      inert: [...document.querySelectorAll('[inert]')].map(node => node.id || node.tagName),
+    }))));
+  }
 });
 
 test('desktop world disclosure synchronizes keyboard, focus and visibility', async ({ page, isMobile }) => {
