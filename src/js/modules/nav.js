@@ -1,125 +1,193 @@
-/* ═══════════════════════════════════════════════════════════
-   nav.js — Navigation bar + hamburger menu controller
-   ═══════════════════════════════════════════════════════════ */
+/* Shared navigation disclosure and mobile drawer. */
+let disposeNavigation = null;
 
-let menuOpen = false;
-let isTouchDevice = false;
-
-function openMenu() {
-  menuOpen = true;
-  const menu = document.getElementById('nav-mobile-menu');
-  menu.classList.add('active');
-  menu.removeAttribute('inert');
-  menu.setAttribute('aria-hidden', 'false');
-  document.getElementById('nav-mobile-backdrop').classList.add('active');
-  document.getElementById('nav-toggle').classList.add('active');
-  document.getElementById('nav-toggle').setAttribute('aria-expanded', 'true');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeMenu({ restoreFocus = false } = {}) {
-  menuOpen = false;
-  const menu = document.getElementById('nav-mobile-menu');
-  menu.classList.remove('active');
-  menu.setAttribute('inert', '');
-  menu.setAttribute('aria-hidden', 'true');
-  document.getElementById('nav-mobile-backdrop').classList.remove('active');
-  const toggle = document.getElementById('nav-toggle');
-  toggle.classList.remove('active');
-  toggle.setAttribute('aria-expanded', 'false');
-  document.body.style.overflow = '';
-  if (restoreFocus) toggle.focus();
+export function destroyNav() {
+  disposeNavigation?.();
 }
 
 export function initNav() {
+  destroyNav();
   const nav = document.getElementById('nav');
   if (!nav) return;
-
-  // Entrance animation
-  setTimeout(() => {
-    nav.classList.add('visible');
-  }, 400);
-
-  // Touch device detection
-  isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  if (isTouchDevice) {
-    document.documentElement.classList.add('touch-device');
-  }
-
-  // Hamburger toggle
   const toggle = document.getElementById('nav-toggle');
-  if (toggle) {
-    toggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (menuOpen) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    });
-  }
-
-  // Backdrop click → close
-  const backdrop = document.getElementById('nav-mobile-backdrop');
-  if (backdrop) {
-    backdrop.addEventListener('click', closeMenu);
-  }
-
-  // Close on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuOpen) {
-      closeMenu({ restoreFocus: true });
-    }
-  });
-
-  // Close after navigation (link clicks in mobile menu)
   const mobileMenu = document.getElementById('nav-mobile-menu');
-  if (mobileMenu) {
-    mobileMenu.addEventListener('click', (e) => {
-      if (e.target.tagName === 'A') {
-        // Small delay so the link navigation fires first
-        setTimeout(closeMenu, 100);
-      }
+  const backdrop = document.getElementById('nav-mobile-backdrop');
+  const dropdown = nav.querySelector('.nav-worlds-dropdown--desktop');
+  const trigger = dropdown?.querySelector('.nav-worlds-trigger');
+  const worldsMenu = dropdown?.querySelector('.nav-worlds-menu');
+  const controller = new AbortController();
+  const { signal } = controller;
+  const mobile = matchMedia('(max-width: 768px)');
+  const hover = matchMedia('(hover: hover)');
+  let menuOpen = false;
+  let worldsOpen = false;
+  let hoverOnly = false;
+  let previousOverflow = '';
+  let inertBefore = [];
+  let focusFrame = null;
+  let lastNavigationFocus = null;
+
+  function cancelFocus() {
+    if (focusFrame !== null) cancelAnimationFrame(focusFrame);
+    focusFrame = null;
+  }
+
+  function focusAfterOpen(target, stillOpen) {
+    cancelFocus();
+    // Let visibility and inert changes settle before entering the disclosure.
+    focusFrame = requestAnimationFrame(() => {
+      focusFrame = null;
+      if (!signal.aborted && stillOpen()) target?.focus({ preventScroll: true });
     });
   }
 
-  // Reset on resize above mobile breakpoint
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 768 && menuOpen) {
-      closeMenu();
-    }
-  });
+  function setWorldsOpen(open, { fromHover = false } = {}) {
+    if (!trigger || !worldsMenu) return;
+    worldsOpen = open && !mobile.matches;
+    if (!worldsOpen) cancelFocus();
+    hoverOnly = worldsOpen && fromHover;
+    dropdown.classList.toggle('is-worlds-open', worldsOpen);
+    trigger.setAttribute('aria-expanded', String(worldsOpen));
+    worldsMenu.setAttribute('aria-hidden', String(!worldsOpen));
+    worldsMenu.inert = !worldsOpen;
+  }
 
-  // Desktop world dropdown: click-toggle for touch devices
-  if (isTouchDevice) {
-    const desktopDropdown = document.querySelector('.nav-worlds-dropdown--desktop');
-    if (desktopDropdown) {
-      const trigger = desktopDropdown.querySelector('.nav-worlds-trigger');
-      const menu = desktopDropdown.querySelector('.nav-worlds-menu');
-      if (trigger && menu) {
-        // Prevent hover from showing it on touch
-        menu.style.pointerEvents = 'none';
-        menu.style.opacity = '0';
+  function closeMenu({ restoreFocus = false } = {}) {
+    if (!menuOpen) return;
+    cancelFocus();
+    menuOpen = false;
+    mobileMenu.classList.remove('active');
+    mobileMenu.inert = true;
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    backdrop?.classList.remove('active');
+    toggle.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = previousOverflow;
+    for (const [node, wasInert] of inertBefore) node.inert = wasInert;
+    inertBefore = [];
+    if (restoreFocus && mobile.matches) toggle.focus({ preventScroll: true });
+  }
 
-        trigger.addEventListener('click', (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          const isOpen = menu.style.opacity === '1';
-          if (isOpen) {
-            menu.style.opacity = '0';
-            menu.style.pointerEvents = 'none';
-          } else {
-            menu.style.opacity = '1';
-            menu.style.pointerEvents = 'auto';
-          }
-        });
+  function openMenu() {
+    if (menuOpen || !mobile.matches || !mobileMenu || !toggle) return;
+    setWorldsOpen(false);
+    menuOpen = true;
+    previousOverflow = document.body.style.overflow;
+    const allowed = [nav, mobileMenu, backdrop].filter(Boolean);
+    inertBefore = [...document.body.children]
+      .filter(node => !allowed.some(root => node === root || node.contains(root)))
+      .filter(node => !['SCRIPT', 'STYLE', 'LINK'].includes(node.tagName))
+      .map(node => [node, node.inert]);
+    for (const [node] of inertBefore) node.inert = true;
+    mobileMenu.inert = false;
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    mobileMenu.classList.add('active');
+    backdrop?.classList.add('active');
+    toggle.classList.add('active');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    focusAfterOpen(mobileMenu.querySelector('a[href]'), () => menuOpen);
+  }
 
-        // Close when clicking outside
-        document.addEventListener('click', () => {
-          menu.style.opacity = '0';
-          menu.style.pointerEvents = 'none';
-        });
+  function isPlainKey(event) {
+    return !event.defaultPrevented && !event.isComposing
+      && !event.altKey && !event.ctrlKey && !event.metaKey;
+  }
+
+  toggle?.addEventListener('click', () => {
+    if (menuOpen) closeMenu({ restoreFocus: true });
+    else openMenu();
+  }, { signal });
+  backdrop?.addEventListener('click', () => closeMenu({ restoreFocus: true }), { signal });
+  mobileMenu?.addEventListener('click', event => {
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    if (event.target.closest('a[href]')) closeMenu();
+  }, { signal });
+
+  trigger?.addEventListener('click', () => {
+    setWorldsOpen(!worldsOpen || hoverOnly);
+  }, { signal });
+  trigger?.addEventListener('keydown', event => {
+    if (!isPlainKey(event) || !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+    event.preventDefault();
+    setWorldsOpen(true);
+    const links = [...worldsMenu.querySelectorAll('a[href]')];
+    focusAfterOpen(event.key === 'ArrowUp' ? links.at(-1) : links[0], () => worldsOpen);
+  }, { signal });
+  dropdown?.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'mouse' && hover.matches && !worldsOpen) setWorldsOpen(true, { fromHover: true });
+  }, { signal });
+  dropdown?.addEventListener('pointerleave', () => {
+    if (!dropdown.contains(document.activeElement)) setWorldsOpen(false);
+  }, { signal });
+  dropdown?.addEventListener('focusout', event => {
+    // activeElement can still be body while focus is moving to a menu link.
+    if (event.relatedTarget && !dropdown.contains(event.relatedTarget)) setWorldsOpen(false);
+  }, { signal });
+  document.addEventListener('focusin', event => {
+    lastNavigationFocus = nav.contains(event.target) || mobileMenu?.contains(event.target) ? event.target : null;
+    if (worldsOpen && !dropdown.contains(event.target)) setWorldsOpen(false);
+  }, { signal });
+  document.addEventListener('pointerdown', event => {
+    if (!nav.contains(event.target) && !mobileMenu?.contains(event.target)) lastNavigationFocus = null;
+  }, { signal });
+  document.addEventListener('click', event => {
+    if (worldsOpen && !dropdown.contains(event.target)) setWorldsOpen(false);
+  }, { signal });
+
+  document.addEventListener('keydown', event => {
+    if (!isPlainKey(event)) return;
+    if (event.key === 'Escape' && (menuOpen || worldsOpen)) {
+      event.preventDefault();
+      if (menuOpen) closeMenu({ restoreFocus: true });
+      else {
+        const restoreFocus = dropdown.contains(document.activeElement);
+        setWorldsOpen(false);
+        if (restoreFocus) trigger.focus({ preventScroll: true });
+      }
+    } else if (event.key === 'Tab' && menuOpen) {
+      const controls = [...nav.querySelectorAll('a[href], button'), ...mobileMenu.querySelectorAll('a[href], button')]
+        .filter(node => !node.disabled && !node.closest('[inert]') && node.getClientRects().length);
+      const first = controls[0];
+      const last = controls.at(-1);
+      const active = document.activeElement;
+      if (!controls.includes(active) || (!event.shiftKey && active === last) || (event.shiftKey && active === first)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
       }
     }
+  }, { signal });
+
+  mobile.addEventListener('change', () => {
+    // CSS may hide and blur the old control before the media-query event fires.
+    const previousFocus = document.activeElement === document.body ? lastNavigationFocus : document.activeElement;
+    const focusWasMobile = mobileMenu?.contains(previousFocus) || previousFocus === toggle;
+    const focusWasDesktop = dropdown?.contains(previousFocus);
+    closeMenu();
+    setWorldsOpen(false);
+    if (focusWasMobile && !mobile.matches) focusAfterOpen(trigger, () => !mobile.matches);
+    if (focusWasDesktop && mobile.matches) focusAfterOpen(toggle, () => mobile.matches);
+  }, { signal });
+  window.addEventListener('pagehide', event => {
+    closeMenu();
+    setWorldsOpen(false);
+    if (!event.persisted) destroy();
+  }, { signal });
+
+  function destroy() {
+    closeMenu();
+    setWorldsOpen(false);
+    controller.abort();
+    nav.classList.remove('nav-enhanced');
+    if (worldsMenu) {
+      worldsMenu.inert = false;
+      worldsMenu.removeAttribute('aria-hidden');
+    }
+    if (disposeNavigation === destroy) disposeNavigation = null;
   }
+
+  nav.classList.add('visible', 'nav-enhanced');
+  setWorldsOpen(false);
+  disposeNavigation = destroy;
+  return destroy;
 }
