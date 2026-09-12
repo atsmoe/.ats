@@ -78,9 +78,11 @@
 .nav-worlds-trigger .arrow {
   font-size: var(--site-min-font-size);
   margin-left: 2px;
-  transition: transform 0.25s ease;
+  display: inline-block;
+  transition: transform var(--transition-fast);
 }
-.nav-worlds-dropdown:hover .nav-worlds-trigger .arrow {
+#nav:not(.nav-enhanced) .nav-worlds-dropdown:hover .nav-worlds-trigger .arrow,
+.is-worlds-open .nav-worlds-trigger .arrow {
   transform: rotate(180deg);
 }
 
@@ -95,16 +97,17 @@
   min-width: 140px;
   max-height: 60vh;
   overflow-y: auto;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.2s ease;
+  opacity: 0; pointer-events: none; visibility: hidden;
+  transition: opacity var(--transition-fast);
   z-index: 110;
   scrollbar-width: none;
 }
 .nav-worlds-menu::-webkit-scrollbar { display: none; }
 
-.nav-worlds-dropdown:hover .nav-worlds-menu,
-.nav-worlds-dropdown:focus-within .nav-worlds-menu {
-  opacity: 1; pointer-events: auto;
+#nav:not(.nav-enhanced) .nav-worlds-dropdown:hover .nav-worlds-menu,
+#nav:not(.nav-enhanced) .nav-worlds-dropdown:focus-within .nav-worlds-menu,
+.is-worlds-open .nav-worlds-menu {
+  opacity: 1; pointer-events: auto; visibility: visible;
 }
 
 .nav-worlds-item {
@@ -197,7 +200,7 @@
   -webkit-backdrop-filter: blur(16px);
   border-left: 1px solid rgba(201,160,80,0.15);
   transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--transition-normal);
   z-index: 99;
   flex-direction: column;
   padding: 24px 0;
@@ -261,11 +264,19 @@
   letter-spacing: 2px;
 }
 
-/* ============================================================
-   Touch device: suppress hover-based dropdown
-   ============================================================ */
-.touch-device .nav-worlds-dropdown--desktop:hover .nav-worlds-menu,
-.touch-device .nav-worlds-dropdown--desktop:focus-within .nav-worlds-menu {
-  opacity: 0;
-  pointer-events: none;
+.nav-worlds-trigger:focus-visible,
+.nav-worlds-item:focus-visible,
+.nav-toggle:focus-visible,
+.nav-mobile-links a:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nav { animation: none; transition: none; }
+  .nav-worlds-menu,
+  .nav-worlds-trigger .arrow,
+  .nav-mobile-menu,
+  .nav-mobile-backdrop,
+  .nav-toggle-bar { transition: none; }
 }
