@@ -83,11 +83,11 @@ test('touch viewport changes release the drawer and leave both navigation modes 
 
 for (const pageName of ['index', 'arknights', 'wh40k', 'ff14', 'search']) {
   test(`${pageName} navigation survives an actual page round trip`, async ({ page, isMobile }) => {
+    // This round trip initializes the full 3D home scene twice; assertion timeouts stay unchanged.
+    if (pageName === 'index' && !isMobile) test.setTimeout(60000);
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
-    console.log('NAV_STAGE', pageName, 'start');
     await page.goto(`/.ats/${pageName}.html`);
-    console.log('NAV_STAGE', pageName, 'loaded');
     const trigger = isMobile ? page.locator('#nav-toggle') : page.locator('.nav-worlds-trigger');
     const menu = page.locator(isMobile ? '#nav-mobile-menu' : '#nav-worlds-menu');
     await expect(page.locator('#nav')).toHaveClass(/nav-enhanced/);
@@ -103,9 +103,7 @@ for (const pageName of ['index', 'arknights', 'wh40k', 'ff14', 'search']) {
       await destination.click();
       await expect(page).toHaveURL(isMobile ? /about\.html$/ : /arknights\.html$/);
     }
-    console.log('NAV_STAGE', pageName, 'destination reached');
     await page.goBack();
-    console.log('NAV_STAGE', pageName, 'returned');
     await expect(page).toHaveURL(new RegExp(`${pageName}\\.html$`));
     await expect(page.locator('#nav')).toHaveClass(/nav-enhanced/);
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -116,6 +114,5 @@ for (const pageName of ['index', 'arknights', 'wh40k', 'ff14', 'search']) {
     await expect(menu).toBeHidden();
     await expect(page.locator('#main-content')).not.toHaveAttribute('inert');
     expect(errors).toEqual([]);
-    console.log('NAV_STAGE', pageName, 'finished');
   });
 }

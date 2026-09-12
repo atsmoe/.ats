@@ -22,10 +22,12 @@ function listen(node, type, handler) {
 }
 
 function pushSelection(parameter, value) {
+  const nextUrl = ff14SelectionUrl(location.href, parameter, value);
+  if (nextUrl === `${location.pathname}${location.search}${location.hash}`) return;
   history.pushState(
     { ff14Selection: { parameter, value } },
     '',
-    ff14SelectionUrl(location.href, parameter, value),
+    nextUrl,
   );
 }
 
@@ -63,6 +65,7 @@ function initSelectableLens({
   for (const [index, button] of buttons.entries()) {
     listen(button, 'click', () => select(button.dataset[buttonDataKey]));
     listen(button, 'keydown', event => {
+      if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey) return;
       const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
       if (!keys.includes(event.key)) return;
       event.preventDefault();
