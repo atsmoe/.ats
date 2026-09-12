@@ -85,7 +85,7 @@ test('production search index agrees with the archive and has real local destina
 test('search stays in a small separate bundle with desktop and mobile navigation entries', () => {
   const html = fs.readFileSync(path.join(ROOT, 'dist/search.html'), 'utf8');
   assert.match(html, /\.\/js\/archive-search\.js/);
-  assert.doesNotMatch(html, /src="\.\/js\/(?:bundle|star-map-3d)\.js"/);
+  assert.doesNotMatch(html, /src="\.\/js\/(?:bundle|star-map-3d)\.js(?:\?[^"\s]*)?"/);
   assert.match(html, /<noscript>[\s\S]*启用 JavaScript/);
   assert.ok(fs.statSync(path.join(ROOT, 'dist/js/archive-search.js')).size < 18000);
   for (const page of ['index', 'arknights', 'wh40k', 'ff14', 'about']) {

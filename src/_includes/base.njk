@@ -58,9 +58,9 @@
   <!-- JS: virtual-timeline loads first (small, defines VirtualTimeline global needed by world bundle) -->
   {% block extraScripts %}{% endblock %}
   {% if scriptFile %}
-  <script defer src="./js/{{ scriptFile }}"></script>
+  <script defer src="./js/{{ scriptFile }}?v={{ buildVersion }}"></script>
   {% else %}
-  <script defer src="./js/bundle.js"></script>
+  <script defer src="./js/bundle.js?v={{ buildVersion }}"></script>
   {% endif %}
 </body>
 </html>

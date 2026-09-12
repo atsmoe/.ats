@@ -37,6 +37,26 @@ function readDist(relativePath) {
   return fs.readFileSync(path.join(DIST, relativePath), 'utf8');
 }
 
+test('every local entry script uses the same revision as its page', () => {
+  const versions = new Set();
+  for (const page of fs.readdirSync(DIST).filter(file => file.endsWith('.html'))) {
+    const html = readDist(page);
+    const version = html.match(/<body\b[^>]*\bdata-version="([^"]+)"/)?.[1];
+    assert.ok(version, `${page} must expose its build revision`);
+    versions.add(version);
+    const scripts = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map(match => match[1]);
+    assert.ok(scripts.length, `${page} must load its entry script`);
+    for (const source of scripts) {
+      const url = new URL(source.replaceAll('&amp;', '&'), 'https://archive.test/.ats/');
+      assert.equal(url.origin, 'https://archive.test', `${page} keeps scripts on the same origin`);
+      assert.equal(url.searchParams.get('v'), version, `${page}: ${source} must bypass earlier script revisions`);
+      const file = url.pathname.replace(/^\/\.ats\//, '');
+      assert.ok(fs.existsSync(path.join(DIST, file)), `${page}: ${source} resolves to a built script`);
+    }
+  }
+  assert.equal(versions.size, 1, 'all pages in one deployment share a revision');
+});
+
 function collectAssetReferences(value, references = new Set()) {
   if (typeof value === 'string' && value.startsWith('./assets/')) {
     references.add(value.slice(2));
@@ -191,22 +211,22 @@ test('GitHub deployment checks the complete pushed commit range', () => {
 
 test('the star map and all archive pages keep the documented two-entry boundary', () => {
   const index = readDist('index.html');
-  assert.match(index, /src="\.\/js\/star-map-3d\.js"/);
-  assert.doesNotMatch(index, /src="\.\/js\/bundle\.js"/);
+  assert.match(index, /src="\.\/js\/star-map-3d\.js(?:\?[^"\s]*)?"/);
+  assert.doesNotMatch(index, /src="\.\/js\/bundle\.js(?:\?[^"\s]*)?"/);
   assert.match(index, /data-star-map-version-switch/);
   assert.match(index, /href="\.\/star-map-b4-prototype\.html"/);
   assert.match(index, /href="\.\/star-map-b5-prototype\.html"/);
-  assert.match(readDist('star-map-b5-prototype.html'), /src="\.\/js\/star-map-b5-prototype\.js"/);
+  assert.match(readDist('star-map-b5-prototype.html'), /src="\.\/js\/star-map-b5-prototype\.js(?:\?[^"\s]*)?"/);
 
   const arknightsChronicle = readDist('arknights-chronicle.html');
-  assert.match(arknightsChronicle, /src="\.\/js\/bundle\.js"/);
-  assert.doesNotMatch(arknightsChronicle, /src="\.\/js\/virtual-timeline\.js"/);
+  assert.match(arknightsChronicle, /src="\.\/js\/bundle\.js(?:\?[^"\s]*)?"/);
+  assert.doesNotMatch(arknightsChronicle, /src="\.\/js\/virtual-timeline\.js(?:\?[^"\s]*)?"/);
 
   for (const page of ['wh40k-chronicle.html', 'ff14-chronicle.html']) {
     const html = readDist(page);
-    assert.match(html, /src="\.\/js\/bundle\.js"/, `${page} must load the world bundle`);
-    assert.match(html, /src="\.\/js\/virtual-timeline\.js"/, `${page} must load the timeline engine`);
-    assert.doesNotMatch(html, /src="\.\/js\/star-map-3d\.js"/, `${page} must not load Three.js`);
+    assert.match(html, /src="\.\/js\/bundle\.js(?:\?[^"\s]*)?"/, `${page} must load the world bundle`);
+    assert.match(html, /src="\.\/js\/virtual-timeline\.js(?:\?[^"\s]*)?"/, `${page} must load the timeline engine`);
+    assert.doesNotMatch(html, /src="\.\/js\/star-map-3d\.js(?:\?[^"\s]*)?"/, `${page} must not load Three.js`);
   }
 
   for (const page of [
@@ -215,20 +235,20 @@ test('the star map and all archive pages keep the documented two-entry boundary'
     ...ARKNIGHTS_TOPIC_PAGES.map(([topicPage]) => topicPage),
   ]) {
     const html = readDist(page);
-    assert.match(html, /src="\.\/js\/bundle\.js"/, `${page} needs the shared archive bundle`);
-    assert.doesNotMatch(html, /src="\.\/js\/virtual-timeline\.js"/, `${page} must not load the timeline engine`);
+    assert.match(html, /src="\.\/js\/bundle\.js(?:\?[^"\s]*)?"/, `${page} needs the shared archive bundle`);
+    assert.doesNotMatch(html, /src="\.\/js\/virtual-timeline\.js(?:\?[^"\s]*)?"/, `${page} must not load the timeline engine`);
   }
 
   for (const page of ['wh40k.html', 'wh40k-factions.html', 'wh40k-war-zones.html']) {
     const html = readDist(page);
-    assert.match(html, /src="\.\/js\/bundle\.js"/, `${page} needs the shared archive bundle`);
-    assert.doesNotMatch(html, /src="\.\/js\/virtual-timeline\.js"/, `${page} must not load the timeline engine`);
+    assert.match(html, /src="\.\/js\/bundle\.js(?:\?[^"\s]*)?"/, `${page} needs the shared archive bundle`);
+    assert.doesNotMatch(html, /src="\.\/js\/virtual-timeline\.js(?:\?[^"\s]*)?"/, `${page} must not load the timeline engine`);
   }
 
   for (const page of ['ff14.html', 'ff14-reflections.html', 'ff14-journeys.html']) {
     const html = readDist(page);
-    assert.match(html, /src="\.\/js\/bundle\.js"/, `${page} needs the shared archive bundle`);
-    assert.doesNotMatch(html, /src="\.\/js\/virtual-timeline\.js"/, `${page} must not load the timeline engine`);
+    assert.match(html, /src="\.\/js\/bundle\.js(?:\?[^"\s]*)?"/, `${page} needs the shared archive bundle`);
+    assert.doesNotMatch(html, /src="\.\/js\/virtual-timeline\.js(?:\?[^"\s]*)?"/, `${page} must not load the timeline engine`);
   }
 });
 
