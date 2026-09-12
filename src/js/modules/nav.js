@@ -24,10 +24,26 @@ export function initNav() {
   let hoverOnly = false;
   let previousOverflow = '';
   let inertBefore = [];
+  let focusFrame = null;
+
+  function cancelFocus() {
+    if (focusFrame !== null) cancelAnimationFrame(focusFrame);
+    focusFrame = null;
+  }
+
+  function focusAfterOpen(target, stillOpen) {
+    cancelFocus();
+    // Let visibility and inert changes settle before entering the disclosure.
+    focusFrame = requestAnimationFrame(() => {
+      focusFrame = null;
+      if (!signal.aborted && stillOpen()) target?.focus({ preventScroll: true });
+    });
+  }
 
   function setWorldsOpen(open, { fromHover = false } = {}) {
     if (!trigger || !worldsMenu) return;
     worldsOpen = open && !mobile.matches;
+    if (!worldsOpen) cancelFocus();
     hoverOnly = worldsOpen && fromHover;
     dropdown.classList.toggle('is-worlds-open', worldsOpen);
     trigger.setAttribute('aria-expanded', String(worldsOpen));
@@ -37,6 +53,7 @@ export function initNav() {
 
   function closeMenu({ restoreFocus = false } = {}) {
     if (!menuOpen) return;
+    cancelFocus();
     menuOpen = false;
     mobileMenu.classList.remove('active');
     mobileMenu.inert = true;
@@ -68,7 +85,7 @@ export function initNav() {
     toggle.classList.add('active');
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
-    mobileMenu.querySelector('a[href]')?.focus({ preventScroll: true });
+    focusAfterOpen(mobileMenu.querySelector('a[href]'), () => menuOpen);
   }
 
   function isPlainKey(event) {
@@ -94,7 +111,7 @@ export function initNav() {
     event.preventDefault();
     setWorldsOpen(true);
     const links = [...worldsMenu.querySelectorAll('a[href]')];
-    (event.key === 'ArrowUp' ? links.at(-1) : links[0])?.focus();
+    focusAfterOpen(event.key === 'ArrowUp' ? links.at(-1) : links[0], () => worldsOpen);
   }, { signal });
   dropdown?.addEventListener('pointerenter', event => {
     if (event.pointerType === 'mouse' && hover.matches && !worldsOpen) setWorldsOpen(true, { fromHover: true });
@@ -102,10 +119,12 @@ export function initNav() {
   dropdown?.addEventListener('pointerleave', () => {
     if (!dropdown.contains(document.activeElement)) setWorldsOpen(false);
   }, { signal });
-  dropdown?.addEventListener('focusout', () => {
-    queueMicrotask(() => {
-      if (!signal.aborted && !dropdown.contains(document.activeElement)) setWorldsOpen(false);
-    });
+  dropdown?.addEventListener('focusout', event => {
+    // activeElement can still be body while focus is moving to a menu link.
+    if (event.relatedTarget && !dropdown.contains(event.relatedTarget)) setWorldsOpen(false);
+  }, { signal });
+  document.addEventListener('focusin', event => {
+    if (worldsOpen && !dropdown.contains(event.target)) setWorldsOpen(false);
   }, { signal });
   document.addEventListener('click', event => {
     if (worldsOpen && !dropdown.contains(event.target)) setWorldsOpen(false);

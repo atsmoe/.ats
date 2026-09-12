@@ -4,6 +4,7 @@
 
 import { BG_PRESETS } from './bg-presets.js';
 import { GALAXIES, galaxyAnim } from './galaxies.js';
+import { ANIM } from './anim-tokens.js';
 
 /* ── Performance tier detection ── */
 export function getPerformanceTier() {
@@ -17,7 +18,6 @@ export function getPerformanceTier() {
 }
 
 const PERF_TIER = getPerformanceTier();
-const PREFERS_REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ── Utility ── */
 function gaussRand(mean, stdev) {
@@ -46,15 +46,39 @@ export class ParticleBackground {
     this.time = 0;
     this.mouse = { x: -1000, y: -1000, tx: -1000, ty: -1000 };
     this.animId = null;
+    this._disposed = false;
+    this._pageSuspended = false;
+    this._resizeTimer = null;
+    this._needsResize = false;
+    this.motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     this._onMouse = (e) => { this.mouse.tx = e.clientX; this.mouse.ty = e.clientY; };
-    this._onResize = () => this._resize();
+    this._onResize = () => {
+      this._needsResize = true;
+      clearTimeout(this._resizeTimer);
+      if (document.hidden || this._pageSuspended) return;
+      this._resizeTimer = setTimeout(() => this._syncAnimation(), ANIM.duration.fast);
+    };
+    this._onActivity = () => this._syncAnimation();
+    this._onPageHide = event => {
+      if (!event.persisted) { this.destroy(); return; }
+      this._pageSuspended = true;
+      this._syncAnimation();
+    };
+    this._onPageShow = () => {
+      this._pageSuspended = false;
+      this._needsResize ||= this.W !== window.innerWidth || this.H !== window.innerHeight;
+      this._syncAnimation();
+    };
     window.addEventListener('mousemove', this._onMouse);
     window.addEventListener('resize', this._onResize);
+    document.addEventListener('visibilitychange', this._onActivity);
+    this.motionQuery.addEventListener('change', this._onActivity);
+    window.addEventListener('pagehide', this._onPageHide);
+    window.addEventListener('pageshow', this._onPageShow);
 
     this.loadPreset(preset);
     this._resize();
-    this._start();
 
     // Initialize galaxy stars
     this.galaxyStars = {};
@@ -90,6 +114,7 @@ export class ParticleBackground {
       }
       this.galaxyStars[gid] = stars;
     }
+    this._syncAnimation();
   }
 
   _resize() {
@@ -429,17 +454,40 @@ export class ParticleBackground {
     ctx.restore();
   }
 
-  _start() {
-    if (PREFERS_REDUCED_MOTION) {
-      // Render a single static frame, then stop
+  _syncAnimation() {
+    if (this._disposed) return;
+    clearTimeout(this._resizeTimer);
+    this._resizeTimer = null;
+    if (document.hidden || this._pageSuspended) {
+      this._stop();
+      return;
+    }
+    if (this._needsResize) {
+      this._resize();
+      this._needsResize = false;
+    }
+    if (this.motionQuery.matches) {
+      this._stop();
       this._frame();
       return;
     }
+    this._start();
+  }
+
+  _stop() {
+    if (this.animId !== null) cancelAnimationFrame(this.animId);
+    this.animId = null;
+  }
+
+  _start() {
+    if (this.animId !== null || this._disposed) return;
 
     const frameInterval = PERF_TIER === 'low' ? 33 : 16; // ~30fps vs ~60fps
     let lastFrame = 0;
 
     const loop = (timestamp) => {
+      this.animId = null;
+      if (this._disposed || document.hidden || this._pageSuspended || this.motionQuery.matches) return;
       if (timestamp - lastFrame >= frameInterval) {
         this._frame();
         lastFrame = timestamp;
@@ -457,13 +505,22 @@ export class ParticleBackground {
     if (this.W > 0) {
       this._rebuildNebulae();
       this._rebuildStars();
+      this._syncAnimation();
     }
   }
 
   destroy() {
-    if (this.animId) cancelAnimationFrame(this.animId);
+    if (this._disposed) return;
+    this._disposed = true;
+    this._stop();
+    clearTimeout(this._resizeTimer);
+    this._resizeTimer = null;
     window.removeEventListener('mousemove', this._onMouse);
     window.removeEventListener('resize', this._onResize);
+    document.removeEventListener('visibilitychange', this._onActivity);
+    this.motionQuery.removeEventListener('change', this._onActivity);
+    window.removeEventListener('pagehide', this._onPageHide);
+    window.removeEventListener('pageshow', this._onPageShow);
     this.ctx.clearRect(0, 0, this.W, this.H);
   }
 }
