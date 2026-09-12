@@ -2,32 +2,6 @@ const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
   await page.route('https://fonts.loli.net/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
-  page.on('pageerror', error => console.log('NAV_PAGE_ERROR', error.message));
-  await page.addInitScript(() => {
-    window.__navFocus = [];
-    const original = HTMLElement.prototype.focus;
-    HTMLElement.prototype.focus = function (...args) {
-      const before = document.activeElement?.outerHTML?.slice(0, 160);
-      const result = original.apply(this, args);
-      if (this.closest('#nav, #nav-mobile-menu')) {
-        window.__navFocus.push({ target: this.outerHTML.slice(0, 180), before,
-          after: document.activeElement?.outerHTML?.slice(0, 160),
-          inert: this.closest('[inert]')?.outerHTML.slice(0, 180),
-          visibility: getComputedStyle(this).visibility, display: getComputedStyle(this).display });
-      }
-      return result;
-    };
-  });
-});
-
-test.afterEach(async ({ page }, info) => {
-  if (info.status !== info.expectedStatus && !page.isClosed()) {
-    console.log('NAV_FOCUS', JSON.stringify(await page.evaluate(() => ({
-      attempts: window.__navFocus, url: location.href,
-      active: document.activeElement?.outerHTML.slice(0, 180),
-      inert: [...document.querySelectorAll('[inert]')].map(node => node.id || node.tagName),
-    }))));
-  }
 });
 
 test('desktop world disclosure synchronizes keyboard, focus and visibility', async ({ page, isMobile }) => {
@@ -111,7 +85,9 @@ for (const pageName of ['index', 'arknights', 'wh40k', 'ff14', 'search']) {
   test(`${pageName} navigation survives an actual page round trip`, async ({ page, isMobile }) => {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
+    console.log('NAV_STAGE', pageName, 'start');
     await page.goto(`/.ats/${pageName}.html`);
+    console.log('NAV_STAGE', pageName, 'loaded');
     const trigger = isMobile ? page.locator('#nav-toggle') : page.locator('.nav-worlds-trigger');
     const menu = page.locator(isMobile ? '#nav-mobile-menu' : '#nav-worlds-menu');
     await expect(page.locator('#nav')).toHaveClass(/nav-enhanced/);
@@ -127,7 +103,9 @@ for (const pageName of ['index', 'arknights', 'wh40k', 'ff14', 'search']) {
       await destination.click();
       await expect(page).toHaveURL(isMobile ? /about\.html$/ : /arknights\.html$/);
     }
+    console.log('NAV_STAGE', pageName, 'destination reached');
     await page.goBack();
+    console.log('NAV_STAGE', pageName, 'returned');
     await expect(page).toHaveURL(new RegExp(`${pageName}\\.html$`));
     await expect(page.locator('#nav')).toHaveClass(/nav-enhanced/);
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -138,5 +116,6 @@ for (const pageName of ['index', 'arknights', 'wh40k', 'ff14', 'search']) {
     await expect(menu).toBeHidden();
     await expect(page.locator('#main-content')).not.toHaveAttribute('inert');
     expect(errors).toEqual([]);
+    console.log('NAV_STAGE', pageName, 'finished');
   });
 }

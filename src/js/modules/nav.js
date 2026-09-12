@@ -25,6 +25,7 @@ export function initNav() {
   let previousOverflow = '';
   let inertBefore = [];
   let focusFrame = null;
+  let lastNavigationFocus = null;
 
   function cancelFocus() {
     if (focusFrame !== null) cancelAnimationFrame(focusFrame);
@@ -124,7 +125,11 @@ export function initNav() {
     if (event.relatedTarget && !dropdown.contains(event.relatedTarget)) setWorldsOpen(false);
   }, { signal });
   document.addEventListener('focusin', event => {
+    lastNavigationFocus = nav.contains(event.target) || mobileMenu?.contains(event.target) ? event.target : null;
     if (worldsOpen && !dropdown.contains(event.target)) setWorldsOpen(false);
+  }, { signal });
+  document.addEventListener('pointerdown', event => {
+    if (!nav.contains(event.target) && !mobileMenu?.contains(event.target)) lastNavigationFocus = null;
   }, { signal });
   document.addEventListener('click', event => {
     if (worldsOpen && !dropdown.contains(event.target)) setWorldsOpen(false);
@@ -154,12 +159,14 @@ export function initNav() {
   }, { signal });
 
   mobile.addEventListener('change', () => {
-    const focusWasMobile = mobileMenu?.contains(document.activeElement) || document.activeElement === toggle;
-    const focusWasDesktop = dropdown?.contains(document.activeElement);
+    // CSS may hide and blur the old control before the media-query event fires.
+    const previousFocus = document.activeElement === document.body ? lastNavigationFocus : document.activeElement;
+    const focusWasMobile = mobileMenu?.contains(previousFocus) || previousFocus === toggle;
+    const focusWasDesktop = dropdown?.contains(previousFocus);
     closeMenu();
     setWorldsOpen(false);
-    if (focusWasMobile && !mobile.matches) trigger?.focus({ preventScroll: true });
-    if (focusWasDesktop && mobile.matches) toggle?.focus({ preventScroll: true });
+    if (focusWasMobile && !mobile.matches) focusAfterOpen(trigger, () => !mobile.matches);
+    if (focusWasDesktop && mobile.matches) focusAfterOpen(toggle, () => mobile.matches);
   }, { signal });
   window.addEventListener('pagehide', event => {
     closeMenu();
