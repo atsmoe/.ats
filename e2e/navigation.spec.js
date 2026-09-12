@@ -2,6 +2,34 @@ const { test, expect } = require('@playwright/test');
 
 test.beforeEach(async ({ page }) => {
   await page.route('https://fonts.loli.net/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
+  await page.addInitScript(() => {
+    window.__navEvents = [];
+    for (const type of ['focusin', 'focusout', 'pointerdown', 'pointerup', 'click']) {
+      document.addEventListener(type, event => {
+        if (!event.target.closest?.('#nav, #nav-mobile-menu')) return;
+        window.__navEvents.push({ type, target: event.target.outerHTML?.slice(0,200),
+          active: document.activeElement?.outerHTML?.slice(0,200),
+          related: event.relatedTarget?.outerHTML?.slice(0,200) });
+        if (window.__navEvents.length > 18) window.__navEvents.shift();
+      }, true);
+    }
+  });
+});
+
+test.afterEach(async ({ page }, info) => {
+  if (info.status === info.expectedStatus || page.isClosed()) return;
+  console.log('NAV_DIAGNOSTIC', JSON.stringify(await page.evaluate(() => ({
+    url: location.href, active: document.activeElement?.outerHTML?.slice(0,400),
+    events: window.__navEvents,
+    nodes: ['#nav', '#nav-worlds-menu', '#nav-mobile-menu', '#nav-worlds-menu a', '#nav-mobile-menu a'].map(selector => {
+      const node = document.querySelector(selector);
+      if (!node) return {selector};
+      const css = getComputedStyle(node);
+      return {selector, html: node.outerHTML.slice(0,220), inert:node.inert,
+        visibility:css.visibility, display:css.display, opacity:css.opacity,
+        pointerEvents:css.pointerEvents, rect:node.getBoundingClientRect().toJSON()};
+    }),
+  }))));
 });
 
 test('desktop world disclosure synchronizes keyboard, focus and visibility', async ({ page, isMobile }) => {
