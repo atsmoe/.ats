@@ -25,7 +25,7 @@ test('B4 local prototype has one complete three-file source chain', () => {
 
   const template = read(TEMPLATE);
   const controller = read(CONTROLLER);
-  assert.match(template, /<script defer src="\.\/js\/star-map-b4-prototype\.js"><\/script>/);
+  assert.match(template, /<script defer src="\.\/js\/star-map-b4-prototype\.js(?:\?[^"\n]*)?"><\/script>/);
   assert.match(controller, /import \{ createCosmicStage \} from '\.\/b4-cosmic-stage\.js';/);
 
   const worldBlock = controller.match(/const WORLDS = \[([\s\S]*?)\n\];/)?.[1] || '';

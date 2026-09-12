@@ -1302,7 +1302,7 @@ eleventyExcludeFromCollections: true
     }
   </style>
 </head>
-<body>
+<body data-version="{{ buildVersion }}">
   <div class="prototype-ribbon">B4 / AUTHORED SIGNAL PLATES / PUBLIC PREVIEW</div>
 
   <header class="site-header">
@@ -1394,6 +1394,6 @@ eleventyExcludeFromCollections: true
     <div class="directory-grid" id="directory-grid"></div>
   </aside>
 
-  <script defer src="./js/star-map-b4-prototype.js"></script>
+  <script defer src="./js/star-map-b4-prototype.js?v={{ buildVersion }}"></script>
 </body>
 </html>
