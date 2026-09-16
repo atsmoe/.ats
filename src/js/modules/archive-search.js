@@ -57,11 +57,44 @@ function resultCard(result, query) {
   link.href = url.href;
   title.append(link);
   const excerpt = element('p', 'search-excerpt');
-  appendExcerpt(excerpt, result.excerpt);
-  item.append(title, excerpt);
   const matches = matchLocations(meta.matchFields, query);
+  const guideMatch = matches.includes('故事导读')
+    || (matches.includes('标题') && !matches.includes('正文') && !matches.includes('原记录标题'));
+  if (meta.storySummary && guideMatch) appendStoryExcerpt(excerpt, meta.storySummary, query);
+  else appendExcerpt(excerpt, result.excerpt);
+  item.append(title, excerpt);
   if (matches.length) item.append(element('p', 'search-match-location', `命中：${matches.join('、')}`));
+  if (meta.dateNote) {
+    const note = element('details', 'search-date-note');
+    note.append(element('summary', '', '日期待复核'), element('p', '', meta.dateNote));
+    item.append(note);
+  }
+  if (meta.worldId === 'arknights' && meta.storyTitle && /^[a-z][a-z0-9-]*$/.test(meta.storyId || '')) {
+    const guide = element('div', 'search-story');
+    const guideLink = element('a', 'search-story-link', `故事导读 · ${meta.storyTitle}`);
+    guideLink.href = new URL(`./arknights-stories.html#${encodeURIComponent(meta.storyId)}`, location.href).href;
+    guide.append(guideLink, element('span', '', `${meta.storyPosition} · ${meta.storyLabel}`));
+    item.append(guide);
+  }
   return item;
+}
+
+function appendStoryExcerpt(parent, value, query) {
+  const text = String(value);
+  const folded = text.toLocaleLowerCase();
+  const terms = queryGroups(query).flat().map(term => term.toLocaleLowerCase()).filter(Boolean);
+  let cursor = 0;
+  while (cursor < text.length) {
+    const next = terms.map(term => ({ start: folded.indexOf(term, cursor), length: term.length }))
+      .filter(match => match.start >= 0).sort((a, b) => a.start - b.start || b.length - a.length)[0];
+    if (!next) {
+      parent.append(document.createTextNode(text.slice(cursor)));
+      break;
+    }
+    parent.append(document.createTextNode(text.slice(cursor, next.start)));
+    parent.append(element('mark', '', text.slice(next.start, next.start + next.length)));
+    cursor = next.start + next.length;
+  }
 }
 
 function withTimeout(promise) {

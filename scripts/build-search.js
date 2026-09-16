@@ -23,7 +23,7 @@ async function buildSearch(dist = path.join(ROOT, 'dist')) {
   const { buildSearchRecords, SEARCH_WORLD_IDS, segmentSearchText } = loadSearchData();
   const records = buildSearchRecords(SEARCH_WORLD_IDS.map(id => (
     JSON.parse(fs.readFileSync(path.join(dist, 'data', `${id}.json`), 'utf8'))
-  )));
+  )), require('../src/_data/arknightsStories.json'));
   const eventIndex = JSON.parse(fs.readFileSync(path.join(dist, 'data/event-index.json'), 'utf8'));
   if (records.length !== Object.keys(eventIndex).length || records.some(record => (
     eventIndex[record.meta.recordId]?.worldId !== record.meta.worldId
@@ -31,6 +31,10 @@ async function buildSearch(dist = path.join(ROOT, 'dist')) {
   for (const record of records) {
     const page = new URL(record.url, 'https://archive.invalid/').pathname.slice(1);
     if (!fs.existsSync(path.join(dist, page))) throw new Error(`Search target is missing: ${page}`);
+  }
+  const storyPage = fs.readFileSync(path.join(dist, 'arknights-stories.html'), 'utf8');
+  for (const storyId of new Set(records.map(record => record.meta.storyId).filter(Boolean))) {
+    if (!storyPage.includes(`id="${storyId}"`)) throw new Error(`Search story target is missing: ${storyId}`);
   }
 
   const pagefind = await import('pagefind');

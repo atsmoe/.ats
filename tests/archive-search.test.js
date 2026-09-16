@@ -9,6 +9,46 @@ const { buildSearchRecords, SEARCH_WORLD_IDS, segmentSearchText, searchTerms, co
 const read = relative => JSON.parse(fs.readFileSync(path.join(ROOT, relative), 'utf8'));
 const worlds = SEARCH_WORLD_IDS.map(id => read(`dist/data/${id}.json`));
 const records = buildSearchRecords(worlds);
+const stories = require('../src/_data/arknightsStories.json');
+
+test('story text enriches its original search records without duplicate results or archive edits', () => {
+  const before = JSON.stringify([worlds, stories]);
+  const enriched = buildSearchRecords(worlds, stories);
+  assert.equal(JSON.stringify([worlds, stories]), before);
+  assert.equal(enriched.length, records.length);
+  assert.deepEqual(enriched.map(record => record.url), records.map(record => record.url));
+  assert.equal(enriched.filter(record => record.meta.storyId).length, 14);
+  for (const story of stories) {
+    for (const [index, step] of story.steps.entries()) {
+      const result = enriched.find(record => record.meta.recordId === step.eventId);
+      const original = records.find(record => record.meta.recordId === step.eventId);
+      assert.equal(result.meta.title, step.title);
+      assert.equal(result.meta.storyId, story.id);
+      assert.equal(result.meta.storyTitle, story.title);
+      assert.equal(result.meta.storyPosition, `${index + 1} / ${story.steps.length}`);
+      assert.equal(result.meta.storySummary, step.summary);
+      assert.equal(result.meta.dateNote, step.dateNote || '');
+      assert.ok(result.content.includes(step.summary));
+      assert.ok(result.content.includes(original.content));
+      assert.ok(result.content.includes(original.meta.title));
+      assert.equal(JSON.parse(result.meta.matchFields).find(([label]) => label === '故事导读')[1], [story.title, step.label, step.summary].join('\n'));
+    }
+  }
+  const enrichedOtherWorlds = enriched.filter(record => record.meta.worldId !== 'arknights');
+  assert.deepEqual(enrichedOtherWorlds, records.filter(record => record.meta.worldId !== 'arknights'));
+});
+
+test('story search rejects ambiguous, unsafe and non-Arknights references', () => {
+  const story = { ...stories[0], steps: [stories[0].steps[0]] };
+  assert.throws(() => buildSearchRecords(worlds, [story, story]), /Duplicate search story/);
+  assert.throws(() => buildSearchRecords(worlds, [story, { ...story, id: 'second' }]), /Duplicate story search reference/);
+  assert.throws(() => buildSearchRecords(worlds, [{ ...story, id: '../outside' }]), /Invalid search story/);
+  assert.throws(() => buildSearchRecords(worlds, [{ ...story, id: undefined }]), /Invalid search story/);
+  assert.throws(() => buildSearchRecords(worlds, [{ ...story, steps: [] }]), /Invalid search story/);
+  for (const eventId of ['evt-missing', 'wh-017', 'ff14-001']) {
+    assert.throws(() => buildSearchRecords(worlds, [{ ...story, steps: [{ ...story.steps[0], eventId }] }]), /Unresolved Arknights story search reference/);
+  }
+});
 
 test('search covers every canonical record exactly once without mutating archives', () => {
   const before = JSON.stringify(worlds);
@@ -77,6 +117,10 @@ test('production search index agrees with the archive and has real local destina
     const url = new URL(record.url, 'https://archive.invalid/');
     assert.ok(fs.existsSync(path.join(ROOT, 'dist', url.pathname)), record.url);
     assert.equal(decodeURIComponent(url.hash.slice(1)), record.meta.recordId);
+  }
+  const storyPage = fs.readFileSync(path.join(ROOT, 'dist/arknights-stories.html'), 'utf8');
+  for (const record of buildSearchRecords(worlds, stories).filter(record => record.meta.storyId)) {
+    assert.ok(storyPage.includes(`id="${record.meta.storyId}"`));
   }
   assert.ok(fs.statSync(path.join(ROOT, 'dist/pagefind/pagefind.js')).size > 0);
   assert.ok(!fs.existsSync(path.join(ROOT, 'dist/.pagefind-build')));

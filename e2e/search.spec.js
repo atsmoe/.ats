@@ -46,6 +46,51 @@ test('world filters, pagination, reload and browser history preserve the query',
   await expect(page.locator('.search-result')).toHaveCount(10);
 });
 
+for (const prefix of ['', '/.ats']) {
+  test(`story search preserves event destinations and the guide spoiler gate at ${prefix || '/'}`, async ({ page }, testInfo) => {
+    await page.goto(`${prefix}/search.html?q=临光姐妹`);
+    await expect(page.locator('.search-result')).toHaveCount(6);
+    const links = await page.locator('.search-result-link').evaluateAll(nodes => nodes.map(node => node.href));
+    expect(new Set(links).size).toBe(6);
+    expect(links.every(href => href.startsWith(`http://127.0.0.1:4173${prefix}/arknights-chronicle.html#evt-`))).toBe(true);
+    const result = page.locator('.search-result').filter({ has: page.getByRole('link', { name: '骑士协会回应耀骑士身份', exact: true }) });
+    await expect(result.locator('.search-match-location')).toContainText('故事导读');
+    await expect(result.locator('.search-excerpt')).toHaveText(require('../src/_data/arknightsStories.json').find(story => story.id === 'nearl').steps.at(-1).summary);
+    await result.locator('.search-date-note > summary').click();
+    await expect(result.locator('.search-date-note p')).toContainText('11 月 7 日');
+    await expect(result.locator('.search-result-meta')).toContainText('1097年11月6日');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await result.screenshot({ path: testInfo.outputPath(`story-search-${prefix ? 'subpath' : 'root'}.png`) });
+    await result.locator('.search-result-link').click();
+    await expect(page.locator('#evt-589')).toBeFocused();
+    await page.goBack();
+    await expect(page.getByRole('searchbox')).toHaveValue('临光姐妹');
+    await result.locator('.search-story-link').click();
+    await expect(page).toHaveURL(new RegExp(`${prefix}/arknights-stories.html#nearl$`));
+    await expect(page.locator('#nearl .story-sequence')).toBeHidden();
+    await page.locator('#nearl .story-spoiler > summary').click();
+    await expect(page.locator('#nearl .story-sequence > li')).toHaveCount(6);
+  });
+}
+
+test('guide prose and date notes are searchable, while world filters remain independent', async ({ page }) => {
+  for (const [query, expected] of [
+    ['阿黛尔 火山博物馆', '阿黛尔与旅人来到新汐斯塔'],
+    ['免费寄送明信片', '火山喷发，人们告别旧汐斯塔'],
+    ['发布会日期待复核', '骑士协会回应耀骑士身份'],
+  ]) {
+    await page.goto(`/.ats/search.html?q=${encodeURIComponent(query)}`);
+    await expect(page.getByRole('link', { name: expected, exact: true })).toBeVisible();
+    if (query === '免费寄送明信片') await expect(page.locator('.search-excerpt mark')).toHaveText(query);
+  }
+  await expect(page.locator('.search-match-location')).toContainText('日期提示');
+  await page.getByRole('radio', { name: '最终幻想XIV', exact: true }).check();
+  await expect(page.getByRole('status')).toContainText('没有找到');
+  await expect(page.locator('.search-story-link')).toHaveCount(0);
+  await page.getByRole('radio', { name: '明日方舟', exact: true }).check();
+  await expect(page.getByRole('link', { name: '骑士协会回应耀骑士身份', exact: true })).toBeVisible();
+});
+
 for (const record of [
   { title: '星神降生', file: 'wh40k-chronicle.html', id: 'wh-017', selector: '#reader-wh-017' },
   { title: '古代人与古代社会', file: 'ff14-chronicle.html', id: 'ff14-001', selector: '#ff14-001' },
@@ -193,7 +238,7 @@ test('excerpt rendering allows highlighting but strips executable markup', async
       return {
         async search() { return { results: [{ data: async () => ({
           url: './ff14-chronicle.html#ff14-001',
-          meta: { title: '<svg onload=alert(1)>', worldId: 'ff14', world: '最终幻想XIV' },
+          meta: { title: '<svg onload=alert(1)>', worldId: 'arknights', world: '明日方舟', storyId: '../../outside', storyTitle: '<img src=x onerror=alert(1)>', dateNote: '<img src=x onerror=alert(1)>' },
           excerpt: '<mark onclick="alert(1)">海德林</mark><img src=x onerror="alert(1)"><script>alert(1)</script>',
         }) }] }; },
         async destroy() {},
@@ -205,6 +250,36 @@ test('excerpt rendering allows highlighting but strips executable markup', async
   await expect(page.locator('.search-excerpt mark')).toHaveText('海德林');
   await expect(page.locator('.search-excerpt mark')).not.toHaveAttribute('onclick');
   await expect(page.locator('.search-result img, .search-result script, .search-result svg')).toHaveCount(0);
+  await expect(page.locator('.search-story-link')).toHaveCount(0);
+  await page.locator('.search-date-note > summary').click();
+  await expect(page.locator('.search-date-note p')).toHaveText('<img src=x onerror=alert(1)>');
   await page.locator('.search-excerpt mark').click();
+  expect(dialogs).toEqual([]);
+});
+
+test('story excerpts highlight aliases as text and never interpret guide markup', async ({ page }) => {
+  const fixture = {
+    url: './arknights-chronicle.html#evt-291',
+    meta: {
+      title: '测试记录', worldId: 'arknights', world: '明日方舟',
+      storyId: 'mansfield', storyTitle: '<img src=x onerror=alert(1)>',
+      storyPosition: '1 / 4', storyLabel: '背景',
+      storySummary: '小刻与刻俄柏是同一个人物。<svg onload=alert(1)>',
+      matchFields: JSON.stringify([['故事导读', '小刻与刻俄柏']]),
+    },
+    excerpt: '这一份自动摘要不应显示',
+  };
+  const dialogs = [];
+  page.on('dialog', dialog => { dialogs.push(dialog.message()); dialog.dismiss(); });
+  await page.route('**/pagefind/pagefind.js*', route => route.fulfill({
+    contentType: 'text/javascript',
+    body: `export function createInstance() { return { async search() { return { results: [{ id: 'one', data: async () => (${JSON.stringify(fixture)}) }] }; }, async destroy() {} }; }`,
+  }));
+  await page.goto('/.ats/search.html?q=小刻');
+  await expect(page.locator('.search-excerpt')).toHaveText(fixture.meta.storySummary);
+  await expect(page.locator('.search-excerpt mark')).toHaveText(['小刻', '刻俄柏']);
+  await expect(page.locator('.search-story-link')).toHaveText(`故事导读 · ${fixture.meta.storyTitle}`);
+  await expect(page.locator('.search-story-link')).toHaveAttribute('href', 'http://127.0.0.1:4173/.ats/arknights-stories.html#mansfield');
+  await expect(page.locator('.search-result img, .search-result svg, .search-result script')).toHaveCount(0);
   expect(dialogs).toEqual([]);
 });
