@@ -3,6 +3,7 @@ import { normalizeEventSources } from './event-sources.js';
 import { worldRecordHref } from './world-routing.js';
 import { createReaderProgressStore } from './reader-progress.js';
 import { initReaderTools } from './reader-tools.js';
+import { createWorldArchive } from './world-archive.js';
 import stories from '../../_data/arknightsStories.json';
 import {
   arknightsReaderProgress,
@@ -149,6 +150,7 @@ export async function initArknightsChronicle() {
   if (!mainline) throw new Error('Arknights chronicle requires the canonical mainline branch');
   const model = buildArknightsChapters(mainline.eras || []);
   const allRecords = model.chapters.flatMap(chapter => chapter.records);
+  const bookmarkRecords = createWorldArchive({ world: { id: WORLD_ID }, branches }).explore().recordsById;
   const chapterById = new Map(model.chapters.map((chapter, index) => [chapter.id, { chapter, index }]));
   const recordIndexById = new Map(allRecords.map((record, index) => [record.id, index]));
   const listenerController = new AbortController();
@@ -172,7 +174,7 @@ export async function initArknightsChronicle() {
   const readingTools = initReaderTools({
     host: reader.querySelector('.ark-reader-toolbar'), content: readerContent, worldId: WORLD_ID,
     getCurrent: () => displayRecord(model.recordsById.get(currentEventId)?.record),
-    resolveRecord: id => displayRecord(model.recordsById.get(id)?.record),
+    resolveRecord: id => displayRecord(bookmarkRecords[id]),
     navigate: id => {
       history.replaceState(history.state, '', `#${id}`);
       revealTarget({ type: 'event', id });

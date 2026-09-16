@@ -2,6 +2,7 @@ import {
   getIntegratedStrategyHref,
   getIntegratedStrategyTheme,
 } from './arknights-themes.js';
+import { initEndingBookmarks } from './ending-bookmarks.js';
 
 const SPOILER_STORAGE_KEY = 'ats:spoiler:arknights:v1';
 let topicController = null;
@@ -356,7 +357,9 @@ function createEndingCard(record, index, selectedId, onSelect, signal, endingPri
     () => onSelect(record.id, { scroll: false }),
     { signal },
   );
-  article.appendChild(selectButton);
+  const actions = element('div', 'is-ending-actions');
+  actions.appendChild(selectButton);
+  header.appendChild(actions);
 
   const metaValues = [record.location, ...(record.characters || []).slice(0, 4)].filter(Boolean);
   if (metaValues.length) article.appendChild(element('p', 'is-ending-meta', metaValues.join(' / ')));
@@ -421,6 +424,9 @@ function createEndings(snapshot, selectedId, onSelect, signal) {
     '结局记录',
     `${recordIds(snapshot).length} 条当前已核验记录。选择节点或记录查看详情，也可以分享当前视图。`,
   ));
+  const bookmarkNote = element('p', 'is-ending-bookmark-note');
+  bookmarkNote.dataset.endingBookmarkNote = '';
+  section.appendChild(bookmarkNote);
   const grid = element('div', 'is-ending-grid');
   recordIds(snapshot).forEach((recordId, index) => {
     grid.appendChild(createEndingCard(
@@ -523,27 +529,35 @@ export function initIntegratedStrategyTopic({ archive, contextId }) {
     createSources(snapshot),
   );
   content.setAttribute('aria-busy', 'false');
+  initEndingBookmarks({ root: content, records: snapshot.recordsById, signal });
 
   const initiallyLocked = !readConsent();
   setSpoilerState(root, initiallyLocked);
   const gate = root.querySelector('#ark-spoiler-gate');
   gate?.addEventListener('keydown', event => trapSpoilerFocus(gate, event), { signal });
+  function focusEntry() {
+    const requestedId = new URLSearchParams(location.search).get('record');
+    const requestedCard = ids.includes(requestedId)
+      ? content.querySelector(`.is-ending-card[data-record="${requestedId}"]`)
+      : null;
+    if (requestedCard) {
+      requestedCard.scrollIntoView({ behavior: 'instant', block: 'start' });
+      requestedCard.focus({ preventScroll: true });
+    } else {
+      const title = root.querySelector('#is-topic-title');
+      title?.setAttribute('tabindex', '-1');
+      title?.focus();
+    }
+  }
+  if (!initiallyLocked && ids.includes(new URLSearchParams(location.search).get('record'))) {
+    requestAnimationFrame(() => { if (!signal.aborted) focusEntry(); });
+  }
   root.querySelector('[data-spoiler-accept]')?.addEventListener(
     'click',
     () => {
       saveConsent();
       setSpoilerState(root, false);
-      const requestedCard = new URLSearchParams(location.search).has('record')
-        ? content.querySelector(`.is-ending-card[data-record="${selectedId}"]`)
-        : null;
-      if (requestedCard) {
-        requestedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        requestedCard.focus({ preventScroll: true });
-      } else {
-        const title = root.querySelector('#is-topic-title');
-        title?.setAttribute('tabindex', '-1');
-        title?.focus();
-      }
+      focusEntry();
     },
     { signal },
   );

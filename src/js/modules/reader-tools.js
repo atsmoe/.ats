@@ -82,7 +82,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
       const record = resolveRecord(id);
       if (!record) continue;
       const item = element('li');
-      const link = element('a', '', `${record.title} · ${record.dateDisplay || '日期未载'}`);
+      const link = element('a', '', `${record.title} · ${record.isEnding ? '集成战略结局' : record.dateDisplay || '日期未载'}`);
       link.href = worldRecordHref({ worldId, eventId: id });
       link.dataset.readerBookmark = id;
       const remove = element('button', '', '移除');
@@ -119,8 +119,18 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     }
     const link = event.target.closest('[data-reader-bookmark]');
     if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    // Topic bookmarks belong to another page; preserve native navigation and its spoiler gate.
+    if (new URL(link.href).pathname !== location.pathname) return;
     event.preventDefault();
     navigate(link.dataset.readerBookmark);
+  }, { signal });
+  window.addEventListener('storage', event => {
+    if (event.storageArea !== storage || (event.key !== null && event.key !== `ats.${worldId}.reader.bookmarks.v1`)) return;
+    store.reloadBookmarks();
+    renderBookmarks();
+  }, { signal });
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) { store.reloadBookmarks(); renderBookmarks(); }
   }, { signal });
   apply();
   renderBookmarks();

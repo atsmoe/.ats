@@ -14,6 +14,33 @@ function load(name) {
 const { createReadingStore, normalizePreferences, READER_DEFAULTS } = load('reader-preferences.js');
 const { queryGroups, aliasExplanation, matchLocations } = load('archive-search-aliases.js');
 
+test('bookmark writes merge the latest saved list across open readers', () => {
+  const memory = new Map();
+  const storage = { getItem: key => memory.get(key), setItem: (key, value) => memory.set(key, value) };
+  const chronicle = createReadingStore(storage, 'arknights');
+  const topic = createReadingStore(storage, 'arknights');
+  chronicle.toggleBookmark('evt-375');
+  topic.toggleBookmark('if-sarkaz-endless-ending-2');
+  assert.deepEqual(createReadingStore(storage, 'arknights').bookmarks(), ['evt-375', 'if-sarkaz-endless-ending-2']);
+  chronicle.toggleBookmark('evt-375');
+  assert.deepEqual(createReadingStore(storage, 'arknights').bookmarks(), ['if-sarkaz-endless-ending-2']);
+  topic.reloadBookmarks();
+  assert.deepEqual(topic.bookmarks(), ['if-sarkaz-endless-ending-2']);
+  memory.delete('ats.arknights.reader.bookmarks.v1');
+  topic.reloadBookmarks();
+  assert.deepEqual(topic.bookmarks(), []);
+});
+
+test('failed bookmark writes keep the current session state and never erase it on reload', () => {
+  const storage = { getItem: () => '["evt-375"]', setItem() { throw Error('quota'); } };
+  const store = createReadingStore(storage, 'arknights');
+  store.toggleBookmark('if-sarkaz-endless-ending-2');
+  store.reloadBookmarks();
+  store.toggleBookmark('evt-375');
+  assert.deepEqual(store.bookmarks(), ['if-sarkaz-endless-ending-2']);
+  assert.equal(store.available, false);
+});
+
 test('reader preferences accept only known options and tolerate damaged storage', () => {
   for (const bad of [null, [], {}, 'bad', { size: '1px', width: '<script>' }]) assert.deepEqual(normalizePreferences(bad), READER_DEFAULTS);
   const denied = createReadingStore({ getItem() { throw Error(); }, setItem() { throw Error(); } }, 'arknights');

@@ -745,6 +745,14 @@
 .world-arknights .is-ending-heading{ display: grid; grid-template-columns: 130px 1fr; gap: 16px; }
 .world-arknights .is-ending-heading span{ color: var(--is-accent); font: var(--site-min-font-size)/1 ui-monospace, Consolas, monospace; letter-spacing: 1px; }
 .world-arknights .is-ending-heading h3{ font: 700 clamp(24px, 2.8vw, 38px)/1.15 var(--font-serif); }
+.world-arknights .is-ending-card{ --ending-action-gap: 1rem; scroll-margin-top: calc(var(--nav-h) + var(--ending-action-gap)); }
+.world-arknights .is-ending-actions{ grid-column: 2; display: flex; flex-wrap: wrap; gap: calc(var(--ending-action-gap) * .75); }
+.world-arknights .is-ending-actions :is(.is-ending-select, .is-ending-bookmark){ position: static; margin: 0; min-height: 2.75rem; padding: calc(var(--ending-action-gap) * .5) var(--ending-action-gap); color: var(--ark-paper); background: var(--ark-panel); border: 1px solid var(--ark-rule); font: 500 max(.875rem, var(--site-min-font-size))/1.5 var(--font-sans); letter-spacing: normal; cursor: pointer; }
+.world-arknights .is-ending-bookmark[aria-pressed="true"]{ color: var(--is-accent); border-color: var(--is-accent); }
+.world-arknights .is-ending-actions button:focus-visible{ outline: 2px solid var(--is-accent); outline-offset: 3px; }
+.world-arknights :is(.is-ending-bookmark-note, .is-ending-bookmark-status){ --ending-note-gap: 1rem; margin-top: var(--ending-note-gap); color: var(--ark-muted); font: max(.875rem, var(--site-min-font-size))/1.8 var(--font-sans); overflow-wrap: anywhere; }
+.world-arknights .is-ending-bookmark-status:empty{ display: none; }
+.world-arknights .is-ending-heading .is-ending-bookmark-status{ grid-column: 2; margin: 0; }
 .world-arknights .is-ending-meta{ margin: 24px 0 0 146px; color: color-mix(in srgb, var(--is-accent), var(--ark-color-9b9b9b) 55%); font: var(--site-min-font-size)/1.6 ui-monospace, Consolas, monospace; letter-spacing: 1px; }
 .world-arknights .is-ending-copy{ margin: 34px 0 0 146px; color: var(--ark-color-b6b5b1); font-size: 14px; line-height: 1.9; }
 .world-arknights .is-ending-conditions{ margin: 22px 0 0 146px; padding-top: 18px; color: var(--ark-muted); border-top: 1px solid var(--ark-rule); font-size: 12px; line-height: 1.7; }
@@ -946,6 +954,7 @@ body.world-arknights[data-context='if-blackflow'] .is-topic-noise i{ border-colo
   .world-arknights .is-ending-card{ min-height: auto; padding: 24px; }
   .world-arknights .is-ending-select{ position: static; width: fit-content; margin: 18px 0 0; }
   .world-arknights .is-ending-heading{ grid-template-columns: 1fr; }
+  .world-arknights .is-ending-actions, .world-arknights .is-ending-heading .is-ending-bookmark-status{ grid-column: 1; }
   .world-arknights .is-ending-meta,
 .world-arknights .is-ending-copy,
 .world-arknights .is-ending-conditions,

@@ -22,19 +22,30 @@ export function createReadingStore(storage, worldId) {
     catch { available = false; return false; }
   }
   let preferences = normalizePreferences(read(preferenceKey));
-  const saved = read(bookmarkKey);
-  let bookmarks = Array.isArray(saved) ? [...new Set(saved.filter(id => typeof id === 'string' && /^[\w-]{1,100}$/.test(id)))].slice(0, 30) : [];
+  function normalizeBookmarks(saved) {
+    return Array.isArray(saved) ? [...new Set(saved.filter(id => typeof id === 'string' && /^[\w-]{1,100}$/.test(id)))].slice(0, 30) : [];
+  }
+  let bookmarks = normalizeBookmarks(read(bookmarkKey));
+  function reloadBookmarks() {
+    if (!available) return;
+    const saved = read(bookmarkKey);
+    // Once saving fails, retain this document's in-memory edits.
+    if (available) bookmarks = normalizeBookmarks(saved);
+  }
   return {
     get available() { return available; },
     preferences: () => ({ ...preferences }),
     savePreferences(value) { preferences = normalizePreferences(value); return write(preferenceKey, preferences); },
     bookmarks: () => [...bookmarks],
+    reloadBookmarks,
     pruneBookmarks(isValid) {
+      reloadBookmarks();
       const valid = bookmarks.filter(isValid);
       if (valid.length !== bookmarks.length) { bookmarks = valid; write(bookmarkKey, bookmarks); }
     },
     toggleBookmark(id) {
       if (typeof id !== 'string' || !/^[\w-]{1,100}$/.test(id)) return false;
+      reloadBookmarks();
       if (bookmarks.includes(id)) bookmarks = bookmarks.filter(item => item !== id);
       else {
         if (bookmarks.length >= 30) return false;
