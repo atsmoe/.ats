@@ -1,4 +1,5 @@
 import { searchTerms, compactSearchExcerpt } from './archive-search-text.js';
+import { queryGroups, aliasExplanation, matchLocations } from './archive-search-aliases.js';
 
 const WORLD_IDS = ['all', 'arknights', 'wh40k', 'ff14'];
 const PAGE_SIZE = 10;
@@ -38,7 +39,7 @@ function appendExcerpt(parent, html) {
   append(parent, template.content.childNodes);
 }
 
-function resultCard(result) {
+function resultCard(result, query) {
   const meta = result.meta || {};
   const item = element('li', 'search-result');
   item.dataset.world = meta.worldId;
@@ -58,6 +59,8 @@ function resultCard(result) {
   const excerpt = element('p', 'search-excerpt');
   appendExcerpt(excerpt, result.excerpt);
   item.append(title, excerpt);
+  const matches = matchLocations(meta.matchFields, query);
+  if (matches.length) item.append(element('p', 'search-match-location', `命中：${matches.join('、')}`));
   return item;
 }
 
@@ -159,7 +162,7 @@ export function initArchiveSearch(root) {
     const batch = await withTimeout(Promise.all(results.slice(shown, shown + PAGE_SIZE).map(result => result.data())));
     if (token !== sequence) return;
     const fragment = document.createDocumentFragment();
-    for (const result of batch) fragment.append(resultCard(result));
+    for (const result of batch) fragment.append(resultCard(result, state.query));
     const first = fragment.querySelector('a');
     list.append(fragment);
     shown += batch.length;
@@ -168,7 +171,8 @@ export function initArchiveSearch(root) {
     more.hidden = shown >= results.length;
     more.disabled = false;
     loadingMore = false;
-    status.textContent = `找到 ${results.length} 条记录 · 已显示 ${shown} 条`;
+    const alias = aliasExplanation(state.query);
+    status.textContent = `找到 ${results.length} 条记录 · 已显示 ${shown} 条${alias ? ` · 别称检索：${alias}` : ''}`;
     if (focusFirst) first?.focus({ preventScroll: true });
   }
 
@@ -187,9 +191,12 @@ export function initArchiveSearch(root) {
     try {
       const api = await withTimeout(engine());
       if (token !== sequence) return;
-      const responses = await withTimeout(Promise.all(searchTerms(state.query).map(term => api.search(term, {
-        filters: state.world === 'all' ? {} : { world: state.world },
-      }))));
+      const responses = await withTimeout(Promise.all(queryGroups(state.query).map(async group => {
+        const alternatives = await Promise.all(group.map(value => api.search(searchTerms(value)[0], {
+          filters: state.world === 'all' ? {} : { world: state.world },
+        })));
+        return { results: [...new Map(alternatives.flatMap(response => response.results).map(result => [result.id, result])).values()] };
+      })));
       if (token !== sequence) return;
       const matches = responses.slice(1).map(response => new Set(response.results.map(result => result.id)));
       results = (responses[0]?.results || []).filter(result => matches.every(ids => ids.has(result.id)));

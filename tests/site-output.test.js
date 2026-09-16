@@ -19,6 +19,7 @@ const FORMAL_PAGES = [
   'index.html',
   'arknights.html',
   'arknights-chronicle.html',
+  'arknights-stories.html',
   'arknights-integrated-strategies.html',
   ...ARKNIGHTS_TOPIC_PAGES.map(([topicPage]) => topicPage),
   'wh40k.html',

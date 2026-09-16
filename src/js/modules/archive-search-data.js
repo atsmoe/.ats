@@ -31,6 +31,13 @@ export function buildSearchRecords(worlds) {
       const verification = worldId === 'wh40k'
         ? getWh40kVerificationState(record, excludedIds)
         : null;
+      const fields = [
+        ['标题', record.title], ['正文', record.description],
+        ['时间', record.dateDisplay], ['人物与地点', textValues([record.location, record.characters, record.tags]).join(' ')],
+        ['结局条件', record.conditions], ['后续', record.aftermath],
+        ['路线步骤', textValues(record.routeGuide).join(' ')],
+        ['所属专题', [context.name, section.title, data.world.name].join(' ')],
+      ].filter(([, value]) => typeof value === 'string' && value);
       return {
         url: worldRecordHref({ worldId, eventId: recordId, branchId: context.id }),
         language: 'zh',
@@ -48,6 +55,7 @@ export function buildSearchRecords(worlds) {
           section: section.title,
           date: record.dateDisplay || '',
           warning: verification?.code === 'disputed' ? verification.label : '',
+          matchFields: JSON.stringify(fields),
         },
         filters: { world: [worldId] },
       };

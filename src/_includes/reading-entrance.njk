@@ -1,0 +1,16 @@
+{% set entrance = readingEntrances[worldId] %}
+<section class="reading-entrance" aria-labelledby="reading-entrance-title">
+  <h2 id="reading-entrance-title">{{ entrance.heading }}</h2>
+  <nav class="reading-paths" aria-label="阅读起点">
+    {% for path in entrance.paths %}
+    <a href="{{ path.href }}"><span class="reading-kicker">{{ path.label }}</span><strong>{{ path.title }}</strong><p>{{ path.text }}</p></a>
+    {% endfor %}
+  </nav>
+  <details class="reading-coverage">
+    <summary>收录范围与待补内容 · 资料核验截至 {{ entrance.checked }}</summary>
+    <p>{{ entrance.scope }}</p>
+    <p>以上日期对应内容核验，页面功能更新不会自动延长这一范围。</p>
+    <ul>{% for gap in entrance.gaps %}<li>{{ gap }}</li>{% endfor %}</ul>
+  </details>
+  <div class="reading-highlights"><span>本次推荐</span>{% for item in entrance.highlights %}<a href="{{ item.href }}">{{ item.text }} →</a>{% endfor %}</div>
+</section>

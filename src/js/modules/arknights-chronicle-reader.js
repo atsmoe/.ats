@@ -2,6 +2,8 @@ import { getBranches } from './data-access.js';
 import { normalizeEventSources } from './event-sources.js';
 import { worldRecordHref } from './world-routing.js';
 import { createReaderProgressStore } from './reader-progress.js';
+import { initReaderTools } from './reader-tools.js';
+import stories from '../../_data/arknightsStories.json';
 import {
   arknightsReaderProgress,
   arknightsReaderTarget,
@@ -10,6 +12,10 @@ import {
 } from './arknights-chronicle-model.js';
 
 const WORLD_ID = 'arknights';
+const storySteps = new Map(stories.flatMap(story => story.steps.map(step => [step.eventId, { ...step, story }])));
+
+function displayTitle(record) { return storySteps.get(record.id)?.title || record.title || '未命名记录'; }
+function displayRecord(record) { return record ? { ...record, title: displayTitle(record) } : null; }
 
 function element(name, className, text) {
   const node = document.createElement(name);
@@ -44,13 +50,20 @@ function renderRecord(record) {
 
   const header = element('header', 'ark-reader-record-head');
   const date = element('time', 'ark-reader-record-date', record.dateDisplay || '时间待确认');
-  const title = element('h3', 'ark-reader-record-title', record.title || '未命名记录');
+  const title = element('h3', 'ark-reader-record-title', displayTitle(record));
   header.append(date, title);
   article.append(header);
 
   const description = element('p', 'ark-reader-record-description', record.description || '');
   description.dataset.arknightsDescription = '';
   article.append(description);
+  const related = storySteps.get(record.id);
+  if (related) {
+    const link = element('a', 'ark-reader-crossref', `故事导读 · ${related.story.title}`);
+    link.href = `./arknights-stories.html#${related.story.id}`;
+    article.append(link);
+    if (related.dateNote) article.append(element('p', 'reading-caution', related.dateNote));
+  }
 
   if (record.tags?.length) {
     const tags = element('div', 'ark-reader-inline-tags');
@@ -142,6 +155,15 @@ export async function initArknightsChronicle() {
   let isNavigating = false;
   let navigationScrollTop = null;
   let recordObserver = null;
+  const readingTools = initReaderTools({
+    host: reader.querySelector('.ark-reader-toolbar'), content: readerContent, worldId: WORLD_ID,
+    getCurrent: () => displayRecord(model.recordsById.get(currentEventId)?.record),
+    resolveRecord: id => displayRecord(model.recordsById.get(id)?.record),
+    navigate: id => {
+      history.replaceState(history.state, '', `#${id}`);
+      revealTarget({ type: 'event', id });
+    },
+  });
 
   directoryList.innerHTML = '';
   model.chapters.forEach((chapter, index) => {
@@ -194,7 +216,7 @@ export async function initArknightsChronicle() {
     if (!position) return;
     resumeLink.href = recordHref(position.record);
     resumeLink.dataset.arkReaderTarget = position.record.id;
-    resumeLink.querySelector('[data-ark-reader-resume-title]').textContent = position.record.title;
+    resumeLink.querySelector('[data-ark-reader-resume-title]').textContent = displayTitle(position.record);
   }
 
   function saveProgress() {
@@ -212,6 +234,7 @@ export async function initArknightsChronicle() {
   function setContext(record) {
     if (!record || record.id === currentEventId) return;
     currentEventId = record.id;
+    readingTools.refresh();
     const position = model.recordsById.get(record.id);
     if (position) currentChapterIndex = position.chapterPosition;
     currentRecordNode?.classList.remove('is-current');
@@ -226,7 +249,7 @@ export async function initArknightsChronicle() {
     context.innerHTML = '';
     context.append(
       element('p', 'ark-reader-context-label', '当前档案'),
-      element('h2', 'ark-reader-context-title', record.title || '未命名记录'),
+      element('h2', 'ark-reader-context-title', displayTitle(record)),
       element('p', 'ark-reader-context-date', record.dateDisplay || '时间待确认'),
     );
     if (record.characters?.length) {
@@ -432,7 +455,7 @@ export async function initArknightsChronicle() {
       return;
     }
     if (event.key !== 'Tab') return;
-    const focusable = [...reader.querySelectorAll('button:not([disabled]), a[href], summary, [tabindex]:not([tabindex="-1"])')]
+    const focusable = [...reader.querySelectorAll('button:not([disabled]), select, a[href], summary, [tabindex]:not([tabindex="-1"])')]
       .filter(node => !node.closest('[hidden]') && node.getClientRects().length > 0);
     if (!focusable.length) return;
     const first = focusable[0];
@@ -454,6 +477,7 @@ export async function initArknightsChronicle() {
 
   function destroy() {
     saveProgress();
+    readingTools.destroy();
     if (navigationFrame) cancelAnimationFrame(navigationFrame);
     navigationFrame = 0;
     if (scrollFrame) cancelAnimationFrame(scrollFrame);

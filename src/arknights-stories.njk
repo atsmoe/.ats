@@ -1,0 +1,58 @@
+---
+permalink: ./arknights-stories.html
+title: 明日方舟 · 故事导读
+bodyClass: world-arknights
+pageType: arknights-home
+worldId: arknights
+cssFiles:
+  - base.css
+  - nav.css
+  - worlds.css
+  - arknights-world.css
+  - responsive.css
+  - reading-experience.css
+---
+{% extends "base.njk" %}
+{% block content %}
+<article class="story-dossiers">
+  <header>
+    <a href="./arknights.html">← 泰拉档案</a>
+    <p class="reading-kicker">STORY DOSSIER / TERRA</p>
+    <h1>从一段故事读起</h1>
+    <p>把前因、行动与后续接起来，再回到编年查阅同一时期的其他事件。</p>
+    <a href="./arknights-chronicle.html">查看完整编年 →</a>
+  </header>
+  {% for story in storyDossiers %}
+  <section id="{{ story.id }}" class="story-dossier" aria-labelledby="{{ story.id }}-title">
+    <h2 id="{{ story.id }}-title">{{ story.title }}</h2>
+    <p>{{ story.summary }}</p>
+    <details class="story-spoiler">
+      <summary>展开故事导读 · 含剧情转折</summary>
+      <p>{{ story.note }}</p>
+      <ol class="story-sequence">
+        {% for step in story.steps %}
+        <li id="story-{{ step.eventId }}">
+          <span class="reading-kicker">{{ step.label }}</span>
+          <h3>{{ step.title }}</h3>
+          <time>{{ step.record.dateDisplay }}{% if step.record.datePrecision === "approximate" %} · 约略时间{% endif %}</time>
+          <p>{{ step.summary }}</p>
+          {% if step.dateNote %}<p class="reading-caution">{{ step.dateNote }}</p>{% endif %}
+          <a href="./arknights-chronicle.html#{{ step.eventId }}">查看原编年记录 →</a>
+          <details class="story-evidence">
+            <summary>原记录与来源</summary>
+            <p>{{ step.record.description }}</p>
+            <ul>
+              {% for source in step.record.prtsSources %}
+              <li><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.text }}</a></li>
+              {% endfor %}
+              {% if step.extraSource %}<li><a href="{{ step.extraSource.url }}" target="_blank" rel="noopener noreferrer">{{ step.extraSource.text }}</a></li>{% endif %}
+            </ul>
+          </details>
+        </li>
+        {% endfor %}
+      </ol>
+    </details>
+  </section>
+  {% endfor %}
+</article>
+{% endblock %}

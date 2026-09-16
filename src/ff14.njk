@@ -10,6 +10,7 @@ cssFiles:
   - worlds.css
   - ff14-world.css
   - responsive.css
+  - reading-experience.css
 ---
 {% extends "base.njk" %}
 
@@ -47,7 +48,7 @@ cssFiles:
     <div class="ff-hero-register" aria-label="最终幻想XIV档案状态">
       <span><i></i> ECHO RESONANCE / ACQUIRED</span>
       <span>ATS / WORLD-03 / ÆTHERIS</span>
-      <span>PATCH {{ ff14Catalog.coverage.currentPatch }}</span>
+      <span>档案核验 {{ ff14Catalog.coverage.asOf }} · PATCH {{ ff14Catalog.coverage.currentPatch }}</span>
     </div>
 
     <div class="ff-hero-copy">
@@ -68,26 +69,7 @@ cssFiles:
     </a>
   </header>
 
-  <nav class="ff-entry-grid" aria-label="最终幻想XIV探索方向">
-    <a class="ff-entry ff-entry--chronicle" href="./ff14-chronicle.html">
-      <span>01 / CRYSTAL CHRONICLE</span>
-      <strong>星海编年</strong>
-      <p>收录 {{ ff14Catalog.stats.records }} 条记录，涵盖古代世界、灵灾星历、主线长卷、秘话与设定索引。</p>
-      <i>展开水晶长卷 →</i>
-    </a>
-    <a class="ff-entry ff-entry--reflections" href="./ff14-reflections.html">
-      <span>02 / REFLECTION PRISM</span>
-      <strong>镜界棱镜</strong>
-      <p>查看原初世界与十三个镜像世界的已知记录；尚无可靠资料的世界暂不展开。</p>
-      <i>校准十四面棱镜 →</i>
-    </a>
-    <a class="ff-entry ff-entry--journeys" href="./ff14-journeys.html">
-      <span>03 / JOURNEY CONSTELLATION</span>
-      <strong>旅途星座</strong>
-      <p>沿八段冒险旅途，回看从旧艾欧泽亚到金曦之遗辉的地点、主题与时代转折。</p>
-      <i>选择下一颗星 →</i>
-    </a>
-  </nav>
+  {% include "reading-entrance.njk" %}
 
   <section class="ff-saga-boundary" aria-labelledby="ff-saga-title">
     <header>

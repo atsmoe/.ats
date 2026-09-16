@@ -5,8 +5,6 @@
  */
 
 const { execFileSync } = require('node:child_process');
-const fs = require('node:fs');
-const path = require('node:path');
 
 const REQUIRED_LOGS = [
   'docs/更新日志.md',
@@ -26,6 +24,30 @@ function changedFiles(base, head) {
     .filter(Boolean);
 }
 
+function releaseSections(markdown) {
+  const headings = [...markdown.matchAll(/^## V(\d+(?:\.\d+)+)\b[^\n]*$/gm)];
+  const sections = new Map();
+  headings.forEach((match, index) => {
+    if (sections.has(match[1])) throw new Error(`Duplicate changelog version: ${match[1]}`);
+    const content = markdown.slice(match.index + match[0].length, headings[index + 1]?.index ?? markdown.length);
+    sections.set(match[1], { items: (content.match(/^\s*-\s+\S/gm) || []).length });
+  });
+  return sections;
+}
+
+function validateReleaseHistory(before, after) {
+  const previous = releaseSections(before);
+  const current = releaseSections(after);
+  for (const [version, section] of previous) {
+    if (!current.has(version)) throw new Error(`Historical changelog version was removed: ${version}`);
+    if (current.get(version).items < section.items) throw new Error(`Historical changelog items were removed: ${version}`);
+  }
+}
+
+function fileAt(ref, file) {
+  return execFileSync('git', ['show', `${ref}:${file}`], { encoding: 'utf8' });
+}
+
 function main() {
   const [base, head = 'HEAD'] = process.argv.slice(2);
   if (!base) {
@@ -42,10 +64,21 @@ function main() {
     process.exit(1);
   }
 
-  const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf8'));
+  const pkg = JSON.parse(fileAt(head, 'package.json'));
   if (!isReleaseVersion(pkg.version)) {
     console.error(`Version ${pkg.version} is invalid.`);
     console.error('Use x.x.x and update both logs before pushing to GitHub.');
+    process.exit(1);
+  }
+
+  try {
+    const changelog = fileAt(head, REQUIRED_LOGS[0]);
+    validateReleaseHistory(fileAt(base, REQUIRED_LOGS[0]), changelog);
+    if (!releaseSections(changelog).has(pkg.version) || !fileAt(head, REQUIRED_LOGS[1]).includes(`V${pkg.version}`)) {
+      throw new Error(`Both logs must include V${pkg.version}`);
+    }
+  } catch (error) {
+    console.error(error.message);
     process.exit(1);
   }
 
@@ -54,4 +87,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { REQUIRED_LOGS, changedFiles, isReleaseVersion };
+module.exports = { REQUIRED_LOGS, changedFiles, isReleaseVersion, releaseSections, validateReleaseHistory };

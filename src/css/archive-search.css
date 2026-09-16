@@ -498,3 +498,9 @@
     font-size: 19px;
   }
 }
+.search-match-location {
+  color: var(--text-muted);
+  font-size: max(.8125rem, var(--site-min-font-size));
+  margin-top: .75rem;
+  line-height: 1.7;
+}

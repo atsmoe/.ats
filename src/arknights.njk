@@ -10,6 +10,7 @@ cssFiles:
   - worlds.css
   - arknights-world.css
   - responsive.css
+  - reading-experience.css
 ---
 {% extends "base.njk" %}
 
@@ -48,7 +49,7 @@ cssFiles:
     <div class="terra-status" aria-label="泰拉观测状态">
       <span><i></i> SIGNAL ACQUIRED</span>
       <span>ATS / WORLD-01</span>
-      <span>ARK-2026.07</span>
+      <span>档案核验 {{ arknights.archive.coverage.updatedAt }}</span>
     </div>
 
     <div class="terra-hero-copy">
@@ -72,6 +73,8 @@ cssFiles:
       <small>最新记录仍在核验 · 进入树海 →</small>
     </a>
   </header>
+
+  {% include "reading-entrance.njk" %}
 
   <section class="terra-secondary" id="terra-atlas" aria-labelledby="terra-atlas-title">
     <div class="terra-section-heading">

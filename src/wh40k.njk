@@ -10,6 +10,7 @@ cssFiles:
   - worlds.css
   - wh40k-world.css
   - responsive.css
+  - reading-experience.css
 ---
 {% extends "base.njk" %}
 
@@ -61,20 +62,7 @@ cssFiles:
     </a>
   </header>
 
-  <nav class="wh-entry-grid" aria-label="战锤40K探索方向">
-    <a class="wh-entry" href="./wh40k-chronicle.html">
-      <span>01 / CHRONICLE</span><strong>银河纪元</strong>
-      <p>从天堂之战读到大裂隙后的战区，按复核后的年代顺序查阅。</p><i>展开纪年卷轴 →</i>
-    </a>
-    <a class="wh-entry" href="./wh40k-factions.html">
-      <span>02 / FACTION DOSSIERS</span><strong>势力谱系</strong>
-      <p>九个主要势力，按谱系查看各阵营及其子势力。</p><i>读取势力档案 →</i>
-    </a>
-    <a class="wh-entry" href="./wh40k-war-zones.html">
-      <span>03 / WAR ZONES</span><strong>当前战区</strong>
-      <p>收录截至 {{ wh40k.archive.coverage.asOf }} 的六个公开战区，并链接到对应事件。</p><i>接入战略星图 →</i>
-    </a>
-  </nav>
+  {% include "reading-entrance.njk" %}
 
   <section class="wh-situation" aria-labelledby="wh-situation-title">
     <div class="wh-section-heading">

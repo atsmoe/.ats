@@ -1,4 +1,5 @@
 import { createReaderProgressStore } from './reader-progress.js';
+import { initReaderTools } from './reader-tools.js';
 
 const STORAGE_KEY = 'ats.ff14.reader.progress.v1';
 const LONG_TEXT_LIMIT = 1100;
@@ -224,6 +225,12 @@ export async function initFf14Reader({ timelineData }) {
   const progress = root.querySelector('.ff-reader-progress');
   const progressBar = root.querySelector('.ff-reader-progress span');
   const returnBar = root.querySelector('.ff-reader-return');
+  const readingTools = initReaderTools({
+    host: root, content: manuscript, worldId: 'ff14',
+    getCurrent: () => model.records.get(activeEventId),
+    resolveRecord: id => model.records.get(id),
+    navigate: id => goToEvent(id, { focus: true }),
+  });
 
   function chaptersFor(rootId) {
     return model.chapters.filter(chapter => chapter.rootBranchId === rootId);
@@ -255,6 +262,7 @@ export async function initFf14Reader({ timelineData }) {
   function setActiveRecord(recordElement, { syncUrl = true } = {}) {
     if (!recordElement) return;
     activeEventId = recordElement.dataset.eventId;
+    readingTools.refresh();
     const chapter = model.chapterByEventId.get(activeEventId);
     const record = model.records.get(activeEventId);
     root.querySelectorAll('[data-reader-chapter]').forEach(link => {
@@ -527,6 +535,7 @@ export async function initFf14Reader({ timelineData }) {
   }
 
   function destroy() {
+    readingTools.destroy();
     clearTimeout(saveTimer);
     saveTimer = null;
     if (navigationFrame) cancelAnimationFrame(navigationFrame);

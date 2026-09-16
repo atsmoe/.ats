@@ -1,5 +1,7 @@
 import { normalizeEventSources } from './event-sources.js';
 import { getWh40kVerificationState } from './wh40k-verification.js';
+import { createReaderProgressStore } from './reader-progress.js';
+import { initReaderTools } from './reader-tools.js';
 export { getWh40kVerificationState } from './wh40k-verification.js';
 
 const DATE_UNCERTAIN_PATTERN = /约|前|后|初|中|末|远古|创世|形成|恒星时代|CURRENT|RECURRING|M\d+\s*-\s*M\d+/i;
@@ -312,6 +314,33 @@ function createReader(root, archive, listenerController) {
   let scrollFrame = 0;
   let targetFrame = 0;
   let isComposing = false;
+  let storage;
+  try { storage = localStorage; } catch { /* reading does not require storage */ }
+  const progressStore = createReaderProgressStore(storage, 'ats.wh40k.reader.progress.v1');
+  const resolveRecord = id => archive.chapterById.get(archive.eventToChapter.get(id))?.events.find(record => record.id === id);
+  const resume = element('a', 'reader-resume-link');
+  resume.hidden = true;
+  root.prepend(resume);
+  resume.addEventListener('click', event => {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const saved = progressStore.read('mainline');
+    if (saved) openChapter(archive.eventToChapter.get(saved.eventId), saved.eventId, true);
+  }, { signal });
+  function updateResume() {
+    const saved = resolveRecord(progressStore.read('mainline')?.eventId);
+    resume.hidden = !saved;
+    if (saved) {
+      resume.href = `#${saved.id}`;
+      resume.textContent = `继续上次阅读 · ${saved.title}`;
+    }
+  }
+  const readingTools = initReaderTools({
+    host: railHead, content: reading, worldId: 'wh40k', getCurrent: () => currentEvent,
+    resolveRecord,
+    navigate: id => openChapter(archive.eventToChapter.get(id), id, false),
+  });
+  updateResume();
 
   function cancelReadingTasks() {
     if (scrollFrame) cancelAnimationFrame(scrollFrame);
@@ -329,6 +358,8 @@ function createReader(root, archive, listenerController) {
   function selectEvent(record, updateUrl = true) {
     if (!record || currentEvent?.id === record.id) return;
     currentEvent = record;
+    progressStore.write('mainline', { eventId: record.id });
+    readingTools.refresh();
     renderSourcePanel(contextBody, record, archive);
     const index = currentChapter.events.findIndex(item => item.id === record.id);
     const percent = currentChapter.events.length ? Math.round(((index + 1) / currentChapter.events.length) * 100) : 0;
@@ -454,6 +485,7 @@ function createReader(root, archive, listenerController) {
     if (location.hash || new URLSearchParams(location.search).has('chapter')) {
       history.replaceState({}, '', canonicalUrl());
     }
+    updateResume();
     window.scrollTo({ top: returnScrollY, behavior: 'auto' });
     if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
   }
@@ -488,7 +520,7 @@ function createReader(root, archive, listenerController) {
       return;
     }
     if (event.key !== 'Tab') return;
-    const focusable = [...overlay.querySelectorAll('button:not([disabled]):not([hidden]), a[href], input, [tabindex="0"]')]
+    const focusable = [...overlay.querySelectorAll('button:not([disabled]):not([hidden]), a[href], input, select, summary, [tabindex="0"]')]
       .filter(node => node.getClientRects().length > 0);
     if (!focusable.length) return;
     const first = focusable[0];
@@ -563,6 +595,7 @@ function createReader(root, archive, listenerController) {
   window.addEventListener('hashchange', syncHistory, { signal });
   function destroy() {
     cancelReadingTasks();
+    readingTools.destroy();
     listenerController.abort();
     document.body.classList.remove('wh-reader-open');
     siteNav?.removeAttribute('inert');
