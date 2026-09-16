@@ -6,10 +6,11 @@ test.beforeEach(async ({ page }) => {
 
 test('story guide has a spoiler gate, source evidence and original chronological targets', async ({ page }, testInfo) => {
   await page.goto('/.ats/arknights-stories.html');
-  await expect(page.locator('.story-sequence')).toBeHidden();
-  await page.getByText('展开故事导读 · 含剧情转折', { exact: true }).click();
-  await expect(page.locator('.story-sequence > li')).toHaveCount(4);
-  await expect(page.locator('.reading-caution')).toContainText('建造年份待复核');
+  const story = page.locator('#mansfield');
+  await expect(story.locator('.story-sequence')).toBeHidden();
+  await story.getByText('展开故事导读 · 含剧情转折', { exact: true }).click();
+  await expect(story.locator('.story-sequence > li')).toHaveCount(4);
+  await expect(story.locator('.reading-caution')).toContainText('建造年份待复核');
   await page.screenshot({ path: testInfo.outputPath('story-guide.png') });
   await page.locator('.story-evidence summary').first().click();
   await expect(page.locator('.story-evidence').first().getByRole('link')).toHaveAttribute('href', /prts.wiki/);
@@ -18,6 +19,68 @@ test('story guide has a spoiler gate, source evidence and original chronological
   await expect(page.locator('#evt-375 h3')).toHaveText('西蒙家族倒台，安东尼入狱');
   await expect(page.locator('#evt-375 .ark-reader-record-description')).toContainText('7月24日');
 });
+
+test('story directory and each spoiler gate support the keyboard without JavaScript', async ({ browser }, testInfo) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: testInfo.project.use.viewport, isMobile: testInfo.project.use.isMobile, hasTouch: testInfo.project.use.hasTouch });
+  const page = await context.newPage();
+  try {
+    await page.route('https://fonts.loli.net/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
+    await page.goto(`${testInfo.project.use.baseURL}/.ats/arknights-stories.html`);
+    await expect(page.locator('.story-directory > a')).toHaveCount(3);
+    for (const [id, count] of [['mansfield', 4], ['nearl', 6], ['siesta', 4]]) {
+      const story = page.locator(`#${id}`);
+      await page.locator(`.story-directory > a[href="#${id}"]`).focus();
+      await page.keyboard.press('Enter');
+      await expect(page).toHaveURL(new RegExp(`#${id}$`));
+      await expect(story.locator('.story-sequence')).toBeHidden();
+      await story.locator('.story-spoiler > summary').focus();
+      await page.keyboard.press('Enter');
+      await expect(story.locator('.story-sequence')).toBeVisible();
+      await expect(story.locator('.story-sequence > li')).toHaveCount(count);
+      for (const link of await story.locator('.story-sequence > li > a').all()) {
+        await expect(link).toHaveAttribute('href', /arknights-chronicle\.html#evt-\d+$/);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      await story.locator('.story-spoiler > summary').focus();
+      await page.keyboard.press('Enter');
+    }
+    // Native keys also avoid Chromium's no-script actionability polling stall during screenshot tracing.
+    await page.goto(`${testInfo.project.use.baseURL}/.ats/arknights-stories.html`);
+    await page.screenshot({ path: testInfo.outputPath('story-directory.png') });
+  } finally { await context.close(); }
+});
+
+for (const id of ['mansfield', 'nearl', 'siesta']) {
+  test(`${id} story navigation follows the story order and has no wraparound`, async ({ page }, testInfo) => {
+    const story = require('../src/_data/arknightsStories.json').find(story => story.id === id);
+    await page.goto(`/.ats/arknights-stories.html#${id}`);
+    await page.locator(`#${id} .story-spoiler > summary`).click();
+    await page.locator(`#story-${story.steps[0].eventId} > a`).click();
+    for (const [index, step] of story.steps.entries()) {
+      const record = page.locator(`#${step.eventId}`);
+      await expect(record).toBeFocused();
+      await expect(record.locator('h3')).toHaveText(step.title);
+      const navigation = record.locator('.ark-reader-story-nav');
+      await expect(navigation).toContainText(`故事进度 ${index + 1} / ${story.steps.length}`);
+      await expect(navigation.getByRole('link', { name: /上一节/ })).toHaveCount(index ? 1 : 0);
+      await expect(navigation.getByRole('link', { name: /下一节/ })).toHaveCount(index < story.steps.length - 1 ? 1 : 0);
+      if (step.dateNote) await expect(record.locator('.reading-caution')).toHaveText(step.dateNote);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      if (index === 1) {
+        await record.screenshot({ path: testInfo.outputPath(`${id}-story-navigation.png`) });
+        await navigation.getByRole('link', { name: /上一节/ }).click();
+        await expect(page.locator(`#${story.steps[0].eventId}`)).toBeFocused();
+        await page.locator(`#${story.steps[0].eventId} .ark-reader-story-nav`).getByRole('link', { name: /下一节/ }).click();
+        await expect(record).toBeFocused();
+      }
+      if (index < story.steps.length - 1) await navigation.getByRole('link', { name: /下一节/ }).click();
+    }
+    await page.reload();
+    await expect(page.locator(`#${story.steps.at(-1).eventId}`)).toBeFocused();
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`arknights-stories.html#${id}$`));
+  });
+}
 
 test('world entrances expose three working reading choices and dated scope', async ({ page }, testInfo) => {
   for (const world of ['arknights', 'wh40k', 'ff14']) {

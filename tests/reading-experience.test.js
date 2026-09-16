@@ -66,6 +66,33 @@ test('story dossiers resolve original records and preserve the uncertain constru
   assert.doesNotMatch(text, /(?:不是|并非|不再是)[^。！？]{0,80}而是|与其[^。！？]{0,80}不如|不仅[^。！？]{0,80}还|规范记录|信息架构/);
 });
 
+test('three story guides preserve fourteen original records, dates and sources', () => {
+  const stories = require('../src/_data/storyDossiers')();
+  const originals = new Map(require('../src/_data/arknightsChronicle')().eras.flatMap(era => era.events).map(record => [record.id, record]));
+  assert.deepEqual(stories.map(story => [story.id, story.steps.length]), [['mansfield', 4], ['nearl', 6], ['siesta', 4]]);
+  for (const story of stories) {
+    for (const step of story.steps) {
+      assert.deepEqual(step.record, originals.get(step.eventId));
+      assert.ok(step.record.prtsSources.length > 0);
+    }
+  }
+  const correction = stories.find(story => story.id === 'nearl').steps.at(-1);
+  assert.equal(correction.record.dateRaw, '1097.11.6');
+  assert.match(correction.dateNote, /11 月 7 日/);
+});
+
+test('story resolution rejects ambiguous navigation and missing references', () => {
+  const { resolveStories } = require('../src/_data/storyDossiers');
+  const story = { id: 'one', steps: [{ eventId: 'evt-1' }] };
+  const record = { id: 'evt-1', description: 'Original', sources: ['Source'] };
+  assert.throws(() => resolveStories([story, story], [record]), /Duplicate story:/);
+  assert.throws(() => resolveStories([story, { ...story, id: 'two' }], [record]), /Duplicate story reference/);
+  assert.throws(() => resolveStories([{ ...story, steps: [...story.steps, ...story.steps] }], [record]), /Duplicate story reference/);
+  assert.throws(() => resolveStories([story], []), /Story reference missing/);
+  assert.throws(() => resolveStories([{ id: 'empty', steps: [] }], []), /Story has no steps/);
+  assert.equal(resolveStories([story], [record])[0].steps[0].record, record);
+});
+
 test('release history rejects missing versions, fewer historical items and duplicates', () => {
   const before = '## V2.8.0 / #abc\n- new\n## V2.7.0 / #abc\n- old one\n- old two\n';
   assert.throws(() => validateReleaseHistory(before, '## V2.8.0\n- merged\n'), /removed: 2.7.0/);

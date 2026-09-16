@@ -6,14 +6,14 @@ module.exports = {
   arknights: {
     heading: '想从哪里了解泰拉？',
     paths: [
-      { label: '初次了解', title: '从孤岛风云读起', text: '先看一场越狱的前因与后续，再进入完整编年。', href: './arknights-stories.html' },
+      { label: '初次了解', title: '从一段故事读起', text: '一场越狱、临光姐妹的赛事、汐斯塔的迁城，选一条线了解前因与后续。', href: './arknights-stories.html' },
       { label: '主要历史', title: '按泰拉历查阅', text: '从前文明到罗德岛，按时代和时间段阅读。', href: './arknights-chronicle.html' },
       { label: '人物与地点', title: '带着名字找线索', text: '输入人物、组织、地点或结局条件。', href: './search.html?world=arknights' },
     ],
     scope: ark.archive.coverage.scope,
     checked: ark.archive.coverage.updatedAt,
     gaps: ark.archive.coverage.knownGaps,
-    highlights: [{ text: '孤岛风云 · 新增故事导读', href: './arknights-stories.html' }, { text: '七个集成战略主题 · 路线与结局', href: './arknights-integrated-strategies.html' }],
+    highlights: [{ text: '三段故事 · 串联前因与后续', href: './arknights-stories.html' }, { text: '七个集成战略主题 · 路线与结局', href: './arknights-integrated-strategies.html' }],
   },
   wh40k: {
     heading: '从哪一份银河档案开始？',

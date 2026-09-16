@@ -22,8 +22,18 @@ cssFiles:
     <p>把前因、行动与后续接起来，再回到编年查阅同一时期的其他事件。</p>
     <a href="./arknights-chronicle.html">查看完整编年 →</a>
   </header>
+  <nav class="story-directory" aria-label="选择故事">
+    {% for story in storyDossiers %}
+    <a href="#{{ story.id }}">
+      <span class="reading-kicker">{{ loop.index }} / {{ story.steps.length }} 节导读</span>
+      <strong>{{ story.title }}</strong>
+      <span class="story-directory-dates"><span>从 {{ story.steps[0].record.dateDisplay }}</span><span>至 {{ story.steps[story.steps.length - 1].record.dateDisplay }}</span></span>
+    </a>
+    {% endfor %}
+  </nav>
   {% for story in storyDossiers %}
   <section id="{{ story.id }}" class="story-dossier" aria-labelledby="{{ story.id }}-title">
+    <p class="reading-kicker">故事 {{ loop.index }} / {{ story.steps.length }} 节导读</p>
     <h2 id="{{ story.id }}-title">{{ story.title }}</h2>
     <p>{{ story.summary }}</p>
     <details class="story-spoiler">

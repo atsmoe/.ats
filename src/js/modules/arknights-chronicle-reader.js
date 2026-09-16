@@ -12,7 +12,9 @@ import {
 } from './arknights-chronicle-model.js';
 
 const WORLD_ID = 'arknights';
-const storySteps = new Map(stories.flatMap(story => story.steps.map(step => [step.eventId, { ...step, story }])));
+const storySteps = new Map(stories.flatMap(story => story.steps.map((step, index) => [step.eventId, {
+  ...step, story, index, previous: story.steps[index - 1], next: story.steps[index + 1],
+}])));
 
 function displayTitle(record) { return storySteps.get(record.id)?.title || record.title || '未命名记录'; }
 function displayRecord(record) { return record ? { ...record, title: displayTitle(record) } : null; }
@@ -63,6 +65,18 @@ function renderRecord(record) {
     link.href = `./arknights-stories.html#${related.story.id}`;
     article.append(link);
     if (related.dateNote) article.append(element('p', 'reading-caution', related.dateNote));
+    const navigation = element('nav', 'ark-reader-story-nav');
+    navigation.setAttribute('aria-label', `${related.story.title} · 故事内导航`);
+    navigation.append(element('p', 'reading-kicker', `故事进度 ${related.index + 1} / ${related.story.steps.length}`));
+    for (const [step, direction] of [[related.previous, '上一节'], [related.next, '下一节']]) {
+      if (!step) continue;
+      const target = element('a');
+      target.href = recordHref({ id: step.eventId });
+      target.dataset.arkReaderTarget = step.eventId;
+      target.append(element('span', '', direction), element('strong', '', step.title));
+      navigation.append(target);
+    }
+    article.append(navigation);
   }
 
   if (record.tags?.length) {
@@ -182,7 +196,7 @@ export async function initArknightsChronicle() {
       representative.dataset.arkReaderTarget = chapter.representative.id;
       representative.append(
         element('span', '', '代表事件'),
-        element('strong', '', chapter.representative.title),
+        element('strong', '', displayTitle(chapter.representative)),
         element('time', '', chapter.representative.dateDisplay || '时间待确认'),
       );
       card.append(representative);
