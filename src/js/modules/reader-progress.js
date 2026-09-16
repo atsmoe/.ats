@@ -16,6 +16,9 @@ export function createReaderProgressStore(storage, key) {
   }
 
   return {
+    entries() {
+      return Object.entries(readAll()).filter(([, progress]) => valid(progress));
+    },
     read(contextId) {
       const state = readAll();
       return Object.hasOwn(state, contextId) && valid(state[contextId]) ? state[contextId] : null;

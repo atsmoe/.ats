@@ -1,6 +1,16 @@
 {% set entrance = readingEntrances[worldId] %}
 <section class="reading-entrance" aria-labelledby="reading-entrance-title">
   <h2 id="reading-entrance-title">{{ entrance.heading }}</h2>
+  <details class="reading-home" data-reading-home="{{ worldId }}" hidden>
+    <summary>接着读 <span>阅读位置与书签</span></summary>
+    <p class="reading-home-note">仅保存在当前浏览器中。展开后会显示已保存的记录标题，可能含剧透。</p>
+    <div class="reading-home-body"></div>
+    <p class="reading-home-note" role="status"></p>
+    <button type="button" data-reading-home-retry hidden>重试</button>
+    {% if worldId == 'arknights' %}
+    <template data-reading-home-titles>{% for story in storyDossiers %}{% for step in story.steps %}<span data-event-id="{{ step.eventId }}">{{ step.title }}</span>{% endfor %}{% endfor %}</template>
+    {% endif %}
+  </details>
   <nav class="reading-paths" aria-label="阅读起点">
     {% for path in entrance.paths %}
     <a href="{{ path.href }}"><span class="reading-kicker">{{ path.label }}</span><strong>{{ path.title }}</strong><p>{{ path.text }}</p></a>

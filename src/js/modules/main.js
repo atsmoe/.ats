@@ -6,6 +6,7 @@ import { BackgroundManager } from './background-manager.js';
 import { initNav } from './nav.js';
 import { ANIM } from './anim-tokens.js';
 import { worldRecordHref } from './world-routing.js';
+import { initReadingHome } from './reading-home.js';
 
 /**
  * Render a themed error card when world data fails to load.
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'color:#9a9078;font-size:11px;');
 
   const pageType = document.body.dataset.page;
+  if (['arknights-home', 'wh40k-home', 'ff14-home'].includes(pageType)) initReadingHome();
 
   if (pageType?.startsWith('arknights-')) {
     const { initArknightsEntry } = await import('./arknights-entry.js');
