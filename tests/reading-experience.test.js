@@ -18,11 +18,14 @@ test('reader preferences accept only known options and tolerate damaged storage'
   for (const bad of [null, [], {}, 'bad', { size: '1px', width: '<script>' }]) assert.deepEqual(normalizePreferences(bad), READER_DEFAULTS);
   const denied = createReadingStore({ getItem() { throw Error(); }, setItem() { throw Error(); } }, 'arknights');
   assert.deepEqual(denied.preferences(), READER_DEFAULTS);
+  assert.equal(denied.available, false, 'blocked storage must be reported before the first write');
   assert.equal(denied.savePreferences({ size: 'larger' }), false);
   assert.equal(denied.preferences().size, 'larger');
   assert.equal(denied.available, false);
   assert.equal(denied.toggleBookmark('evt-003'), true);
   assert.deepEqual(denied.bookmarks(), ['evt-003']);
+  const damaged = createReadingStore({ getItem: () => '{', setItem() {} }, 'arknights');
+  assert.equal(damaged.available, true, 'invalid JSON does not mean storage access was denied');
 });
 
 test('preferences cross worlds while bounded bookmarks stay separate and removable', () => {

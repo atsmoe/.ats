@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           # The release-note guard compares the complete range of a push.
           # A push may contain more than two commits, so a shallow checkout is insufficient.
@@ -28,12 +28,14 @@ jobs:
         if: github.event_name == 'push'
         run: node scripts/check-release-notes.js "${{ github.event.before }}" "${{ github.sha }}"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - run: npm ci
+      - name: Check build dependency advisories
+        run: npm audit --audit-level=high
       - run: npm run build
 
       # Verify production build quality

@@ -1,8 +1,11 @@
 {
   "name": "between-the-stars-chronicles",
-  "version": "2.9.0",
+  "version": "2.9.1",
   "description": "群星之间 · 世界档案 — 虚构世界观测与调查系统",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "assets:terra": "node scripts/terra-globe-assets.js",
     "assets:terra:territory": "node scripts/terra-observation-boundaries.js",
@@ -19,11 +22,11 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
-    "@11ty/eleventy-img": "^6.0.4",
+    "@11ty/eleventy-img": "^7.0.0",
     "@playwright/test": "1.62.1",
     "esbuild": "^0.25.0",
     "pagefind": "1.5.2",
-    "sharp": "^0.33.5",
+    "sharp": "^0.35.4",
     "three": "0.136.0"
   }
 }

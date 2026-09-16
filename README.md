@@ -25,8 +25,10 @@
 
 ## 本地开发
 
+需要 Node.js 22 或更高版本；发布与浏览器检查使用 Node.js 24。
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 

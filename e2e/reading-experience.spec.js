@@ -51,12 +51,15 @@ test('Arknights settings and bookmarks persist and preferences carry into FFXIV'
   await page.goto('/.ats/arknights-chronicle.html#evt-375');
   await expect(page.locator('#evt-375')).toBeFocused();
   await page.locator('.reader-tools > summary').click();
+  await expect(page.locator('.reader-bookmark-current')).toContainText('西蒙家族倒台，安东尼入狱');
+  await expect(page.locator('.reader-bookmarks-empty')).toHaveText('还没有书签。可收藏当前记录，稍后回来接着读。');
   await page.getByLabel('正文字号', { exact: true }).selectOption('larger');
   await page.getByLabel('行距', { exact: true }).selectOption('relaxed');
   await page.getByLabel('正文行宽', { exact: true }).selectOption('wide');
   await page.getByRole('button', { name: '收藏当前记录', exact: true }).click();
   const bookmark = page.locator('.reader-bookmarks a').first();
   await expect(bookmark).toHaveAttribute('href', /#evt-375$/);
+  await expect(page.locator('.reader-bookmarks-empty')).toBeHidden();
   await page.screenshot({ path: testInfo.outputPath('reader-settings.png') });
   await page.getByLabel('剧情正文', { exact: true }).selectOption('titles');
   await expect(page.locator('#evt-375 .ark-reader-record-description')).toBeHidden();
@@ -105,4 +108,22 @@ test('reading tools remain usable when browser storage is denied', async ({ page
   await expect(page.locator('.reader-tools-status')).toContainText('未允许保存');
   await expect(page.locator('.reader-bookmarks a')).toHaveCount(1);
   expect(errors).toEqual([]);
+});
+
+test('blocked storage methods are explained as soon as reading tools open', async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.getItem = () => { throw new DOMException('denied', 'SecurityError'); };
+    Storage.prototype.setItem = () => { throw new DOMException('denied', 'SecurityError'); };
+  });
+  await page.goto('/.ats/arknights-chronicle.html#evt-375');
+  await expect(page.locator('#evt-375')).toBeFocused();
+  await page.locator('.reader-tools > summary').click();
+  await expect(page.locator('.reader-tools-status')).toContainText('未允许保存');
+  await expect(page.locator('.reader-bookmark-current')).toContainText('西蒙家族倒台，安东尼入狱');
+  const button = page.getByRole('button', { name: '收藏当前记录', exact: true });
+  await expect(button).toHaveAccessibleDescription(/西蒙家族倒台，安东尼入狱/);
+  await button.click();
+  await expect(page.locator('.reader-bookmarks a')).toHaveCount(1);
+  await page.getByRole('button', { name: '移除书签：西蒙家族倒台，安东尼入狱' }).click();
+  await expect(page.locator('.reader-bookmarks-empty')).toBeVisible();
 });

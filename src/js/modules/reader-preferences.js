@@ -12,7 +12,10 @@ export function createReadingStore(storage, worldId) {
   const bookmarkKey = `ats.${worldId}.reader.bookmarks.v1`;
   let available = Boolean(storage);
   function read(key) {
-    try { return JSON.parse(storage?.getItem(key) || 'null'); } catch { return null; }
+    let value;
+    try { value = storage?.getItem(key); }
+    catch { available = false; return null; }
+    try { return JSON.parse(value || 'null'); } catch { return null; }
   }
   function write(key, value) {
     try { if (!storage) return false; storage.setItem(key, JSON.stringify(value)); return true; }

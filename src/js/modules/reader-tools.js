@@ -39,17 +39,23 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     controls.set(key, select);
   }
   panel.append(fields);
+  const currentRecord = element('p', 'reader-bookmark-current');
+  currentRecord.id = `reader-bookmark-current-${worldId}`;
+  const currentTitle = element('span');
+  currentRecord.append(element('strong', '', '当前记录'), currentTitle);
   const actions = element('div', 'reader-bookmark-actions');
   const bookmark = element('button', '', '收藏当前记录');
   bookmark.type = 'button';
+  bookmark.setAttribute('aria-describedby', currentRecord.id);
   const reset = element('button', '', '恢复默认');
   reset.type = 'button';
   actions.append(bookmark, reset);
   const list = element('ul', 'reader-bookmarks');
   list.setAttribute('aria-label', '本世界的书签');
+  const empty = element('p', 'reader-bookmarks-empty', '还没有书签。可收藏当前记录，稍后回来接着读。');
   const status = element('p', 'reader-tools-status');
   status.setAttribute('role', 'status');
-  panel.append(actions, list, status);
+  panel.append(currentRecord, actions, empty, list, status);
   host.prepend(panel);
   content.dataset.readingContent = '';
 
@@ -67,6 +73,8 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     bookmark.textContent = saved.includes(current?.id) ? '取消当前书签' : '收藏当前记录';
     bookmark.setAttribute('aria-pressed', String(saved.includes(current?.id)));
     bookmark.title = current?.title || '请先选择一条记录';
+    const title = current ? `${current.title} · ${current.dateDisplay || '日期未载'}` : '请先选择一条记录';
+    if (currentTitle.textContent !== title) currentTitle.textContent = title;
   }
   function renderBookmarks() {
     list.replaceChildren();
@@ -84,6 +92,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
       item.append(link, remove);
       list.append(item);
     }
+    empty.hidden = list.children.length > 0;
     status.textContent = store.available
       ? `书签 ${list.children.length}/30 · 仅保存在当前浏览器。标题本身也可能含剧透。`
       : '浏览器未允许保存；本次设置与书签在离页后可能丢失。';

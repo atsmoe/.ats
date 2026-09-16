@@ -47,6 +47,11 @@
 .reader-tools select, .reader-tools button { min-height: 2.75rem; max-width: 100%; padding: .45rem .7rem; border: 1px solid var(--reading-rule); background: var(--reading-surface); color: var(--reading-ink); font: inherit; border-radius: 0; cursor: pointer; }
 .reader-tools :is(button, select, a, summary):focus-visible, .reading-entrance a:focus-visible, .story-dossiers :is(a, summary):focus-visible { outline: 2px solid var(--reading-accent); outline-offset: 3px; }
 .reader-bookmark-actions { display: flex; flex-wrap: wrap; gap: var(--reading-gap); margin-block: var(--reading-gap); }
+.reader-bookmark-current { margin-top: var(--reading-gap); overflow-wrap: anywhere; }
+.reader-bookmark-current strong { display: block; color: var(--reading-accent); }
+.reader-tools :is(.reader-bookmark-current, .reader-bookmarks-empty) { font: 400 .875rem/1.8 var(--font-sans); letter-spacing: normal; }
+.reader-bookmarks-empty { color: var(--reading-muted); }
+.reader-bookmarks-empty[hidden] { display: none; }
 .reader-bookmarks { padding: 0; list-style: none; max-height: 14rem; overflow: auto; }
 .reader-bookmarks li { display: flex; align-items: start; gap: .5rem; padding-block: .5rem; border-top: 1px solid var(--reading-rule); }
 .reader-bookmarks a { flex: 1; min-width: 0; color: var(--reading-accent); overflow-wrap: anywhere; }

@@ -134,13 +134,13 @@ async function buildCSS() {
  * Scans data JSON for referenced images, generates WebP at 320/640/960,
  * and post-processes dist data JSON to point src at the 960w WebP.
  */
-async function buildImages() {
-  const Image = require('@11ty/eleventy-img');
+async function buildImages({ distDir = DIST, sourceDir = path.join(__dirname, 'src', 'assets', 'images') } = {}) {
+  const { default: Image } = await import('@11ty/eleventy-img');
 
   // Collect the images actually admitted into generated distribution data.
   // Source JSON can contain legacy FFXIV references that the media-admission
   // stage intentionally removes before this optimization pass.
-  const dataDir = path.join(DIST, 'data');
+  const dataDir = path.join(distDir, 'data');
   const imageRefs = new Set();
   for (const file of fs.readdirSync(dataDir).filter(f => f.endsWith('.json'))) {
     const content = fs.readFileSync(path.join(dataDir, file), 'utf-8');
@@ -171,11 +171,11 @@ async function buildImages() {
         preservedOriginals++;
         return;
       }
-      const srcPath = path.join(__dirname, 'src', 'assets', 'images', relPath);
+      const srcPath = path.join(sourceDir, relPath);
       if (!fs.existsSync(srcPath)) { skipped++; return; }
 
       const originalSize = fs.statSync(srcPath).size;
-      const outputDir = path.join(DIST, 'assets', 'images', path.dirname(relPath));
+      const outputDir = path.join(distDir, 'assets', 'images', path.dirname(relPath));
       fs.mkdirSync(outputDir, { recursive: true });
       const name = path.basename(relPath, path.extname(relPath));
 
@@ -208,7 +208,7 @@ async function buildImages() {
 
   // Post-process dist data JSON: point src at 960w WebP instead of original
   if (processed.size > 0) {
-    const distDataDir = path.join(DIST, 'data');
+    const distDataDir = path.join(distDir, 'data');
     for (const file of fs.readdirSync(distDataDir).filter(f => f.endsWith('.json') && f !== 'event-index.json')) {
       const filePath = path.join(distDataDir, file);
       let content = fs.readFileSync(filePath, 'utf-8');
@@ -232,9 +232,9 @@ async function buildImages() {
     let cleaned = 0;
     let cleanedBytes = 0;
     for (const relPath of processed) {
-      const origPath = path.join(DIST, 'assets', 'images', relPath);
+      const origPath = path.join(distDir, 'assets', 'images', relPath);
       const name = path.basename(relPath, path.extname(relPath));
-      const webp960 = path.join(DIST, 'assets', 'images', path.dirname(relPath), `${name}-960w.webp`);
+      const webp960 = path.join(distDir, 'assets', 'images', path.dirname(relPath), `${name}-960w.webp`);
       // Only delete original if WebP was generated and original still exists
       if (fs.existsSync(webp960) && fs.existsSync(origPath)) {
         cleanedBytes += fs.statSync(origPath).size;
@@ -295,7 +295,11 @@ async function main() {
   console.log('========================================');
 }
 
-main().catch(error => {
-  console.error('[build] Fatal error:', error);
-  process.exitCode = 1;
-});
+if (require.main === module) {
+  main().catch(error => {
+    console.error('[build] Fatal error:', error);
+    process.exitCode = 1;
+  });
+}
+
+module.exports = { buildImages };
