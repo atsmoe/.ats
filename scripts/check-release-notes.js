@@ -11,6 +11,17 @@ const REQUIRED_LOGS = [
   'docs/开发日志.md',
 ];
 
+// User-requested correction on 2026-09-17; see the mapping in 开发日志.md.
+// Only these labels may change, and their complete sections must stay intact.
+const RELEASE_VERSION_CORRECTIONS = Object.freeze({
+  '2.9.0': '2.8.7',
+  '2.9.1': '2.8.8',
+  '2.10.0': '2.8.9',
+  '2.10.1': '2.8.10',
+  '2.11.0': '2.8.11',
+  '2.11.1': '2.8.12',
+});
+
 function isReleaseVersion(version) {
   return /^\d+\.\d+\.\d+$/.test(version);
 }
@@ -30,7 +41,11 @@ function releaseSections(markdown) {
   headings.forEach((match, index) => {
     if (sections.has(match[1])) throw new Error(`Duplicate changelog version: ${match[1]}`);
     const content = markdown.slice(match.index + match[0].length, headings[index + 1]?.index ?? markdown.length);
-    sections.set(match[1], { items: (content.match(/^\s*-\s+\S/gm) || []).length });
+    sections.set(match[1], {
+      items: (content.match(/^\s*-\s+\S/gm) || []).length,
+      content: (match[0].replace(/^## V\d+(?:\.\d+)+\b/, '## V{version}') + content)
+        .replace(/\r\n/g, '\n').trim(),
+    });
   });
   return sections;
 }
@@ -39,7 +54,18 @@ function validateReleaseHistory(before, after) {
   const previous = releaseSections(before);
   const current = releaseSections(after);
   for (const [version, section] of previous) {
-    if (!current.has(version)) throw new Error(`Historical changelog version was removed: ${version}`);
+    if (!current.has(version)) {
+      const correctedVersion = RELEASE_VERSION_CORRECTIONS[version];
+      const correctedSection = current.get(correctedVersion);
+      if (!correctedSection) throw new Error(`Historical changelog version was removed: ${version}`);
+      if (previous.has(correctedVersion)) {
+        throw new Error(`Changelog correction target already existed: ${correctedVersion}`);
+      }
+      if (correctedSection.content !== section.content) {
+        throw new Error(`Renumbered changelog content was changed: ${version} -> ${correctedVersion}`);
+      }
+      continue;
+    }
     if (current.get(version).items < section.items) throw new Error(`Historical changelog items were removed: ${version}`);
   }
 }

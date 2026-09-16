@@ -131,3 +131,34 @@ test('release history rejects missing versions, fewer historical items and dupli
   assert.equal(actual.get('2.7.0').items, 8);
   assert.equal(actual.get('2.8.0').items, 9);
 });
+
+test('the six authorized release corrections preserve full sections and reject collisions', () => {
+  const corrections = [
+    ['2.9.0', '2.8.7'], ['2.9.1', '2.8.8'],
+    ['2.10.0', '2.8.9'], ['2.10.1', '2.8.10'],
+    ['2.11.0', '2.8.11'], ['2.11.1', '2.8.12'],
+  ];
+  for (const [previous, current] of corrections) {
+    const before = `## V${previous} / 2026-09-17 / #abc\n\nSubtitle\n\n- one\n- two\n`;
+    const after = before.replace(`V${previous}`, `V${current}`);
+    assert.doesNotThrow(() => validateReleaseHistory(before, after));
+    assert.doesNotThrow(() => validateReleaseHistory(before.replaceAll('\n', '\r\n'), after));
+    for (const altered of [
+      after.replace('- two\n', ''), after.replace('- two', '- rewritten'),
+      after.replace('Subtitle', 'Changed subtitle'), after.replace('2026-09-17', '2026-09-16'),
+      after.replace('#abc', '#def'),
+    ]) {
+      assert.throws(() => validateReleaseHistory(before, altered), /Renumbered changelog content was changed/);
+    }
+    assert.throws(() => validateReleaseHistory(before + after, after), /target already existed/);
+    assert.throws(() => validateReleaseHistory(before, ''), /Historical changelog version was removed/);
+    assert.throws(() => validateReleaseHistory(after, before), /Historical changelog version was removed/);
+  }
+});
+
+test('release correction leaves ordinary patch additions and historical protection intact', () => {
+  const before = '## V2.8.12\n- current\n## V2.8.6\n- earlier\n';
+  assert.doesNotThrow(() => validateReleaseHistory(before, '## V2.8.13\n- next\n' + before));
+  assert.throws(() => validateReleaseHistory(before, before.replace('V2.8.6', 'V2.8.5')), /removed: 2.8.6/);
+  assert.throws(() => validateReleaseHistory(before, before.replace('- earlier', '')), /items were removed/);
+});
