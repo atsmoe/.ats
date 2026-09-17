@@ -3,6 +3,7 @@ import {
   getIntegratedStrategyTheme,
 } from './arknights-themes.js';
 import { initEndingBookmarks } from './ending-bookmarks.js';
+import { initRecordShare } from './record-share.js';
 
 const SPOILER_STORAGE_KEY = 'ats:spoiler:arknights:v1';
 let topicController = null;
@@ -385,7 +386,7 @@ function createEndingCard(record, index, selectedId, onSelect, signal, endingPri
   article.addEventListener(
     'click',
     event => {
-      if (!event.target.closest('a, button, .is-route-guide')) {
+      if (!event.target.closest('a, button, .record-share-feedback, .is-route-guide')) {
         onSelect(record.id, { scroll: false });
       }
     },
@@ -530,6 +531,10 @@ export function initIntegratedStrategyTopic({ archive, contextId }) {
   );
   content.setAttribute('aria-busy', 'false');
   initEndingBookmarks({ root: content, records: snapshot.recordsById, signal });
+  for (const card of content.querySelectorAll('.is-ending-card')) {
+    const record = snapshot.recordsById[card.dataset.record];
+    initRecordShare({ actions: card.querySelector('.is-ending-actions'), worldId: 'arknights', getRecord: () => record, signal });
+  }
 
   const initiallyLocked = !readConsent();
   setSpoilerState(root, initiallyLocked);

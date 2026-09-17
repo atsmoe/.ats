@@ -2,6 +2,54 @@
    World-specific theme overrides
    ============================================================ */
 
+/* Record links share behavior while retaining each world's colors. */
+.world-arknights .record-share-feedback {
+  --share-ink: var(--ark-paper);
+  --share-muted: var(--ark-muted);
+  --share-surface: var(--ark-panel);
+  --share-accent: var(--is-accent, var(--ark-amber));
+}
+.world-wh40k .record-share-feedback {
+  --share-ink: var(--wh-bone);
+  --share-muted: var(--wh-muted);
+  --share-surface: var(--wh-panel);
+  --share-accent: var(--wh-brass);
+}
+.world-ff14 .record-share-feedback {
+  --share-ink: var(--ff-text);
+  --share-muted: var(--ff-muted);
+  --share-surface: var(--ff-panel);
+  --share-accent: var(--ff-crystal);
+}
+.record-share-feedback {
+  --share-gap: .75rem;
+  min-width: 0;
+  margin-bottom: var(--share-gap);
+}
+.record-share-feedback[hidden], .record-share-feedback input[hidden] { display: none; }
+:is(.world-arknights, .world-wh40k, .world-ff14) .record-share-feedback p {
+  margin: 0;
+  color: var(--share-muted);
+  font: 400 max(.875rem, var(--site-min-font-size))/1.8 var(--font-sans);
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+}
+.record-share-feedback input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  margin-top: var(--share-gap);
+  padding: calc(var(--share-gap) * .5) var(--share-gap);
+  border: 1px solid var(--share-muted);
+  border-radius: 0;
+  background: var(--share-surface);
+  color: var(--share-ink);
+  font: 400 max(1rem, var(--site-min-font-size))/1.5 var(--font-sans);
+}
+.record-share-feedback input:focus-visible { outline: 2px solid var(--share-accent); outline-offset: 3px; }
+
 /* Arknights — warm amber/gold theme */
 .world-arknights {
   --theme-color: #d4923a;

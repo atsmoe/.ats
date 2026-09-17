@@ -1,5 +1,6 @@
 import { createReadingStore, READER_DEFAULTS, READER_PREFERENCE_KEY } from './reader-preferences.js';
 import { worldRecordHref } from './world-routing.js';
+import { initRecordShare } from './record-share.js';
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -57,6 +58,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   status.setAttribute('role', 'status');
   let unavailableBookmarks = 0;
   panel.append(currentRecord, actions, empty, list, status);
+  const share = initRecordShare({ actions, worldId, getRecord: getCurrent, signal });
   host.prepend(panel);
   content.dataset.readingContent = '';
 
@@ -68,6 +70,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     }
   }
   function refresh() {
+    share.refresh();
     const current = getCurrent();
     const saved = store.bookmarks();
     bookmark.disabled = !current;

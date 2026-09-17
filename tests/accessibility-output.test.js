@@ -252,6 +252,6 @@ test('Arknights ending cards expose a native keyboard selection action', () => {
   assert.match(topic, /element\(\s*'button',\s*'is-ending-select'/);
   assert.match(topic, /selectButton\.type = 'button'/);
   assert.match(topic, /selectButton\.setAttribute\('aria-pressed'/);
-  assert.match(topic, /event\.target\.closest\('a, button, \.is-route-guide'\)/);
+  assert.match(topic, /event\.target\.closest\('a, button, \.record-share-feedback, \.is-route-guide'\)/);
   assert.match(css, /\.is-ending-select:focus-visible/);
 });

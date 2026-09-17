@@ -133,7 +133,7 @@ test('route-guide clicks are excluded from the parent ending-card selection hand
   const script = fs.readFileSync(TOPIC_SCRIPT_PATH, 'utf8');
   assert.match(
     script,
-    /event\.target\.closest\('a, button, \.is-route-guide'\)/,
+    /event\.target\.closest\('a, button, \.record-share-feedback, \.is-route-guide'\)/,
     'clicking a route summary must leave the native details toggle in sole control',
   );
 });
