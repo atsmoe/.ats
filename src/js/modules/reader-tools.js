@@ -146,7 +146,6 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     if (remove) {
       store.setBookmark(remove.dataset.readerRemove, false);
       renderBookmarks();
-      bookmark.focus();
       return;
     }
     const link = event.target.closest('[data-reader-bookmark]');

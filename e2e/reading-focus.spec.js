@@ -10,6 +10,93 @@ test.beforeEach(async ({ context }) => {
   await context.route('https://fonts.loli.net/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
 });
 
+for (const [world, first, second, focus] of worlds) {
+  test(`${world}: direct bookmark removal keeps keyboard focus in the list`, async ({ page }) => {
+    const key = `ats.${world}.reader.bookmarks.v1`;
+    await page.goto('/.ats/about.html');
+    await page.evaluate(({ key, first, second }) => localStorage.setItem(key, JSON.stringify([first, 'unresolved-record', second])), { key, first, second });
+    await page.goto(`/.ats/${world}-chronicle.html#${first}`);
+    await expect(page.locator(focus)).toBeFocused();
+    await page.locator('.reader-tools > summary').click();
+    const remove = id => page.locator(`[data-reader-remove="${id}"]`);
+    const before = await page.evaluate(world => ({
+      url: location.href,
+      progress: localStorage.getItem(`ats.${world}.reader.progress.v1`),
+      preferences: localStorage.getItem('ats.reader.preferences.v1'),
+    }), world);
+    await remove('unresolved-record').focus();
+    await page.keyboard.press('Enter');
+    await expect(remove(second)).toBeFocused({ timeout: 800 });
+    expect(await remove(second).evaluate(node => node.matches(':focus-visible'))).toBe(true);
+    expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key)).toEqual([first, second]);
+    await page.keyboard.press('Space');
+    await expect(remove(first)).toBeFocused();
+    expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key)).toEqual([first]);
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.reader-bookmarks-empty')).toBeVisible();
+    await expect(page.getByRole('button', { name: '收藏当前记录', exact: true })).toBeFocused();
+    expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key)).toEqual([]);
+    expect(await page.evaluate(world => ({
+      url: location.href,
+      progress: localStorage.getItem(`ats.${world}.reader.progress.v1`),
+      preferences: localStorage.getItem('ats.reader.preferences.v1'),
+    }), world)).toEqual(before);
+    await expect(page.locator('.reader-tools')).toHaveAttribute('open');
+  });
+}
+
+test('direct pointer removal keeps the next button reachable in a long list', async ({ page, isMobile }, testInfo) => {
+  if (isMobile) await page.setViewportSize({ width: 320, height: 740 });
+  const data = require('../dist/data/arknights.json');
+  const ids = data.branches[0].eras.flatMap(era => era.events).slice(0, 30).map(record => record.id);
+  await page.goto('/.ats/about.html');
+  await page.evaluate(({ key, ids }) => localStorage.setItem(key, JSON.stringify(ids)), { key, ids });
+  await page.goto('/.ats/arknights-chronicle.html#evt-375');
+  await expect(page.locator('#evt-375')).toBeFocused();
+  await page.locator('.reader-tools > summary').click();
+  const remove = page.locator(`[data-reader-remove="${ids[27]}"]`);
+  if (isMobile) await remove.tap();
+  else await remove.click();
+  const next = page.locator(`[data-reader-remove="${ids[28]}"]`);
+  await expect(next).toBeFocused();
+  await expect(next).toBeInViewport();
+  expect(await page.locator('.reader-bookmarks').evaluate(node => node.scrollTop)).toBeGreaterThan(0);
+  expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key)).toEqual(ids.filter(id => id !== ids[27]));
+  expect(new URL(page.url()).hash).toBe('#evt-375');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  expect(await next.evaluate(node => node.offsetHeight)).toBeGreaterThanOrEqual(44);
+  await page.locator('.reader-tools').screenshot({ path: testInfo.outputPath('direct-removal-position.png') });
+});
+
+test('direct removal preserves focus and the storage warning when saving fails', async ({ page }) => {
+  const key = 'ats.ff14.reader.bookmarks.v1';
+  await page.goto('/.ats/about.html');
+  await page.evaluate(key => localStorage.setItem(key, '["ff14-001","ff14-002"]'), key);
+  await page.goto('/.ats/ff14-chronicle.html#ff14-001');
+  await expect(page.locator('#ff14-001')).toBeFocused();
+  await page.locator('.reader-tools > summary').click();
+  await page.evaluate(key => {
+    const write = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (name, value) {
+      if (name === key) throw new DOMException('quota', 'QuotaExceededError');
+      return write.call(this, name, value);
+    };
+  }, key);
+  await page.locator('[data-reader-remove="ff14-001"]').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('[data-reader-remove="ff14-002"]')).toBeFocused();
+  await expect(page.locator('.reader-tools-status')).toContainText('浏览器未允许保存');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.reader-bookmarks-empty')).toBeVisible();
+  await expect(page.getByRole('button', { name: '收藏当前记录', exact: true })).toBeFocused();
+  await expect(page.locator('.reader-tools-status')).toContainText('浏览器未允许保存');
+  expect(await page.evaluate(key => localStorage.getItem(key), key)).toBe('["ff14-001","ff14-002"]');
+  await page.reload();
+  await expect(page.locator('#ff14-001')).toBeFocused();
+  await page.locator('.reader-tools > summary').click();
+  await expect(page.locator('.reader-bookmarks a')).toHaveCount(2);
+});
+
 for (const [world, first, second, focus] of worlds) for (const surface of ['home', 'chronicle']) {
   test(`${world} ${surface}: background bookmark updates keep the focused record`, async ({ page, context }) => {
     const key = `ats.${world}.reader.bookmarks.v1`;
