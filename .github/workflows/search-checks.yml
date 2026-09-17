@@ -81,14 +81,6 @@ jobs:
         env:
           PLAYWRIGHT_CHROMIUM_EXECUTABLE: ${{ inputs.scenario == 'launch-failure' && '/missing/rehearsal-chromium' || '' }}
         run: npm run test:browser
-      - uses: actions/upload-artifact@v4
-        if: failure() || cancelled()
-        with:
-          name: browser-results-${{ github.sha }}-${{ github.job }}-${{ github.run_attempt }}
-          path: |
-            test-results/
-            playwright-report/
-          retention-days: 7
 
       # Verify production build quality
       - name: Verify no source maps in dist
@@ -120,6 +112,14 @@ jobs:
         with:
           name: rehearsal-tested-dist-${{ github.sha }}
           path: dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || cancelled()
+        with:
+          name: browser-results-${{ github.sha }}-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
 
   deploy-marker:
     needs: build

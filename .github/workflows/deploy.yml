@@ -46,14 +46,6 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Verify release interactions
         run: npm run test:browser
-      - uses: actions/upload-artifact@v4
-        if: failure() || cancelled()
-        with:
-          name: browser-results-${{ github.sha }}-${{ github.job }}-${{ github.run_attempt }}
-          path: |
-            test-results/
-            playwright-report/
-          retention-days: 7
 
       # Verify production build quality
       - name: Verify no source maps in dist
@@ -84,6 +76,14 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || cancelled()
+        with:
+          name: browser-results-${{ github.sha }}-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
 
   deploy:
     needs: build

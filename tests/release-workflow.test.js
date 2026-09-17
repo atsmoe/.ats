@@ -62,3 +62,11 @@ test('failed or cancelled browser checks retain reports tied to the tested commi
   assert.match(config, /screenshot: 'only-on-failure'/);
   assert.match(config, /retries: process.env.CI \? 1 : 0/);
 });
+
+test('diagnostics also survive failures after the browser checks', () => {
+  const workflow = read('.github/workflows/deploy.yml');
+  const upload = workflow.indexOf('uses: actions/upload-pages-artifact@');
+  const diagnostics = workflow.indexOf('uses: actions/upload-artifact@');
+  assert.ok(upload >= 0 && diagnostics > upload,
+    'collect diagnostics after all build steps, including distribution verification and upload');
+});
