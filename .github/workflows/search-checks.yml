@@ -4,12 +4,19 @@ on:
   pull_request:
     branches: [main, master]
   workflow_dispatch:
+    inputs:
+      scenario:
+        type: choice
+        required: true
+        default: browser-failure
+        options: [browser-failure, install-failure, launch-failure, cancellation]
 
 permissions:
   contents: read
 
 jobs:
   search:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -32,3 +39,90 @@ jobs:
             test-results/
             playwright-report/
           retention-days: 7
+
+  build:
+    if: github.event_name == 'workflow_dispatch'
+    env:
+      REHEARSAL_SCENARIO: ${{ inputs.scenario }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # The release-note guard compares the complete range of a push.
+          # A push may contain more than two commits, so a shallow checkout is insufficient.
+          fetch-depth: 0
+
+      - name: Verify changelog and development log
+        if: github.event_name == 'push'
+        run: node scripts/check-release-notes.js "${{ github.event.before }}" "${{ github.sha }}"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - name: Check build dependency advisories
+        run: npm audit --audit-level=high
+      - run: npm run build
+      - name: Record tested distribution
+        run: |
+          echo "Testing commit $GITHUB_SHA"
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/dist-before.sha256"
+      - name: Install browser for release checks
+        run: |
+          if [ "$REHEARSAL_SCENARIO" = "install-failure" ]; then
+            echo "::error::INTENTIONAL REHEARSAL: installer returns exit 86"
+            exit 86
+          fi
+          npx playwright install --with-deps chromium
+      - name: Verify release interactions
+        env:
+          PLAYWRIGHT_CHROMIUM_EXECUTABLE: ${{ inputs.scenario == 'launch-failure' && '/missing/rehearsal-chromium' || '' }}
+        run: npm run test:browser
+
+      # Verify production build quality
+      - name: Verify no source maps in dist
+        run: |
+          MAPS=$(find dist -name "*.map" 2>/dev/null | wc -l)
+          if [ "$MAPS" -gt 0 ]; then
+            echo "::error::Found $MAPS source map file(s) in dist — sourcemap should be disabled"
+            find dist -name "*.map" | head -5
+            exit 1
+          fi
+          echo "✅ No source maps in dist"
+
+      - name: Verify JS is minified
+        run: |
+          for f in dist/js/bundle.js dist/js/star-map-3d.js; do
+            SIZE=$(wc -c < "$f")
+            if [ "$SIZE" -gt 600000 ]; then
+              echo "::warning::$f is ${SIZE} bytes — consider further splitting"
+            fi
+          done
+          echo "✅ JS bundles checked"
+
+      - name: Verify tested distribution is unchanged
+        run: |
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/dist-after.sha256"
+          diff -u "$RUNNER_TEMP/dist-before.sha256" "$RUNNER_TEMP/dist-after.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rehearsal-tested-dist-${{ github.sha }}
+          path: dist
+      - uses: actions/upload-artifact@v4
+        if: failure() || cancelled()
+        with:
+          name: browser-results-${{ github.sha }}-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  deploy-marker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'SIMULATED DEPLOY ONLY - no Pages permissions or deployment action'
