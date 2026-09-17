@@ -1,6 +1,7 @@
 import { createReadingStore, READER_DEFAULTS, READER_PREFERENCE_KEY } from './reader-preferences.js';
 import { worldRecordHref } from './world-routing.js';
 import { initRecordShare } from './record-share.js';
+import { captureReadingListFocus } from './reading-list-focus.js';
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -81,6 +82,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     if (currentTitle.textContent !== title) currentTitle.textContent = title;
   }
   function renderBookmarks() {
+    const restoreFocus = captureReadingListFocus(list);
     list.replaceChildren();
     unavailableBookmarks = 0;
     for (const [index, id] of store.bookmarks().entries()) {
@@ -91,6 +93,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
         const link = element('a', '', `${record.title} · ${record.isEnding ? '集成战略结局' : record.dateDisplay || '日期未载'}`);
         link.href = worldRecordHref({ worldId, eventId: id });
         link.dataset.readerBookmark = id;
+        link.dataset.readingFocusKey = `bookmark:${id}`;
         item.append(link);
       } else {
         unavailableBookmarks++;
@@ -99,6 +102,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
       const remove = element('button', '', '移除');
       remove.type = 'button';
       remove.dataset.readerRemove = id;
+      remove.dataset.readingFocusKey = `remove:${id}`;
       remove.setAttribute('aria-label', `移除书签：${title}`);
       item.append(remove);
       list.append(item);
@@ -106,6 +110,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     empty.hidden = list.children.length > 0;
     renderStatus();
     refresh();
+    restoreFocus(bookmark.disabled ? panel.querySelector('summary') : bookmark);
   }
   function renderStatus() {
     const unavailable = unavailableBookmarks ? `其中 ${unavailableBookmarks} 条暂时无法读取，已保留。` : '';

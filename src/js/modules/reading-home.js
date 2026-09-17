@@ -1,5 +1,6 @@
 import { readSavedReading, resolveSavedReading } from './reading-home-model.js';
 import { loadWorldData } from './data-loader.js';
+import { captureReadingListFocus } from './reading-list-focus.js';
 
 let controller;
 
@@ -23,6 +24,8 @@ export function initReadingHome() {
   if (!panel) return;
   const worldId = panel.dataset.readingHome;
   const body = panel.querySelector('.reading-home-body');
+  const summary = panel.querySelector('summary');
+  const readingStart = panel.closest('.reading-entrance')?.querySelector('.reading-paths a');
   const status = panel.querySelector('[role="status"]');
   const retry = panel.querySelector('[data-reading-home-retry]');
   const titleNodes = panel.querySelector('[data-reading-home-titles]')?.content.querySelectorAll('[data-event-id]') || [];
@@ -42,6 +45,7 @@ export function initReadingHome() {
       const row = element('li');
       const link = element('a');
       link.href = item.href;
+      link.dataset.readingFocusKey = `${className}:${className === 'reading-home-positions' ? item.rootId : item.eventId}`;
       link.append(element('span', 'reading-home-meta', [item.context, item.date].filter(Boolean).join(' · ')));
       link.append(element('strong', null, displayTitles.get(item.eventId) || item.title));
       row.append(link);
@@ -57,11 +61,13 @@ export function initReadingHome() {
     const token = ++generation;
     panel.dataset.readingState = 'loading';
     status.textContent = '正在查找已保存的记录…';
+    if (document.activeElement === retry) summary.focus({ preventScroll: true });
     retry.hidden = true;
     try {
       const data = await loadWorldData(worldId);
       if (signal.aborted || token !== generation) return;
       const result = resolveSavedReading(data, saved);
+      const restoreFocus = captureReadingListFocus(body);
       body.replaceChildren();
       appendGroup('已保存的阅读位置', result.positions, 'reading-home-positions');
       appendGroup('书签', result.bookmarks, 'reading-home-bookmarks');
@@ -69,6 +75,7 @@ export function initReadingHome() {
       status.textContent = result.unavailable
         ? '部分记录暂时无法找到，已保留原有保存内容。'
         : '选择标题即可接着读。';
+      restoreFocus(summary);
     } catch {
       if (signal.aborted || token !== generation) return;
       loaded = false;
@@ -82,13 +89,21 @@ export function initReadingHome() {
     generation += 1;
     loaded = false;
     saved = readSavedReading(storage, worldId);
+    const hadFocus = panel.contains(document.activeElement);
     panel.hidden = !saved.positions.length && !saved.bookmarks.length;
     panel.dataset.readingState = panel.hidden ? 'empty' : 'saved';
-    body.replaceChildren();
     status.textContent = '';
+    if (!panel.hidden && document.activeElement === retry) summary.focus({ preventScroll: true });
     retry.hidden = true;
-    if (panel.hidden) panel.open = false;
-    else load();
+    if (panel.hidden) {
+      panel.open = false;
+      body.replaceChildren();
+      if (hadFocus) readingStart?.focus();
+    } else {
+      // Keep the current links usable until their replacements are ready.
+      if (!panel.open) body.replaceChildren();
+      load();
+    }
   }
 
   panel.addEventListener('toggle', load, { signal });
