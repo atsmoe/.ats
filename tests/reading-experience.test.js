@@ -73,10 +73,10 @@ test('bookmark writes merge the latest saved list across open readers', () => {
   const storage = { getItem: key => memory.get(key), setItem: (key, value) => memory.set(key, value) };
   const chronicle = createReadingStore(storage, 'arknights');
   const topic = createReadingStore(storage, 'arknights');
-  chronicle.toggleBookmark('evt-375');
-  topic.toggleBookmark('if-sarkaz-endless-ending-2');
+  chronicle.setBookmark('evt-375', true);
+  topic.setBookmark('if-sarkaz-endless-ending-2', true);
   assert.deepEqual(createReadingStore(storage, 'arknights').bookmarks(), ['evt-375', 'if-sarkaz-endless-ending-2']);
-  chronicle.toggleBookmark('evt-375');
+  chronicle.setBookmark('evt-375', false);
   assert.deepEqual(createReadingStore(storage, 'arknights').bookmarks(), ['if-sarkaz-endless-ending-2']);
   topic.reloadBookmarks();
   assert.deepEqual(topic.bookmarks(), ['if-sarkaz-endless-ending-2']);
@@ -88,11 +88,53 @@ test('bookmark writes merge the latest saved list across open readers', () => {
 test('failed bookmark writes keep the current session state and never erase it on reload', () => {
   const storage = { getItem: () => '["evt-375"]', setItem() { throw Error('quota'); } };
   const store = createReadingStore(storage, 'arknights');
-  store.toggleBookmark('if-sarkaz-endless-ending-2');
+  store.setBookmark('if-sarkaz-endless-ending-2', true);
   store.reloadBookmarks();
-  store.toggleBookmark('evt-375');
+  store.setBookmark('evt-375', false);
   assert.deepEqual(store.bookmarks(), ['if-sarkaz-endless-ending-2']);
   assert.equal(store.available, false);
+});
+
+test('repeated bookmark intents are idempotent across stale stores and preserve unrelated saves', () => {
+  const key = 'ats.arknights.reader.bookmarks.v1';
+  const memory = new Map([[key, '["evt-375"]']]);
+  let writes = 0;
+  const storage = { getItem: key => memory.get(key), setItem(key, value) { writes++; memory.set(key, value); } };
+  const first = createReadingStore(storage, 'arknights'), second = createReadingStore(storage, 'arknights');
+  assert.equal(first.setBookmark('evt-375', false), true);
+  assert.equal(second.setBookmark('evt-375', false), true);
+  assert.deepEqual(second.bookmarks(), []);
+  assert.equal(writes, 1, 'a repeated cancellation must not save the record again');
+  assert.equal(first.setBookmark('evt-375', true), true);
+  assert.equal(second.setBookmark('evt-375', true), true);
+  assert.deepEqual(second.bookmarks(), ['evt-375']);
+  assert.equal(writes, 2, 'a repeated collection must not cancel the record');
+  second.setBookmark('future-record', true);
+  first.setBookmark('evt-375', false);
+  assert.deepEqual(first.bookmarks(), ['future-record']);
+  second.reloadBookmarks();
+  assert.deepEqual(second.bookmarks(), ['future-record']);
+});
+
+test('bookmark intents retain unresolved IDs, enforce capacity and reject invalid requests', () => {
+  const key = 'ats.arknights.reader.bookmarks.v1';
+  const ids = Array.from({ length: 30 }, (_, index) => `unresolved-${index}`);
+  const memory = new Map([[key, JSON.stringify(ids)]]);
+  let writes = 0;
+  const storage = { getItem: key => memory.get(key), setItem(key, value) { writes++; memory.set(key, value); } };
+  const store = createReadingStore(storage, 'arknights');
+  assert.deepEqual(store.bookmarks(), ids);
+  assert.equal(writes, 0);
+  assert.equal(store.setBookmark(ids[0], true), true, 'already saved succeeds even at capacity');
+  assert.equal(store.setBookmark('missing', false), true, 'already absent remains absent');
+  assert.equal(store.setBookmark('evt-375', true), false);
+  for (const [id, saved] of [[null, true], ['javascript:alert(1)', true], ['x'.repeat(101), false], ['evt-375', undefined], ['evt-375', 'false']]) {
+    assert.equal(store.setBookmark(id, saved), false);
+  }
+  assert.equal(writes, 0);
+  store.setBookmark(ids[0], false);
+  assert.equal(store.setBookmark('evt-375', true), true);
+  assert.deepEqual(store.bookmarks(), [...ids.slice(1), 'evt-375']);
 });
 
 test('reader preferences accept only known options and tolerate damaged storage', () => {
@@ -103,7 +145,7 @@ test('reader preferences accept only known options and tolerate damaged storage'
   assert.equal(denied.savePreferences({ size: 'larger' }), false);
   assert.equal(denied.preferences().size, 'larger');
   assert.equal(denied.available, false);
-  assert.equal(denied.toggleBookmark('evt-003'), true);
+  assert.equal(denied.setBookmark('evt-003', true), true);
   assert.deepEqual(denied.bookmarks(), ['evt-003']);
   const damaged = createReadingStore({ getItem: () => '{', setItem() {} }, 'arknights');
   assert.equal(damaged.available, true, 'invalid JSON does not mean storage access was denied');
@@ -114,16 +156,16 @@ test('preferences cross worlds while bounded bookmarks stay separate and removab
   const storage = { getItem: key => memory.get(key), setItem: (key, value) => memory.set(key, value) };
   const ark = createReadingStore(storage, 'arknights');
   ark.savePreferences({ size: 'large', leading: 'relaxed' });
-  for (let i = 0; i < 30; i++) assert.equal(ark.toggleBookmark(`evt-${i}`), true);
-  assert.equal(ark.toggleBookmark('evt-31'), false);
-  assert.equal(ark.toggleBookmark('javascript:alert(1)'), false);
+  for (let i = 0; i < 30; i++) assert.equal(ark.setBookmark(`evt-${i}`, true), true);
+  assert.equal(ark.setBookmark('evt-31', true), false);
+  assert.equal(ark.setBookmark('javascript:alert(1)', true), false);
   const wh = createReadingStore(storage, 'wh40k');
   assert.equal(wh.preferences().size, 'large');
   assert.deepEqual(wh.bookmarks(), []);
-  ark.toggleBookmark('evt-0');
-  assert.equal(ark.toggleBookmark('evt-31'), true);
+  ark.setBookmark('evt-0', false);
+  assert.equal(ark.setBookmark('evt-31', true), true);
   assert.equal(createReadingStore(storage, 'arknights').bookmarks().length, 30);
-  ark.pruneBookmarks(id => id === 'evt-31');
+  for (const id of ark.bookmarks()) if (id !== 'evt-31') ark.setBookmark(id, false);
   assert.deepEqual(ark.bookmarks(), ['evt-31']);
 });
 

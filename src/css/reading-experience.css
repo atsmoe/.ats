@@ -84,7 +84,9 @@
 .reader-bookmarks-empty[hidden] { display: none; }
 .reader-bookmarks { padding: 0; list-style: none; max-height: 14rem; overflow: auto; }
 .reader-bookmarks li { display: flex; align-items: start; gap: .5rem; padding-block: .5rem; border-top: 1px solid var(--reading-rule); }
-.reader-bookmarks a { flex: 1; min-width: 0; color: var(--reading-accent); overflow-wrap: anywhere; }
+.reader-bookmarks :is(a, .reader-bookmark-unavailable) { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.reader-bookmarks a { color: var(--reading-accent); }
+.reader-bookmark-unavailable { color: var(--reading-muted); }
 .reader-tools-status { color: var(--reading-muted); margin-top: .5rem; }
 .ark-reader-toolbar :is(.reader-tools-status, .reader-tools-help) { color: var(--reading-muted); font: 400 .875rem/1.8 var(--font-sans); letter-spacing: normal; }
 [data-reading-content] { --reader-font: 1rem; --reader-leading: 1.95; --reader-width: 68ch; }

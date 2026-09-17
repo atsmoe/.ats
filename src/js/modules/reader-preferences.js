@@ -50,19 +50,15 @@ export function createReadingStore(storage, worldId) {
     },
     bookmarks: () => [...bookmarks],
     reloadBookmarks,
-    pruneBookmarks(isValid) {
+    setBookmark(id, saved) {
+      if (typeof id !== 'string' || !/^[\w-]{1,100}$/.test(id) || typeof saved !== 'boolean') return false;
       reloadBookmarks();
-      const valid = bookmarks.filter(isValid);
-      if (valid.length !== bookmarks.length) { bookmarks = valid; write(bookmarkKey, bookmarks); }
-    },
-    toggleBookmark(id) {
-      if (typeof id !== 'string' || !/^[\w-]{1,100}$/.test(id)) return false;
-      reloadBookmarks();
-      if (bookmarks.includes(id)) bookmarks = bookmarks.filter(item => item !== id);
-      else {
+      // Apply the requested action even when another page already performed it.
+      if (bookmarks.includes(id) === saved) return true;
+      if (saved) {
         if (bookmarks.length >= 30) return false;
         bookmarks.push(id);
-      }
+      } else bookmarks = bookmarks.filter(item => item !== id);
       write(bookmarkKey, bookmarks);
       return true;
     },

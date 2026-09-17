@@ -12,7 +12,6 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   let storage;
   try { storage = localStorage; } catch { /* reader stays usable without storage */ }
   const store = createReadingStore(storage, worldId);
-  store.pruneBookmarks(id => Boolean(resolveRecord(id)));
   const controller = new AbortController();
   const { signal } = controller;
   const panel = element('details', 'reader-tools');
@@ -56,6 +55,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   const empty = element('p', 'reader-bookmarks-empty', '还没有书签。可收藏当前记录，稍后回来接着读。');
   const status = element('p', 'reader-tools-status');
   status.setAttribute('role', 'status');
+  let unavailableBookmarks = 0;
   panel.append(currentRecord, actions, empty, list, status);
   host.prepend(panel);
   content.dataset.readingContent = '';
@@ -79,18 +79,25 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   }
   function renderBookmarks() {
     list.replaceChildren();
-    for (const id of store.bookmarks()) {
+    unavailableBookmarks = 0;
+    for (const [index, id] of store.bookmarks().entries()) {
       const record = resolveRecord(id);
-      if (!record) continue;
       const item = element('li');
-      const link = element('a', '', `${record.title} · ${record.isEnding ? '集成战略结局' : record.dateDisplay || '日期未载'}`);
-      link.href = worldRecordHref({ worldId, eventId: id });
-      link.dataset.readerBookmark = id;
+      const title = record?.title || `暂时无法读取的书签 ${index + 1}`;
+      if (record) {
+        const link = element('a', '', `${record.title} · ${record.isEnding ? '集成战略结局' : record.dateDisplay || '日期未载'}`);
+        link.href = worldRecordHref({ worldId, eventId: id });
+        link.dataset.readerBookmark = id;
+        item.append(link);
+      } else {
+        unavailableBookmarks++;
+        item.append(element('span', 'reader-bookmark-unavailable', title));
+      }
       const remove = element('button', '', '移除');
       remove.type = 'button';
       remove.dataset.readerRemove = id;
-      remove.setAttribute('aria-label', `移除书签：${record.title}`);
-      item.append(link, remove);
+      remove.setAttribute('aria-label', `移除书签：${title}`);
+      item.append(remove);
       list.append(item);
     }
     empty.hidden = list.children.length > 0;
@@ -98,8 +105,9 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     refresh();
   }
   function renderStatus() {
+    const unavailable = unavailableBookmarks ? `其中 ${unavailableBookmarks} 条暂时无法读取，已保留。` : '';
     status.textContent = store.available
-      ? `书签 ${list.children.length}/30 · 仅保存在当前浏览器。标题本身也可能含剧透。`
+      ? `书签 ${list.children.length}/30 · 仅保存在当前浏览器。${unavailable}标题本身也可能含剧透。`
       : '浏览器未允许保存；本次设置与书签在离页后可能丢失。';
   }
   fields.addEventListener('change', event => {
@@ -112,13 +120,13 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   reset.addEventListener('click', () => { store.savePreferences(READER_DEFAULTS); apply(); renderBookmarks(); }, { signal });
   bookmark.addEventListener('click', () => {
     const record = getCurrent();
-    if (record && !store.toggleBookmark(record.id)) status.textContent = '最多保存 30 条书签，请先移除一条。';
+    if (record && !store.setBookmark(record.id, bookmark.getAttribute('aria-pressed') !== 'true')) status.textContent = '最多保存 30 条书签，请先移除一条。';
     else renderBookmarks();
   }, { signal });
   list.addEventListener('click', event => {
     const remove = event.target.closest('[data-reader-remove]');
     if (remove) {
-      store.toggleBookmark(remove.dataset.readerRemove);
+      store.setBookmark(remove.dataset.readerRemove, false);
       renderBookmarks();
       bookmark.focus();
       return;

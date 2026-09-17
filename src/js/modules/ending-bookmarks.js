@@ -22,9 +22,9 @@ export function initEndingBookmarks({ root, records, signal }) {
     entries.push({ record, button, status });
     button.addEventListener('click', () => {
       for (const entry of entries) entry.status.textContent = '';
-      const changed = store.toggleBookmark(record.id);
+      const accepted = store.setBookmark(record.id, button.getAttribute('aria-pressed') !== 'true');
       refresh();
-      if (!changed) {
+      if (!accepted) {
         status.textContent = '最多保存 30 条书签，请先在编年页的“阅读设置与书签”中移除一条。';
       } else if (!store.available) {
         status.textContent = '浏览器未允许保存；本次更改仅在当前页面有效。';
