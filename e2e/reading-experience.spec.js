@@ -89,6 +89,10 @@ for (const id of ['mansfield', 'nearl', 'siesta']) {
     await expect(first).toBeFocused();
     await first.locator('.ark-reader-story-nav').getByRole('link', { name: /下一节/ }).click();
     await expect(second).toBeFocused();
+    await page.reload();
+    await expect(second).toBeFocused();
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`arknights-stories.html#${id}$`));
   });
 }
 
