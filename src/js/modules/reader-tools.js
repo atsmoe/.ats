@@ -1,4 +1,4 @@
-import { createReadingStore, READER_DEFAULTS } from './reader-preferences.js';
+import { createReadingStore, READER_DEFAULTS, READER_PREFERENCE_KEY } from './reader-preferences.js';
 import { worldRecordHref } from './world-routing.js';
 
 function element(tag, className, text) {
@@ -17,6 +17,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   const { signal } = controller;
   const panel = element('details', 'reader-tools');
   panel.append(element('summary', '', '阅读设置与书签'));
+  panel.append(element('p', 'reader-tools-help', '字号、行距、行宽与正文显示设置在当前浏览器的三个世界间共用。'));
   const fields = element('div', 'reader-tools-fields');
   const controls = new Map();
   for (const [key, label, choices] of [
@@ -93,13 +94,18 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
       list.append(item);
     }
     empty.hidden = list.children.length > 0;
+    renderStatus();
+    refresh();
+  }
+  function renderStatus() {
     status.textContent = store.available
       ? `书签 ${list.children.length}/30 · 仅保存在当前浏览器。标题本身也可能含剧透。`
       : '浏览器未允许保存；本次设置与书签在离页后可能丢失。';
-    refresh();
   }
-  fields.addEventListener('change', () => {
-    store.savePreferences(Object.fromEntries([...controls].map(([key, control]) => [key, control.value])));
+  fields.addEventListener('change', event => {
+    const key = event.target.dataset.readerSetting;
+    if (controls.get(key) !== event.target) return;
+    store.savePreferences({ [key]: event.target.value });
     apply();
     renderBookmarks();
   }, { signal });
@@ -125,12 +131,19 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     navigate(link.dataset.readerBookmark);
   }, { signal });
   window.addEventListener('storage', event => {
-    if (event.storageArea !== storage || (event.key !== null && event.key !== `ats.${worldId}.reader.bookmarks.v1`)) return;
-    store.reloadBookmarks();
-    renderBookmarks();
+    if (event.storageArea !== storage) return;
+    if (event.key === null || event.key === READER_PREFERENCE_KEY) {
+      store.reloadPreferences();
+      apply();
+      renderStatus();
+    }
+    if (event.key === null || event.key === `ats.${worldId}.reader.bookmarks.v1`) {
+      store.reloadBookmarks();
+      renderBookmarks();
+    }
   }, { signal });
   window.addEventListener('pageshow', event => {
-    if (event.persisted) { store.reloadBookmarks(); renderBookmarks(); }
+    if (event.persisted) { store.reloadPreferences(); apply(); store.reloadBookmarks(); renderBookmarks(); }
   }, { signal });
   apply();
   renderBookmarks();

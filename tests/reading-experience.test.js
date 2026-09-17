@@ -14,6 +14,60 @@ function load(name) {
 const { createReadingStore, normalizePreferences, READER_DEFAULTS } = load('reader-preferences.js');
 const { queryGroups, aliasExplanation, matchLocations } = load('archive-search-aliases.js');
 
+test('open readers keep other preference fields when saving a single changed setting', () => {
+  const memory = new Map();
+  const storage = { getItem: key => memory.get(key), setItem: (key, value) => memory.set(key, value) };
+  const ark = createReadingStore(storage, 'arknights');
+  const ff = createReadingStore(storage, 'ff14');
+  ark.savePreferences({ size: 'larger' });
+  ff.savePreferences({ leading: 'relaxed' });
+  assert.deepEqual(createReadingStore(storage, 'wh40k').preferences(), {
+    ...READER_DEFAULTS, size: 'larger', leading: 'relaxed',
+  });
+});
+
+test('preference reload handles updates, resets, removals and malformed storage without writing', () => {
+  const key = 'ats.reader.preferences.v1';
+  const memory = new Map();
+  let writes = 0;
+  const storage = { getItem: key => memory.get(key), setItem(key, value) { writes++; memory.set(key, value); } };
+  const first = createReadingStore(storage, 'arknights');
+  const second = createReadingStore(storage, 'ff14');
+  first.savePreferences({ size: 'larger', spoilers: 'titles' });
+  second.reloadPreferences();
+  assert.deepEqual(second.preferences(), first.preferences());
+  assert.equal(writes, 1);
+  second.savePreferences({ leading: 'relaxed' });
+  first.savePreferences(READER_DEFAULTS);
+  second.reloadPreferences();
+  assert.deepEqual(second.preferences(), READER_DEFAULTS);
+  for (const invalid of ['{', '["large"]', '{"size":"1px","width":"unsafe"}', null]) {
+    if (invalid === null) memory.delete(key); else memory.set(key, invalid);
+    second.reloadPreferences();
+    assert.deepEqual(second.preferences(), READER_DEFAULTS);
+  }
+  assert.equal(writes, 3, 'passive reloads must not write back or create cross-tab loops');
+});
+
+test('temporary preferences survive reloads and later edits after storage fails', () => {
+  const saved = JSON.stringify({ ...READER_DEFAULTS, size: 'large' });
+  for (const failure of ['read', 'write', 'missing']) {
+    let failRead = false;
+    const storage = failure === 'missing' ? null : {
+      getItem() { if (failRead) throw Error('denied'); return saved; },
+      setItem() { throw Error('quota'); },
+    };
+    const store = createReadingStore(storage, 'arknights');
+    failRead = failure === 'read';
+    assert.equal(store.savePreferences({ size: 'larger' }), false);
+    store.reloadPreferences();
+    store.savePreferences({ leading: 'relaxed' });
+    store.reloadPreferences();
+    assert.deepEqual(store.preferences(), { ...READER_DEFAULTS, size: 'larger', leading: 'relaxed' });
+    assert.equal(store.available, false);
+  }
+});
+
 test('bookmark writes merge the latest saved list across open readers', () => {
   const memory = new Map();
   const storage = { getItem: key => memory.get(key), setItem: (key, value) => memory.set(key, value) };

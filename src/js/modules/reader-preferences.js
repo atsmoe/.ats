@@ -1,4 +1,5 @@
 export const READER_DEFAULTS = Object.freeze({ size: 'normal', leading: 'normal', width: 'comfortable', spoilers: 'full' });
+export const READER_PREFERENCE_KEY = 'ats.reader.preferences.v1';
 const OPTIONS = { size: ['normal', 'large', 'larger'], leading: ['normal', 'relaxed'], width: ['comfortable', 'wide'], spoilers: ['full', 'titles'] };
 
 export function normalizePreferences(value) {
@@ -8,7 +9,7 @@ export function normalizePreferences(value) {
 }
 
 export function createReadingStore(storage, worldId) {
-  const preferenceKey = 'ats.reader.preferences.v1';
+  const preferenceKey = READER_PREFERENCE_KEY;
   const bookmarkKey = `ats.${worldId}.reader.bookmarks.v1`;
   let available = Boolean(storage);
   function read(key) {
@@ -22,6 +23,12 @@ export function createReadingStore(storage, worldId) {
     catch { available = false; return false; }
   }
   let preferences = normalizePreferences(read(preferenceKey));
+  function reloadPreferences() {
+    if (!available) return;
+    const saved = read(preferenceKey);
+    // Keep this document's temporary choices if storage access has failed.
+    if (available) preferences = normalizePreferences(saved);
+  }
   function normalizeBookmarks(saved) {
     return Array.isArray(saved) ? [...new Set(saved.filter(id => typeof id === 'string' && /^[\w-]{1,100}$/.test(id)))].slice(0, 30) : [];
   }
@@ -35,7 +42,12 @@ export function createReadingStore(storage, worldId) {
   return {
     get available() { return available; },
     preferences: () => ({ ...preferences }),
-    savePreferences(value) { preferences = normalizePreferences(value); return write(preferenceKey, preferences); },
+    reloadPreferences,
+    savePreferences(value) {
+      reloadPreferences();
+      preferences = normalizePreferences({ ...preferences, ...value });
+      return write(preferenceKey, preferences);
+    },
     bookmarks: () => [...bookmarks],
     reloadBookmarks,
     pruneBookmarks(isValid) {

@@ -78,14 +78,15 @@
 .reader-bookmark-actions { display: flex; flex-wrap: wrap; gap: var(--reading-gap); margin-block: var(--reading-gap); }
 .reader-bookmark-current { margin-top: var(--reading-gap); overflow-wrap: anywhere; }
 .reader-bookmark-current strong { display: block; color: var(--reading-accent); }
-.reader-tools :is(.reader-bookmark-current, .reader-bookmarks-empty) { font: 400 .875rem/1.8 var(--font-sans); letter-spacing: normal; }
+.reader-tools :is(.reader-tools-help, .reader-bookmark-current, .reader-bookmarks-empty) { font: 400 .875rem/1.8 var(--font-sans); letter-spacing: normal; }
+.reader-tools-help { margin-top: var(--reading-gap); color: var(--reading-muted); }
 .reader-bookmarks-empty { color: var(--reading-muted); }
 .reader-bookmarks-empty[hidden] { display: none; }
 .reader-bookmarks { padding: 0; list-style: none; max-height: 14rem; overflow: auto; }
 .reader-bookmarks li { display: flex; align-items: start; gap: .5rem; padding-block: .5rem; border-top: 1px solid var(--reading-rule); }
 .reader-bookmarks a { flex: 1; min-width: 0; color: var(--reading-accent); overflow-wrap: anywhere; }
 .reader-tools-status { color: var(--reading-muted); margin-top: .5rem; }
-.ark-reader-toolbar .reader-tools-status { color: var(--reading-muted); font: 400 .875rem/1.8 var(--font-sans); letter-spacing: normal; }
+.ark-reader-toolbar :is(.reader-tools-status, .reader-tools-help) { color: var(--reading-muted); font: 400 .875rem/1.8 var(--font-sans); letter-spacing: normal; }
 [data-reading-content] { --reader-font: 1rem; --reader-leading: 1.95; --reader-width: 68ch; }
 [data-reading-content][data-reader-size="large"] { --reader-font: 1.125rem; }
 [data-reading-content][data-reader-size="larger"] { --reader-font: 1.25rem; }
