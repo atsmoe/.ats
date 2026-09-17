@@ -471,7 +471,7 @@ export async function initArknightsChronicle() {
       return;
     }
     if (event.key !== 'Tab') return;
-    const focusable = [...reader.querySelectorAll('button:not([disabled]), select, a[href], summary, [tabindex]:not([tabindex="-1"])')]
+    const focusable = [...reader.querySelectorAll('button:not([disabled]), input:not([disabled]), select, a[href], summary, [tabindex]:not([tabindex="-1"])')]
       .filter(node => !node.closest('[hidden]') && node.getClientRects().length > 0);
     if (!focusable.length) return;
     const first = focusable[0];

@@ -60,8 +60,25 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   const empty = element('p', 'reader-bookmarks-empty', '还没有书签。可收藏当前记录，稍后回来接着读。');
   const status = element('p', 'reader-tools-status');
   status.setAttribute('role', 'status');
+  const filter = element('div', 'reader-bookmark-filter');
+  const filterLabel = element('label', '', '查找书签');
+  const filterInput = element('input');
+  filterInput.type = 'search';
+  filterInput.placeholder = '标题或日期';
+  filterInput.autocomplete = 'off';
+  filterInput.spellcheck = false;
+  const clearFilter = element('button', '', '清空');
+  clearFilter.type = 'button';
+  clearFilter.setAttribute('aria-label', '清空书签查找');
+  const filterStatus = element('p', 'reader-bookmark-filter-status');
+  filterStatus.setAttribute('role', 'status');
+  filterLabel.append(filterInput);
+  filter.append(filterLabel, clearFilter, filterStatus);
+  const normalize = text => text.normalize('NFKC').toLowerCase();
+  let filterTerms = [];
+  let composing = false;
   let unavailableBookmarks = 0;
-  panel.append(currentRecord, actions, empty, list, status);
+  panel.append(currentRecord, actions, filter, empty, list, status);
   const share = initRecordShare({ actions, worldId, getRecord: getCurrent, signal });
   host.prepend(panel);
   content.dataset.readingContent = '';
@@ -87,20 +104,23 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   }
   function renderBookmarks() {
     const restoreFocus = captureReadingListFocus(list);
+    const saved = store.bookmarks();
     list.replaceChildren();
     unavailableBookmarks = 0;
-    for (const [index, id] of store.bookmarks().entries()) {
+    for (const [index, id] of saved.entries()) {
       const record = resolveRecord(id);
-      const item = element('li');
       const title = record?.title || `暂时无法读取的书签 ${index + 1}`;
+      const text = record ? `${record.title} · ${record.isEnding ? '集成战略结局' : record.dateDisplay || '日期未载'}` : title;
+      if (!record) unavailableBookmarks++;
+      if (!filterTerms.every(term => normalize(text).includes(term))) continue;
+      const item = element('li');
       if (record) {
-        const link = element('a', '', `${record.title} · ${record.isEnding ? '集成战略结局' : record.dateDisplay || '日期未载'}`);
+        const link = element('a', '', text);
         link.href = worldRecordHref({ worldId, eventId: id });
         link.dataset.readerBookmark = id;
         link.dataset.readingFocusKey = `bookmark:${id}`;
         item.append(link);
       } else {
-        unavailableBookmarks++;
         item.append(element('span', 'reader-bookmark-unavailable', title));
       }
       const remove = element('button', '', '移除');
@@ -111,17 +131,52 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
       item.append(remove);
       list.append(item);
     }
-    empty.hidden = list.children.length > 0;
+    empty.hidden = saved.length > 0;
+    const filterHadFocus = filter.contains(document.activeElement);
+    filter.hidden = !saved.length && !filterInput.value;
+    clearFilter.disabled = !filterInput.value;
+    filterStatus.textContent = !filterTerms.length ? '' : saved.length && !list.children.length
+      ? '没有匹配的书签。试试其他关键词，或清空查找。'
+      : `找到 ${list.children.length} / ${saved.length} 条书签。`;
     renderStatus();
     refresh();
-    restoreFocus(bookmark.disabled ? panel.querySelector('summary') : bookmark);
+    const fallback = bookmark.disabled ? panel.querySelector('summary') : bookmark;
+    if (filter.hidden && filterHadFocus) fallback.focus();
+    restoreFocus(filterTerms.length ? filterInput : fallback);
   }
   function renderStatus() {
     const unavailable = unavailableBookmarks ? `其中 ${unavailableBookmarks} 条暂时无法读取，已保留。` : '';
     status.textContent = store.available
-      ? `书签 ${list.children.length}/30 · 仅保存在当前浏览器。${unavailable}标题本身也可能含剧透。`
+      ? `书签 ${store.bookmarks().length}/30 · 仅保存在当前浏览器。${unavailable}标题本身也可能含剧透。`
       : '浏览器未允许保存；本次设置与书签在离页后可能丢失。';
   }
+  function searchBookmarks() {
+    filterTerms = normalize(filterInput.value).trim().split(/\s+/u).filter(Boolean);
+    renderBookmarks();
+    // Reveal matches within a constrained tools panel without scrolling the prose.
+    if (!filter.hidden && filter.contains(document.activeElement) && panel.scrollHeight > panel.clientHeight) {
+      panel.scrollTop += filter.getBoundingClientRect().top - panel.getBoundingClientRect().top - panel.clientTop;
+    }
+  }
+  function resetFilter() {
+    filterInput.value = '';
+    filterInput.focus();
+    searchBookmarks();
+  }
+  filterInput.addEventListener('compositionstart', () => { composing = true; }, { signal });
+  filterInput.addEventListener('compositionend', () => { composing = false; searchBookmarks(); }, { signal });
+  filterInput.addEventListener('input', event => {
+    if (!composing && !event.isComposing) searchBookmarks();
+  }, { signal });
+  filterInput.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (composing || event.isComposing) { event.stopPropagation(); return; }
+    if (!filterInput.value || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    event.preventDefault();
+    event.stopPropagation();
+    resetFilter();
+  }, { signal });
+  clearFilter.addEventListener('click', resetFilter, { signal });
   fields.addEventListener('change', event => {
     const key = event.target.dataset.readerSetting;
     if (controls.get(key) !== event.target) return;
