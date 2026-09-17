@@ -39,3 +39,20 @@ npm run build
 ```
 
 构建产物输出到 `dist/`，由 GitHub Pages 发布。
+
+浏览器回归（先完成生产构建）：
+
+```bash
+npx playwright install chromium
+npm run test:browser
+```
+
+Windows PowerShell 可使用 `npm.cmd` / `npx.cmd`。浏览器测试自行启动并关闭 `127.0.0.1:4173` 的静态服务，测试桌面与手机视口的 Chromium；手机视口不代表实体设备验收。已有 Chrome 可通过仅当前终端的 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 指定，不需要修改系统配置。
+
+## 发布检查
+
+`main` / `master` 推送和手动发布均先构建（含 Node 测试），再安装 Chromium、运行整套浏览器测试，成功后才上传同一份 `dist/` 并部署。PR 检查不发布网站。浏览器失败或取消时尝试保存报告、截图和 trace，保留 7 天；安装尚未完成或强制取消时可能没有浏览器产物，需查看 Actions 日志。
+
+CI 保留一次失败重试，报告同时记录首次失败与重试结果，不把重试通过当作零失败。测试范围、验收证据及后续批次见 [可靠性地图](docs/RELIABILITY_MAP.md) 和 [发布门禁验收](docs/RELEASE_GATE_ACCEPTANCE.md)。本地测试通过、CI 通过和正式站部署成功分别记录。
+
+维护文档职责：本文件提供启动与检查命令；[架构](docs/ARCHITECTURE.md) 描述当前实现；[实现规范](docs/GUIDELINES.md) 约束修改与发布；开发日志保留各次实现和验证经过。遇到历史方案与代码不一致，先复核代码及相应版本证据，不把待办当成已实现能力。

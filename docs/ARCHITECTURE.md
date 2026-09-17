@@ -1,13 +1,13 @@
-# 群星之间 · 编年史 V2.0 — 架构设计文档
+# 群星之间 · 世界档案 — 架构设计文档
 
 ## 一、产品形态
 
-**定义**：可视化虚构世界档案——从可交互的二维深空观测首页进入不同世界，在编年、专题和图谱中阅读记录。
+**定义**：可视化虚构世界档案——从 Three.js 星图首页进入不同世界，在编年、专题和图谱中阅读记录。
 
 **核心体验路径**：
 ```
-二维深空观测页（固定构图与场景切换）
-  → 发现远距信号 → 切换世界观测底图 → 阅读世界摘要
+Three.js 星图首页
+  → 选择世界信号 → 阅读世界摘要
     → 点击"进入世界档案" → 跳转到对应世界入口
       → 浏览事件时间线 → 点击事件卡片 → 查看图片/视频/描述
         → 点击跨世界引用 → 传送门过渡 → 到达另一世界
@@ -17,7 +17,7 @@
 
 | 页面 | 模板 | 背景 | JS 入口 |
 |------|------|------|---------|
-| 星图首页 | `index.njk` | 三张独立 2D 深空场景 | `star-map-2d.js` |
+| 星图首页 | `index.njk` | Three.js 星图 | `star-map-3d.js` |
 | B4 星图预览 | `star-map-b4-prototype.njk` | Three.js 三世界天体观察台 | `star-map-b4-prototype.js` |
 | B5 星图预览 | `star-map-b5-prototype.njk` | 三张固定 2D 观测场景 | `star-map-b5-prototype.js` |
 | 明日方舟 | `arknights.njk` | Canvas 2D 琥珀粒子 | `bundle.js` |
@@ -51,7 +51,7 @@
 |----|------|------|------|
 | SSG | 11ty (Eleventy) | ^3.0.0 | 轻量 Nunjucks 模板，零运行时框架 |
 | JS 打包 | esbuild | ^0.25.0 | 快、IIFE 输出 |
-| 原型 3D 渲染 | Three.js | **0.136.0**（精确锁定） | B4 公开预览独立使用，正式首页不加载 |
+| 3D 渲染 | Three.js | **0.136.0**（精确锁定） | 正式星图与 B4 公开预览各自独立打包，世界页不加载 |
 | UI 组件 | 无 | — | 原生 HTML + CSS 实现 |
 
 ### 不引入的技术
@@ -177,22 +177,13 @@ const data = await loadWorldData(worldId);     // fetch 加载
 
 ---
 
-## 五、2D 星图首页
+## 五、星图首页与公开预览
 
 ### 场景边界
 
-正式首页使用三张经审定的 16:9 WebP：泰拉近轨观测、破碎银河与十四世界。HTML 直接声明图片和三个世界链接，脚本仅负责切换状态、URL 同步与键盘操作。
+截至 V2.8.24，本仓库 `index.njk` 仍加载 `star-map-3d.js`，由 `star-map-entry.js` 打包 Three.js 星图。页面保留三个世界的静态兜底入口。二维固定底图属于 B5 公开预览，不应写成正式首页已采用的实现。
 
-Three.js 只留在 B4 预览的独立 bundle 中。正式首页脚本不得 import Three.js 或旧 `world-atlas-stage`，图片载入失败和禁用脚本时仍保留三个直达档案入口。
-
-### 交互层
-
-- 单击远距信号：在当前页切换观测场景。
-- 单击“进入世界档案”：访问当前世界入口。
-- `←` / `→` 或 `1` / `2` / `3`：键盘切换世界。
-- 背景保持固定；场景变化只由明确的世界选择触发。
-- 常驻动效仅作用于独立 SVG 观测路径、局部光晕、信号脉冲和 FFXIV 镜像轨迹；世界切换时允许一次短扫描，禁止驱动底图位移、缩放或旋转。
-- `prefers-reduced-motion`：取消脉冲和长过渡。
+世界页使用独立 `bundle.js`，不包含 Three.js。正式首页的可访问性与销毁行为由后续 T02 单独复核，批次 A 不修改星图代码。
 
 ### 公开预览边界
 
@@ -243,19 +234,21 @@ ANIM.easing.bounce    // cubic-bezier(0.34, 1.56, 0.64, 1)
 
 ```
 npm run build:
-  1. node src/validators/validate-data.js   ← 校验 + 扁平化 + 索引
-  2. node convert-changelog.js
-  3. eleventy                                ← 生成 HTML
-  4. node build.js                           ← esbuild(bundle + star-map-2d) + 复制
-  5. node scripts/build-b4-prototype.js       ← 构建公开 B4 预览
-  6. node scripts/build-b5-prototype.js       ← 构建公开 B5 预览
-  7. npm test                                ← 校验页面、数据、媒体引用和体积预算
+  1. assets:terra / assets:terra:territory    ← 泰拉素材派生
+  2. validate-data.js --validate-only        ← 源数据检查
+  3. convert-changelog.js → eleventy         ← 日志与页面
+  4. validate-data.js                        ← 扁平化 + 索引
+  5. build.js                               ← 独立 JS、CSS、图片、Pagefind
+  6. build-b4-prototype.js / build-b5-prototype.js
+  7. npm test                               ← Node 检查
 
 npm run dev:
-  1. node src/validators/validate-data.js
-  2. node convert-changelog.js
-  3. eleventy --serve --port 9000
+  相同素材与页面构建步骤，随后启动 scripts/dev-server.cjs
 ```
+
+### V2.8.24 发布门禁
+
+部署链依次执行依赖审计、生产构建（含 Node 测试）、Chromium 安装、`npm run test:browser`、产物检查、Pages 上传。部署 job 依赖 build 成功；检查后不重建或替换 `dist/`。PR 工作流只检查、不发布。失败和取消时尝试上传 Playwright HTML / JSON 报告、截图及 trace；产物名含完整提交 SHA、job 与运行尝试编号。取消时报告可能不完整，浏览器安装失败不产生浏览器报告。详见 [CI-01～CI-07 验收](RELEASE_GATE_ACCEPTANCE.md)。
 
 ### 构建产物
 
@@ -275,10 +268,11 @@ dist/
 ├── assets/
 │   ├── images/...
 │   └── videos/...
-├── css/                         (7 个文件)
+├── css/
 └── js/
-    ├── bundle.js               (~38KB，世界页/普通页，不含 Three.js)
-    ├── star-map-2d.js          (首页专用，体积预算 80KB，不含 Three.js)
+    ├── bundle.js               (世界页/普通页，不含 Three.js)
+    ├── star-map-3d.js          (正式星图专用，含 Three.js)
+    ├── archive-search.js       (检索专用)
     ├── star-map-b4-prototype.js  (B4 公开预览独立 bundle)
     ├── star-map-b5-prototype.js  (B5 公开预览独立 bundle，不含 Three.js)
     └── virtual-timeline.js
@@ -304,11 +298,11 @@ dist/
 
 **存储**：`src/assets/images/` 和 `src/assets/videos/`，11ty passthrough 复制到 `dist/assets/`。
 
-**图片优化管线**（V2.42+）：
-- `build.js` 在构建时调用 `buildImages()`，扫描数据 JSON 中引用的图片
+**图片优化管线**（以 V2.8.24 的 `build.js` 为准）：
+- `build.js` 在构建时调用 `buildImages()`，扫描经准入处理的 `dist/data` 中引用的图片
 - 对每张图片使用 `@11ty/eleventy-img`（底层 sharp）生成 WebP 格式，宽度 320/640/960
 - 构建后处理 `dist/data/*.json`，自动将 `src` 指向 960w WebP 版本
-- 原尺寸 PNG 仍通过 11ty passthrough 保留作为兜底
+- 已成功替换的原图只从 `dist` 移除，源素材保留；`ff14/public-originals/` 保持原始质量，不替换成 960w 派生图
 
 **JSON 扩展**：
 ```json
@@ -350,3 +344,4 @@ dist/
 | 2026-08-24 | V2.7.0 | OpenAI Codex | 新增独立 B5 二维观测预览，并记录三世界事件档案的连续导航与过渡边界。 | 保留正式粒子星图，允许线上并行评审 B4、B5，同时约束弹窗状态清理和减少动态效果。 |
 | 2026-09-03 | V2.8.0 | OpenAI Codex | 统一发布三世界连续阅读、FFXIV 媒体溯源与 B5 观测星图的本地验收批次。 | 固定当前发布编号，保留远端默认首页与原型隔离边界，并让生产媒体只使用可核验的原图。 |
 | 2026-09-08 | V2.8.3 | OpenAI Codex | 增补检索页面、索引构建管线与浏览器按需加载边界。 | 为现有档案提供统一查找入口，复用来源状态和稳定记录地址。 |
+| 2026-09-17 | V2.8.24 | OpenAI Codex | 按实际模板与构建入口订正正式首页/B5 边界、构建顺序、媒体准入与发布浏览器门禁；移除无版本的旧体积数字。 | 执行任务书 T06，避免把历史二维方案和旧指标当作当前实现；不修改相关运行时代码。 |

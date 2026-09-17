@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
         with:
@@ -37,6 +38,22 @@ jobs:
       - name: Check build dependency advisories
         run: npm audit --audit-level=high
       - run: npm run build
+      - name: Record tested distribution
+        run: |
+          echo "Testing commit $GITHUB_SHA"
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/dist-before.sha256"
+      - name: Install browser for release checks
+        run: npx playwright install --with-deps chromium
+      - name: Verify release interactions
+        run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: failure() || cancelled()
+        with:
+          name: browser-results-${{ github.sha }}-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
 
       # Verify production build quality
       - name: Verify no source maps in dist
@@ -59,6 +76,11 @@ jobs:
           done
           echo "✅ JS bundles checked"
 
+      - name: Verify tested distribution is unchanged
+        run: |
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/dist-after.sha256"
+          diff -u "$RUNNER_TEMP/dist-before.sha256" "$RUNNER_TEMP/dist-after.sha256"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -71,3 +93,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/deploy-pages@v4
+        id: deployment
