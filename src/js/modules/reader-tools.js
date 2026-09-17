@@ -46,12 +46,15 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
   const currentTitle = element('span');
   currentRecord.append(element('strong', '', '当前记录'), currentTitle);
   const actions = element('div', 'reader-bookmark-actions');
+  const returnToRecord = element('button', 'reader-return-current', '回到当前记录');
+  returnToRecord.type = 'button';
+  returnToRecord.setAttribute('aria-describedby', currentRecord.id);
   const bookmark = element('button', '', '收藏当前记录');
   bookmark.type = 'button';
   bookmark.setAttribute('aria-describedby', currentRecord.id);
   const reset = element('button', '', '恢复默认');
   reset.type = 'button';
-  actions.append(bookmark, reset);
+  actions.append(returnToRecord, bookmark, reset);
   const list = element('ul', 'reader-bookmarks');
   list.setAttribute('aria-label', '本世界的书签');
   const empty = element('p', 'reader-bookmarks-empty', '还没有书签。可收藏当前记录，稍后回来接着读。');
@@ -74,6 +77,7 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     share.refresh();
     const current = getCurrent();
     const saved = store.bookmarks();
+    returnToRecord.disabled = !current;
     bookmark.disabled = !current;
     bookmark.textContent = saved.includes(current?.id) ? '取消当前书签' : '收藏当前记录';
     bookmark.setAttribute('aria-pressed', String(saved.includes(current?.id)));
@@ -126,6 +130,12 @@ export function initReaderTools({ host, content, worldId, getCurrent, resolveRec
     renderBookmarks();
   }, { signal });
   reset.addEventListener('click', () => { store.savePreferences(READER_DEFAULTS); apply(); renderBookmarks(); }, { signal });
+  returnToRecord.addEventListener('click', () => {
+    const record = getCurrent();
+    if (!record) return;
+    panel.open = false;
+    navigate(record.id);
+  }, { signal });
   bookmark.addEventListener('click', () => {
     const record = getCurrent();
     if (record && !store.setBookmark(record.id, bookmark.getAttribute('aria-pressed') !== 'true')) status.textContent = '最多保存 30 条书签，请先移除一条。';
