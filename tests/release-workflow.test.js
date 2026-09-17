@@ -34,6 +34,7 @@ test('only the release workflow publishes, with a valid deployment output refere
   const checks = read('.github/workflows/search-checks.yml');
   assert.match(release, /push:\s*\n\s+branches: \[main, master\]/);
   assert.match(release, /workflow_dispatch:/);
+  assert.match(release, /needs: build\s*\n\s+if: github.ref == 'refs\/heads\/main' \|\| github.ref == 'refs\/heads\/master'/);
   assert.doesNotMatch(release, /pull_request:/);
   assert.match(release, /uses: actions\/deploy-pages@v4\s*\n\s+id: deployment/);
   assert.match(release, /url: \$\{\{ steps.deployment.outputs.page_url \}\}/);
