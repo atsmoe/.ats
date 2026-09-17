@@ -139,7 +139,7 @@ findEventById(eventId)       // → { id, title, ... } | null  (O(1) via index)
              │ import / 调用
 ┌────────────▼ Engine Layer ──────┐
 │  virtual-timeline.js            │
-│  star-map.js（正式星图）         │
+│  star-map-3d.js（正式星图）      │
 │  particle-background.js         │
 │  background-manager.js          │
 └────────────┬────────────────────┘
