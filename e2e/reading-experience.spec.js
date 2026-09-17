@@ -51,7 +51,7 @@ test('story directory and each spoiler gate support the keyboard without JavaScr
 });
 
 for (const id of ['mansfield', 'nearl', 'siesta']) {
-  test(`${id} story navigation follows the story order and has no wraparound`, async ({ page }, testInfo) => {
+  test(`${id} story navigation follows the story order and has no wraparound`, async ({ page }) => {
     const story = require('../src/_data/arknightsStories.json').find(story => story.id === id);
     await page.goto(`/.ats/arknights-stories.html#${id}`);
     await page.locator(`#${id} .story-spoiler > summary`).click();
@@ -66,19 +66,29 @@ for (const id of ['mansfield', 'nearl', 'siesta']) {
       await expect(navigation.getByRole('link', { name: /下一节/ })).toHaveCount(index < story.steps.length - 1 ? 1 : 0);
       if (step.dateNote) await expect(record.locator('.reading-caution')).toHaveText(step.dateNote);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      if (index === 1) {
-        await record.screenshot({ path: testInfo.outputPath(`${id}-story-navigation.png`) });
-        await navigation.getByRole('link', { name: /上一节/ }).click();
-        await expect(page.locator(`#${story.steps[0].eventId}`)).toBeFocused();
-        await page.locator(`#${story.steps[0].eventId} .ark-reader-story-nav`).getByRole('link', { name: /下一节/ }).click();
-        await expect(record).toBeFocused();
-      }
       if (index < story.steps.length - 1) await navigation.getByRole('link', { name: /下一节/ }).click();
     }
     await page.reload();
     await expect(page.locator(`#${story.steps.at(-1).eventId}`)).toBeFocused();
     await page.goBack();
     await expect(page).toHaveURL(new RegExp(`arknights-stories.html#${id}$`));
+  });
+
+  test(`${id} story navigation supports a backward-forward round trip and stays readable`, async ({ page }, testInfo) => {
+    const story = require('../src/_data/arknightsStories.json').find(story => story.id === id);
+    await page.goto(`/.ats/arknights-stories.html#${id}`);
+    await page.locator(`#${id} .story-spoiler > summary`).click();
+    await page.locator(`#story-${story.steps[0].eventId} > a`).click();
+    const first = page.locator(`#${story.steps[0].eventId}`);
+    const second = page.locator(`#${story.steps[1].eventId}`);
+    await expect(first).toBeFocused();
+    await first.locator('.ark-reader-story-nav').getByRole('link', { name: /下一节/ }).click();
+    await expect(second).toBeFocused();
+    await second.screenshot({ path: testInfo.outputPath(`${id}-story-navigation.png`) });
+    await second.locator('.ark-reader-story-nav').getByRole('link', { name: /上一节/ }).click();
+    await expect(first).toBeFocused();
+    await first.locator('.ark-reader-story-nav').getByRole('link', { name: /下一节/ }).click();
+    await expect(second).toBeFocused();
   });
 }
 

@@ -4,7 +4,7 @@ test.beforeEach(async ({ context }) => {
   await context.route('https://fonts.loli.net/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
 });
 
-test('already open readers synchronize shared preferences across worlds', async ({ page, context }, testInfo) => {
+test('already open readers synchronize shared preferences across worlds', async ({ page, context }) => {
   await page.goto('/.ats/arknights-chronicle.html#evt-375');
   await expect(page.locator('#evt-375')).toBeFocused();
   await page.locator('.reader-tools > summary').click();
@@ -31,22 +31,41 @@ test('already open readers synchronize shared preferences across worlds', async 
     await expect(page.getByLabel('正文字号', { exact: true })).toHaveValue('larger');
     await third.getByLabel('正文行宽', { exact: true }).selectOption('wide');
     await second.getByLabel('剧情正文', { exact: true }).selectOption('titles');
-    for (const [name, reader] of [['arknights', page], ['ff14', second], ['wh40k', third]]) {
+    for (const reader of [page, second, third]) {
       await expect(reader.locator('[data-reading-content]')).toHaveAttribute('data-reader-width', 'wide');
       await expect(reader.locator('[data-reading-content]')).toHaveAttribute('data-reader-spoilers', 'titles');
       await expect(reader.getByLabel('行距', { exact: true })).toHaveValue('relaxed');
-      expect(await reader.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      expect(await reader.locator('.reader-tools-help').evaluate(node => parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(14);
-      expect(await reader.locator('.reader-tools-help').evaluate(node => getComputedStyle(node).color))
-        .toBe(await reader.locator('.reader-tools-status').evaluate(node => getComputedStyle(node).color));
-      await reader.locator('.reader-tools').evaluate(node => { node.scrollTop = 0; });
-      await reader.locator('.reader-tools').screenshot({ path: testInfo.outputPath(`shared-settings-${name}.png`) });
-      if (await reader.locator('.reader-tools').evaluate(node => node.scrollHeight > node.clientHeight)) {
-        await reader.locator('.reader-tools').evaluate(node => { node.scrollTop = node.scrollHeight; });
-        await reader.locator('.reader-tools').screenshot({ path: testInfo.outputPath(`shared-settings-${name}-bottom.png`) });
-      }
     }
     await expect(page.locator('#evt-375 .ark-reader-record-description')).toBeHidden();
+    await expect(page.locator('.reader-bookmarks a')).toHaveCount(1);
+    await expect(second.locator('.reader-bookmarks a')).toHaveCount(0);
+    await expect(third.locator('.reader-bookmarks a')).toHaveCount(0);
+  } finally { await second.close(); await third.close(); }
+});
+
+test('resetting and clearing shared preferences preserves world bookmarks', async ({ page, context }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('ats.reader.preferences.v1', JSON.stringify({ size: 'larger', leading: 'relaxed', width: 'wide', spoilers: 'titles' }));
+    localStorage.setItem('ats.arknights.reader.bookmarks.v1', JSON.stringify(['evt-375']));
+  });
+  await page.goto('/.ats/arknights-chronicle.html#evt-375');
+  await expect(page.locator('#evt-375')).toBeFocused();
+  await page.locator('.reader-tools > summary').click();
+  const second = await context.newPage();
+  const third = await context.newPage();
+  try {
+    await second.goto('/.ats/ff14-chronicle.html#ff14-001');
+    await expect(second.locator('#ff14-001')).toBeFocused();
+    await second.locator('.reader-tools > summary').click();
+    await third.goto('/.ats/wh40k-chronicle.html#wh-017');
+    await expect(third.locator('#reader-wh-017')).toBeFocused();
+    await third.locator('.reader-tools > summary').click();
+    for (const reader of [page, second, third]) {
+      await expect(reader.getByLabel('正文字号', { exact: true })).toHaveValue('larger');
+      await expect(reader.getByLabel('行距', { exact: true })).toHaveValue('relaxed');
+      await expect(reader.getByLabel('正文行宽', { exact: true })).toHaveValue('wide');
+      await expect(reader.getByLabel('剧情正文', { exact: true })).toHaveValue('titles');
+    }
     await page.getByRole('button', { name: '恢复默认', exact: true }).click();
     for (const reader of [page, second, third]) {
       await expect(reader.getByLabel('正文字号', { exact: true })).toHaveValue('normal');
@@ -65,6 +84,29 @@ test('already open readers synchronize shared preferences across worlds', async 
     await expect(page.locator('.reader-bookmarks a')).toHaveCount(1);
   } finally { await second.close(); await third.close(); }
 });
+
+for (const [world, record] of [['arknights', 'evt-375'], ['ff14', 'ff14-001'], ['wh40k', 'wh-017']]) {
+  test(`${world}: expanded reading preferences keep the tools readable`, async ({ page }, testInfo) => {
+    await page.goto(`/.ats/${world}-chronicle.html#${record}`);
+    await expect(page.locator(world === 'wh40k' ? `#reader-${record}` : `#${record}`)).toBeFocused();
+    await page.locator('.reader-tools > summary').click();
+    for (const [label, value] of [['正文字号', 'larger'], ['行距', 'relaxed'], ['正文行宽', 'wide'], ['剧情正文', 'titles']]) {
+      await page.getByLabel(label, { exact: true }).selectOption(value);
+    }
+    if (world === 'arknights') await page.getByRole('button', { name: '收藏当前记录', exact: true }).click();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.locator('.reader-tools-help').evaluate(node => parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(14);
+    expect(await page.locator('.reader-tools-help').evaluate(node => getComputedStyle(node).color))
+      .toBe(await page.locator('.reader-tools-status').evaluate(node => getComputedStyle(node).color));
+    const panel = page.locator('.reader-tools');
+    await panel.evaluate(node => { node.scrollTop = 0; });
+    await panel.screenshot({ path: testInfo.outputPath(`shared-settings-${world}.png`) });
+    if (await panel.evaluate(node => node.scrollHeight > node.clientHeight)) {
+      await panel.evaluate(node => { node.scrollTop = node.scrollHeight; });
+      await panel.screenshot({ path: testInfo.outputPath(`shared-settings-${world}-bottom.png`) });
+    }
+  });
+}
 
 test('a stale settings panel changes only the selected field', async ({ page, context }) => {
   await page.goto('/.ats/arknights-chronicle.html#evt-375');

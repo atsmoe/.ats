@@ -78,10 +78,9 @@ for (const [index, [world, id, focus]] of worlds.entries()) {
   });
 }
 
-test('all 28 endings copy their own links without changing the selected ending or unfolding routes', async ({ page }, testInfo) => {
-  test.setTimeout(60000);
-  await clipboard(page);
-  for (const topic of topics) {
+for (const topic of topics) {
+  test(`${topic.slug}: all endings copy their own links without changing selection or routes`, async ({ page }, testInfo) => {
+    await clipboard(page);
     await page.goto(`/.ats/arknights-is-${topic.slug}.html?temporary=remove-me`);
     await acceptSpoilers(page);
     const original = page.url();
@@ -98,8 +97,8 @@ test('all 28 endings copy their own links without changing the selected ending o
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     if (topic.slug === 'sarkaz') await page.locator('.is-ending-heading').last().screenshot({ path: testInfo.outputPath('ending-share.png') });
-  }
-});
+  });
+}
 
 test('a shared ending still requires spoiler consent, then supports manual copying', async ({ page }, testInfo) => {
   await clipboard(page, 'denied');

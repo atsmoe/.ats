@@ -39,7 +39,8 @@ test('only the release workflow publishes, with a valid deployment output refere
   assert.match(release, /uses: actions\/deploy-pages@v4\s*\n\s+id: deployment/);
   assert.match(release, /url: \$\{\{ steps.deployment.outputs.page_url \}\}/);
   assert.match(checks, /pull_request:\s*\n\s+branches: \[main, master\]/);
-  assert.match(checks, /timeout-minutes: 20/);
+  assert.match(checks, /timeout-minutes: 30/);
+  assert.match(release, /timeout-minutes: 30/);
   assert.doesNotMatch(checks, /deploy-pages|upload-pages-artifact|pages: write|id-token: write/);
   for (const command of ['npm ci', 'npm audit --audit-level=high', 'npm run build',
     'npx playwright install --with-deps chromium', 'npm run test:browser']) {

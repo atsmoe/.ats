@@ -15,11 +15,14 @@ async function acceptSpoilers(page) {
   await expect(page.locator('[data-topic-content]')).toHaveCSS('filter', 'none');
 }
 
-test('all seven topics support 28 ending bookmarks and their canonical home links', async ({ page }, testInfo) => {
-  test.setTimeout(60000);
-  const errors = [];
-  page.on('pageerror', error => errors.push(error.message));
-  for (const topic of topics) {
+for (const [topicIndex, topic] of topics.entries()) {
+  test(`${topic.slug}: ending bookmarks preserve earlier topics and canonical home links`, async ({ page }, testInfo) => {
+    const earlier = topics.slice(0, topicIndex).flatMap(entry => entry.endings.map(ending => ending.id));
+    await page.addInitScript(({ key, earlier }) => {
+      if (localStorage.getItem(key) === null) localStorage.setItem(key, JSON.stringify(earlier));
+    }, { key, earlier });
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
     await page.goto(`/.ats/arknights-is-${topic.slug}.html`);
     await acceptSpoilers(page);
     await expect(page.locator('.is-ending-bookmark')).toHaveCount(topic.endings.length);
@@ -39,17 +42,19 @@ test('all seven topics support 28 ending bookmarks and their canonical home link
       await page.locator('.is-ending-heading').first().scrollIntoViewIfNeeded();
       await page.screenshot({ path: testInfo.outputPath(`${topic.slug}-bookmarks.png`) });
     }
-  }
-  expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).length, key)).toBe(28);
-  await page.goto('/.ats/arknights.html');
-  await page.locator('[data-reading-home] > summary').click();
-  await expect(page.locator('.reading-home-bookmarks a')).toHaveCount(28);
-  for (const topic of topics) {
-    const id = topic.endings[0].id;
-    await expect(page.locator(`.reading-home-bookmarks a[href$="#${id}"]`)).toHaveAttribute('href', `./arknights-is-${topic.slug}.html?record=${id}#${id}`);
-  }
-  expect(errors).toEqual([]);
-});
+    const expectedIds = [...earlier, ...topic.endings.map(ending => ending.id)];
+    expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key)).toEqual(expectedIds);
+    if (topicIndex === topics.length - 1) expect(expectedIds).toHaveLength(28);
+    await page.goto('/.ats/arknights.html');
+    await page.locator('[data-reading-home] > summary').click();
+    await expect(page.locator('.reading-home-bookmarks a')).toHaveCount(expectedIds.length);
+    for (const savedTopic of topics.slice(0, topicIndex + 1)) {
+      const id = savedTopic.endings[0].id;
+      await expect(page.locator(`.reading-home-bookmarks a[href$="#${id}"]`)).toHaveAttribute('href', `./arknights-is-${savedTopic.slug}.html?record=${id}#${id}`);
+    }
+    expect(errors).toEqual([]);
+  });
+}
 
 test('ending bookmarks survive the chronicle and reopen the exact route behind the spoiler gate', async ({ page }, testInfo) => {
   await page.goto(topicUrl);
