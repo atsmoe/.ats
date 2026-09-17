@@ -42,6 +42,10 @@ test('home positions follow actual root membership and canonical titles, dates a
   assert.equal(result.positions[0].date, '年代待考');
   assert.equal(result.positions[1].context, '镜像世界');
   assert.equal(result.bookmarks[0].href, './ff14-chronicle.html#ff14-002');
+  assert.deepEqual(result.bookmarks.slice(1), [
+    { eventId: 'wh-017', title: '暂时无法读取的书签 2', unavailable: true },
+    { eventId: 'missing', title: '暂时无法读取的书签 3', unavailable: true },
+  ]);
   assert.equal(result.unavailable, 3);
   assert.equal(JSON.stringify([data, saved]), before);
   assert.equal(resolveSavedReading(data, { positions: [{ contextId: 'mainline', eventId: 'ff14-002' }], bookmarks: [] }).positions.length, 0);
@@ -53,7 +57,8 @@ test('home bookmarks retain Arknights topic URLs and isolate world records', () 
   ] }] };
   const saved = { positions: [], bookmarks: ['if-sarkaz-endless-ending-2', 'ff14-001'] };
   const result = resolveSavedReading(data, saved);
-  assert.equal(result.bookmarks.length, 1);
+  assert.equal(result.bookmarks.length, 2);
+  assert.deepEqual(result.bookmarks[1], { eventId: 'ff14-001', title: '暂时无法读取的书签 2', unavailable: true });
   assert.equal(result.bookmarks[0].href, './arknights-is-sarkaz.html?record=if-sarkaz-endless-ending-2#if-sarkaz-endless-ending-2');
   assert.equal(result.unavailable, 1);
   assert.deepEqual(resolveSavedReading({ world: { id: 'unknown' } }, saved), { positions: [], bookmarks: [], unavailable: 0 });

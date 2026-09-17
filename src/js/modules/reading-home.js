@@ -1,6 +1,7 @@
 import { readSavedReading, resolveSavedReading } from './reading-home-model.js';
 import { loadWorldData } from './data-loader.js';
 import { captureReadingListFocus } from './reading-list-focus.js';
+import { createReadingStore } from './reader-preferences.js';
 
 let controller;
 
@@ -32,9 +33,11 @@ export function initReadingHome() {
   const displayTitles = new Map([...titleNodes].map(node => [node.dataset.eventId, node.textContent]));
   let storage;
   try { storage = localStorage; } catch { /* optional browser storage */ }
+  const bookmarkStore = createReadingStore(storage, worldId);
   let saved;
   let loaded = false;
   let generation = 0;
+  let unsavedRemoval = false;
 
   function appendGroup(title, items, className) {
     if (!items.length) return;
@@ -43,12 +46,23 @@ export function initReadingHome() {
     const list = element('ul', 'reading-home-list');
     for (const item of items) {
       const row = element('li');
-      const link = element('a');
-      link.href = item.href;
-      link.dataset.readingFocusKey = `${className}:${className === 'reading-home-positions' ? item.rootId : item.eventId}`;
-      link.append(element('span', 'reading-home-meta', [item.context, item.date].filter(Boolean).join(' · ')));
-      link.append(element('strong', null, displayTitles.get(item.eventId) || item.title));
-      row.append(link);
+      const title = item.unavailable ? item.title : displayTitles.get(item.eventId) || item.title;
+      const entry = element(item.unavailable ? 'div' : 'a', item.unavailable ? 'reading-home-unavailable' : null);
+      if (!item.unavailable) {
+        entry.href = item.href;
+        entry.dataset.readingFocusKey = `${className}:${className === 'reading-home-positions' ? item.rootId : item.eventId}`;
+      }
+      entry.append(element('span', 'reading-home-meta', item.unavailable ? '已保留，可手动移除。' : [item.context, item.date].filter(Boolean).join(' · ')));
+      entry.append(element('strong', null, title));
+      row.append(entry);
+      if (className === 'reading-home-bookmarks') {
+        const remove = element('button', 'reading-home-remove', '移除');
+        remove.type = 'button';
+        remove.dataset.readingHomeRemove = item.eventId;
+        remove.dataset.readingFocusKey = `remove:${item.eventId}`;
+        remove.setAttribute('aria-label', `移除书签：${title}`);
+        row.append(remove);
+      }
       list.append(row);
     }
     section.append(list);
@@ -72,7 +86,9 @@ export function initReadingHome() {
       appendGroup('已保存的阅读位置', result.positions, 'reading-home-positions');
       appendGroup('书签', result.bookmarks, 'reading-home-bookmarks');
       panel.dataset.readingState = 'ready';
-      status.textContent = result.unavailable
+      status.textContent = unsavedRemoval
+        ? '本页已移除书签，但浏览器未允许保存，刷新后可能重新出现。'
+        : result.unavailable
         ? '部分记录暂时无法找到，已保留原有保存内容。'
         : '选择标题即可接着读。';
       restoreFocus(summary);
@@ -89,8 +105,10 @@ export function initReadingHome() {
     generation += 1;
     loaded = false;
     saved = readSavedReading(storage, worldId);
+    bookmarkStore.reloadBookmarks();
+    saved.bookmarks = bookmarkStore.bookmarks();
     const hadFocus = panel.contains(document.activeElement);
-    panel.hidden = !saved.positions.length && !saved.bookmarks.length;
+    panel.hidden = !saved.positions.length && !saved.bookmarks.length && !unsavedRemoval;
     panel.dataset.readingState = panel.hidden ? 'empty' : 'saved';
     status.textContent = '';
     if (!panel.hidden && document.activeElement === retry) summary.focus({ preventScroll: true });
@@ -107,6 +125,14 @@ export function initReadingHome() {
   }
 
   panel.addEventListener('toggle', load, { signal });
+  body.addEventListener('click', event => {
+    const remove = event.target.closest('[data-reading-home-remove]');
+    if (!remove || !body.contains(remove)) return;
+    // Removing an old row must not re-add a bookmark removed in another tab.
+    if (!bookmarkStore.setBookmark(remove.dataset.readingHomeRemove, false)) return;
+    unsavedRemoval = !bookmarkStore.available;
+    refresh();
+  }, { signal });
   retry.addEventListener('click', load, { signal });
   window.addEventListener('pageshow', event => { if (event.persisted) refresh(); }, { signal });
   window.addEventListener('storage', event => {

@@ -41,6 +41,8 @@ export function resolveSavedReading(data, saved) {
     const record = records.get(savedPosition?.eventId);
     return record?.rootId === rootId ? [record] : [];
   });
-  const bookmarks = saved.bookmarks.map(id => records.get(id)).filter(Boolean);
-  return { positions, bookmarks, unavailable: saved.positions.length + saved.bookmarks.length - positions.length - bookmarks.length };
+  const bookmarks = saved.bookmarks.map((id, index) => records.get(id) || {
+    eventId: id, title: `暂时无法读取的书签 ${index + 1}`, unavailable: true,
+  });
+  return { positions, bookmarks, unavailable: saved.positions.length - positions.length + bookmarks.filter(item => item.unavailable).length };
 }

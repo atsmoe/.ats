@@ -5,6 +5,7 @@ export function captureReadingListFocus(container) {
   const index = targets.indexOf(active);
   if (index < 0) return () => {};
   const key = active.dataset.readingFocusKey;
+  const kindIndex = targets.filter(node => node.tagName === active.tagName).indexOf(active);
   const scroll = [];
   for (let node = container; node && node !== document.body; node = node.parentElement) {
     scroll.push([node, node.scrollTop, node.scrollLeft]);
@@ -13,7 +14,8 @@ export function captureReadingListFocus(container) {
     if (active.isConnected || (document.activeElement !== document.body && document.activeElement !== active)) return;
     const updated = [...container.querySelectorAll('[data-reading-focus-key]')];
     const same = updated.find(node => node.dataset.readingFocusKey === key);
-    const target = same || updated[Math.min(index, updated.length - 1)] || fallback;
+    const sameKind = updated.filter(node => node.tagName === active.tagName);
+    const target = same || sameKind[Math.min(kindIndex, sameKind.length - 1)] || updated[Math.min(index, updated.length - 1)] || fallback;
     target?.focus({ preventScroll: Boolean(same) });
     if (same) {
       for (const [node, top, left] of scroll) { node.scrollTop = top; node.scrollLeft = left; }

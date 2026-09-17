@@ -28,11 +28,14 @@
 .reading-home-list { display: grid; gap: calc(var(--reading-gap) * .5) var(--reading-gap); list-style: none; padding: 0; }
 .reading-home-body > section:only-child .reading-home-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .reading-home-list li { min-width: 0; }
-.reading-home-list a { display: grid; gap: calc(var(--reading-gap) * .25); min-height: 2.75rem; padding: calc(var(--reading-gap) * .75); border: 1px solid var(--reading-rule); color: var(--reading-ink); text-decoration: none; overflow-wrap: anywhere; }
+.reading-home-list :is(a, .reading-home-unavailable) { display: grid; gap: calc(var(--reading-gap) * .25); min-height: 2.75rem; padding: calc(var(--reading-gap) * .75); border: 1px solid var(--reading-rule); color: var(--reading-ink); text-decoration: none; overflow-wrap: anywhere; }
+.reading-home-bookmarks li { display: flex; align-items: start; gap: calc(var(--reading-gap) * .5); }
+.reading-home-bookmarks :is(a, .reading-home-unavailable) { flex: 1; min-width: 0; }
 .reading-home-list a:hover { border-color: var(--reading-accent); }
 .reading-home-list strong { font-size: 1rem; font-weight: 500; }
 .reading-home-meta { font-size: max(.875rem, var(--site-min-font-size)); color: var(--reading-muted); }
 .reading-home button { margin-top: calc(var(--reading-gap) * .5); min-height: 2.75rem; padding: calc(var(--reading-gap) * .5) var(--reading-gap); color: var(--reading-ink); background: var(--reading-surface); border: 1px solid var(--reading-rule); font: inherit; cursor: pointer; }
+.reading-home .reading-home-remove { flex: none; margin-top: 0; }
 .reading-home :is(summary, button):focus-visible { outline: 2px solid var(--reading-accent); outline-offset: 3px; }
 .reading-paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--reading-gap); }
 .reading-paths > a { display: block; padding: var(--reading-pad); border-top: 2px solid var(--reading-accent); background: var(--reading-surface); color: inherit; text-decoration: none; }
