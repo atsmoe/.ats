@@ -36,13 +36,17 @@ export function resolveSavedReading(data, saved) {
   }
   index(data.branches);
   // No timestamp exists in the older progress format: keep branch order, not a guessed recency order.
-  const positions = [...roots.keys()].flatMap(rootId => {
-    const savedPosition = saved.positions.find(position => position.contextId === rootId);
-    const record = records.get(savedPosition?.eventId);
-    return record?.rootId === rootId ? [record] : [];
+  const orderedPositions = [...new Set([...roots.keys(), ...saved.positions.map(position => position.contextId)])]
+    .map(rootId => saved.positions.find(position => position.contextId === rootId)).filter(Boolean);
+  const positions = orderedPositions.map(({ contextId, eventId }, index) => {
+    const record = records.get(eventId);
+    return record?.rootId === contextId ? record : {
+      rootId: contextId, eventId, title: `暂时无法读取的阅读位置 ${index + 1}`,
+      context: roots.get(contextId) || '', unavailable: true,
+    };
   });
   const bookmarks = saved.bookmarks.map((id, index) => records.get(id) || {
     eventId: id, title: `暂时无法读取的书签 ${index + 1}`, unavailable: true,
   });
-  return { positions, bookmarks, unavailable: saved.positions.length - positions.length + bookmarks.filter(item => item.unavailable).length };
+  return { positions, bookmarks, unavailable: [...positions, ...bookmarks].filter(item => item.unavailable).length };
 }

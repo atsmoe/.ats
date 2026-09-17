@@ -1,7 +1,8 @@
 // Capture immediately before a synchronous list rebuild, never before a fetch.
-export function captureReadingListFocus(container) {
+// An optional selector keeps fallback focus within one group of a shared container.
+export function captureReadingListFocus(container, selector = '[data-reading-focus-key]') {
   const active = document.activeElement;
-  const targets = [...container.querySelectorAll('[data-reading-focus-key]')];
+  const targets = [...container.querySelectorAll(selector)];
   const index = targets.indexOf(active);
   if (index < 0) return () => {};
   const key = active.dataset.readingFocusKey;
@@ -12,7 +13,7 @@ export function captureReadingListFocus(container) {
   }
   return fallback => {
     if (active.isConnected || (document.activeElement !== document.body && document.activeElement !== active)) return;
-    const updated = [...container.querySelectorAll('[data-reading-focus-key]')];
+    const updated = [...container.querySelectorAll(selector)];
     const same = updated.find(node => node.dataset.readingFocusKey === key);
     const sameKind = updated.filter(node => node.tagName === active.tagName);
     const target = same || sameKind[Math.min(kindIndex, sameKind.length - 1)] || updated[Math.min(index, updated.length - 1)] || fallback;

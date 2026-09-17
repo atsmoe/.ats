@@ -37,10 +37,11 @@ test('home positions follow actual root membership and canonical titles, dates a
   ], bookmarks: ['ff14-002', 'wh-017', 'missing'] };
   const before = JSON.stringify([data, saved]);
   const result = resolveSavedReading(data, saved);
-  assert.deepEqual(result.positions.map(item => item.eventId), ['ff14-001', 'ff14-002']);
+  assert.deepEqual(result.positions.map(item => item.eventId), ['ff14-001', 'ff14-002', 'ff14-001']);
   assert.equal(result.positions[0].title, '主线标题');
   assert.equal(result.positions[0].date, '年代待考');
   assert.equal(result.positions[1].context, '镜像世界');
+  assert.deepEqual(result.positions[2], { rootId: 'unknown', eventId: 'ff14-001', title: '暂时无法读取的阅读位置 3', context: '', unavailable: true });
   assert.equal(result.bookmarks[0].href, './ff14-chronicle.html#ff14-002');
   assert.deepEqual(result.bookmarks.slice(1), [
     { eventId: 'wh-017', title: '暂时无法读取的书签 2', unavailable: true },
@@ -48,7 +49,11 @@ test('home positions follow actual root membership and canonical titles, dates a
   ]);
   assert.equal(result.unavailable, 3);
   assert.equal(JSON.stringify([data, saved]), before);
-  assert.equal(resolveSavedReading(data, { positions: [{ contextId: 'mainline', eventId: 'ff14-002' }], bookmarks: [] }).positions.length, 0);
+  const mismatched = resolveSavedReading(data, { positions: [{ contextId: 'mainline', eventId: 'ff14-002' }], bookmarks: [] });
+  assert.equal(mismatched.positions.length, 1);
+  assert.equal(mismatched.positions[0].unavailable, true);
+  assert.equal(mismatched.positions[0].href, undefined);
+  assert.equal(mismatched.positions[0].context, '原初世界·主线');
 });
 
 test('home bookmarks retain Arknights topic URLs and isolate world records', () => {

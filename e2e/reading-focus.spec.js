@@ -226,6 +226,8 @@ test('home keeps focus when a branch position changes and when a bookmarked reco
     await expect(position).toBeFocused();
     const bookmark = panel.locator('.reading-home-bookmarks a');
     await page.keyboard.press('Tab');
+    await expect(panel.locator('[data-reading-home-clear="mainline"]')).toBeFocused();
+    await page.keyboard.press('Tab');
     await expect(bookmark).toBeFocused();
     await other.evaluate(progressKey => localStorage.setItem(progressKey, '{"mainline":{"eventId":"evt-375"}}'), progressKey);
     await expect(position).toHaveAttribute('href', /#evt-375$/);
