@@ -273,5 +273,7 @@ test('keyboard retry returns focus to the open home summary instead of the page 
   await expect(panel.locator(':scope > summary')).toBeFocused();
   await expect(panel).toHaveAttribute('open');
   await page.keyboard.press('Tab');
+  await expect(panel.getByRole('searchbox', { name: '查找书签', exact: true })).toBeFocused();
+  await page.keyboard.press('Tab');
   await expect(panel.locator('.reading-home-bookmarks a')).toBeFocused();
 });

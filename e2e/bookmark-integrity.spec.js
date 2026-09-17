@@ -105,7 +105,7 @@ test('unresolved bookmarks count toward capacity and remain after a home round t
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.goto('/.ats/arknights.html');
   await page.locator('[data-reading-home] > summary').click();
-  await expect(page.locator('[data-reading-home] [role="status"]')).toContainText('已保留原有保存内容');
+  await expect(page.locator('[data-reading-home] .reading-home-note[role="status"]')).toContainText('已保留原有保存内容');
   await page.locator('.reading-home-bookmarks a').click();
   await expect(page.locator('#evt-375')).toBeFocused();
   expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key)).toEqual(expected);

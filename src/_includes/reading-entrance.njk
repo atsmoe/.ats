@@ -4,6 +4,11 @@
   <details class="reading-home" data-reading-home="{{ worldId }}" hidden>
     <summary>接着读 <span>阅读位置与书签</span></summary>
     <p class="reading-home-note">仅保存在当前浏览器中。展开后会显示已保存的记录标题，可能含剧透。</p>
+    <div class="reader-bookmark-filter reading-home-filter" hidden>
+      <label>查找书签<input type="search" placeholder="标题、日期或分支" autocomplete="off" spellcheck="false"></label>
+      <button type="button" aria-label="清空书签查找">清空</button>
+      <p class="reader-bookmark-filter-status" role="status"></p>
+    </div>
     <div class="reading-home-body"></div>
     <p class="reading-home-note" role="status"></p>
     <button type="button" data-reading-home-retry hidden>重试</button>
