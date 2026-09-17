@@ -281,6 +281,8 @@ body.wh-reader-open #nav {
 .world-wh40k .wh-reader-rail {
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
   border-right: 1px solid rgba(var(--wh-rgb-177-138-75), .19);
 }
 
@@ -668,6 +670,10 @@ body.wh-reader-open #nav {
 }
 
 @media (max-width: 1100px) {
+  .world-wh40k .wh-reader-rail {
+    min-height: auto;
+    overflow: visible;
+  }
   .world-wh40k .wh-reader-shell {
     grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
     overflow-y: auto;

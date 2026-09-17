@@ -313,6 +313,7 @@ function createReader(root, archive, listenerController) {
   let openedFromIndex = false;
   let scrollFrame = 0;
   let targetFrame = 0;
+  const scrollPositions = new Map([[reading, 0], [shell, 0]]);
   let isComposing = false;
   let storage;
   try { storage = localStorage; } catch { /* reading does not require storage */ }
@@ -432,6 +433,7 @@ function createReader(root, archive, listenerController) {
     }
     reading.scrollTop = 0;
     shell.scrollTop = 0;
+    rememberScrollPositions();
     const target = chapter.events.find(record => record.id === eventId) || chapter.events[0];
     selectEvent(target, false);
     if (eventId) {
@@ -441,6 +443,9 @@ function createReader(root, archive, listenerController) {
         const targetNode = document.getElementById(`reader-${eventId}`);
         targetNode?.scrollIntoView({ block: 'start', behavior: 'auto' });
         targetNode?.focus({ preventScroll: true });
+        // A short final record cannot always reach the top of the viewport.
+        // Its queued scroll event must not override the explicit selection.
+        rememberScrollPositions();
       });
     } else {
       reading.focus({ preventScroll: true });
@@ -534,18 +539,27 @@ function createReader(root, archive, listenerController) {
     }
   }
 
+  function rememberScrollPositions() {
+    for (const container of scrollPositions.keys()) scrollPositions.set(container, container.scrollTop);
+  }
+
   function onReadingScroll(event) {
-    if (scrollFrame || !currentChapter || overlay.hidden) return;
     const container = event.currentTarget;
+    if (scrollPositions.get(container) === container.scrollTop) return;
+    scrollPositions.set(container, container.scrollTop);
+    if (scrollFrame || !currentChapter || overlay.hidden) return;
     scrollFrame = requestAnimationFrame(() => {
       scrollFrame = 0;
       if (!currentChapter || overlay.hidden) return;
       const articles = [...body.querySelectorAll('.wh-reader-event')]
         .filter(article => article.getClientRects().length > 0);
       const marker = container.getBoundingClientRect().top + Math.min(180, container.clientHeight * 0.36);
-      let active = articles[0];
+      // Controls above the prose must not reset the selected record. Only
+      // update it when an article actually spans the reading marker.
+      let active;
       for (const article of articles) {
-        if (article.getBoundingClientRect().top <= marker) active = article;
+        const bounds = article.getBoundingClientRect();
+        if (bounds.top <= marker && bounds.bottom > marker) active = article;
       }
       const record = currentChapter.events.find(item => item.id === active?.dataset.eventId);
       selectEvent(record);

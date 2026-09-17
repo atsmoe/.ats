@@ -27,7 +27,10 @@ test('all seven topics support 28 ending bookmarks and their canonical home link
       const button = page.locator(`#${ending.id} .is-ending-bookmark`);
       await button.click();
       await expect(button).toHaveAttribute('aria-pressed', 'true');
-      expect(await button.evaluate(node => node.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+      const size = await button.evaluate(node => ({ layout: node.offsetHeight, visual: node.getBoundingClientRect().height }));
+      expect(size.layout).toBeGreaterThanOrEqual(44);
+      // Translated cards can lose < 0.001px when viewport coordinates subtract.
+      expect(size.visual).toBeGreaterThanOrEqual(44 - 0.001);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.reload();
