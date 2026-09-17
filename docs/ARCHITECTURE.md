@@ -139,7 +139,7 @@ findEventById(eventId)       // → { id, title, ... } | null  (O(1) via index)
              │ import / 调用
 ┌────────────▼ Engine Layer ──────┐
 │  virtual-timeline.js            │
-│  star-map-2d.js                 │
+│  star-map.js（正式星图）         │
 │  particle-background.js         │
 │  background-manager.js          │
 └────────────┬────────────────────┘
@@ -285,7 +285,8 @@ dist/
 | 等级 | 特性 | 桌面 | 平板 | 移动 |
 |------|------|------|------|------|
 | A | 时间线阅读 | ✅ | ✅ | ✅ 右置 |
-| B | 2D 星图 | ✅ 固定构图 | ✅ 固定构图 | ✅ 正常阅读 |
+| B | 正式 Three.js 星图 | ✅ | ✅ | ✅ 自适应粒子规模 |
+| B | B5 二维预览 | ✅ 固定构图 | ✅ 固定构图 | ✅ 正常阅读 |
 | B | Canvas 2D 背景 | ✅ 500星 | ✅ 400星 | ✅ 300星 |
 | C | 图片/视频 | ✅ | ✅ | ✅ |
 | C | 传送门动画 | ✅ | ✅ | ✅ 简化fade |
