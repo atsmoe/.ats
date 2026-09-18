@@ -17,18 +17,22 @@ function dismissPortalOverlay() {
   el.style.transition = `opacity ${ANIM.duration.normal}ms ${ANIM.easing.out}`;
 }
 
+function showFallback(error) {
+  document.body.classList.add('star-map-fallback');
+  for (const cleanup of [destroyStarMap, destroyStarMap3D]) {
+    try { cleanup(); }
+    catch (cleanupError) { console.warn('[star-map] Scene cleanup failed.', cleanupError); }
+  }
+  console.warn('[star-map] Showing world links after scene rendering failed.', error);
+}
+
 function init() {
   dismissPortalOverlay();
   initNav();
   try {
-    initStarMap3D('bg-canvas');
+    initStarMap3D('bg-canvas', { onError: showFallback });
     initStarMap();
-  } catch (error) {
-    document.body.classList.add('star-map-fallback');
-    destroyStarMap();
-    destroyStarMap3D();
-    console.warn('[star-map] Showing world links after scene initialization failed.', error);
-  }
+  } catch (error) { showFallback(error); }
 }
 
 // The bundle is loaded with `defer`, so the DOM is ready when it executes.

@@ -5,7 +5,6 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GALAXIES } from './galaxies.js';
 import { ANIM } from './anim-tokens.js';
 
 const CLUSTERS = {
@@ -34,12 +33,43 @@ const SHELL_THICKNESS = 3;
 const CLUSTER_SCALE = isMobile ? 0.4 : 1;
 
 let scene, camera, renderer, controls;
-let bgPoints, clock;
+let bgPoints;
 let ringPoints = [];
-let startTime = 0;
-let destroyed = false;
+let destroyed = true;
+let frameId = null;
+let pagePaused = false;
+let elapsed = 0;
+let lastFrameTime = null;
+let motionPreference = null;
+let reducedMotion = false;
+let painting = false;
+let resizeTimer = null;
+let generation = 0;
+let markers = {};
+let failureHandler = null;
+const markerTimers = new Set();
+const resources = new Set();
 
-const clusterScreenPos = {};
+function own(resource) {
+  resources.add(resource);
+  return resource;
+}
+
+function cleanup(action) {
+  try { action(); }
+  catch (error) { console.warn('[star-map-3d] Resource cleanup failed.', error); }
+}
+
+function dispose(resource) {
+  cleanup(() => resource?.dispose());
+}
+
+function failScene(error) {
+  const notify = failureHandler;
+  destroy();
+  if (notify) notify(error);
+  else console.warn('[star-map-3d] Scene rendering failed.', error);
+}
 
 function gaussRand(mean, stdev) {
   let u = 0, v = 0;
@@ -49,7 +79,7 @@ function gaussRand(mean, stdev) {
 }
 
 function createShaderMaterial() {
-  const mat = new THREE.PointsMaterial({
+  const mat = own(new THREE.PointsMaterial({
     size: 0.125,
     transparent: true,
     depthTest: false,
@@ -99,7 +129,7 @@ function createShaderMaterial() {
         'vec4 diffuseColor = vec4( vColor, smoothstep(0.5, 0.1, d) );'
       );
     },
-  });
+  }));
   return mat;
 }
 
@@ -107,7 +137,7 @@ function createClusterMaterial(clusterId) {
   const c = CLUSTERS[clusterId];
   const color = new THREE.Color(c.color[0] / 255, c.color[1] / 255, c.color[2] / 255);
 
-  const material = new THREE.PointsMaterial({
+  const material = own(new THREE.PointsMaterial({
     size: 0.2,
     transparent: true,
     depthTest: false,
@@ -159,7 +189,7 @@ function createClusterMaterial(clusterId) {
         'vec4 diffuseColor = vec4( vColor, smoothstep(0.5, 0.1, d) * vAlpha );'
       );
     },
-  });
+  }));
 
   return material;
 }
@@ -203,7 +233,7 @@ function generateBackground() {
     pushShift();
   }
 
-  const geometry = new THREE.BufferGeometry();
+  const geometry = own(new THREE.BufferGeometry());
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setAttribute('sizes', new THREE.Float32BufferAttribute(sizes, 1));
   geometry.setAttribute('shift', new THREE.Float32BufferAttribute(shifts, 4));
@@ -276,12 +306,12 @@ function generateRings() {
       colors.push(cr / 255, cg / 255, cb / 255);
     }
 
-    const geom = new THREE.BufferGeometry();
+    const geom = own(new THREE.BufferGeometry());
     geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geom.setAttribute('sizes', new THREE.Float32BufferAttribute(sizes, 1));
     geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-    const mat = new THREE.PointsMaterial({
+    const mat = own(new THREE.PointsMaterial({
       size: 0.2,
       vertexColors: true,
       transparent: true,
@@ -298,7 +328,7 @@ function generateRings() {
           'vec4 diffuseColor = vec4( diffuse, smoothstep(0.5, 0.05, d) * opacity );'
         );
       },
-    });
+    }));
 
     const points = new THREE.Points(geom, mat);
     result.push(points);
@@ -331,7 +361,7 @@ function generateCluster(clusterId) {
     pushShift();
   }
 
-  const geometry = new THREE.BufferGeometry();
+  const geometry = own(new THREE.BufferGeometry());
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setAttribute('sizes', new THREE.Float32BufferAttribute(sizes, 1));
   geometry.setAttribute('shift', new THREE.Float32BufferAttribute(shifts, 4));
@@ -341,7 +371,7 @@ function generateCluster(clusterId) {
 
 function updateClusterMarkers() {
   for (const [gid, cluster] of Object.entries(CLUSTERS)) {
-    const el = document.getElementById(`marker-${gid}`);
+    const el = markers[gid];
     if (!el) continue;
 
     const pos = cluster.center.clone();
@@ -360,10 +390,59 @@ function updateClusterMarkers() {
   }
 }
 
-function animate() {
-  if (destroyed) return;
+function requestFrame() {
+  if (!destroyed && !document.hidden && !pagePaused && frameId === null) {
+    const currentGeneration = generation;
+    frameId = requestAnimationFrame(timestamp => {
+      if (currentGeneration !== generation) return;
+      try { animate(timestamp); }
+      catch (error) { failScene(error); }
+    });
+  }
+}
 
-  const t = clock.getElapsedTime() * 0.5;
+function pause() {
+  if (frameId !== null) cancelAnimationFrame(frameId);
+  frameId = null;
+  lastFrameTime = null;
+}
+
+function visibilityChanged() {
+  if (document.hidden) pause();
+  else requestFrame();
+}
+
+function pageHidden(event) {
+  if (!event.persisted) { destroy(); return; }
+  pagePaused = true;
+  pause();
+}
+
+function pageShown() {
+  pagePaused = false;
+  requestFrame();
+}
+
+function controlsChanged() {
+  if (!painting) requestFrame();
+}
+
+function motionChanged() {
+  if (destroyed) return;
+  reducedMotion = motionPreference.matches;
+  controls.autoRotate = !isMobile && !reducedMotion;
+  controls.enableDamping = !reducedMotion;
+  pause();
+  requestFrame();
+}
+
+function animate(timestamp = performance.now()) {
+  frameId = null;
+  if (destroyed || document.hidden || pagePaused) return;
+  if (!reducedMotion && lastFrameTime !== null) elapsed += Math.max(0, timestamp - lastFrameTime) / 1000;
+  lastFrameTime = reducedMotion ? null : timestamp;
+
+  const t = elapsed * 0.5;
   const timeVal = t * Math.PI;
 
   // Auto-rotation (bgPoints + rings)
@@ -384,23 +463,54 @@ function animate() {
     }
   }
 
-  controls.update();
+  painting = true;
+  try { controls.update(); } finally { painting = false; }
 
   // Update HTML cluster markers
+  camera.updateMatrixWorld();
   updateClusterMarkers();
 
   renderer.render(scene, camera);
-  requestAnimationFrame(animate);
+  if (!reducedMotion) requestFrame();
 }
 
-export function init(canvasId) {
+function resize() {
+  if (destroyed) return;
+  if (resizeTimer !== null) clearTimeout(resizeTimer);
+  const currentGeneration = generation;
+  resizeTimer = setTimeout(() => {
+    if (destroyed || currentGeneration !== generation) return;
+    resizeTimer = null;
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    requestFrame();
+  }, ANIM.duration.fast);
+}
+
+export function init(canvasId, { onError = null } = {}) {
+  destroy();
+  failureHandler = onError;
+  try { initialize(canvasId); }
+  catch (error) {
+    destroy();
+    throw error;
+  }
+}
+
+function initialize(canvasId) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) {
-    console.error('[star-map-3d] Canvas element not found:', canvasId);
-    return;
+    throw new Error(`[star-map-3d] Canvas element not found: ${canvasId}`);
   }
 
   canvas.classList.add('interactive');
+  destroyed = false;
+  pagePaused = false;
+  elapsed = 0;
+  lastFrameTime = null;
+  motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  reducedMotion = motionPreference.matches;
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x080810);
@@ -414,18 +524,15 @@ export function init(canvasId) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
 
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
+  controls.enableDamping = !reducedMotion;
   controls.enablePan = !isMobile;
   controls.enableZoom = true;
   controls.minDistance = isMobile ? 12 : 8;
   controls.maxDistance = 39;
-  controls.autoRotate = !isMobile;
+  controls.autoRotate = !isMobile && !reducedMotion;
   controls.autoRotateSpeed = 0.3;
   controls.dampingFactor = 0.05;
   controls.enableRotate = true;
-
-  clock = new THREE.Clock();
-  startTime = performance.now();
 
   // Background galaxy
   const bgGeom = generateBackground();
@@ -453,21 +560,27 @@ export function init(canvasId) {
   }
 
   // Resize
-  window.addEventListener('resize', () => {
-    if (destroyed) return;
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', visibilityChanged);
+  window.addEventListener('pagehide', pageHidden);
+  window.addEventListener('pageshow', pageShown);
+  motionPreference.addEventListener('change', motionChanged);
+  controls.addEventListener('change', controlsChanged);
 
   // Show markers with staggered entrance
   const markerIds = Object.keys(CLUSTERS);
+  const currentGeneration = generation;
   markerIds.forEach((gid, i) => {
     const el = document.getElementById(`marker-${gid}`);
+    markers[gid] = el;
     if (el) {
-      setTimeout(() => {
+      el.classList.remove('visible');
+      const timer = setTimeout(() => {
+        if (destroyed || currentGeneration !== generation) return;
+        markerTimers.delete(timer);
         el.classList.add('visible');
       }, ANIM.galaxy.enterDelay * (i + 1));
+      markerTimers.add(timer);
     }
   });
 
@@ -477,21 +590,26 @@ export function init(canvasId) {
 
 export function destroy() {
   destroyed = true;
-  if (renderer) {
-    renderer.dispose();
-  }
-  if (bgPoints) {
-    bgPoints.geometry.dispose();
-    bgPoints.material.dispose();
-    for (const cluster of Object.values(bgPoints.userData.clusters || {})) {
-      cluster.geometry.dispose();
-      cluster.material.dispose();
-    }
-  }
-  for (const rp of ringPoints) {
-    rp.geometry.dispose();
-    rp.material.dispose();
-  }
+  generation++;
+  pause();
+  if (resizeTimer !== null) clearTimeout(resizeTimer);
+  resizeTimer = null;
+  for (const timer of markerTimers) clearTimeout(timer);
+  markerTimers.clear();
+  cleanup(() => controls?.removeEventListener('change', controlsChanged));
+  dispose(controls);
+  cleanup(() => motionPreference?.removeEventListener('change', motionChanged));
+  // Track resources as soon as they are acquired, including a half-built ring.
+  for (const resource of resources) dispose(resource);
+  resources.clear();
+  dispose(renderer);
   ringPoints = [];
-  window.removeEventListener('resize', () => {});
+  cleanup(() => window.removeEventListener('resize', resize));
+  cleanup(() => document.removeEventListener('visibilitychange', visibilityChanged));
+  cleanup(() => window.removeEventListener('pagehide', pageHidden));
+  cleanup(() => window.removeEventListener('pageshow', pageShown));
+  scene = camera = renderer = controls = bgPoints = null;
+  motionPreference = null;
+  markers = {};
+  failureHandler = null;
 }
